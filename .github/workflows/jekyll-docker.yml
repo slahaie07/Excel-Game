@@ -1,20 +1,814 @@
-name: Jekyll site CI
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SALUT LES FUTUR·E·S COMMIS-COMPTABLES ! — Tuto Raccourcis Excel (v3.7G FINAL)</title>
+<style>
+  :root{
+    --bg:#0b0b0d; --panel:#151517; --panel2:#1a1a1d; --border:#2a2a30;
+    --text:#f4f4f4; --muted:#bdbdbd;
+    --accent:#9b0000; --accent2:#d10000;
+    --good:#22c55e; --bad:#ef4444; --warn:#f59e0b;
+    --shadow:0 14px 34px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box}
+  body{margin:0; background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(155,0,0,.22), transparent 40%),
+      radial-gradient(1000px 600px at 110% 110%, rgba(155,0,0,.22), transparent 45%),
+      #0c0c0e; color:var(--text);
+    font-family: 'Segoe UI', 'Roboto', 'Ubuntu', 'Arial', sans-serif;
+    display:flex; align-items:center; justify-content:center; padding:16px;}
+  .wrap{width:min(1140px,100%); display:grid; gap:14px}
+  .card{background:linear-gradient(180deg,var(--panel),var(--panel2)); border:1px solid var(--border); border-radius:20px; padding:16px; box-shadow:var(--shadow)}
+  .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  .col{display:grid; gap:12px}
+  h1{margin:0; font-size:clamp(22px,4.8vw,36px)}
+  .subtitle{color:#eaeaea; opacity:.95; font-size:clamp(14px,3.3vw,18px)}
+  .pill{padding:6px 10px; border-radius:999px; background:#202026; color:#d7d7d7; border:1px solid var(--border); font-weight:600}
+  .btn{position:relative; background:linear-gradient(180deg,var(--accent2),var(--accent)); border:none; color:#fff; padding:12px 16px; border-radius:14px; font-weight:800; cursor:pointer; box-shadow:0 10px 26px rgba(209,0,0,.22)}
+  .btn.secondary{background:#232327; color:#f1f1f1; border:1px solid var(--border)}
+  .btn.ghost{background:transparent; border:1px dashed var(--border); color:#e9e9e9}
+  .btn:disabled{opacity:.6; cursor:not-allowed}
+  .btn-sm{padding:8px 10px; border-radius:10px; font-weight:800}
+  .btn-xl{padding:16px 22px; border-radius:16px}
+  .grid3{display:grid; gap:10px; grid-template-columns:1fr 1fr 1fr}
+  .titlebar{display:flex; gap:10px; align-items:center; justify-content:space-between}
+  .logo{width:32px; height:32px; display:inline-grid; place-items:center; background:#0e0e11; border:1px solid #2a2a30; border-radius:8px}
+  .logo svg{width:22px; height:22px}
+  .hero{border:1px dashed var(--border); background:#111114; border-radius:16px; padding:14px; text-align:center}
+  .namebox{display:flex; gap:8px; align-items:center; justify-content:center; flex-wrap:wrap}
+  input[type="text"]{background:#0d0d11; color:#fff; border:1px solid #2a2a30; border-radius:12px; padding:10px 12px; min-width:240px; font-weight:700}
+  .big{border:1px dashed var(--border); background:#121214; border-radius:16px; padding:16px; text-align:center; font-size:clamp(18px,3.6vw,26px)}
+  .keys{display:flex; flex-wrap:wrap; gap:8px; justify-content:center}
+  .kbd{display:inline-flex; align-items:center; justify-content:center; padding:8px 10px; min-width:52px; border-radius:10px; background:#0f0f12; border:1px solid var(--border); font-weight:800}
+  .plus{opacity:.6; font-weight:900}
+  .status{display:flex; align-items:center; justify-content:center; gap:8px; font-weight:900; font-size:18px; padding:10px 12px; border-radius:12px; min-height:44px}
+  .ok{background:rgba(34,197,94,.12); color:var(--good); border:1px solid rgba(34,197,94,.35); animation:pop .2s ease}
+  .ko{background:rgba(239,68,68,.12); color:var(--bad); border:1px solid rgba(239,68,68,.35); animation:shake .35s ease}
+  @keyframes pop{from{transform:scale(.96)} to{transform:scale(1)}}
+  @keyframes shake{0%,100%{transform:translateX(0)} 25%{transform:translateX(-3px)} 75%{transform:translateX(3px)}}
+  .bar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:center}
+  .timer{font-weight:900}
+  .queue{display:grid; gap:6px; max-height:220px; overflow:auto}
+  .qrow{display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:center; padding:8px 12px; border:1px solid var(--border); border-radius:12px; background:#121214; font-size:14px}
+  .small{font-size:13px; color:#bdbdbd}
+  .footer{text-align:center; color:#bdbdbd; font-size:12px}
+  table{width:100%; border-collapse:collapse}
+  th, td{padding:8px 10px; border-bottom:1px solid #26262b; text-align:left}
+  .memo table{font-size:13px}
+  .memo .btn-sm{padding:6px 8px; font-size:12px}
+  .cat{display:inline-block; font-size:12px; padding:2px 8px; border-radius:999px; border:1px solid #2a2a30; background:#0f0f12; color:#d7d7d7}
+  .kbwrap{border:1px dashed var(--border); border-radius:12px; padding:10px; display:none}
+  .kbrow{display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin:4px 0}
+  .kbbtn{background:#0f0f12; border:1px solid var(--border); border-radius:10px; padding:8px 10px; cursor:pointer; font-weight:800}
+  .kbbtn.toggled{outline:2px solid var(--accent2)}
+  .kbactions{display:flex; gap:8px; justify-content:center; margin-top:8px}
+  .overlay{position:fixed; inset:0; display:grid; place-items:center; background:rgba(10,10,14,.82); backdrop-filter:blur(3px); z-index:9999}
+  .overlay .panel{background:#121214; border:1px solid var(--border); border-radius:16px; padding:18px; text-align:center; width:min(480px,90%); box-shadow:var(--shadow)}
+  .overlay h2{margin:6px 0 6px; font-size:clamp(18px,3.5vw,28px)}
+  .header-pro {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(90deg, #232327 0%, #1a1a1d 100%);
+      padding: 18px 32px;
+      border-radius: 18px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.18);
+      margin-bottom: 18px;
+    }
+    .header-pro .logo-pro {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-pro .logo-pro svg {
+      width: 38px; height: 38px;
+    }
+    .header-pro .title-pro {
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: #f4f4f4;
+      letter-spacing: 1px;
+    }
+    .header-pro .desc-pro {
+      font-size: 1.05rem;
+      color: #bdbdbd;
+      font-weight: 500;
+      margin-left: 24px;
+      max-width: 480px;
+    }
+    .footer-pro {
+      text-align: center;
+      color: #bdbdbd;
+      font-size: 13px;
+      margin-top: 32px;
+      padding: 18px 0 0 0;
+      border-top: 1px solid #232327;
+      letter-spacing: 0.2px;
+    }
+    .card, .memo .panel, .modal .panel {
+      transition: box-shadow 0.2s;
+    }
+    .card:hover, .memo .panel:hover, .modal .panel:hover {
+      box-shadow: 0 18px 38px rgba(209,0,0,0.13);
+    }
+    .desc-section {
+      background: #151517;
+      border-radius: 16px;
+      padding: 18px 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+      font-size: 1.08rem;
+      color: #eaeaea;
+      line-height: 1.6;
+    }
+  /* Bandeau live motivant */
+  .live-banner {
+    width: 100%;
+    background: linear-gradient(90deg, #d10000 0%, #9b0000 100%);
+    color: #fff;
+    font-weight: 900;
+    font-size: 1.15rem;
+    text-align: center;
+    padding: 10px 0;
+    letter-spacing: 1px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 18px rgba(209,0,0,0.13);
+    animation: pulseBanner 2.5s infinite;
+  }
+  @keyframes pulseBanner {
+    0%,100% { filter: brightness(1); }
+    50% { filter: brightness(1.15); }
+  }
+  /* Animations sur les cartes */
+  .card, .memo .panel, .modal .panel {
+    transition: box-shadow 0.2s, transform 0.25s;
+  }
+  .card:hover, .memo .panel:hover, .modal .panel:hover {
+    box-shadow: 0 18px 38px rgba(209,0,0,0.18);
+    transform: scale(1.02);
+  }
+  /* Animation sur le message d'accueil */
+  .hero {
+    animation: fadeInUp 1.1s cubic-bezier(.23,.92,.47,1.01);
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px);}
+    to { opacity: 1; transform: translateY(0);}
+  }
+  /* Animation sur les boutons */
+  .btn, .btn-xl, .btn-sm {
+    transition: transform 0.13s, box-shadow 0.13s;
+  }
+  .btn:active, .btn-xl:active, .btn-sm:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 8px rgba(209,0,0,0.18);
+  }
+  /* Feedback emojis animés */
+  .status.ok::after {
+    content: " 🚀";
+    animation: popEmoji 0.4s;
+  }
+  .status.ko::after {
+    content: " 😬";
+    animation: shakeEmoji 0.4s;
+  }
+  @keyframes popEmoji {
+    from { transform: scale(0.7);}
+    to { transform: scale(1);}
+  }
+  @keyframes shakeEmoji {
+    0%,100%{transform:translateX(0)} 25%{transform:translateX(-2px)} 75%{transform:translateX(2px)}
+  }
+  /* Effet sur le tableau des records */
+  #board tr td {
+    transition: background 0.2s;
+  }
+  #board tr:hover td {
+    background: #232327;
+  }
+  /* Bouton son */
+  .sound-btn {
+    background: #232327;
+    color: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background 0.2s;
+  }
+  .sound-btn.on {
+    background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
+    color: #fff;
+  }
+  .sound-btn.off {
+    background: linear-gradient(90deg, #ef4444 0%, #b91c1c 100%);
+    color: #fff;
+  }
+  @media (max-width:640px){
+    .grid3{grid-template-columns:1fr}
+    .btn-xl{width:100%}
+    input[type="text"]{min-width:auto; width:100%}
+  }
+</style>
+</head>
+<body>
+  <!-- Bandeau live motivant -->
+  <div class="live-banner" id="liveBanner">
+    🔴 LIVE — Le futur de la comptabilité commence ici ! Préparez-vous à briller ✨
+  </div>
+  <!-- Professional Header -->
+  <div class="header-pro">
+    <div class="logo-pro">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" fill="#0a0a0d" stroke="#2a2a30"/><path d="M8 7h8M8 12h6M8 17h8" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/></svg>
+      <span class="title-pro">Raccourcis Excel — Jeu interactif</span>
+    </div>
+    <span class="desc-pro">Projet pédagogique pour la comptabilité — Apprenez les raccourcis Excel de façon ludique et efficace.</span>
+    <button class="sound-btn off" id="soundToggle" title="Activer/Désactiver le son">🔈 Son OFF</button>
+  </div>
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  <!-- Project Description Section -->
+  <div class="desc-section">
+    <b>Bienvenue !</b> Ce projet interactif a été conçu pour aider les étudiant·e·s en comptabilité à maîtriser les raccourcis clavier d’Excel. Grâce à des exercices progressifs, un classement local et un aide-mémoire intégré, chacun peut s’entraîner et suivre ses progrès. <br>
+    <b>Objectif :</b> Rendre l’apprentissage des outils professionnels plus rapide, moderne et motivant.<br>
+    <b>Pour les professeurs :</b> Ce jeu est prêt à être utilisé en classe ou en auto-apprentissage. Les scores sont enregistrés localement pour garantir la confidentialité.
+  </div>
 
-jobs:
-  build:
+<div class="overlay" id="fsOverlay">
+  <div class="panel">
+    <div class="logo" style="margin-inline:auto"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" fill="#0a0a0d" stroke="#2a2a30"/><path d="M8 7h8M8 12h6M8 17h8" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <h2>Entrer en plein écran pour commencer</h2>
+    <p class="small">Conseillé pour une démo en classe. Tu peux quitter avec Échap.</p>
+    <button class="btn btn-xl" id="enterFS">Entrer en plein écran</button>
+  </div>
+</div>
 
-    runs-on: ubuntu-latest
+<div class="wrap">
 
-    steps:
-    - uses: actions/checkout@v4
-    - name: Build the site in the jekyll/builder container
-      run: |
-        docker run \
-        -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
-        jekyll/builder:latest /bin/bash -c "chmod -R 777 /srv/jekyll && jekyll build --future"
+  <div class="card">
+    <div class="titlebar">
+      <div class="row">
+        <span class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" fill="#0a0a0d" stroke="#2a2a30"/><path d="M8 7h8M8 12h6M8 17h8" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        <h1>SALUT LES FUTUR·E·S COMMIS-COMPTABLES!</h1>
+      </div>
+      <div class="row">
+        <span class="pill">Mode étude</span>
+        <button class="btn secondary btn-sm" id="fsBtn">Plein écran</button>
+      </div>
+    </div>
+    <div class="hero">
+      <div class="subtitle"><b>Tuto Raccourcis clavier</b> — Prêt·e à être le plus rapide de ta classe? Inscris ton nom sur le <b>tableau des records</b>, deviens un pro.<br>3 tutos progressifs, 2 mains et <b>1 Excel‑lent résultat</b>.</div>
+      <div class="namebox" style="margin-top:12px">
+        <input id="studentName" type="text" maxlength="40" placeholder="Ton nom (pour le classement)" autocomplete="name">
+        <button class="btn" id="saveName">OK</button>
+        <span id="hello" class="small"></span>
+      </div>
+      <div class="footer" style="margin-top:10px">Conçu par <b>Samuel Lahaie</b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="grid3">
+      <button class="btn btn-xl" id="btnEasy">Facile (Base)</button>
+      <button class="btn secondary btn-xl" id="btnMedium">Medium (Base+Inter) 🔀</button>
+      <button class="btn btn-xl" id="btnHard">Difficile (Complet) ⏳</button>
+    </div>
+    <div class="row" style="justify-content:center; margin-top:6px">
+      <div class="row">
+        <span class="small">Pratique par catégorie :</span>
+        <button class="btn ghost btn-sm" data-cat="Édition">Édition</button>
+        <button class="btn ghost btn-sm" data-cat="Navigation">Navigation</button>
+        <button class="btn ghost btn-sm" data-cat="Format">Format</button>
+        <button class="btn ghost btn-sm" data-cat="Données">Données</button>
+        <button class="btn ghost btn-sm" data-cat="Lignes/Colonnes">Lignes/Colonnes</button>
+        <button class="btn ghost btn-sm" data-cat="Feuilles/Graph">Feuilles/Graph</button>
+        <button class="btn ghost btn-sm" data-cat="Calculs/Refs">Calculs/Refs</button>
+      </div>
+    </div>
+    <div class="row" style="justify-content:center; margin-top:6px">
+      <button class="btn ghost" id="btnTop10">TOP 10</button>
+      <span class="small" id="unlockInfo"></span>
+    </div>
+  </div>
+
+  <div class="card" id="game">
+    <div class="col">
+      <div class="bar">
+        <span class="pill">Bon: <b id="ok">0</b></span>
+        <span class="pill">Erreurs: <b id="ko">0</b> / <b>2</b></span>
+        <span class="pill">Série: <b id="streak">0</b></span>
+        <span class="pill" id="timerBox" style="display:none">Temps: <span class="timer" id="timer">—</span></span>
+        <span class="pill" id="modeTag">Mode —</span>
+        <div style="flex:1"></div>
+        <button class="btn secondary" id="kbToggle">Clavier à l’écran</button>
+        <button class="btn secondary" id="start">Commencer</button>
+      </div>
+      <div class="big" id="taskBox">1re tentative: on affiche seulement la <b>tâche</b>. Si tu te trompes, tu verras la <b>bonne commande</b> clairement. Réussite = avance automatique. (Max 2 erreurs.)</div>
+      <div class="keys" id="hint" style="display:none"></div>
+      <div class="status" id="status" style="display:none"></div>
+      <div class="kbwrap" id="kb">
+        <div class="kbrow">
+          <button class="kbbtn" data-k="Ctrl">Ctrl</button>
+          <button class="kbbtn" data-k="Alt">Alt</button>
+          <!-- Shift masqué -->
+        </div>
+        <div class="kbrow">
+          <button class="kbbtn" data-k="F2">F2</button>
+          <button class="kbbtn" data-k="F3">F3</button>
+          <button class="kbbtn" data-k="F4">F4</button>
+          <button class="kbbtn" data-k="F9">F9</button>
+          <button class="kbbtn" data-k="F11">F11</button>
+          <button class="kbbtn" data-k="`">`</button>
+          <button class="kbbtn" data-k="=">=</button>
+          <button class="kbbtn" data-k=";">;</button>
+        </div>
+        <div class="kbrow">
+          <button class="kbbtn" data-k="ArrowLeft">←</button>
+          <button class="kbbtn" data-k="ArrowUp">↑</button>
+          <button class="kbbtn" data-k="ArrowDown">↓</button>
+          <button class="kbbtn" data-k="ArrowRight">→</button>
+          <button class="kbbtn" data-k="Home">Home</button>
+          <button class="kbbtn" data-k="End">End</button>
+          <button class="kbbtn" data-k="PageUp">PageUp</button>
+          <button class="kbbtn" data-k="PageDown">PageDown</button>
+        </div>
+        <div class="kbrow">
+          <button class="kbbtn" data-k="Delete">Delete</button>
+          <button class="kbbtn" data-k="Enter">Enter</button>
+          <button class="kbbtn" data-k="Space">Espace</button>
+        </div>
+        <div class="kbrow">
+          <button class="kbbtn" data-k="A">A</button>
+          <button class="kbbtn" data-k="B">B</button>
+          <button class="kbbtn" data-k="C">C</button>
+          <button class="kbbtn" data-k="D">D</button>
+          <button class="kbbtn" data-k="E">E</button>
+          <button class="kbbtn" data-k="F">F</button>
+          <button class="kbbtn" data-k="G">G</button>
+          <button class="kbbtn" data-k="H">H</button>
+          <button class="kbbtn" data-k="I">I</button>
+          <button class="kbbtn" data-k="L">L</button>
+          <button class="kbbtn" data-k="N">N</button>
+          <button class="kbbtn" data-k="R">R</button>
+          <button class="kbbtn" data-k="T">T</button>
+          <button class="kbbtn" data-k="U">U</button>
+          <button class="kbbtn" data-k="V">V</button>
+          <button class="kbbtn" data-k="X">X</button>
+          <button class="kbbtn" data-k="Y">Y</button>
+          <button class="kbbtn" data-k="Z">Z</button>
+        </div>
+        <div class="kbrow">
+          <button class="kbbtn" data-k="0">0</button>
+          <button class="kbbtn" data-k="1">1</button>
+          <button class="kbbtn" data-k="2">2</button>
+          <button class="kbbtn" data-k="3">3</button>
+          <button class="kbbtn" data-k="4">4</button>
+          <button class="kbbtn" data-k="5">5</button>
+          <button class="kbbtn" data-k="6">6</button>
+          <button class="kbbtn" data-k="7">7</button>
+          <button class="kbbtn" data-k="8">8</button>
+          <button class="kbbtn" data-k="9">9</button>
+          <button class="kbbtn" data-k="+">+</button>
+        </div>
+        <div class="kbactions">
+          <span class="small">Combinaison: <span id="kbCombo"></span></span>
+          <button class="btn secondary btn-sm" id="kbClear">Effacer</button>
+          <button class="btn btn-sm" id="kbSubmit">Valider</button>
+        </div>
+      </div>
+      <div class="queue" id="queue"></div>
+      <div class="footer">TON TALENT CRÉE L’AVENIR DE L’ÉDUCATION MODERNISÉE — et je suis ton outil. 💼🇨🇦</div>
+    </div>
+  </div>
+
+  <!-- Aide-mémoire (PLACÉ SOUS L'EXERCICE) -->
+  <div class="card memo" style="box-shadow: 0 6px 24px rgba(34,197,94,0.09); margin-top:18px;">
+    <div class="col">
+      <div class="row" style="justify-content:space-between; align-items:center">
+        <div><b>Aide‑mémoire des raccourcis (recherche)</b></div>
+        <div class="row">
+          <input id="memoQuery" type="text" placeholder="Cherche une tâche/combinaison (ex.: monétaire, AutoSomme, F4…)" style="min-width:300px">
+          <button class="btn secondary" id="memoAdd">Chercher</button>
+          <button class="btn ghost" id="memoClearInput">Effacer</button>
+        </div>
+      </div>
+      <div style="overflow:auto; border:1px solid var(--border); border-radius:12px; margin-top:6px">
+        <table>
+          <thead>
+            <tr>
+              <th>Catégorie</th>
+              <th>Tâche</th>
+              <th>Combinaison</th>
+              <th>Niveau</th>
+            </tr>
+          </thead>
+          <tbody id="memoBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="leaderModal" aria-hidden="true" style="z-index:10000;">
+    <div class="panel" style="box-shadow: 0 8px 32px rgba(209,0,0,0.13);">
+      <div class="row" style="justify-content:space-between">
+        <h3 style="margin:0">Top 10 — Meilleurs scores</h3>
+        <div class="row">
+          <button class="btn secondary btn-sm" id="exportCsv">Exporter CSV</button>
+          <button class="btn secondary btn-sm" id="closeTop">Fermer</button>
+        </div>
+      </div>
+      <div class="small" style="margin:6px 0 10px">Scores locaux (offline). Enregistre <b>Temps</b> & <b>Erreurs</b>.</div>
+      <table id="board">
+        <thead><tr><th>#</th><th>Nom</th><th>Diff.</th><th class="right">Score</th><th class="right">Précision</th><th class="right">Temps</th><th class="right">Erreurs</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Professional Footer -->
+  <div class="footer-pro">
+    <b>Projet réalisé par Samuel Lahaie</b> — Pour toute question ou suggestion : <a href="mailto:samuel.lahaie@gmail.com" style="color:#d10000;text-decoration:underline;">Contactez-moi</a><br>
+    © 2024 — Jeu pédagogique Excel pour la comptabilité. Version 3.7G FINAL.
+  </div>
+
+</div>
+
+<script>
+(function(){
+  // --- Effets sonores ---
+  let soundOn = false;
+  const soundToggle = document.getElementById('soundToggle');
+  function playSound(type){
+    if(!soundOn) return;
+    let ctx = window.AudioContext ? new AudioContext() : null;
+    if(!ctx) return;
+    let o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type==='ok' ? 'triangle' : 'square';
+    o.frequency.value = type==='ok' ? 660 : 220;
+    g.gain.value = 0.18;
+    o.connect(g); g.connect(ctx.destination);
+    o.start();
+    o.stop(ctx.currentTime + (type==='ok'?0.18:0.28));
+    setTimeout(()=>ctx.close(), 400);
+  }
+  soundToggle.addEventListener('click', ()=>{
+    soundOn = !soundOn;
+    soundToggle.classList.toggle('on', soundOn);
+    soundToggle.classList.toggle('off', !soundOn);
+    soundToggle.textContent = soundOn ? '🔊 Son ON' : '🔈 Son OFF';
+  });
+
+  // --- Fullscreen overlay ---
+  const overlay=document.getElementById('fsOverlay');
+  const enterFS=document.getElementById('enterFS');
+  const fsBtn=document.getElementById('fsBtn');
+  function reqFS(){ if(!document.fullscreenElement){ document.documentElement.requestFullscreen().catch(()=>{}); } }
+  enterFS.addEventListener('click', ()=>{ reqFS(); overlay.style.display='none'; });
+  fsBtn.addEventListener('click', ()=>{ if(!document.fullscreenElement){ document.documentElement.requestFullscreen().catch(()=>{});} else { document.exitFullscreen().catch(()=>{});} });
+
+  // --- Categories ---
+  const C={ EDIT:'Édition', NAV:'Navigation', FMT:'Format', DATA:'Données', ROWCOL:'Lignes/Colonnes', SHEET:'Feuilles/Graph', CALC:'Calculs/Refs' };
+
+  // Helper: mark if Shift must be shown (else masked)
+  function withShowShift(rec){ rec.showShift = rec.combo.includes('Shift'); return rec; }
+
+  // --- Complete dataset (tier 1=base, 2=inter, 3=avancé) ---
+  const SHORTCUTS=[
+    // ÉDITION (base->inter)
+    {id:'copy',cat:C.EDIT,task:'Je copie',combo:['Ctrl','C'],tier:1},
+    {id:'paste',cat:C.EDIT,task:'Je colle',combo:['Ctrl','V'],tier:1},
+    {id:'cut',cat:C.EDIT,task:'Je coupe',combo:['Ctrl','X'],tier:1},
+    {id:'undo',cat:C.EDIT,task:'J’annule',combo:['Ctrl','Z'],tier:1},
+    {id:'redo',cat:C.EDIT,task:'Je rétablis',combo:['Ctrl','Y'],tier:1},
+    {id:'bold',cat:C.EDIT,task:'Je mets en gras',combo:['Ctrl','B'],tier:1},
+    {id:'italic',cat:C.EDIT,task:'Je mets en italique',combo:['Ctrl','I'],tier:1},
+    {id:'underline',cat:C.EDIT,task:'Je souligne',combo:['Ctrl','U'],tier:1},
+    {id:'strike',cat:C.EDIT,task:'Je barre le texte',combo:['Ctrl','5'],tier:2},
+    {id:'delete',cat:C.EDIT,task:'Je supprime le contenu',combo:['Delete'],tier:1},
+    {id:'edit',cat:C.EDIT,task:'J’édite la cellule',combo:['F2'],tier:1},
+    {id:'newline',cat:C.EDIT,task:'Saut de ligne dans la cellule',combo:['Alt','Enter'],tier:1},
+
+    // NAVIGATION & SÉLECTION
+    withShowShift({id:'rowsel',cat:C.NAV,task:'Sélectionner toute la ligne',combo:['Shift','Space'],tier:1}),
+    {id:'colsel',cat:C.NAV,task:'Sélectionner toute la colonne',combo:['Ctrl','Space'],tier:1},
+    {id:'left',cat:C.NAV,task:'Aller au bord gauche du bloc',combo:['Ctrl','ArrowLeft'],tier:1},
+    {id:'right',cat:C.NAV,task:'Aller au bord droit du bloc',combo:['Ctrl','ArrowRight'],tier:1},
+    {id:'up',cat:C.NAV,task:'Aller en haut du bloc',combo:['Ctrl','ArrowUp'],tier:1},
+    {id:'down',cat:C.NAV,task:'Aller en bas du bloc',combo:['Ctrl','ArrowDown'],tier:1},
+    withShowShift({id:'sleft',cat:C.NAV,task:'Sélection vers la gauche',combo:['Ctrl','Shift','ArrowLeft'],tier:2}),
+    withShowShift({id:'sright',cat:C.NAV,task:'Sélection vers la droite',combo:['Ctrl','Shift','ArrowRight'],tier:2}),
+    withShowShift({id:'sup',cat:C.NAV,task:'Sélection vers le haut',combo:['Ctrl','Shift','ArrowUp'],tier:2}),
+    withShowShift({id:'sdown',cat:C.NAV,task:'Sélection vers le bas',combo:['Ctrl','Shift','ArrowDown'],tier:2}),
+    {id:'home',cat:C.NAV,task:'Aller au début de la feuille',combo:['Ctrl','Home'],tier:2},
+    {id:'end',cat:C.NAV,task:'Aller à la dernière cellule utilisée',combo:['Ctrl','End'],tier:2},
+    {id:'prevtab',cat:C.NAV,task:'Feuille précédente',combo:['Ctrl','PageUp'],tier:2},
+    {id:'nexttab',cat:C.NAV,task:'Feuille suivante',combo:['Ctrl','PageDown'],tier:2},
+    withShowShift({id:'region',cat:C.NAV,task:'Sélectionner la région de données',combo:['Ctrl','Shift','8'],tier:2}),
+
+    // FORMAT
+    {id:'format',cat:C.FMT,task:'Ouvrir Format de cellule',combo:['Ctrl','1'],tier:2},
+    withShowShift({id:'currency',cat:C.FMT,task:'Format monétaire',combo:['Ctrl','Shift','4'],tier:2}),
+    withShowShift({id:'percent',cat:C.FMT,task:'Format pourcentage',combo:['Ctrl','Shift','5'],tier:2}),
+    withShowShift({id:'number',cat:C.FMT,task:'Format nombre',combo:['Ctrl','Shift','1'],tier:2}),
+    withShowShift({id:'datefmt',cat:C.FMT,task:'Format date',combo:['Ctrl','Shift','3'],tier:2}),
+    withShowShift({id:'timefmt',cat:C.FMT,task:'Format heure',combo:['Ctrl','Shift','2'],tier:2}),
+    withShowShift({id:'scient',cat:C.FMT,task:'Format scientifique',combo:['Ctrl','Shift','6'],tier:2}),
+
+    // CALCULS & RÉFÉRENCES
+    {id:'sum',cat:C.CALC,task:'AutoSomme',combo:['Alt','='],tier:2},
+    {id:'absref',cat:C.CALC,task:'Référence absolue ($)',combo:['F4'],tier:2},
+    {id:'today',cat:C.CALC,task:'Date du jour',combo:['Ctrl',';'],tier:2},
+    withShowShift({id:'time',cat:C.CALC,task:'Heure actuelle',combo:['Ctrl','Shift',';'],tier:2}),
+    {id:'recalc',cat:C.CALC,task:'Recalcul toutes feuilles',combo:['F9'],tier:3},
+    withShowShift({id:'wrecalc',cat:C.CALC,task:'Recalcul feuille active',combo:['Shift','F9'],tier:3}),
+    {id:'showfx',cat:C.CALC,task:'Afficher/Masquer formules',combo:['Ctrl','`'],tier:3},
+    withShowShift({id:'insfunc',cat:C.CALC,task:'Insérer une fonction',combo:['Shift','F3'],tier:3}),
+
+    // DONNÉES
+    withShowShift({id:'filter',cat:C.DATA,task:'Activer/Désactiver filtres',combo:['Ctrl','Shift','L'],tier:2}),
+    {id:'dropdown',cat:C.DATA,task:'Menu filtre',combo:['Alt','ArrowDown'],tier:3},
+    {id:'table',cat:C.DATA,task:'Transformer en Tableau',combo:['Ctrl','T'],tier:2},
+    {id:'filldown',cat:C.DATA,task:'Recopier vers le bas',combo:['Ctrl','D'],tier:2},
+    {id:'fillright',cat:C.DATA,task:'Recopier vers la droite',combo:['Ctrl','R'],tier:2},
+    {id:'pastespecial',cat:C.DATA,task:'Collage spécial',combo:['Ctrl','Alt','V'],tier:3},
+    {id:'namemgr',cat:C.DATA,task:'Gestionnaire de noms',combo:['Ctrl','F3'],tier:3},
+
+    // LIGNES/COLONNES
+    withShowShift({id:'insrow',cat:C.ROWCOL,task:'Insérer une ligne',combo:['Ctrl','Shift','+'],tier:2}),
+    withShowShift({id:'inscol',cat:C.ROWCOL,task:'Insérer une colonne',combo:['Ctrl','Shift','+'],tier:2}),
+    {id:'delrow',cat:C.ROWCOL,task:'Supprimer la ligne',combo:['Ctrl','-'],tier:2},
+    {id:'delcol',cat:C.ROWCOL,task:'Supprimer la colonne',combo:['Ctrl','-'],tier:2},
+    withShowShift({id:'unhidecol',cat:C.ROWCOL,task:'Afficher colonnes masquées',combo:['Ctrl','Shift','0'],tier:3}),
+    withShowShift({id:'unhiderow',cat:C.ROWCOL,task:'Afficher lignes masquées',combo:['Ctrl','Shift','9'],tier:3}),
+    {id:'hidecol',cat:C.ROWCOL,task:'Masquer colonne',combo:['Ctrl','0'],tier:3},
+    {id:'hiderow',cat:C.ROWCOL,task:'Masquer ligne',combo:['Ctrl','9'],tier:3},
+
+    // FEUILLES & GRAPHIQUES
+    withShowShift({id:'newsheet',cat:C.SHEET,task:'Insérer une nouvelle feuille',combo:['Shift','F11'],tier:2}),
+    {id:'chart',cat:C.SHEET,task:'Graphique sur une nouvelle feuille',combo:['F11'],tier:3}
+  ];
+
+  // Elements
+  const okEl=document.getElementById('ok'); const koEl=document.getElementById('ko'); const streakEl=document.getElementById('streak');
+  const timerBox=document.getElementById('timerBox'); const timerEl=document.getElementById('timer'); const modeTag=document.getElementById('modeTag');
+  const startBtn=document.getElementById('start'); const taskBox=document.getElementById('taskBox'); const hintEl=document.getElementById('hint'); const statusEl=document.getElementById('status'); const qEl=document.getElementById('queue');
+  const btnEasy=document.getElementById('btnEasy'); const btnMedium=document.getElementById('btnMedium'); const btnHard=document.getElementById('btnHard');
+  const btnTop10=document.getElementById('btnTop10'); const leaderModal=document.getElementById('leaderModal'); const closeTop=document.getElementById('closeTop'); const boardBody=document.querySelector('#board tbody');
+  const unlockInfo=document.getElementById('unlockInfo');
+  const kbToggle=document.getElementById('kbToggle'); const kb=document.getElementById('kb'); const kbCombo=document.getElementById('kbCombo'); const kbSubmit=document.getElementById('kbSubmit'); const kbClear=document.getElementById('kbClear');
+
+  // Player name
+  let player=localStorage.getItem('excel_player_name')||'';
+  const nameInput=document.getElementById('studentName'); const saveNameBtn=document.getElementById('saveName'); const hello=document.getElementById('hello');
+  if(player){ hello.textContent=`Salut, ${player}!`; nameInput.value=player; }
+  saveNameBtn.addEventListener('click', ()=>{ player=(nameInput.value||'').trim().slice(0,40); localStorage.setItem('excel_player_name', player); hello.textContent=player?`Salut, ${player}!`:''; });
+
+  // Leaderboard
+  const LB_KEY='excel_leaderboard_v3_7g_final';
+  function loadLB(){ try{return JSON.parse(localStorage.getItem(LB_KEY))||[]}catch(e){return[]} }
+  function saveLB(items){ try{localStorage.setItem(LB_KEY, JSON.stringify(items))}catch(e){} }
+  function addScore(name,mode,score,accuracy,ms,errors){
+    const items=loadLB(); items.push({name,mode,score,accuracy,ms,errors,ts:Date.now()});
+    items.sort((a,b)=> b.score-a.score || a.ms-b.ms || b.accuracy-a.accuracy || a.errors-b.errors || a.ts-b.ts);
+    saveLB(items.slice(0,50));
+  }
+  function formatMs(ms){ const s=Math.floor(ms/1000); const m=Math.floor(s/60); const ss=String(s%60).padStart(2,'0'); return (m? m+':':'' ) + ss + ' s'; }
+  function openTop(){
+    const items=loadLB().slice(0,10);
+    boardBody.innerHTML = items.length? items.map((it,i)=>`<tr>
+      <td>${i+1}</td><td>${it.name||'—'}</td><td>${it.mode}</td>
+      <td class="right">${it.score}</td><td class="right">${Math.round((it.accuracy||0)*100)}%</td>
+      <td class="right">${formatMs(it.ms||0)}</td><td class="right">${it.errors??0}</td>
+    </tr>`).join('') : '<tr><td colspan="7">Aucun score pour l’instant.</td></tr>';
+    leaderModal.style.display='grid'; leaderModal.setAttribute('aria-hidden','false');
+  }
+  function closeTopModal(){ leaderModal.style.display='none'; leaderModal.setAttribute('aria-hidden','true'); }
+  btnTop10.addEventListener('click', openTop); document.getElementById('closeTop')?.addEventListener('click', closeTopModal); leaderModal.addEventListener('click',(e)=>{ if(e.target===leaderModal) closeTopModal(); });
+  document.getElementById('exportCsv')?.addEventListener('click', ()=>{
+    const items=loadLB();
+    const rows=[['Nom','Difficulté','Score','Précision','Temps (s)','Erreurs']];
+    items.forEach(it=> rows.push([it.name||'', it.mode||'', String(it.score||0), String(Math.round((it.accuracy||0)*100))+'%', String(Math.floor((it.ms||0)/1000)), String(it.errors||0)]));
+    const csv = rows.map(r=> r.map(v=> `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const a=document.createElement('a'); a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv); a.download='excel_shortcuts_scores_v37g.csv'; a.click();
+  });
+
+  // Progression (unlock levels)
+  const UNLOCK_KEY='excel_unlock_v1';
+  function loadUnlock(){ try{return JSON.parse(localStorage.getItem(UNLOCK_KEY))||{easy:true, medium:false, hard:false}}catch(e){return {easy:true, medium:false, hard:false}} }
+  function saveUnlock(u){ try{localStorage.setItem(UNLOCK_KEY, JSON.stringify(u))}catch(e){} }
+  let unlock = loadUnlock();
+  function refreshUnlockUI(){
+    btnMedium.disabled = !unlock.medium; btnHard.disabled = !unlock.hard;
+    unlockInfo.textContent = !unlock.medium ? 'Débloque Medium en réussissant Facile (max 2 erreurs).'
+      : (!unlock.hard ? 'Débloque Difficile en réussissant Medium (max 2 erreurs).'
+      : 'Tous les niveaux sont débloqués.');
+  }
+  refreshUnlockUI();
+
+  // Modes & timers
+  let mode='easy', order=[], cursor=0, current=null, ok=0, ko=0, streak=0, timer=null, timeLeft=0, startTime=0;
+  const HARD_SECONDS=6, MAX_ERRORS=2;
+  const catErrors = {};
+  function setMode(m){
+    mode=m;
+    btnEasy.classList.toggle('secondary', m!=='easy');
+    btnMedium.classList.toggle('secondary', m!=='medium');
+    btnHard.classList.toggle('secondary', m!=='hard');
+    timerBox.style.display=(mode==='hard')?'inline-flex':'none';
+    modeTag.textContent='Mode '+(m==='easy'?'Facile':m==='medium'?'Medium':'Difficile');
+  }
+  btnEasy.addEventListener('click', ()=>setMode('easy'));
+  btnMedium.addEventListener('click', ()=>{ if(!unlock.medium) return; setMode('medium'); });
+  btnHard.addEventListener('click', ()=>{ if(!unlock.hard) return; setMode('hard'); });
+  setMode(unlock.medium? (unlock.hard?'hard':'medium') : 'easy');
+
+  function shuffle(a){ const arr=[...a]; for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]];} return arr }
+  function poolByMode(){
+    const t1=SHORTCUTS.filter(s=>s.tier===1);
+    const t2=SHORTCUTS.filter(s=>s.tier===2);
+    const t3=SHORTCUTS.filter(s=>s.tier===3);
+    if(mode==='easy') return t1;
+    if(mode==='medium') return [...t1, ...t2];
+    return [...t1, ...t2, ...t3];
+  }
+  function buildOrder(){
+    const pool=poolByMode();
+    order = (mode==='easy') ? [...pool] : shuffle(pool);
+    cursor=0; renderQueue();
+  }
+  function renderCombo(s){
+    const parts = s.combo.filter(k => !(k==='Shift' && !s.showShift));
+    return parts.map(k=>`<span class='kbd'>${k}</span>`).join(" <span class='plus'>+</span> ");
+  }
+  function renderQueue(){
+    qEl.innerHTML='';
+    order.forEach((s,i)=>{
+      const row=document.createElement('div'); row.className='qrow';
+      row.innerHTML=`<div>${i<cursor?'✅':'⬜️'} ${s.task} <span class="cat">${s.cat}</span></div><div class="small">${i<cursor? (renderCombo(s)) : ''}</div>`;
+      qEl.appendChild(row);
+    });
+  }
+  function showCurrent(){
+    current=order[cursor];
+    if(!current){ endGame(true); return; }
+    taskBox.innerHTML=`Tâche : <b>${current.task}</b> <span class="cat">${current.cat}</span>`;
+    hintEl.style.display='none'; hintEl.innerHTML=''; statusEl.style.display='none';
+  }
+  function startTimer(){ stopTimer(); timeLeft=HARD_SECONDS; timerEl.textContent=String(timeLeft); timer=setInterval(()=>{ timeLeft--; timerEl.textContent=String(timeLeft); if(timeLeft<=0){ fail(true); timeLeft=HARD_SECONDS; } },1000); }
+  function stopTimer(){ if(timer){ clearInterval(timer); timer=null; } timerEl.textContent='—'; }
+  function success(){
+    ok++; streak++; okEl.textContent=ok; streakEl.textContent=streak;
+    statusEl.className='status ok'; statusEl.style.display='flex'; statusEl.textContent='✅ Bon! Tu progresses !';
+    playSound('ok');
+    if(mode==='hard') stopTimer();
+    setTimeout(()=>{ cursor++; renderQueue(); showCurrent(); if(mode==='hard') startTimer(); }, 360);
+  }
+  function fail(fromTimer=false){
+    ko++; catErrors[current.cat] = (catErrors[current.cat]||0)+1;
+    streak=0; koEl.textContent=ko; streakEl.textContent=streak;
+    statusEl.className='status ko'; statusEl.style.display='flex';
+    statusEl.innerHTML='❌ Mauvais, réessaie.' + (fromTimer?' (Temps écoulé)':'') + '<br>👉 La bonne commande est : <span style="font-weight:700;color:#d10000">' + current.combo.join(' + ').replace(/\bShift \+ /g,'') + '</span>';
+    playSound('ko');
+    hintEl.style.display='flex'; hintEl.innerHTML = renderCombo(current);
+    if(ko>MAX_ERRORS){ endGame(false); }
+  }
+  function normalizeKey(ev){
+    let key=ev.key;
+    if(key.length===1){ key=key.toUpperCase(); }
+    else{
+      if(key.startsWith('Arrow')) return key;
+      if(/^F\d{1,2}$/.test(key)) return key;
+      if(['Enter','Home','End','PageUp','PageDown','Delete'].includes(key)) return key;
+      if(key===' ') return 'Space';
+      if(key==='Dead') return '`';
+      if(key===';') return ';';
+      if(key==='+') return '+';
+    }
+    return key;
+  }
+  function comboFromEvent(ev){
+    const parts=[]; if(ev.ctrlKey) parts.push('Ctrl'); /* Shift ignoré volontairement en validation */ if(ev.altKey) parts.push('Alt');
+    const key=normalizeKey(ev); if(['Control','Shift','Alt'].includes(key)) return parts; if(key) parts.push(key); return parts;
+  }
+  function sameCombo(expected,got){
+    const A = expected.filter(k => k!=='Shift'); // tolérer absence de Shift
+    const B = got.filter(k => k!=='Shift');
+    if(A.length !== B.length) return false;
+    for(let i=0;i<A.length;i++){ if(A[i]!==B[i]) return false; }
+    return true;
+  }
+  function isTypingTarget(ev){ const t=ev.target; return t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable); }
+  function onKey(ev){ if(isTypingTarget(ev)) return; if(!current) return; ev.preventDefault(); ev.stopPropagation(); const combo=comboFromEvent(ev); if(sameCombo(current.combo, combo)) success(); else fail(); }
+  window.addEventListener('keydown', onKey, {capture:true});
+
+  // On-screen keyboard (no Shift)
+  const kbState = new Set();
+  function renderKbCombo(){
+    const arr=[...kbState];
+    kbCombo.innerHTML = arr.map(k=>`<span class="kbd">${k}</span>`).join(' <span class="plus">+</span> ');
+  }
+  document.getElementById('kb').addEventListener('click', (e)=>{
+    const btn=e.target.closest('.kbbtn'); if(!btn) return;
+    const k=btn.getAttribute('data-k');
+    if(['Ctrl','Alt'].includes(k)){
+      if(kbState.has(k)){ kbState.delete(k); btn.classList.remove('toggled'); }
+      else { kbState.add(k); btn.classList.add('toggled'); }
+    } else {
+      const nonmods=[...kbState].filter(x=>!['Ctrl','Alt'].includes(x));
+      nonmods.forEach(x=>kbState.delete(x));
+      kbState.add(k);
+    }
+    renderKbCombo();
+  });
+  kbClear.addEventListener('click', ()=>{ kbState.clear(); document.querySelectorAll('.kbbtn.toggled').forEach(b=>b.classList.remove('toggled')); renderKbCombo(); });
+  kbSubmit.addEventListener('click', ()=>{
+    if(!current) return;
+    const combo=[...kbState];
+    if(sameCombo(current.combo, combo)) success(); else fail();
+  });
+  document.getElementById('kbToggle').addEventListener('click', ()=>{ const el=document.getElementById('kb'); el.style.display = (el.style.display==='block'?'none':'block'); });
+
+  function endGame(passed){
+    const total=ok+ko, acc= total? ok/total : 0;
+    const elapsed = Date.now()-startTime;
+    addScore(localStorage.getItem('excel_player_name')||'—', mode==='easy'?'Facile':mode==='medium'?'Medium':'Difficile', ok, acc, elapsed, ko);
+    let feedback='';
+    if(passed){
+      const pool=poolByMode(); const cats=[...new Set(pool.map(s=>s.cat))];
+      const entries=cats.map(cat=>({cat, err: (catErrors[cat]||0)}));
+      entries.sort((a,b)=> b.err-a.err);
+      const toImprove = entries.filter(e=>e.err>0).slice(0,2).map(e=>e.cat);
+      const strong = entries.filter(e=>e.err===0).slice(0,2).map(e=>e.cat);
+      feedback = (toImprove.length? `À travailler: <b>${toImprove.join(', ')}</b>. ` : '') + (strong.length? `Fort en: <b>${strong.join(', ')}</b>.` : '');
+      taskBox.innerHTML=`🎉 <span style="font-size:1.3em">Terminé</span> — <b>${ok}</b> bonnes réponses, précision <b>${Math.round(acc*100)}%</b>, temps <b>${formatMs(elapsed)}</b>, erreurs <b>${ko}</b>.<br>${feedback} <br><span style="font-size:1.2em;color:#22c55e">Bravo, tu deviens un·e pro de la compta !</span>`;
+      playSound('ok');
+      if(ko<=2){
+        if(mode==='easy' && !unlock.medium){ unlock.medium=true; saveUnlock(unlock); refreshUnlockUI(); statusEl.className='status ok'; statusEl.style.display='flex'; statusEl.textContent='✅ Bravo! Medium est maintenant débloqué.'; }
+        if(mode==='medium' && !unlock.hard){ unlock.hard=true; saveUnlock(unlock); refreshUnlockUI(); statusEl.className='status ok'; statusEl.style.display='flex'; statusEl.textContent='✅ Excellent! Difficile est maintenant débloqué.'; }
+      }
+    } else {
+      taskBox.innerHTML=`⛔ <span style="font-size:1.2em">Échec</span> — limite de <b>2</b> erreurs dépassée. Réessaie pour débloquer la suite.<br><span style="color:#ef4444">Ne lâche pas, tu vas y arriver !</span>`;
+      playSound('ko');
+    }
+    hintEl.style.display='none'; stopTimer(); openTop();
+    for(const k in catErrors){ delete catErrors[k]; }
+  }
+
+  document.getElementById('start').addEventListener('click', ()=>{
+    ok=0; ko=0; streak=0; okEl.textContent='0'; koEl.textContent='0'; streakEl.textContent='0';
+    buildOrder(); showCurrent();
+    startTime = Date.now();
+    if(mode==='hard') startTimer();
+  });
+
+  // Aide-mémoire
+  const memoQuery = document.getElementById('memoQuery');
+  const memoAdd = document.getElementById('memoAdd');
+  const memoClearInput = document.getElementById('memoClearInput');
+  const memoBody = document.getElementById('memoBody');
+  function renderMemo(list){
+    if(!list || !list.length){ memoBody.innerHTML = "<tr><td colspan='4' style='text-align:center; color:#bdbdbd'>Aucun résultat — cherche un mot-clé (ex.: filtre, monétaire, F4…)</td></tr>"; return; }
+    memoBody.innerHTML = list.map(s=>{
+      const combo = renderCombo(s);
+      const lvl = s.tier===1?'Facile':(s.tier===2?'Moyen':'Difficile');
+      return `<tr>
+        <td><span class="cat">${s.cat}</span></td>
+        <td>${s.task}</td>
+        <td>${combo}</td>
+        <td>${lvl}</td>
+      </tr>`;
+    }).join('');
+  }
+  function searchShortcuts(qv){
+    const v = (qv||'').toLowerCase().trim(); if(!v) return [];
+    return SHORTCUTS.filter(s => s.task.toLowerCase().includes(v) || s.combo.join(' ').toLowerCase().includes(v) || (s.id && s.id.toLowerCase().includes(v)) || (s.cat && s.cat.toLowerCase().includes(v)));
+  }
+  memoAdd.addEventListener('click', ()=>{ renderMemo(searchShortcuts(memoQuery.value)); });
+  memoClearInput.addEventListener('click', ()=>{ memoQuery.value=''; memoQuery.focus(); renderMemo([]); });
+  renderMemo([]);
+
+  // Animation sur le bandeau live (texte dynamique)
+  const liveBanner = document.getElementById('liveBanner');
+  const liveTexts = [
+    "🔴 LIVE — Le futur de la comptabilité commence ici ! Préparez-vous à briller ✨",
+    "🚀 Prêt·e à battre le record de ta classe ?",
+    "💡 Astuce : Utilise le clavier à l’écran pour t’entraîner !",
+    "🏆 Les meilleurs scores sont affichés dans le TOP 10 !",
+    "🎯 Objectif : 100% de précision, 0 erreur !",
+    "📈 Apprends vite, progresse fort, deviens un·e pro !"
+  ];
+  let liveIdx = 0;
+  setInterval(()=>{
+    liveIdx = (liveIdx+1)%liveTexts.length;
+    liveBanner.textContent = liveTexts[liveIdx];
+  }, 4200);
+
+})();</script>
+</body>
+</html>
