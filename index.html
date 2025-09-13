@@ -1,20 +1,22 @@
-# This is a sample Jekyll Docker workflow
-# You can use this to build and serve your Jekyll site in a Docker container.
-
-name: Jekyll Docker
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Jekyll
-        run: |
-          docker run --rm -v "$(pwd):/srv/jekyll" -it jekyll/jekyll:4.2.0 jekyll build
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Excel Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2em; background: #f5f5f5; }
+    h1 { color: #2675A6; }
+    .game-box { background: #fff; padding: 2em; border-radius: 10px; box-shadow: 0 2px 8px #0001; max-width: 600px; margin: auto; }
+    button { font-size: 1.1em; margin: 1em 0; }
+  </style>
+</head>
+<body>
+  <div class="game-box">
+    <h1>Bienvenue sur le Excel Game !</h1>
+    <p>Pour jouer, personnalisez ce fichier avec votre propre contenu.</p>
+    <p>Ce fichier <strong>index.html</strong> s'affichera dans votre navigateur dès que vous l'ouvrirez.</p>
+    <button onclick="alert('Bravo, le jeu fonctionne !')">Testez le bouton</button>
+  </div>
+</body>
+</html>
