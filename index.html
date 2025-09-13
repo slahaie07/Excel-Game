@@ -1,0 +1,20 @@
+# This is a sample Jekyll Docker workflow
+# You can use this to build and serve your Jekyll site in a Docker container.
+
+name: Jekyll Docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Jekyll
+        run: |
+          docker run --rm -v "$(pwd):/srv/jekyll" -it jekyll/jekyll:4.2.0 jekyll build
