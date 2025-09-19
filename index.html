@@ -2,21 +2,74 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <title>Excel Game</title>
+  <title>Excel Game — Raccourcis pour Comptables</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { font-family: Arial, sans-serif; padding: 2em; background: #f5f5f5; }
-    h1 { color: #2675A6; }
-    .game-box { background: #fff; padding: 2em; border-radius: 10px; box-shadow: 0 2px 8px #0001; max-width: 600px; margin: auto; }
-    button { font-size: 1.1em; margin: 1em 0; }
+    body { 
+      font-family: 'Segoe UI', 'Roboto', 'Ubuntu', 'Arial', sans-serif; 
+      padding: 2em; 
+      background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%); 
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    h1 { 
+      color: #2675A6; 
+      margin: 0 0 1em;
+      font-size: 2.2em;
+      text-align: center;
+    }
+    .game-box { 
+      background: #fff; 
+      padding: 3em; 
+      border-radius: 20px; 
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1); 
+      max-width: 700px; 
+      margin: auto;
+      text-align: center;
+    }
+    p {
+      margin: 1em 0;
+      line-height: 1.6;
+    }
+    button { 
+      font-size: 1.1em; 
+      margin: 1em 0; 
+    }
   </style>
 </head>
 <body>
   <div class="game-box">
-    <h1>Bienvenue sur le Excel Game !</h1>
-    <p>Pour jouer, personnalisez ce fichier avec votre propre contenu.</p>
-    <p>Ce fichier <strong>index.html</strong> s'affichera dans votre navigateur dès que vous l'ouvrirez.</p>
-    <button onclick="alert('Bravo, le jeu fonctionne !')">Testez le bouton</button>
+    <h1>🎮 Excel Game — Raccourcis pour Comptables</h1>
+    <p>Maîtrise les raccourcis Excel de manière ludique et progressive !</p>
+    <p>🎯 <strong>3 niveaux</strong> : Facile, Medium, Difficile</p>
+    <p>🏆 <strong>Système de score</strong> et classement local</p>
+    <p>📱 <strong>Compatible</strong> PC et mobile, fonctionne hors ligne</p>
+    <p>⚡ <strong>Spécialement conçu</strong> pour les futur·e·s comptables</p>
+    
+    <div style="margin: 2em 0; text-align: center;">
+      <a href="Excel-Game.html" style="
+        display: inline-block;
+        background: linear-gradient(180deg, #d10000, #9b0000);
+        color: white;
+        padding: 16px 32px;
+        border-radius: 16px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 1.3em;
+        box-shadow: 0 10px 26px rgba(209,0,0,.22);
+        transition: transform 0.2s;
+      " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        🚀 COMMENCER LE JEU
+      </a>
+    </div>
+    
+    <div style="font-size: 0.9em; color: #666; margin-top: 2em;">
+      <p><strong>Créé par Samuel Lahaie</strong> — Outil pédagogique moderne pour l'apprentissage des raccourcis Excel</p>
+      <p>✨ Design sombre et moderne • ⌨️ Clavier virtuel • 📊 Export CSV des scores</p>
+    </div>
   </div>
 </body>
 </html>
