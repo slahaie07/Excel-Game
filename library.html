@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma Bibliothèque</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .upload-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9ff;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            background: #eef1ff;
+            border-color: #764ba2;
+        }
+
+        .upload-area.dragover {
+            background: #e0e7ff;
+            border-color: #4c1d95;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: transform 0.2s;
+        }
+
+        .upload-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .note-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .note-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-size: 1em;
+            margin-bottom: 10px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .note-title {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+
+        .bookshelf {
+            background: #8b4513;
+            border-radius: 10px;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .bookshelf::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 15px;
+            background: #654321;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .books-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            min-height: 200px;
+            align-items: flex-end;
+            padding-bottom: 15px;
+        }
+
+        .book {
+            width: 120px;
+            height: 180px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+            transform-origin: bottom center;
+            animation: bookAppear 0.5s ease-out;
+        }
+
+        @keyframes bookAppear {
+            from {
+                transform: scale(0) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .book:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+
+        .book-spine {
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.3), inset -2px 0 5px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-spine::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 100%;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .book-spine::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 5px;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .book-title {
+            font-size: 0.85em;
+            font-weight: bold;
+            text-align: center;
+            word-wrap: break-word;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .book-type {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .book.photo .book-spine { background: linear-gradient(135deg, #ff6b6b, #ee5a6f); }
+        .book.audio .book-spine { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
+        .book.note .book-spine { background: linear-gradient(135deg, #f7b733, #fc4a1a); }
+        .book.file .book-spine { background: linear-gradient(135deg, #667eea, #764ba2); }
+
+        .empty-shelf {
+            text-align: center;
+            color: #ddd;
+            font-size: 1.2em;
+            padding: 60px 20px;
+            font-style: italic;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow: auto;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 2em;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #666;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        .preview-audio {
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .preview-note {
+            white-space: pre-wrap;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        .stats {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255,0,0,0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 0.8em;
+            display: none;
+        }
+
+        .book:hover .delete-btn {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            .book {
+                width: 100px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ma Bibliothèque</h1>
+            <p>Ajoutez vos fichiers, photos, audio et notes - chaque élément devient un livre!</p>
+        </header>
+
+        <div class="stats" id="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="totalBooks">0</div>
+                <div class="stat-label">Livres</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalPhotos">0</div>
+                <div class="stat-label">Photos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalAudio">0</div>
+                <div class="stat-label">Audio</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalNotes">0</div>
+                <div class="stat-label">Notes</div>
+            </div>
+        </div>
+
+        <div class="upload-section">
+            <h2 style="margin-bottom: 20px; color: #667eea;">Ajouter des éléments</h2>
+
+            <div class="upload-area" id="dropZone">
+                <div style="font-size: 3em; margin-bottom: 15px;">📚</div>
+                <h3>Glissez-déposez vos fichiers ici</h3>
+                <p style="margin: 10px 0; color: #666;">ou</p>
+                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    Choisir des fichiers
+                </button>
+                <input type="file" id="fileInput" class="file-input" multiple accept="image/*,audio/*,video/*,*/*">
+                <p style="margin-top: 15px; color: #888; font-size: 0.9em;">
+                    Formats acceptés: Photos, Audio, et tous types de fichiers
+                </p>
+            </div>
+
+            <div class="note-section">
+                <h3 style="margin-bottom: 15px; color: #667eea;">Créer une note</h3>
+                <input type="text" id="noteTitle" class="note-title" placeholder="Titre de la note...">
+                <textarea id="noteContent" class="note-input" placeholder="Écrivez votre note ici..."></textarea>
+                <button class="upload-btn" onclick="addNote()">Ajouter la note</button>
+            </div>
+        </div>
+
+        <div class="bookshelf">
+            <div class="books-container" id="booksContainer">
+                <div class="empty-shelf">Votre bibliothèque est vide. Ajoutez votre premier élément!</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closePreview()">&times;</button>
+            <div id="previewContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let library = JSON.parse(localStorage.getItem('library')) || [];
+
+        // Drag and drop
+        const dropZone = document.getElementById('dropZone');
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        // File input
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    const item = {
+                        id: Date.now() + Math.random(),
+                        name: file.name,
+                        type: getFileType(file),
+                        data: e.target.result,
+                        date: new Date().toISOString()
+                    };
+
+                    library.push(item);
+                    saveLibrary();
+                    renderBooks();
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function getFileType(file) {
+            if (file.type.startsWith('image/')) return 'photo';
+            if (file.type.startsWith('audio/')) return 'audio';
+            if (file.type.startsWith('video/')) return 'audio';
+            return 'file';
+        }
+
+        function addNote() {
+            const title = document.getElementById('noteTitle').value.trim();
+            const content = document.getElementById('noteContent').value.trim();
+
+            if (!title || !content) {
+                alert('Veuillez remplir le titre et le contenu de la note');
+                return;
+            }
+
+            const item = {
+                id: Date.now(),
+                name: title,
+                type: 'note',
+                data: content,
+                date: new Date().toISOString()
+            };
+
+            library.push(item);
+            saveLibrary();
+            renderBooks();
+
+            document.getElementById('noteTitle').value = '';
+            document.getElementById('noteContent').value = '';
+        }
+
+        function saveLibrary() {
+            localStorage.setItem('library', JSON.stringify(library));
+            updateStats();
+        }
+
+        function renderBooks() {
+            const container = document.getElementById('booksContainer');
+
+            if (library.length === 0) {
+                container.innerHTML = '<div class="empty-shelf">Votre bibliothèque est vide. Ajoutez votre premier élément!</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+
+            library.forEach(item => {
+                const book = document.createElement('div');
+                book.className = `book ${item.type}`;
+
+                const emoji = {
+                    photo: '🖼️',
+                    audio: '🎵',
+                    note: '📝',
+                    file: '📄'
+                }[item.type];
+
+                book.innerHTML = `
+                    <button class="delete-btn" onclick="deleteBook('${item.id}')">×</button>
+                    <div class="book-spine">
+                        <div class="book-type">${emoji}</div>
+                        <div class="book-title">${item.name}</div>
+                    </div>
+                `;
+
+                book.onclick = (e) => {
+                    if (!e.target.classList.contains('delete-btn')) {
+                        showPreview(item);
+                    }
+                };
+
+                container.appendChild(book);
+            });
+
+            updateStats();
+        }
+
+        function showPreview(item) {
+            const modal = document.getElementById('previewModal');
+            const content = document.getElementById('previewContent');
+
+            let html = `<h2>${item.name}</h2><p style="color: #888; margin-bottom: 20px;">Ajouté le ${new Date(item.date).toLocaleDateString('fr-FR')}</p>`;
+
+            if (item.type === 'photo') {
+                html += `<img src="${item.data}" class="preview-image" alt="${item.name}">`;
+            } else if (item.type === 'audio') {
+                html += `<audio controls class="preview-audio" src="${item.data}"></audio>`;
+            } else if (item.type === 'note') {
+                html += `<div class="preview-note">${item.data}</div>`;
+            } else {
+                html += `<p>Type: ${item.type}</p><p>Ce type de fichier ne peut pas être prévisualisé directement.</p>`;
+            }
+
+            content.innerHTML = html;
+            modal.classList.add('active');
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').classList.remove('active');
+        }
+
+        function deleteBook(id) {
+            if (confirm('Voulez-vous vraiment supprimer cet élément de votre bibliothèque?')) {
+                library = library.filter(item => item.id != id);
+                saveLibrary();
+                renderBooks();
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalBooks').textContent = library.length;
+            document.getElementById('totalPhotos').textContent = library.filter(i => i.type === 'photo').length;
+            document.getElementById('totalAudio').textContent = library.filter(i => i.type === 'audio').length;
+            document.getElementById('totalNotes').textContent = library.filter(i => i.type === 'note').length;
+        }
+
+        // Initialize
+        renderBooks();
+
+        // Close modal on click outside
+        document.getElementById('previewModal').addEventListener('click', (e) => {
+            if (e.target.id === 'previewModal') {
+                closePreview();
+            }
+        });
+    </script>
+</body>
+</html>
