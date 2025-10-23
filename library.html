@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ma Bibliothèque</title>
+    <title>Bibliothèque Astrale - Archives Mystiques</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Philosopher:wght@400;700&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -12,55 +14,247 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Philosopher', sans-serif;
+            background: #0a0e27;
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Fond galaxie animé */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at top, #1e3a8a 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, #4c1d95 0%, transparent 50%),
+                radial-gradient(ellipse at center, transparent 0%, #0a0e27 100%);
+            z-index: -2;
+        }
+
+        /* Étoiles animées */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                radial-gradient(2px 2px at 60px 70px, #fff, transparent),
+                radial-gradient(1px 1px at 50px 50px, #ddd, transparent),
+                radial-gradient(1px 1px at 130px 80px, #fff, transparent),
+                radial-gradient(2px 2px at 90px 10px, #eee, transparent);
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 5s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
+        /* En-tête magique */
         header {
             text-align: center;
-            color: white;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            position: relative;
         }
 
         h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-family: 'Cinzel', serif;
+            font-size: 3.5em;
+            background: linear-gradient(135deg, #ffd700, #ffed4e, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+            animation: glow 3s ease-in-out infinite;
         }
 
-        .upload-section {
-            background: white;
-            border-radius: 15px;
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7)); }
+            50% { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 1)); }
+        }
+
+        header p {
+            color: #c7d2fe;
+            font-size: 1.2em;
+            font-style: italic;
+            text-shadow: 0 2px 10px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Ornements mystiques */
+        .ornament {
+            font-size: 2em;
+            color: #fbbf24;
+            margin: 0 15px;
+            display: inline-block;
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Statistiques cosmiques */
+        .stats {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.4), rgba(76, 29, 149, 0.4));
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
             padding: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow:
+                0 10px 40px rgba(99, 102, 241, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            position: relative;
+        }
+
+        .stat-item::before {
+            content: '✧';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fbbf24;
+            font-size: 1.5em;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #a78bfa, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(167, 139, 250, 0.5);
+        }
+
+        .stat-label {
+            color: #c7d2fe;
+            margin-top: 8px;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+        }
+
+        /* Section d'upload mystique */
+        .upload-section {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.3), rgba(76, 29, 149, 0.3));
+            border: 2px solid rgba(139, 92, 246, 0.4);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow:
+                0 15px 50px rgba(99, 102, 241, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+        }
+
+        .upload-section h2 {
+            font-family: 'Cinzel', serif;
+            color: #fbbf24;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            text-align: center;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
         }
 
         .upload-area {
-            border: 3px dashed #667eea;
-            border-radius: 10px;
-            padding: 40px;
+            border: 3px dashed rgba(167, 139, 250, 0.5);
+            border-radius: 15px;
+            padding: 50px;
             text-align: center;
-            background: #f8f9ff;
-            transition: all 0.3s;
+            background: rgba(30, 27, 75, 0.4);
+            transition: all 0.4s ease;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(167, 139, 250, 0.3), transparent);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .upload-area:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .upload-area:hover {
-            background: #eef1ff;
-            border-color: #764ba2;
+            border-color: #fbbf24;
+            background: rgba(76, 29, 149, 0.3);
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.4);
         }
 
         .upload-area.dragover {
-            background: #e0e7ff;
-            border-color: #4c1d95;
+            border-color: #ec4899;
+            background: rgba(236, 72, 153, 0.2);
+            box-shadow: 0 0 40px rgba(236, 72, 153, 0.6);
+        }
+
+        .upload-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.6));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .upload-area h3 {
+            color: #e0e7ff;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .upload-area p {
+            color: #a5b4fc;
+            margin: 15px 0;
         }
 
         .file-input {
@@ -68,54 +262,100 @@
         }
 
         .upload-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 1.1em;
-            border-radius: 25px;
+            padding: 18px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 30px;
             cursor: pointer;
             margin-top: 15px;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .upload-btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .upload-btn:hover {
-            transform: scale(1.05);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(236, 72, 153, 0.6);
         }
 
+        /* Section notes */
         .note-section {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #e0e0e0;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .note-section h3 {
+            font-family: 'Cinzel', serif;
+            color: #fbbf24;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+        }
+
+        .note-title, .note-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid rgba(167, 139, 250, 0.4);
+            border-radius: 12px;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            background: rgba(30, 27, 75, 0.4);
+            color: #e0e7ff;
+            font-family: 'Philosopher', sans-serif;
+            transition: all 0.3s ease;
         }
 
         .note-input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #667eea;
-            border-radius: 10px;
-            font-size: 1em;
-            margin-bottom: 10px;
             resize: vertical;
-            min-height: 100px;
+            min-height: 120px;
         }
 
-        .note-title {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #667eea;
-            border-radius: 10px;
-            font-size: 1em;
-            margin-bottom: 10px;
+        .note-title:focus, .note-input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
         }
 
+        .note-title::placeholder, .note-input::placeholder {
+            color: #6366f1;
+        }
+
+        /* Étagère cosmique */
         .bookshelf {
-            background: #8b4513;
-            border-radius: 10px;
-            padding: 30px 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 27, 75, 0.8));
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 30px;
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
             position: relative;
+            backdrop-filter: blur(10px);
         }
 
         .bookshelf::before {
@@ -124,57 +364,67 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 15px;
-            background: #654321;
-            border-radius: 0 0 10px 10px;
+            height: 20px;
+            background: linear-gradient(90deg,
+                rgba(139, 92, 246, 0.3) 0%,
+                rgba(236, 72, 153, 0.3) 50%,
+                rgba(139, 92, 246, 0.3) 100%);
+            border-radius: 0 0 18px 18px;
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.5);
         }
 
         .books-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            min-height: 200px;
+            gap: 20px;
+            min-height: 250px;
             align-items: flex-end;
-            padding-bottom: 15px;
+            padding-bottom: 25px;
+            justify-content: center;
         }
 
+        /* Livres magiques */
         .book {
-            width: 120px;
-            height: 180px;
+            width: 130px;
+            height: 200px;
             position: relative;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s ease;
             transform-origin: bottom center;
-            animation: bookAppear 0.5s ease-out;
+            animation: bookAppear 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
         @keyframes bookAppear {
             from {
-                transform: scale(0) translateY(100px);
+                transform: scale(0) translateY(100px) rotate(180deg);
                 opacity: 0;
             }
             to {
-                transform: scale(1) translateY(0);
+                transform: scale(1) translateY(0) rotate(0deg);
                 opacity: 1;
             }
         }
 
         .book:hover {
-            transform: translateY(-10px) scale(1.05);
+            transform: translateY(-15px) scale(1.08);
+            filter: drop-shadow(0 10px 30px rgba(167, 139, 250, 0.8));
         }
 
         .book-spine {
             width: 100%;
             height: 100%;
-            border-radius: 5px;
+            border-radius: 8px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 10px;
+            padding: 15px;
             color: white;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-            box-shadow: 3px 3px 10px rgba(0,0,0,0.3), inset -2px 0 5px rgba(0,0,0,0.2);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            box-shadow:
+                5px 5px 15px rgba(0,0,0,0.5),
+                inset -3px 0 8px rgba(0,0,0,0.3),
+                inset 3px 0 8px rgba(255,255,255,0.2);
             position: relative;
             overflow: hidden;
         }
@@ -184,9 +434,9 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 8px;
+            width: 12px;
             height: 100%;
-            background: rgba(255,255,255,0.2);
+            background: linear-gradient(90deg, rgba(255,255,255,0.3), transparent);
         }
 
         .book-spine::after {
@@ -194,39 +444,72 @@
             position: absolute;
             top: 0;
             right: 0;
-            width: 5px;
+            width: 8px;
             height: 100%;
-            background: rgba(0,0,0,0.3);
+            background: linear-gradient(90deg, transparent, rgba(0,0,0,0.4));
         }
 
         .book-title {
-            font-size: 0.85em;
+            font-size: 0.9em;
             font-weight: bold;
             text-align: center;
             word-wrap: break-word;
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
+            z-index: 1;
         }
 
         .book-type {
-            font-size: 2em;
-            margin-bottom: 10px;
+            font-size: 2.5em;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+            z-index: 1;
         }
 
-        .book.photo .book-spine { background: linear-gradient(135deg, #ff6b6b, #ee5a6f); }
-        .book.audio .book-spine { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
-        .book.note .book-spine { background: linear-gradient(135deg, #f7b733, #fc4a1a); }
-        .book.file .book-spine { background: linear-gradient(135deg, #667eea, #764ba2); }
+        /* Couleurs magiques par type */
+        .book.photo .book-spine {
+            background: linear-gradient(135deg, #ec4899, #db2777, #be185d);
+            box-shadow:
+                5px 5px 15px rgba(236, 72, 153, 0.4),
+                inset -3px 0 8px rgba(0,0,0,0.3),
+                0 0 20px rgba(236, 72, 153, 0.3);
+        }
+
+        .book.audio .book-spine {
+            background: linear-gradient(135deg, #06b6d4, #0891b2, #0e7490);
+            box-shadow:
+                5px 5px 15px rgba(6, 182, 212, 0.4),
+                inset -3px 0 8px rgba(0,0,0,0.3),
+                0 0 20px rgba(6, 182, 212, 0.3);
+        }
+
+        .book.note .book-spine {
+            background: linear-gradient(135deg, #f59e0b, #d97706, #b45309);
+            box-shadow:
+                5px 5px 15px rgba(245, 158, 11, 0.4),
+                inset -3px 0 8px rgba(0,0,0,0.3),
+                0 0 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .book.file .book-spine {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed, #6d28d9);
+            box-shadow:
+                5px 5px 15px rgba(139, 92, 246, 0.4),
+                inset -3px 0 8px rgba(0,0,0,0.3),
+                0 0 20px rgba(139, 92, 246, 0.3);
+        }
 
         .empty-shelf {
             text-align: center;
-            color: #ddd;
-            font-size: 1.2em;
-            padding: 60px 20px;
+            color: #6366f1;
+            font-size: 1.3em;
+            padding: 80px 20px;
             font-style: italic;
+            text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
         }
 
+        /* Modal mystique */
         .modal {
             display: none;
             position: fixed;
@@ -234,7 +517,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -246,33 +530,49 @@
         }
 
         .modal-content {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            max-width: 800px;
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.95), rgba(76, 29, 149, 0.95));
+            border: 2px solid rgba(139, 92, 246, 0.5);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
             max-height: 90vh;
             overflow: auto;
             position: relative;
+            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.5);
+            color: #e0e7ff;
+        }
+
+        .modal-content h2 {
+            font-family: 'Cinzel', serif;
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-size: 2em;
         }
 
         .close-btn {
             position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 2em;
+            top: 15px;
+            right: 25px;
+            font-size: 2.5em;
             cursor: pointer;
             background: none;
             border: none;
-            color: #666;
+            color: #fbbf24;
+            transition: all 0.3s;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
         }
 
         .close-btn:hover {
-            color: #000;
+            color: #ec4899;
+            transform: rotate(90deg);
+            text-shadow: 0 0 20px rgba(236, 72, 153, 0.8);
         }
 
         .preview-image {
             max-width: 100%;
-            border-radius: 10px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(139, 92, 246, 0.3);
         }
 
         .preview-audio {
@@ -282,123 +582,133 @@
 
         .preview-note {
             white-space: pre-wrap;
-            padding: 20px;
-            background: #f8f9ff;
-            border-radius: 10px;
-            line-height: 1.6;
-        }
-
-        .stats {
-            background: white;
+            padding: 25px;
+            background: rgba(15, 23, 42, 0.6);
             border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 10px;
-        }
-
-        .stat-number {
-            font-size: 2em;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .stat-label {
-            color: #666;
-            margin-top: 5px;
+            line-height: 1.8;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #c7d2fe;
         }
 
         .delete-btn {
             position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(255,0,0,0.8);
+            top: 8px;
+            right: 8px;
+            background: rgba(239, 68, 68, 0.9);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 25px;
-            height: 25px;
+            width: 30px;
+            height: 30px;
             cursor: pointer;
-            font-size: 0.8em;
+            font-size: 1em;
+            font-weight: bold;
             display: none;
+            transition: all 0.3s;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.7);
         }
 
         .book:hover .delete-btn {
             display: block;
         }
 
+        /* Scrollbar personnalisée */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #7c3aed, #db2777);
+        }
+
         @media (max-width: 768px) {
             h1 {
-                font-size: 1.8em;
+                font-size: 2.2em;
             }
             .book {
-                width: 100px;
-                height: 150px;
+                width: 110px;
+                height: 170px;
+            }
+            .upload-section, .bookshelf {
+                padding: 25px 20px;
             }
         }
     </style>
 </head>
 <body>
+    <div class="stars"></div>
+
     <div class="container">
         <header>
-            <h1>Ma Bibliothèque</h1>
-            <p>Ajoutez vos fichiers, photos, audio et notes - chaque élément devient un livre!</p>
+            <span class="ornament">✦</span>
+            <h1>Bibliothèque Astrale</h1>
+            <span class="ornament">✦</span>
+            <p>✧ Archives Mystiques des Savoirs Immortels ✧</p>
         </header>
 
         <div class="stats" id="stats">
             <div class="stat-item">
                 <div class="stat-number" id="totalBooks">0</div>
-                <div class="stat-label">Livres</div>
+                <div class="stat-label">Grimoires</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number" id="totalPhotos">0</div>
-                <div class="stat-label">Photos</div>
+                <div class="stat-label">Visions</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number" id="totalAudio">0</div>
-                <div class="stat-label">Audio</div>
+                <div class="stat-label">Échos</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number" id="totalNotes">0</div>
-                <div class="stat-label">Notes</div>
+                <div class="stat-label">Manuscrits</div>
             </div>
         </div>
 
         <div class="upload-section">
-            <h2 style="margin-bottom: 20px; color: #667eea;">Ajouter des éléments</h2>
+            <h2>✧ Invoquer de Nouveaux Savoirs ✧</h2>
 
             <div class="upload-area" id="dropZone">
-                <div style="font-size: 3em; margin-bottom: 15px;">📚</div>
-                <h3>Glissez-déposez vos fichiers ici</h3>
-                <p style="margin: 10px 0; color: #666;">ou</p>
+                <div class="upload-icon">🌟</div>
+                <h3>Glissez vos artefacts dans le portail</h3>
+                <p style="color: #a5b4fc;">ou</p>
                 <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-                    Choisir des fichiers
+                    Choisir les reliques
                 </button>
                 <input type="file" id="fileInput" class="file-input" multiple accept="image/*,audio/*,video/*,*/*">
-                <p style="margin-top: 15px; color: #888; font-size: 0.9em;">
-                    Formats acceptés: Photos, Audio, et tous types de fichiers
+                <p style="margin-top: 20px; color: #6366f1; font-size: 0.95em;">
+                    ✦ Accepte tous les formats : Visions, Échos, Parchemins ✦
                 </p>
             </div>
 
             <div class="note-section">
-                <h3 style="margin-bottom: 15px; color: #667eea;">Créer une note</h3>
-                <input type="text" id="noteTitle" class="note-title" placeholder="Titre de la note...">
-                <textarea id="noteContent" class="note-input" placeholder="Écrivez votre note ici..."></textarea>
-                <button class="upload-btn" onclick="addNote()">Ajouter la note</button>
+                <h3>✧ Rédiger un Manuscrit Sacré ✧</h3>
+                <input type="text" id="noteTitle" class="note-title" placeholder="Titre du manuscrit...">
+                <textarea id="noteContent" class="note-input" placeholder="Inscrivez votre sagesse éternelle..."></textarea>
+                <button class="upload-btn" onclick="addNote()">Sceller le Manuscrit</button>
             </div>
         </div>
 
         <div class="bookshelf">
             <div class="books-container" id="booksContainer">
-                <div class="empty-shelf">Votre bibliothèque est vide. Ajoutez votre premier élément!</div>
+                <div class="empty-shelf">Votre bibliothèque attend ses premiers grimoires sacrés...</div>
             </div>
         </div>
     </div>
@@ -471,7 +781,7 @@
             const content = document.getElementById('noteContent').value.trim();
 
             if (!title || !content) {
-                alert('Veuillez remplir le titre et le contenu de la note');
+                alert('Veuillez remplir le titre et le contenu du manuscrit');
                 return;
             }
 
@@ -500,7 +810,7 @@
             const container = document.getElementById('booksContainer');
 
             if (library.length === 0) {
-                container.innerHTML = '<div class="empty-shelf">Votre bibliothèque est vide. Ajoutez votre premier élément!</div>';
+                container.innerHTML = '<div class="empty-shelf">Votre bibliothèque attend ses premiers grimoires sacrés...</div>';
                 return;
             }
 
@@ -513,8 +823,8 @@
                 const emoji = {
                     photo: '🖼️',
                     audio: '🎵',
-                    note: '📝',
-                    file: '📄'
+                    note: '📜',
+                    file: '📖'
                 }[item.type];
 
                 book.innerHTML = `
@@ -541,7 +851,7 @@
             const modal = document.getElementById('previewModal');
             const content = document.getElementById('previewContent');
 
-            let html = `<h2>${item.name}</h2><p style="color: #888; margin-bottom: 20px;">Ajouté le ${new Date(item.date).toLocaleDateString('fr-FR')}</p>`;
+            let html = `<h2>${item.name}</h2><p style="color: #a5b4fc; margin-bottom: 20px;">✦ Archivé le ${new Date(item.date).toLocaleDateString('fr-FR')} ✦</p>`;
 
             if (item.type === 'photo') {
                 html += `<img src="${item.data}" class="preview-image" alt="${item.name}">`;
@@ -550,7 +860,7 @@
             } else if (item.type === 'note') {
                 html += `<div class="preview-note">${item.data}</div>`;
             } else {
-                html += `<p>Type: ${item.type}</p><p>Ce type de fichier ne peut pas être prévisualisé directement.</p>`;
+                html += `<p>Type: ${item.type}</p><p>Ce grimoire ne peut être dévoilé directement dans ce portail.</p>`;
             }
 
             content.innerHTML = html;
@@ -562,7 +872,7 @@
         }
 
         function deleteBook(id) {
-            if (confirm('Voulez-vous vraiment supprimer cet élément de votre bibliothèque?')) {
+            if (confirm('Voulez-vous vraiment bannir ce grimoire de votre bibliothèque astrale?')) {
                 library = library.filter(item => item.id != id);
                 saveLibrary();
                 renderBooks();
