@@ -61,8 +61,36 @@
             50% { opacity: 1; }
         }
 
+        /* Particules magiques */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #fbbf24;
+            border-radius: 50%;
+            animation: float-particle 15s infinite;
+            box-shadow: 0 0 10px #fbbf24;
+        }
+
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) translateX(100px) scale(1); opacity: 0; }
+        }
+
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             position: relative;
             z-index: 1;
@@ -114,6 +142,85 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Barre d'outils professionnelle */
+        .toolbar {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.4), rgba(76, 29, 149, 0.4));
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 45px 12px 20px;
+            border: 2px solid rgba(167, 139, 250, 0.4);
+            border-radius: 25px;
+            background: rgba(30, 27, 75, 0.6);
+            color: #e0e7ff;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+        }
+
+        .search-box::after {
+            content: '🔍';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-toolbar {
+            padding: 10px 20px;
+            border: 2px solid rgba(167, 139, 250, 0.4);
+            border-radius: 20px;
+            background: rgba(30, 27, 75, 0.6);
+            color: #c7d2fe;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .btn-toolbar:hover {
+            border-color: #fbbf24;
+            background: rgba(76, 29, 149, 0.6);
+            color: #fbbf24;
+            transform: translateY(-2px);
+        }
+
+        .btn-toolbar.active {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border-color: #ec4899;
+            color: white;
+        }
+
         /* Statistiques cosmiques */
         .stats {
             background: linear-gradient(135deg, rgba(30, 58, 138, 0.4), rgba(76, 29, 149, 0.4));
@@ -121,9 +228,7 @@
             border-radius: 20px;
             padding: 30px;
             margin-bottom: 30px;
-            box-shadow:
-                0 10px 40px rgba(99, 102, 241, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
             backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-around;
@@ -135,6 +240,12 @@
             text-align: center;
             padding: 15px;
             position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.1);
         }
 
         .stat-item::before {
@@ -160,7 +271,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 20px rgba(167, 139, 250, 0.5);
         }
 
         .stat-label {
@@ -177,9 +287,7 @@
             border-radius: 20px;
             padding: 40px;
             margin-bottom: 30px;
-            box-shadow:
-                0 15px 50px rgba(99, 102, 241, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 50px rgba(99, 102, 241, 0.4);
             backdrop-filter: blur(15px);
         }
 
@@ -316,7 +424,7 @@
             text-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
         }
 
-        .note-title, .note-input {
+        .note-title, .note-input, .note-tags, .note-desc {
             width: 100%;
             padding: 15px 20px;
             border: 2px solid rgba(167, 139, 250, 0.4);
@@ -334,13 +442,13 @@
             min-height: 120px;
         }
 
-        .note-title:focus, .note-input:focus {
+        .note-title:focus, .note-input:focus, .note-tags:focus, .note-desc:focus {
             outline: none;
             border-color: #fbbf24;
             box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
         }
 
-        .note-title::placeholder, .note-input::placeholder {
+        .note-title::placeholder, .note-input::placeholder, .note-tags::placeholder, .note-desc::placeholder {
             color: #6366f1;
         }
 
@@ -351,47 +459,81 @@
             border-radius: 20px;
             padding: 40px 30px;
             margin-bottom: 30px;
-            box-shadow:
-                0 20px 60px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             position: relative;
             backdrop-filter: blur(10px);
         }
 
-        .bookshelf::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 20px;
-            background: linear-gradient(90deg,
-                rgba(139, 92, 246, 0.3) 0%,
-                rgba(236, 72, 153, 0.3) 50%,
-                rgba(139, 92, 246, 0.3) 100%);
-            border-radius: 0 0 18px 18px;
-            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.5);
+        .bookshelf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .bookshelf-title {
+            font-family: 'Cinzel', serif;
+            color: #fbbf24;
+            font-size: 1.8em;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+        }
+
+        .view-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            padding: 10px 15px;
+            border: 2px solid rgba(167, 139, 250, 0.4);
+            border-radius: 10px;
+            background: rgba(30, 27, 75, 0.6);
+            color: #c7d2fe;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-btn:hover, .view-btn.active {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border-color: #ec4899;
+            color: white;
         }
 
         .books-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 25px;
             min-height: 250px;
-            align-items: flex-end;
             padding-bottom: 25px;
-            justify-content: center;
+        }
+
+        .books-container.list-view {
+            grid-template-columns: 1fr;
         }
 
         /* Livres magiques */
         .book {
-            width: 130px;
-            height: 200px;
             position: relative;
             cursor: pointer;
             transition: all 0.4s ease;
-            transform-origin: bottom center;
             animation: bookAppear 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .book.grid-view {
+            height: 220px;
+        }
+
+        .book.list-view {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.3), rgba(76, 29, 149, 0.3));
+            border-radius: 15px;
+            padding: 15px 20px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
         }
 
         @keyframes bookAppear {
@@ -406,7 +548,7 @@
         }
 
         .book:hover {
-            transform: translateY(-15px) scale(1.08);
+            transform: translateY(-10px) scale(1.05);
             filter: drop-shadow(0 10px 30px rgba(167, 139, 250, 0.8));
         }
 
@@ -429,6 +571,15 @@
             overflow: hidden;
         }
 
+        .book.list-view .book-spine {
+            flex-direction: row;
+            justify-content: flex-start;
+            width: auto;
+            box-shadow: none;
+            background: none !important;
+            padding: 0;
+        }
+
         .book-spine::before {
             content: '';
             position: absolute;
@@ -439,6 +590,10 @@
             background: linear-gradient(90deg, rgba(255,255,255,0.3), transparent);
         }
 
+        .book.list-view .book-spine::before {
+            display: none;
+        }
+
         .book-spine::after {
             content: '';
             position: absolute;
@@ -447,6 +602,10 @@
             width: 8px;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(0,0,0,0.4));
+        }
+
+        .book.list-view .book-spine::after {
+            display: none;
         }
 
         .book-title {
@@ -460,11 +619,73 @@
             z-index: 1;
         }
 
+        .book.list-view .book-title {
+            font-size: 1.2em;
+            text-align: left;
+            flex: 1;
+        }
+
         .book-type {
             font-size: 2.5em;
             margin-bottom: 12px;
             filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
             z-index: 1;
+        }
+
+        .book.list-view .book-type {
+            margin: 0 15px 0 0;
+            font-size: 2em;
+        }
+
+        .book-meta {
+            display: none;
+        }
+
+        .book.list-view .book-meta {
+            display: flex;
+            gap: 15px;
+            color: #a5b4fc;
+            font-size: 0.9em;
+        }
+
+        .book-tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+        }
+
+        .tag {
+            background: rgba(139, 92, 246, 0.3);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75em;
+            color: #c7d2fe;
+            border: 1px solid rgba(167, 139, 250, 0.4);
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s;
+            z-index: 10;
+            display: none;
+        }
+
+        .book:hover .favorite-btn {
+            display: block;
+        }
+
+        .favorite-btn.active {
+            display: block;
         }
 
         /* Couleurs magiques par type */
@@ -507,6 +728,7 @@
             padding: 80px 20px;
             font-style: italic;
             text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+            grid-column: 1 / -1;
         }
 
         /* Modal mystique */
@@ -547,6 +769,29 @@
             color: #fbbf24;
             margin-bottom: 10px;
             font-size: 2em;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: 2px solid rgba(167, 139, 250, 0.4);
+            border-radius: 15px;
+            background: rgba(30, 27, 75, 0.6);
+            color: #c7d2fe;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn:hover {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            border-color: #ec4899;
+            color: white;
         }
 
         .close-btn {
@@ -619,6 +864,72 @@
             display: block;
         }
 
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5);
+            z-index: 2000;
+            animation: slideIn 0.3s ease-out;
+            max-width: 350px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        /* Keyboard shortcuts help */
+        .shortcuts-help {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(30, 27, 75, 0.9);
+            border: 2px solid rgba(139, 92, 246, 0.4);
+            border-radius: 15px;
+            padding: 15px 20px;
+            color: #c7d2fe;
+            font-size: 0.85em;
+            max-width: 250px;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+
+        .shortcuts-help.show {
+            display: block;
+        }
+
+        .shortcuts-help h4 {
+            color: #fbbf24;
+            margin-bottom: 10px;
+        }
+
+        .shortcut-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+
+        .key {
+            background: rgba(139, 92, 246, 0.3);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+
         /* Scrollbar personnalisée */
         ::-webkit-scrollbar {
             width: 12px;
@@ -642,9 +953,11 @@
             h1 {
                 font-size: 2.2em;
             }
-            .book {
-                width: 110px;
-                height: 170px;
+            .toolbar {
+                flex-direction: column;
+            }
+            .books-container {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
             }
             .upload-section, .bookshelf {
                 padding: 25px 20px;
@@ -654,6 +967,7 @@
 </head>
 <body>
     <div class="stars"></div>
+    <div id="particles"></div>
 
     <div class="container">
         <header>
@@ -663,22 +977,52 @@
             <p>✧ Archives Mystiques des Savoirs Immortels ✧</p>
         </header>
 
+        <!-- Barre d'outils -->
+        <div class="toolbar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Rechercher dans vos grimoires...">
+            </div>
+            <div class="toolbar-group">
+                <select id="sortSelect" class="btn-toolbar">
+                    <option value="date-desc">Plus récent</option>
+                    <option value="date-asc">Plus ancien</option>
+                    <option value="name-asc">Nom (A-Z)</option>
+                    <option value="name-desc">Nom (Z-A)</option>
+                </select>
+                <select id="filterType" class="btn-toolbar">
+                    <option value="all">Tous types</option>
+                    <option value="photo">Visions</option>
+                    <option value="audio">Échos</option>
+                    <option value="note">Manuscrits</option>
+                    <option value="file">Fichiers</option>
+                </select>
+                <button class="btn-toolbar" id="favoritesFilter">⭐ Favoris</button>
+                <button class="btn-toolbar" id="exportBtn">💾 Exporter</button>
+                <button class="btn-toolbar" id="importBtn">📥 Importer</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;">
+            </div>
+        </div>
+
         <div class="stats" id="stats">
-            <div class="stat-item">
+            <div class="stat-item" onclick="filterByType('all')">
                 <div class="stat-number" id="totalBooks">0</div>
                 <div class="stat-label">Grimoires</div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item" onclick="filterByType('photo')">
                 <div class="stat-number" id="totalPhotos">0</div>
                 <div class="stat-label">Visions</div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item" onclick="filterByType('audio')">
                 <div class="stat-number" id="totalAudio">0</div>
                 <div class="stat-label">Échos</div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item" onclick="filterByType('note')">
                 <div class="stat-number" id="totalNotes">0</div>
                 <div class="stat-label">Manuscrits</div>
+            </div>
+            <div class="stat-item" onclick="filterByType('favorites')">
+                <div class="stat-number" id="totalFavorites">0</div>
+                <div class="stat-label">Favoris</div>
             </div>
         </div>
 
@@ -701,12 +1045,21 @@
             <div class="note-section">
                 <h3>✧ Rédiger un Manuscrit Sacré ✧</h3>
                 <input type="text" id="noteTitle" class="note-title" placeholder="Titre du manuscrit...">
+                <input type="text" id="noteTags" class="note-tags" placeholder="Tags (séparés par des virgules)...">
+                <textarea id="noteDesc" class="note-desc" placeholder="Description courte..."></textarea>
                 <textarea id="noteContent" class="note-input" placeholder="Inscrivez votre sagesse éternelle..."></textarea>
                 <button class="upload-btn" onclick="addNote()">Sceller le Manuscrit</button>
             </div>
         </div>
 
         <div class="bookshelf">
+            <div class="bookshelf-header">
+                <div class="bookshelf-title">Collection Mystique</div>
+                <div class="view-controls">
+                    <button class="view-btn active" id="gridViewBtn" onclick="setView('grid')">🔲 Grille</button>
+                    <button class="view-btn" id="listViewBtn" onclick="setView('list')">📋 Liste</button>
+                </div>
+            </div>
             <div class="books-container" id="booksContainer">
                 <div class="empty-shelf">Votre bibliothèque attend ses premiers grimoires sacrés...</div>
             </div>
@@ -720,8 +1073,63 @@
         </div>
     </div>
 
+    <!-- Keyboard shortcuts help -->
+    <div class="shortcuts-help" id="shortcutsHelp">
+        <h4>⌨️ Raccourcis</h4>
+        <div class="shortcut-item">
+            <span>Rechercher</span>
+            <span class="key">Ctrl+F</span>
+        </div>
+        <div class="shortcut-item">
+            <span>Aide</span>
+            <span class="key">?</span>
+        </div>
+        <div class="shortcut-item">
+            <span>Fermer</span>
+            <span class="key">Esc</span>
+        </div>
+    </div>
+
     <script>
-        let library = JSON.parse(localStorage.getItem('library')) || [];
+        let library = JSON.parse(localStorage.getItem('library_v2')) || [];
+        let currentView = localStorage.getItem('view_mode') || 'grid';
+        let currentFilter = { type: 'all', search: '', sort: 'date-desc', favorites: false };
+
+        // Migrate old library data
+        if (!localStorage.getItem('library_v2') && localStorage.getItem('library')) {
+            const oldLibrary = JSON.parse(localStorage.getItem('library'));
+            library = oldLibrary.map(item => ({
+                ...item,
+                tags: [],
+                description: '',
+                favorite: false,
+                rating: 0
+            }));
+            saveLibrary();
+        }
+
+        // Create particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
 
         // Drag and drop
         const dropZone = document.getElementById('dropZone');
@@ -748,6 +1156,7 @@
         });
 
         function handleFiles(files) {
+            let processed = 0;
             Array.from(files).forEach(file => {
                 const reader = new FileReader();
 
@@ -757,12 +1166,21 @@
                         name: file.name,
                         type: getFileType(file),
                         data: e.target.result,
-                        date: new Date().toISOString()
+                        date: new Date().toISOString(),
+                        tags: [],
+                        description: '',
+                        favorite: false,
+                        rating: 0
                     };
 
                     library.push(item);
-                    saveLibrary();
-                    renderBooks();
+                    processed++;
+
+                    if (processed === files.length) {
+                        saveLibrary();
+                        renderBooks();
+                        showToast(`${processed} grimoire(s) ajouté(s) avec succès!`);
+                    }
                 };
 
                 reader.readAsDataURL(file);
@@ -779,9 +1197,11 @@
         function addNote() {
             const title = document.getElementById('noteTitle').value.trim();
             const content = document.getElementById('noteContent').value.trim();
+            const tags = document.getElementById('noteTags').value.trim();
+            const description = document.getElementById('noteDesc').value.trim();
 
             if (!title || !content) {
-                alert('Veuillez remplir le titre et le contenu du manuscrit');
+                showToast('Veuillez remplir le titre et le contenu du manuscrit', 'error');
                 return;
             }
 
@@ -790,7 +1210,11 @@
                 name: title,
                 type: 'note',
                 data: content,
-                date: new Date().toISOString()
+                date: new Date().toISOString(),
+                tags: tags ? tags.split(',').map(t => t.trim()) : [],
+                description: description,
+                favorite: false,
+                rating: 0
             };
 
             library.push(item);
@@ -799,26 +1223,75 @@
 
             document.getElementById('noteTitle').value = '';
             document.getElementById('noteContent').value = '';
+            document.getElementById('noteTags').value = '';
+            document.getElementById('noteDesc').value = '';
+
+            showToast('Manuscrit scellé avec succès!');
         }
 
         function saveLibrary() {
-            localStorage.setItem('library', JSON.stringify(library));
+            localStorage.setItem('library_v2', JSON.stringify(library));
             updateStats();
+        }
+
+        function filterAndSortLibrary() {
+            let filtered = [...library];
+
+            // Filter by type
+            if (currentFilter.type !== 'all') {
+                filtered = filtered.filter(item => item.type === currentFilter.type);
+            }
+
+            // Filter by favorites
+            if (currentFilter.favorites) {
+                filtered = filtered.filter(item => item.favorite);
+            }
+
+            // Filter by search
+            if (currentFilter.search) {
+                const search = currentFilter.search.toLowerCase();
+                filtered = filtered.filter(item =>
+                    item.name.toLowerCase().includes(search) ||
+                    (item.description && item.description.toLowerCase().includes(search)) ||
+                    (item.tags && item.tags.some(tag => tag.toLowerCase().includes(search)))
+                );
+            }
+
+            // Sort
+            filtered.sort((a, b) => {
+                switch(currentFilter.sort) {
+                    case 'date-desc':
+                        return new Date(b.date) - new Date(a.date);
+                    case 'date-asc':
+                        return new Date(a.date) - new Date(b.date);
+                    case 'name-asc':
+                        return a.name.localeCompare(b.name);
+                    case 'name-desc':
+                        return b.name.localeCompare(a.name);
+                    default:
+                        return 0;
+                }
+            });
+
+            return filtered;
         }
 
         function renderBooks() {
             const container = document.getElementById('booksContainer');
+            const filtered = filterAndSortLibrary();
 
-            if (library.length === 0) {
-                container.innerHTML = '<div class="empty-shelf">Votre bibliothèque attend ses premiers grimoires sacrés...</div>';
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty-shelf">Aucun grimoire ne correspond à vos critères...</div>';
+                container.className = 'books-container';
                 return;
             }
 
+            container.className = `books-container ${currentView}-view`;
             container.innerHTML = '';
 
-            library.forEach(item => {
+            filtered.forEach(item => {
                 const book = document.createElement('div');
-                book.className = `book ${item.type}`;
+                book.className = `book ${item.type} ${currentView}-view`;
 
                 const emoji = {
                     photo: '🖼️',
@@ -827,16 +1300,34 @@
                     file: '📖'
                 }[item.type];
 
+                const favoriteIcon = item.favorite ? '⭐' : '☆';
+
+                let metaHtml = '';
+                if (currentView === 'list') {
+                    metaHtml = `
+                        <div class="book-meta">
+                            <span>${new Date(item.date).toLocaleDateString('fr-FR')}</span>
+                            ${item.tags && item.tags.length > 0 ? `
+                                <div class="book-tags">
+                                    ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+
                 book.innerHTML = `
+                    <button class="favorite-btn ${item.favorite ? 'active' : ''}" onclick="toggleFavorite('${item.id}')">${favoriteIcon}</button>
                     <button class="delete-btn" onclick="deleteBook('${item.id}')">×</button>
                     <div class="book-spine">
                         <div class="book-type">${emoji}</div>
                         <div class="book-title">${item.name}</div>
+                        ${metaHtml}
                     </div>
                 `;
 
                 book.onclick = (e) => {
-                    if (!e.target.classList.contains('delete-btn')) {
+                    if (!e.target.classList.contains('delete-btn') && !e.target.classList.contains('favorite-btn')) {
                         showPreview(item);
                     }
                 };
@@ -847,11 +1338,31 @@
             updateStats();
         }
 
+        function toggleFavorite(id) {
+            const item = library.find(i => i.id == id);
+            if (item) {
+                item.favorite = !item.favorite;
+                saveLibrary();
+                renderBooks();
+                showToast(item.favorite ? 'Ajouté aux favoris ⭐' : 'Retiré des favoris');
+            }
+        }
+
         function showPreview(item) {
             const modal = document.getElementById('previewModal');
             const content = document.getElementById('previewContent');
 
-            let html = `<h2>${item.name}</h2><p style="color: #a5b4fc; margin-bottom: 20px;">✦ Archivé le ${new Date(item.date).toLocaleDateString('fr-FR')} ✦</p>`;
+            let tagsHtml = '';
+            if (item.tags && item.tags.length > 0) {
+                tagsHtml = `<div class="book-tags">${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>`;
+            }
+
+            let html = `
+                <h2>${item.name}</h2>
+                <p style="color: #a5b4fc; margin-bottom: 20px;">✦ Archivé le ${new Date(item.date).toLocaleDateString('fr-FR')} ✦</p>
+                ${tagsHtml}
+                ${item.description ? `<p style="color: #c7d2fe; margin: 15px 0;">${item.description}</p>` : ''}
+            `;
 
             if (item.type === 'photo') {
                 html += `<img src="${item.data}" class="preview-image" alt="${item.name}">`;
@@ -862,6 +1373,16 @@
             } else {
                 html += `<p>Type: ${item.type}</p><p>Ce grimoire ne peut être dévoilé directement dans ce portail.</p>`;
             }
+
+            html += `
+                <div class="modal-actions">
+                    <button class="modal-btn" onclick="toggleFavorite('${item.id}'); closePreview(); renderBooks();">
+                        ${item.favorite ? '☆ Retirer des favoris' : '⭐ Ajouter aux favoris'}
+                    </button>
+                    <button class="modal-btn" onclick="editItem('${item.id}')">✏️ Modifier</button>
+                    <button class="modal-btn" onclick="deleteBook('${item.id}'); closePreview();">🗑️ Supprimer</button>
+                </div>
+            `;
 
             content.innerHTML = html;
             modal.classList.add('active');
@@ -876,6 +1397,7 @@
                 library = library.filter(item => item.id != id);
                 saveLibrary();
                 renderBooks();
+                showToast('Grimoire supprimé');
             }
         }
 
@@ -884,10 +1406,110 @@
             document.getElementById('totalPhotos').textContent = library.filter(i => i.type === 'photo').length;
             document.getElementById('totalAudio').textContent = library.filter(i => i.type === 'audio').length;
             document.getElementById('totalNotes').textContent = library.filter(i => i.type === 'note').length;
+            document.getElementById('totalFavorites').textContent = library.filter(i => i.favorite).length;
         }
 
-        // Initialize
-        renderBooks();
+        function setView(view) {
+            currentView = view;
+            localStorage.setItem('view_mode', view);
+            document.getElementById('gridViewBtn').classList.toggle('active', view === 'grid');
+            document.getElementById('listViewBtn').classList.toggle('active', view === 'list');
+            renderBooks();
+        }
+
+        function filterByType(type) {
+            currentFilter.type = type;
+            currentFilter.favorites = (type === 'favorites');
+            if (type === 'favorites') currentFilter.type = 'all';
+            document.getElementById('filterType').value = type === 'favorites' ? 'all' : type;
+            document.getElementById('favoritesFilter').classList.toggle('active', type === 'favorites');
+            renderBooks();
+        }
+
+        // Search
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentFilter.search = e.target.value;
+            renderBooks();
+        });
+
+        // Sort
+        document.getElementById('sortSelect').addEventListener('change', (e) => {
+            currentFilter.sort = e.target.value;
+            renderBooks();
+        });
+
+        // Filter type
+        document.getElementById('filterType').addEventListener('change', (e) => {
+            currentFilter.type = e.target.value;
+            currentFilter.favorites = false;
+            document.getElementById('favoritesFilter').classList.remove('active');
+            renderBooks();
+        });
+
+        // Favorites filter
+        document.getElementById('favoritesFilter').addEventListener('click', () => {
+            currentFilter.favorites = !currentFilter.favorites;
+            document.getElementById('favoritesFilter').classList.toggle('active');
+            renderBooks();
+        });
+
+        // Export
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            const dataStr = JSON.stringify(library, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bibliotheque-astrale-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            showToast('Bibliothèque exportée avec succès!');
+        });
+
+        // Import
+        document.getElementById('importBtn').addEventListener('click', () => {
+            document.getElementById('importFile').click();
+        });
+
+        document.getElementById('importFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const importedData = JSON.parse(event.target.result);
+                        if (confirm(`Voulez-vous importer ${importedData.length} grimoires? Cela ajoutera à votre collection existante.`)) {
+                            library = [...library, ...importedData];
+                            saveLibrary();
+                            renderBooks();
+                            showToast(`${importedData.length} grimoires importés!`);
+                        }
+                    } catch (error) {
+                        showToast('Erreur lors de l\'importation', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+F for search
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                document.getElementById('searchInput').focus();
+            }
+
+            // Escape to close modal
+            if (e.key === 'Escape') {
+                closePreview();
+                document.getElementById('shortcutsHelp').classList.remove('show');
+            }
+
+            // ? for help
+            if (e.key === '?') {
+                document.getElementById('shortcutsHelp').classList.toggle('show');
+            }
+        });
 
         // Close modal on click outside
         document.getElementById('previewModal').addEventListener('click', (e) => {
@@ -895,6 +1517,10 @@
                 closePreview();
             }
         });
+
+        // Initialize
+        setView(currentView);
+        renderBooks();
     </script>
 </body>
 </html>
