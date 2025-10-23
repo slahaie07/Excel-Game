@@ -1181,6 +1181,9 @@
         <div class="top-controls">
             <button class="icon-btn" id="themeBtn" title="Changer le thème">🎨</button>
             <button class="icon-btn" id="chartBtn" title="Voir les statistiques">📊</button>
+            <button class="icon-btn" id="sessionsBtn" title="Sessions">💾</button>
+            <button class="icon-btn" id="undoBtn" title="Annuler (Ctrl+Z)">↶</button>
+            <button class="icon-btn" id="redoBtn" title="Refaire (Ctrl+Y)">↷</button>
             <button class="icon-btn" id="trashBtn" title="Corbeille">🗑️</button>
             <button class="icon-btn" id="helpBtn" title="Aide">❓</button>
             <button class="icon-btn" id="printBtn" title="Imprimer">🖨️</button>
@@ -1301,11 +1304,44 @@
         </div>
     </div>
 
+    <div class="modal" id="sessionsModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeSessions()">&times;</button>
+            <div id="sessionsContent">
+                <h2>💾 Gestion des Sessions</h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Sauvegardez et restaurez vos sessions de travail</p>
+
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: var(--accent-gold); margin-bottom: 15px;">Nouvelle Session</h3>
+                    <input type="text" id="sessionName" placeholder="Nom de la session..."
+                           style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 10px;
+                                  background: rgba(30, 27, 75, 0.4); color: var(--text-primary); margin-bottom: 10px;">
+                    <button class="upload-btn" onclick="saveSession()" style="width: 100%; margin-top: 10px;">
+                        💾 Sauvegarder cette session
+                    </button>
+                </div>
+
+                <div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 15px;">Sessions Sauvegardées</h3>
+                    <div id="sessionsList" style="max-height: 400px; overflow-y: auto;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="shortcuts-help" id="shortcutsHelp">
         <h4>⌨️ Raccourcis Clavier</h4>
         <div class="shortcut-item">
             <span>Rechercher</span>
             <span class="key">Ctrl+F</span>
+        </div>
+        <div class="shortcut-item">
+            <span>Annuler</span>
+            <span class="key">Ctrl+Z</span>
+        </div>
+        <div class="shortcut-item">
+            <span>Refaire</span>
+            <span class="key">Ctrl+Y</span>
         </div>
         <div class="shortcut-item">
             <span>Sélectionner tout</span>
@@ -1353,6 +1389,222 @@
         let currentTheme = localStorage.getItem('theme') || 'dark';
         let currentGalleryIndex = 0;
         let galleryImages = [];
+
+        // Session management
+        let sessions = JSON.parse(localStorage.getItem('sessions')) || [];
+        let undoStack = [];
+        let redoStack = [];
+        let lastState = null;
+
+        // Save state for undo/redo
+        function saveState() {
+            const currentState = {
+                library: JSON.parse(JSON.stringify(library)),
+                trash: JSON.parse(JSON.stringify(trash)),
+                currentView,
+                currentFilter: {...currentFilter},
+                timestamp: Date.now()
+            };
+
+            // Only save if state changed
+            if (lastState && JSON.stringify(lastState.library) === JSON.stringify(currentState.library)) {
+                return;
+            }
+
+            undoStack.push(currentState);
+            if (undoStack.length > 50) undoStack.shift(); // Limit to 50 states
+            redoStack = []; // Clear redo when new action
+            lastState = currentState;
+            updateUndoRedoButtons();
+        }
+
+        function undo() {
+            if (undoStack.length === 0) {
+                showToast('Rien à annuler', 'error');
+                return;
+            }
+
+            const currentState = {
+                library: JSON.parse(JSON.stringify(library)),
+                trash: JSON.parse(JSON.stringify(trash)),
+                currentView,
+                currentFilter: {...currentFilter},
+                timestamp: Date.now()
+            };
+
+            redoStack.push(currentState);
+            const previousState = undoStack.pop();
+
+            library = previousState.library;
+            trash = previousState.trash;
+            currentView = previousState.currentView;
+            currentFilter = previousState.currentFilter;
+
+            saveLibrary();
+            renderBooks();
+            setView(currentView);
+            updateUndoRedoButtons();
+            showToast('Action annulée ↶');
+        }
+
+        function redo() {
+            if (redoStack.length === 0) {
+                showToast('Rien à refaire', 'error');
+                return;
+            }
+
+            const currentState = {
+                library: JSON.parse(JSON.stringify(library)),
+                trash: JSON.parse(JSON.stringify(trash)),
+                currentView,
+                currentFilter: {...currentFilter},
+                timestamp: Date.now()
+            };
+
+            undoStack.push(currentState);
+            const nextState = redoStack.pop();
+
+            library = nextState.library;
+            trash = nextState.trash;
+            currentView = nextState.currentView;
+            currentFilter = nextState.currentFilter;
+
+            saveLibrary();
+            renderBooks();
+            setView(currentView);
+            updateUndoRedoButtons();
+            showToast('Action refaite ↷');
+        }
+
+        function updateUndoRedoButtons() {
+            const undoBtn = document.getElementById('undoBtn');
+            const redoBtn = document.getElementById('redoBtn');
+            undoBtn.style.opacity = undoStack.length > 0 ? '1' : '0.5';
+            redoBtn.style.opacity = redoStack.length > 0 ? '1' : '0.5';
+            undoBtn.style.cursor = undoStack.length > 0 ? 'pointer' : 'not-allowed';
+            redoBtn.style.cursor = redoStack.length > 0 ? 'pointer' : 'not-allowed';
+        }
+
+        // Session management functions
+        function saveSession() {
+            const name = document.getElementById('sessionName').value.trim();
+            if (!name) {
+                showToast('Donnez un nom à la session', 'error');
+                return;
+            }
+
+            const session = {
+                id: Date.now(),
+                name,
+                library: JSON.parse(JSON.stringify(library)),
+                trash: JSON.parse(JSON.stringify(trash)),
+                currentView,
+                currentFilter: {...currentFilter},
+                currentTheme,
+                timestamp: new Date().toISOString(),
+                itemCount: library.filter(i => !i.deleted).length
+            };
+
+            sessions.push(session);
+            localStorage.setItem('sessions', JSON.stringify(sessions));
+            document.getElementById('sessionName').value = '';
+            renderSessionsList();
+            showToast(`Session "${name}" sauvegardée!`);
+        }
+
+        function loadSession(id) {
+            const session = sessions.find(s => s.id === id);
+            if (!session) return;
+
+            if (confirm(`Charger la session "${session.name}"? L'état actuel sera perdu si non sauvegardé.`)) {
+                library = JSON.parse(JSON.stringify(session.library));
+                trash = JSON.parse(JSON.stringify(session.trash));
+                currentView = session.currentView;
+                currentFilter = session.currentFilter;
+                currentTheme = session.currentTheme;
+
+                document.body.setAttribute('data-theme', currentTheme);
+                saveLibrary();
+                renderBooks();
+                setView(currentView);
+                closeSessions();
+                showToast(`Session "${session.name}" chargée!`);
+            }
+        }
+
+        function deleteSession(id) {
+            const session = sessions.find(s => s.id === id);
+            if (session && confirm(`Supprimer la session "${session.name}"?`)) {
+                sessions = sessions.filter(s => s.id !== id);
+                localStorage.setItem('sessions', JSON.stringify(sessions));
+                renderSessionsList();
+                showToast('Session supprimée');
+            }
+        }
+
+        function exportSession(id) {
+            const session = sessions.find(s => s.id === id);
+            if (session) {
+                const dataStr = JSON.stringify(session, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `session-${session.name}-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                showToast('Session exportée!');
+            }
+        }
+
+        function renderSessionsList() {
+            const container = document.getElementById('sessionsList');
+            if (sessions.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 40px;">Aucune session sauvegardée</p>';
+                return;
+            }
+
+            let html = '';
+            sessions.reverse().forEach(session => {
+                html += `
+                    <div style="border: 2px solid var(--border-color); padding: 15px; margin: 10px 0; border-radius: 15px;
+                                background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)); backdrop-filter: blur(10px);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <strong style="font-size: 1.2em; color: var(--accent-gold);">${session.name}</strong>
+                            <span style="color: var(--text-muted); font-size: 0.9em;">
+                                ${new Date(session.timestamp).toLocaleDateString('fr-FR')} ${new Date(session.timestamp).toLocaleTimeString('fr-FR')}
+                            </span>
+                        </div>
+                        <div style="color: var(--text-secondary); margin-bottom: 15px;">
+                            📚 ${session.itemCount} grimoires | 🎨 Thème: ${session.currentTheme} | 👁️ Vue: ${session.currentView}
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="modal-btn" onclick="loadSession(${session.id})">📂 Charger</button>
+                            <button class="modal-btn" onclick="exportSession(${session.id})">💾 Exporter</button>
+                            <button class="modal-btn" onclick="deleteSession(${session.id})">🗑️ Supprimer</button>
+                        </div>
+                    </div>
+                `;
+            });
+            sessions.reverse();
+
+            container.innerHTML = html;
+        }
+
+        function showSessions() {
+            renderSessionsList();
+            document.getElementById('sessionsModal').classList.add('active');
+        }
+
+        function closeSessions() {
+            document.getElementById('sessionsModal').classList.remove('active');
+        }
+
+        // Sessions button
+        document.getElementById('sessionsBtn').addEventListener('click', showSessions);
+
+        // Undo/Redo buttons
+        document.getElementById('undoBtn').addEventListener('click', undo);
+        document.getElementById('redoBtn').addEventListener('click', redo);
 
         // Migrate old library data
         if (!localStorage.getItem('library_v3')) {
@@ -1460,6 +1712,7 @@
                     library.push(item);
                     processed++;
                     if (processed === files.length) {
+                        saveState();
                         saveLibrary();
                         renderBooks();
                         showToast(`${processed} grimoire(s) ajouté(s)!`);
@@ -1501,6 +1754,7 @@
             };
 
             library.push(item);
+            saveState();
             saveLibrary();
             renderBooks();
 
@@ -1624,6 +1878,7 @@
         function toggleFavorite(id) {
             const item = library.find(i => i.id == id);
             if (item) {
+                saveState();
                 item.favorite = !item.favorite;
                 saveLibrary();
                 renderBooks();
@@ -1707,6 +1962,7 @@
         function deleteBook(id) {
             const item = library.find(i => i.id == id);
             if (item && confirm('Déplacer vers la corbeille?')) {
+                saveState();
                 item.deleted = true;
                 item.deletedDate = new Date().toISOString();
                 trash.push(item);
@@ -1719,6 +1975,7 @@
         function duplicateItem(id) {
             const item = library.find(i => i.id == id);
             if (item) {
+                saveState();
                 const newItem = {
                     ...item,
                     id: Date.now() + Math.random(),
@@ -1814,6 +2071,7 @@
 
         // Bulk operations
         function bulkAddToFavorites() {
+            saveState();
             selectedItems.forEach(id => {
                 const item = library.find(i => i.id == id);
                 if (item) item.favorite = true;
@@ -1826,6 +2084,7 @@
 
         function bulkDelete() {
             if (confirm(`Supprimer ${selectedItems.size} grimoire(s)?`)) {
+                saveState();
                 selectedItems.forEach(id => {
                     const item = library.find(i => i.id == id);
                     if (item) {
@@ -1842,6 +2101,7 @@
         }
 
         function bulkDuplicate() {
+            saveState();
             selectedItems.forEach(id => {
                 const item = library.find(i => i.id == id);
                 if (item) {
@@ -1942,6 +2202,7 @@
         function restoreItem(id) {
             const index = trash.findIndex(i => i.id == id);
             if (index > -1) {
+                saveState();
                 const item = trash[index];
                 item.deleted = false;
                 delete item.deletedDate;
@@ -2088,6 +2349,16 @@
 
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'z') {
+                e.preventDefault();
+                undo();
+            }
+
+            if (e.ctrlKey && e.key === 'y') {
+                e.preventDefault();
+                redo();
+            }
+
             if (e.ctrlKey && e.key === 'f') {
                 e.preventDefault();
                 document.getElementById('searchInput').focus();
@@ -2104,6 +2375,7 @@
             if (e.key === 'Escape') {
                 closePreview();
                 closeGallery();
+                closeSessions();
                 if (slideshowInterval) {
                     clearInterval(slideshowInterval);
                     slideshowInterval = null;
@@ -2136,9 +2408,17 @@
             }
         });
 
+        // Close modal on click outside
+        document.getElementById('sessionsModal').addEventListener('click', (e) => {
+            if (e.target.id === 'sessionsModal') {
+                closeSessions();
+            }
+        });
+
         // Initialize
         setView(currentView);
         renderBooks();
+        updateUndoRedoButtons();
     </script>
 </body>
 </html>
