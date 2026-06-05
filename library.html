@@ -1,0 +1,2424 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibliothèque Astrale Pro - Archives Mystiques</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Philosopher:wght@400;700&display=swap');
+
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: rgba(30, 58, 138, 0.4);
+            --bg-tertiary: rgba(76, 29, 149, 0.4);
+            --border-color: rgba(139, 92, 246, 0.3);
+            --text-primary: #e0e7ff;
+            --text-secondary: #c7d2fe;
+            --text-muted: #a5b4fc;
+            --accent-gold: #fbbf24;
+            --accent-purple: #8b5cf6;
+            --accent-pink: #ec4899;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f0f4ff;
+            --bg-secondary: rgba(199, 210, 254, 0.6);
+            --bg-tertiary: rgba(167, 139, 250, 0.4);
+            --border-color: rgba(139, 92, 246, 0.5);
+            --text-primary: #1e1b4b;
+            --text-secondary: #3730a3;
+            --text-muted: #6366f1;
+            --accent-gold: #f59e0b;
+            --accent-purple: #7c3aed;
+            --accent-pink: #db2777;
+        }
+
+        [data-theme="cosmic"] {
+            --bg-primary: #0f0520;
+            --bg-secondary: rgba(88, 28, 135, 0.4);
+            --bg-tertiary: rgba(126, 34, 206, 0.4);
+            --accent-gold: #a78bfa;
+            --accent-purple: #c084fc;
+            --accent-pink: #e879f9;
+        }
+
+        [data-theme="ocean"] {
+            --bg-primary: #0c1a2e;
+            --bg-secondary: rgba(14, 116, 144, 0.4);
+            --bg-tertiary: rgba(6, 182, 212, 0.4);
+            --accent-gold: #06b6d4;
+            --accent-purple: #0891b2;
+            --accent-pink: #22d3ee;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Philosopher', sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            transition: background 0.3s ease;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at top, var(--bg-secondary) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom, var(--bg-tertiary) 0%, transparent 50%),
+                radial-gradient(ellipse at center, transparent 0%, var(--bg-primary) 100%);
+            z-index: -2;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                radial-gradient(2px 2px at 60px 70px, #fff, transparent),
+                radial-gradient(1px 1px at 50px 50px, #ddd, transparent),
+                radial-gradient(1px 1px at 130px 80px, #fff, transparent),
+                radial-gradient(2px 2px at 90px 10px, #eee, transparent);
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 5s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            animation: float-particle 15s infinite;
+            box-shadow: 0 0 10px var(--accent-gold);
+        }
+
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) translateX(100px) scale(1); opacity: 0; }
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5em;
+            background: linear-gradient(135deg, var(--accent-gold), #ffed4e, var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.7)); }
+            50% { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 1)); }
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.2em;
+            font-style: italic;
+        }
+
+        .ornament {
+            font-size: 2em;
+            color: var(--accent-gold);
+            margin: 0 15px;
+            display: inline-block;
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .top-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .icon-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn:hover {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .icon-btn.active {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+        }
+
+        .toolbar {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 45px 12px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            background: rgba(30, 27, 75, 0.6);
+            color: var(--text-primary);
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+        }
+
+        .search-box::after {
+            content: '🔍';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-toolbar {
+            padding: 10px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            background: rgba(30, 27, 75, 0.6);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .btn-toolbar:hover {
+            border-color: var(--accent-gold);
+            background: var(--bg-tertiary);
+            color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        .btn-toolbar.active {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            border-color: var(--accent-pink);
+            color: white;
+        }
+
+        .stats {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
+            backdrop-filter: blur(10px);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-item:hover {
+            transform: scale(1.1);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-item::before {
+            content: '✧';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--accent-gold);
+            font-size: 1.5em;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            margin-top: 8px;
+            font-size: 1em;
+            letter-spacing: 1px;
+        }
+
+        .chart-container {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .chart-container h3 {
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .upload-section {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 50px rgba(99, 102, 241, 0.4);
+            backdrop-filter: blur(15px);
+        }
+
+        .upload-section h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-gold);
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .upload-area {
+            border: 3px dashed var(--border-color);
+            border-radius: 15px;
+            padding: 50px;
+            text-align: center;
+            background: rgba(30, 27, 75, 0.4);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(167, 139, 250, 0.3), transparent);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .upload-area:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-gold);
+            background: var(--bg-tertiary);
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.4);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent-pink);
+            background: rgba(236, 72, 153, 0.2);
+            box-shadow: 0 0 40px rgba(236, 72, 153, 0.6);
+        }
+
+        .upload-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.6));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .upload-area h3 {
+            color: var(--text-primary);
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .upload-area p {
+            color: var(--text-muted);
+            margin: 15px 0;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .upload-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(236, 72, 153, 0.6);
+        }
+
+        .note-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .note-section h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-gold);
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .note-title, .note-input, .note-tags, .note-desc {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            background: rgba(30, 27, 75, 0.4);
+            color: var(--text-primary);
+            font-family: 'Philosopher', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .note-input {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .note-title:focus, .note-input:focus, .note-tags:focus, .note-desc:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+        }
+
+        .bookshelf {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 27, 75, 0.8));
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        .bookshelf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .bookshelf-title {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-gold);
+            font-size: 1.8em;
+        }
+
+        .view-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            padding: 10px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: rgba(30, 27, 75, 0.6);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-btn:hover, .view-btn.active {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            border-color: var(--accent-pink);
+            color: white;
+        }
+
+        .books-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 25px;
+            min-height: 250px;
+            padding-bottom: 25px;
+        }
+
+        .books-container.list-view {
+            grid-template-columns: 1fr;
+        }
+
+        .books-container.compact-view {
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+        }
+
+        .books-container.timeline-view {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .book {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            animation: bookAppear 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .book.grid-view {
+            height: 220px;
+        }
+
+        .book.compact-view {
+            height: 140px;
+        }
+
+        .book.list-view {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border-radius: 15px;
+            padding: 15px 20px;
+            border: 2px solid var(--border-color);
+        }
+
+        .book.timeline-view {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 10px 15px;
+            border-left: 4px solid var(--accent-gold);
+        }
+
+        .book.selected {
+            outline: 3px solid var(--accent-gold);
+            outline-offset: 3px;
+        }
+
+        @keyframes bookAppear {
+            from {
+                transform: scale(0) translateY(100px) rotate(180deg);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .book:hover {
+            transform: translateY(-10px) scale(1.05);
+            filter: drop-shadow(0 10px 30px rgba(167, 139, 250, 0.8));
+        }
+
+        .book-spine {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            box-shadow:
+                5px 5px 15px rgba(0,0,0,0.5),
+                inset -3px 0 8px rgba(0,0,0,0.3),
+                inset 3px 0 8px rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book.list-view .book-spine, .book.timeline-view .book-spine {
+            flex-direction: row;
+            justify-content: flex-start;
+            width: auto;
+            box-shadow: none;
+            background: none !important;
+            padding: 0;
+        }
+
+        .book-spine::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 12px;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.3), transparent);
+        }
+
+        .book.list-view .book-spine::before, .book.timeline-view .book-spine::before {
+            display: none;
+        }
+
+        .book-spine::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 8px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,0,0,0.4));
+        }
+
+        .book.list-view .book-spine::after, .book.timeline-view .book-spine::after {
+            display: none;
+        }
+
+        .book-title {
+            font-size: 0.9em;
+            font-weight: bold;
+            text-align: center;
+            word-wrap: break-word;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            z-index: 1;
+        }
+
+        .book.list-view .book-title, .book.timeline-view .book-title {
+            font-size: 1.2em;
+            text-align: left;
+            flex: 1;
+            color: var(--text-primary);
+        }
+
+        .book.compact-view .book-title {
+            font-size: 0.75em;
+        }
+
+        .book-type {
+            font-size: 2.5em;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+            z-index: 1;
+        }
+
+        .book.list-view .book-type, .book.timeline-view .book-type {
+            margin: 0 15px 0 0;
+            font-size: 2em;
+        }
+
+        .book.compact-view .book-type {
+            font-size: 1.8em;
+            margin-bottom: 8px;
+        }
+
+        .book-meta {
+            display: none;
+        }
+
+        .book.list-view .book-meta, .book.timeline-view .book-meta {
+            display: flex;
+            gap: 15px;
+            color: var(--text-muted);
+            font-size: 0.9em;
+        }
+
+        .book-tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-top: 5px;
+        }
+
+        .tag {
+            background: var(--bg-tertiary);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .favorite-btn, .select-btn {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.3s;
+            z-index: 10;
+            display: none;
+        }
+
+        .favorite-btn {
+            top: 8px;
+            left: 8px;
+        }
+
+        .select-btn {
+            top: 8px;
+            right: 45px;
+        }
+
+        .book:hover .favorite-btn, .book:hover .select-btn {
+            display: block;
+        }
+
+        .favorite-btn.active, .select-btn.active {
+            display: block;
+            background: var(--accent-purple);
+        }
+
+        .book.photo .book-spine {
+            background: linear-gradient(135deg, #ec4899, #db2777, #be185d);
+            box-shadow: 5px 5px 15px rgba(236, 72, 153, 0.4), inset -3px 0 8px rgba(0,0,0,0.3), 0 0 20px rgba(236, 72, 153, 0.3);
+        }
+
+        .book.audio .book-spine {
+            background: linear-gradient(135deg, #06b6d4, #0891b2, #0e7490);
+            box-shadow: 5px 5px 15px rgba(6, 182, 212, 0.4), inset -3px 0 8px rgba(0,0,0,0.3), 0 0 20px rgba(6, 182, 212, 0.3);
+        }
+
+        .book.note .book-spine {
+            background: linear-gradient(135deg, #f59e0b, #d97706, #b45309);
+            box-shadow: 5px 5px 15px rgba(245, 158, 11, 0.4), inset -3px 0 8px rgba(0,0,0,0.3), 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .book.file .book-spine {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed, #6d28d9);
+            box-shadow: 5px 5px 15px rgba(139, 92, 246, 0.4), inset -3px 0 8px rgba(0,0,0,0.3), 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .empty-shelf {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.3em;
+            padding: 80px 20px;
+            font-style: italic;
+            grid-column: 1 / -1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.5);
+            color: var(--text-primary);
+        }
+
+        .modal-content h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            background: rgba(30, 27, 75, 0.6);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn:hover {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            border-color: var(--accent-pink);
+            color: white;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 2.5em;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--accent-gold);
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            color: var(--accent-pink);
+            transform: rotate(90deg);
+        }
+
+        .preview-image {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--border-color);
+        }
+
+        .preview-audio {
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .preview-note {
+            white-space: pre-wrap;
+            padding: 25px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 15px;
+            line-height: 1.8;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            display: none;
+            transition: all 0.3s;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        .book:hover .delete-btn {
+            display: block;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5);
+            z-index: 2000;
+            animation: slideIn 0.3s ease-out;
+            max-width: 350px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .shortcuts-help {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(30, 27, 75, 0.9);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 15px 20px;
+            color: var(--text-secondary);
+            font-size: 0.85em;
+            max-width: 250px;
+            backdrop-filter: blur(10px);
+            display: none;
+            z-index: 100;
+        }
+
+        .shortcuts-help.show {
+            display: block;
+        }
+
+        .shortcuts-help h4 {
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+        }
+
+        .shortcut-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+
+        .key {
+            background: var(--bg-tertiary);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+
+        .bulk-actions {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            padding: 15px 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.5);
+            z-index: 999;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .bulk-actions.show {
+            display: flex;
+        }
+
+        .bulk-actions button {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .bulk-actions button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .gallery-fullscreen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gallery-fullscreen.active {
+            display: flex;
+        }
+
+        .gallery-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+
+        .gallery-img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 10px;
+        }
+
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 2em;
+            padding: 20px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .gallery-nav:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .gallery-nav.prev {
+            left: -80px;
+        }
+
+        .gallery-nav.next {
+            right: -80px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #7c3aed, #db2777);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2em;
+            }
+            .toolbar {
+                flex-direction: column;
+            }
+            .books-container {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            }
+            .upload-section, .bookshelf {
+                padding: 25px 20px;
+            }
+            .top-controls {
+                justify-content: center;
+            }
+        }
+
+        @media print {
+            .toolbar, .top-controls, .upload-section, .bulk-actions, .shortcuts-help {
+                display: none !important;
+            }
+            body {
+                background: white;
+                color: black;
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="stars"></div>
+    <div id="particles"></div>
+
+    <div class="container">
+        <div class="top-controls">
+            <button class="icon-btn" id="themeBtn" title="Changer le thème">🎨</button>
+            <button class="icon-btn" id="chartBtn" title="Voir les statistiques">📊</button>
+            <button class="icon-btn" id="sessionsBtn" title="Sessions">💾</button>
+            <button class="icon-btn" id="undoBtn" title="Annuler (Ctrl+Z)">↶</button>
+            <button class="icon-btn" id="redoBtn" title="Refaire (Ctrl+Y)">↷</button>
+            <button class="icon-btn" id="trashBtn" title="Corbeille">🗑️</button>
+            <button class="icon-btn" id="helpBtn" title="Aide">❓</button>
+            <button class="icon-btn" id="printBtn" title="Imprimer">🖨️</button>
+            <button class="icon-btn" id="slideshowBtn" title="Diaporama">🎬</button>
+        </div>
+
+        <header>
+            <span class="ornament">✦</span>
+            <h1>Bibliothèque Astrale Pro</h1>
+            <span class="ornament">✦</span>
+            <p>✧ Archives Mystiques des Savoirs Immortels ✧</p>
+        </header>
+
+        <div class="toolbar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Rechercher dans vos grimoires...">
+            </div>
+            <div class="toolbar-group">
+                <select id="sortSelect" class="btn-toolbar">
+                    <option value="date-desc">Plus récent</option>
+                    <option value="date-asc">Plus ancien</option>
+                    <option value="name-asc">Nom (A-Z)</option>
+                    <option value="name-desc">Nom (Z-A)</option>
+                </select>
+                <select id="filterType" class="btn-toolbar">
+                    <option value="all">Tous types</option>
+                    <option value="photo">Visions</option>
+                    <option value="audio">Échos</option>
+                    <option value="note">Manuscrits</option>
+                    <option value="file">Fichiers</option>
+                </select>
+                <button class="btn-toolbar" id="favoritesFilter">⭐ Favoris</button>
+                <button class="btn-toolbar" id="selectionMode">☑️ Sélection</button>
+                <button class="btn-toolbar" id="exportBtn">💾 Exporter</button>
+                <button class="btn-toolbar" id="importBtn">📥 Importer</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;">
+            </div>
+        </div>
+
+        <div class="stats" id="stats">
+            <div class="stat-item" onclick="filterByType('all')">
+                <div class="stat-number" id="totalBooks">0</div>
+                <div class="stat-label">Grimoires</div>
+            </div>
+            <div class="stat-item" onclick="filterByType('photo')">
+                <div class="stat-number" id="totalPhotos">0</div>
+                <div class="stat-label">Visions</div>
+            </div>
+            <div class="stat-item" onclick="filterByType('audio')">
+                <div class="stat-number" id="totalAudio">0</div>
+                <div class="stat-label">Échos</div>
+            </div>
+            <div class="stat-item" onclick="filterByType('note')">
+                <div class="stat-number" id="totalNotes">0</div>
+                <div class="stat-label">Manuscrits</div>
+            </div>
+            <div class="stat-item" onclick="filterByType('favorites')">
+                <div class="stat-number" id="totalFavorites">0</div>
+                <div class="stat-label">Favoris</div>
+            </div>
+            <div class="stat-item" id="trashStat" onclick="showTrash()">
+                <div class="stat-number" id="totalTrash">0</div>
+                <div class="stat-label">Corbeille</div>
+            </div>
+        </div>
+
+        <div class="chart-container" id="chartContainer" style="display: none;">
+            <h3>📊 Répartition de votre Collection</h3>
+            <canvas id="statsChart" width="400" height="200"></canvas>
+        </div>
+
+        <div class="upload-section">
+            <h2>✧ Invoquer de Nouveaux Savoirs ✧</h2>
+
+            <div class="upload-area" id="dropZone">
+                <div class="upload-icon">🌟</div>
+                <h3>Glissez vos artefacts dans le portail</h3>
+                <p style="color: var(--text-muted);">ou</p>
+                <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                    Choisir les reliques
+                </button>
+                <input type="file" id="fileInput" class="file-input" multiple accept="image/*,audio/*,video/*,*/*">
+                <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.95em;">
+                    ✦ Accepte tous les formats : Visions, Échos, Parchemins ✦
+                </p>
+            </div>
+
+            <div class="note-section">
+                <h3>✧ Rédiger un Manuscrit Sacré ✧</h3>
+                <input type="text" id="noteTitle" class="note-title" placeholder="Titre du manuscrit...">
+                <input type="text" id="noteTags" class="note-tags" placeholder="Tags (séparés par des virgules)...">
+                <textarea id="noteDesc" class="note-desc" placeholder="Description courte..."></textarea>
+                <textarea id="noteContent" class="note-input" placeholder="Inscrivez votre sagesse éternelle..."></textarea>
+                <button class="upload-btn" onclick="addNote()">Sceller le Manuscrit</button>
+            </div>
+        </div>
+
+        <div class="bookshelf">
+            <div class="bookshelf-header">
+                <div class="bookshelf-title">Collection Mystique</div>
+                <div class="view-controls">
+                    <button class="view-btn active" id="gridViewBtn" onclick="setView('grid')">🔲 Grille</button>
+                    <button class="view-btn" id="listViewBtn" onclick="setView('list')">📋 Liste</button>
+                    <button class="view-btn" id="compactViewBtn" onclick="setView('compact')">⚡ Compact</button>
+                    <button class="view-btn" id="timelineViewBtn" onclick="setView('timeline')">📅 Timeline</button>
+                </div>
+            </div>
+            <div class="books-container" id="booksContainer">
+                <div class="empty-shelf">Votre bibliothèque attend ses premiers grimoires sacrés...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="previewModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closePreview()">&times;</button>
+            <div id="previewContent"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="sessionsModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeSessions()">&times;</button>
+            <div id="sessionsContent">
+                <h2>💾 Gestion des Sessions</h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Sauvegardez et restaurez vos sessions de travail</p>
+
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: var(--accent-gold); margin-bottom: 15px;">Nouvelle Session</h3>
+                    <input type="text" id="sessionName" placeholder="Nom de la session..."
+                           style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 10px;
+                                  background: rgba(30, 27, 75, 0.4); color: var(--text-primary); margin-bottom: 10px;">
+                    <button class="upload-btn" onclick="saveSession()" style="width: 100%; margin-top: 10px;">
+                        💾 Sauvegarder cette session
+                    </button>
+                </div>
+
+                <div>
+                    <h3 style="color: var(--accent-gold); margin-bottom: 15px;">Sessions Sauvegardées</h3>
+                    <div id="sessionsList" style="max-height: 400px; overflow-y: auto;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="shortcuts-help" id="shortcutsHelp">
+        <h4>⌨️ Raccourcis Clavier</h4>
+        <div class="shortcut-item">
+            <span>Rechercher</span>
+            <span class="key">Ctrl+F</span>
+        </div>
+        <div class="shortcut-item">
+            <span>Annuler</span>
+            <span class="key">Ctrl+Z</span>
+        </div>
+        <div class="shortcut-item">
+            <span>Refaire</span>
+            <span class="key">Ctrl+Y</span>
+        </div>
+        <div class="shortcut-item">
+            <span>Sélectionner tout</span>
+            <span class="key">Ctrl+A</span>
+        </div>
+        <div class="shortcut-item">
+            <span>Diaporama</span>
+            <span class="key">F5</span>
+        </div>
+        <div class="shortcut-item">
+            <span>Aide</span>
+            <span class="key">?</span>
+        </div>
+        <div class="shortcut-item">
+            <span>Fermer</span>
+            <span class="key">Esc</span>
+        </div>
+    </div>
+
+    <div class="bulk-actions" id="bulkActions">
+        <span id="selectedCount" style="color: white; font-weight: bold;">0 sélectionné(s)</span>
+        <button onclick="bulkAddToFavorites()">⭐ Favoris</button>
+        <button onclick="bulkDelete()">🗑️ Supprimer</button>
+        <button onclick="bulkDuplicate()">📋 Dupliquer</button>
+        <button onclick="bulkExport()">💾 Exporter</button>
+        <button onclick="clearSelection()">✖️ Annuler</button>
+    </div>
+
+    <div class="gallery-fullscreen" id="galleryFullscreen">
+        <div class="gallery-content">
+            <img id="galleryImg" class="gallery-img" src="" alt="">
+            <button class="gallery-nav prev" onclick="prevGalleryImage()">‹</button>
+            <button class="gallery-nav next" onclick="nextGalleryImage()">›</button>
+        </div>
+        <button class="close-btn" onclick="closeGallery()" style="position: fixed; top: 20px; right: 40px; z-index: 2001;">&times;</button>
+    </div>
+
+    <script>
+        let library = JSON.parse(localStorage.getItem('library_v3')) || [];
+        let trash = JSON.parse(localStorage.getItem('trash')) || [];
+        let currentView = localStorage.getItem('view_mode') || 'grid';
+        let currentFilter = { type: 'all', search: '', sort: 'date-desc', favorites: false };
+        let selectedItems = new Set();
+        let selectionMode = false;
+        let currentTheme = localStorage.getItem('theme') || 'dark';
+        let currentGalleryIndex = 0;
+        let galleryImages = [];
+
+        // Session management
+        let sessions = JSON.parse(localStorage.getItem('sessions')) || [];
+        let undoStack = [];
+        let redoStack = [];
+        let lastState = null;
+
+        // Save state for undo/redo
+        function saveState() {
+            const currentState = {
+                library: JSON.parse(JSON.stringify(library)),
+                trash: JSON.parse(JSON.stringify(trash)),
+                currentView,
+                currentFilter: {...currentFilter},
+                timestamp: Date.now()
+            };
+
+            // Only save if state changed
+            if (lastState && JSON.stringify(lastState.library) === JSON.stringify(currentState.library)) {
+                return;
+            }
+
+            undoStack.push(currentState);
+            if (undoStack.length > 50) undoStack.shift(); // Limit to 50 states
+            redoStack = []; // Clear redo when new action
+            lastState = currentState;
+            updateUndoRedoButtons();
+        }
+
+        function undo() {
+            if (undoStack.length === 0) {
+                showToast('Rien à annuler', 'error');
+                return;
+            }
+
+            const currentState = {
+                library: JSON.parse(JSON.stringify(library)),
+                trash: JSON.parse(JSON.stringify(trash)),
+                currentView,
+                currentFilter: {...currentFilter},
+                timestamp: Date.now()
+            };
+
+            redoStack.push(currentState);
+            const previousState = undoStack.pop();
+
+            library = previousState.library;
+            trash = previousState.trash;
+            currentView = previousState.currentView;
+            currentFilter = previousState.currentFilter;
+
+            saveLibrary();
+            renderBooks();
+            setView(currentView);
+            updateUndoRedoButtons();
+            showToast('Action annulée ↶');
+        }
+
+        function redo() {
+            if (redoStack.length === 0) {
+                showToast('Rien à refaire', 'error');
+                return;
+            }
+
+            const currentState = {
+                library: JSON.parse(JSON.stringify(library)),
+                trash: JSON.parse(JSON.stringify(trash)),
+                currentView,
+                currentFilter: {...currentFilter},
+                timestamp: Date.now()
+            };
+
+            undoStack.push(currentState);
+            const nextState = redoStack.pop();
+
+            library = nextState.library;
+            trash = nextState.trash;
+            currentView = nextState.currentView;
+            currentFilter = nextState.currentFilter;
+
+            saveLibrary();
+            renderBooks();
+            setView(currentView);
+            updateUndoRedoButtons();
+            showToast('Action refaite ↷');
+        }
+
+        function updateUndoRedoButtons() {
+            const undoBtn = document.getElementById('undoBtn');
+            const redoBtn = document.getElementById('redoBtn');
+            undoBtn.style.opacity = undoStack.length > 0 ? '1' : '0.5';
+            redoBtn.style.opacity = redoStack.length > 0 ? '1' : '0.5';
+            undoBtn.style.cursor = undoStack.length > 0 ? 'pointer' : 'not-allowed';
+            redoBtn.style.cursor = redoStack.length > 0 ? 'pointer' : 'not-allowed';
+        }
+
+        // Session management functions
+        function saveSession() {
+            const name = document.getElementById('sessionName').value.trim();
+            if (!name) {
+                showToast('Donnez un nom à la session', 'error');
+                return;
+            }
+
+            const session = {
+                id: Date.now(),
+                name,
+                library: JSON.parse(JSON.stringify(library)),
+                trash: JSON.parse(JSON.stringify(trash)),
+                currentView,
+                currentFilter: {...currentFilter},
+                currentTheme,
+                timestamp: new Date().toISOString(),
+                itemCount: library.filter(i => !i.deleted).length
+            };
+
+            sessions.push(session);
+            localStorage.setItem('sessions', JSON.stringify(sessions));
+            document.getElementById('sessionName').value = '';
+            renderSessionsList();
+            showToast(`Session "${name}" sauvegardée!`);
+        }
+
+        function loadSession(id) {
+            const session = sessions.find(s => s.id === id);
+            if (!session) return;
+
+            if (confirm(`Charger la session "${session.name}"? L'état actuel sera perdu si non sauvegardé.`)) {
+                library = JSON.parse(JSON.stringify(session.library));
+                trash = JSON.parse(JSON.stringify(session.trash));
+                currentView = session.currentView;
+                currentFilter = session.currentFilter;
+                currentTheme = session.currentTheme;
+
+                document.body.setAttribute('data-theme', currentTheme);
+                saveLibrary();
+                renderBooks();
+                setView(currentView);
+                closeSessions();
+                showToast(`Session "${session.name}" chargée!`);
+            }
+        }
+
+        function deleteSession(id) {
+            const session = sessions.find(s => s.id === id);
+            if (session && confirm(`Supprimer la session "${session.name}"?`)) {
+                sessions = sessions.filter(s => s.id !== id);
+                localStorage.setItem('sessions', JSON.stringify(sessions));
+                renderSessionsList();
+                showToast('Session supprimée');
+            }
+        }
+
+        function exportSession(id) {
+            const session = sessions.find(s => s.id === id);
+            if (session) {
+                const dataStr = JSON.stringify(session, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `session-${session.name}-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                showToast('Session exportée!');
+            }
+        }
+
+        function renderSessionsList() {
+            const container = document.getElementById('sessionsList');
+            if (sessions.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 40px;">Aucune session sauvegardée</p>';
+                return;
+            }
+
+            let html = '';
+            sessions.reverse().forEach(session => {
+                html += `
+                    <div style="border: 2px solid var(--border-color); padding: 15px; margin: 10px 0; border-radius: 15px;
+                                background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)); backdrop-filter: blur(10px);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <strong style="font-size: 1.2em; color: var(--accent-gold);">${session.name}</strong>
+                            <span style="color: var(--text-muted); font-size: 0.9em;">
+                                ${new Date(session.timestamp).toLocaleDateString('fr-FR')} ${new Date(session.timestamp).toLocaleTimeString('fr-FR')}
+                            </span>
+                        </div>
+                        <div style="color: var(--text-secondary); margin-bottom: 15px;">
+                            📚 ${session.itemCount} grimoires | 🎨 Thème: ${session.currentTheme} | 👁️ Vue: ${session.currentView}
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="modal-btn" onclick="loadSession(${session.id})">📂 Charger</button>
+                            <button class="modal-btn" onclick="exportSession(${session.id})">💾 Exporter</button>
+                            <button class="modal-btn" onclick="deleteSession(${session.id})">🗑️ Supprimer</button>
+                        </div>
+                    </div>
+                `;
+            });
+            sessions.reverse();
+
+            container.innerHTML = html;
+        }
+
+        function showSessions() {
+            renderSessionsList();
+            document.getElementById('sessionsModal').classList.add('active');
+        }
+
+        function closeSessions() {
+            document.getElementById('sessionsModal').classList.remove('active');
+        }
+
+        // Sessions button
+        document.getElementById('sessionsBtn').addEventListener('click', showSessions);
+
+        // Undo/Redo buttons
+        document.getElementById('undoBtn').addEventListener('click', undo);
+        document.getElementById('redoBtn').addEventListener('click', redo);
+
+        // Migrate old library data
+        if (!localStorage.getItem('library_v3')) {
+            const oldLib = localStorage.getItem('library_v2') || localStorage.getItem('library');
+            if (oldLib) {
+                const old = JSON.parse(oldLib);
+                library = old.map(item => ({
+                    ...item,
+                    tags: item.tags || [],
+                    description: item.description || '',
+                    favorite: item.favorite || false,
+                    rating: item.rating || 0,
+                    deleted: false
+                }));
+                saveLibrary();
+            }
+        }
+
+        // Theme management
+        const themes = ['dark', 'light', 'cosmic', 'ocean'];
+        let themeIndex = themes.indexOf(currentTheme);
+        document.body.setAttribute('data-theme', currentTheme);
+
+        document.getElementById('themeBtn').addEventListener('click', () => {
+            themeIndex = (themeIndex + 1) % themes.length;
+            currentTheme = themes[themeIndex];
+            document.body.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('theme', currentTheme);
+            showToast(`Thème changé: ${currentTheme}`, 'success');
+        });
+
+        // Create particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            container.innerHTML = '';
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Auto backup
+        setInterval(() => {
+            const backup = {
+                library,
+                trash,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('auto_backup', JSON.stringify(backup));
+        }, 300000); // Every 5 minutes
+
+        // Drag and drop
+        const dropZone = document.getElementById('dropZone');
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            let processed = 0;
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const item = {
+                        id: Date.now() + Math.random(),
+                        name: file.name,
+                        type: getFileType(file),
+                        data: e.target.result,
+                        date: new Date().toISOString(),
+                        tags: [],
+                        description: '',
+                        favorite: false,
+                        rating: 0,
+                        deleted: false
+                    };
+                    library.push(item);
+                    processed++;
+                    if (processed === files.length) {
+                        saveState();
+                        saveLibrary();
+                        renderBooks();
+                        showToast(`${processed} grimoire(s) ajouté(s)!`);
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function getFileType(file) {
+            if (file.type.startsWith('image/')) return 'photo';
+            if (file.type.startsWith('audio/')) return 'audio';
+            if (file.type.startsWith('video/')) return 'audio';
+            return 'file';
+        }
+
+        function addNote() {
+            const title = document.getElementById('noteTitle').value.trim();
+            const content = document.getElementById('noteContent').value.trim();
+            const tags = document.getElementById('noteTags').value.trim();
+            const description = document.getElementById('noteDesc').value.trim();
+
+            if (!title || !content) {
+                showToast('Remplissez le titre et le contenu', 'error');
+                return;
+            }
+
+            const item = {
+                id: Date.now(),
+                name: title,
+                type: 'note',
+                data: content,
+                date: new Date().toISOString(),
+                tags: tags ? tags.split(',').map(t => t.trim()) : [],
+                description: description,
+                favorite: false,
+                rating: 0,
+                deleted: false
+            };
+
+            library.push(item);
+            saveState();
+            saveLibrary();
+            renderBooks();
+
+            document.getElementById('noteTitle').value = '';
+            document.getElementById('noteContent').value = '';
+            document.getElementById('noteTags').value = '';
+            document.getElementById('noteDesc').value = '';
+
+            showToast('Manuscrit scellé!');
+        }
+
+        function saveLibrary() {
+            localStorage.setItem('library_v3', JSON.stringify(library));
+            localStorage.setItem('trash', JSON.stringify(trash));
+            updateStats();
+        }
+
+        function filterAndSortLibrary() {
+            let filtered = library.filter(item => !item.deleted);
+
+            if (currentFilter.type !== 'all') {
+                filtered = filtered.filter(item => item.type === currentFilter.type);
+            }
+
+            if (currentFilter.favorites) {
+                filtered = filtered.filter(item => item.favorite);
+            }
+
+            if (currentFilter.search) {
+                const search = currentFilter.search.toLowerCase();
+                filtered = filtered.filter(item =>
+                    item.name.toLowerCase().includes(search) ||
+                    (item.description && item.description.toLowerCase().includes(search)) ||
+                    (item.tags && item.tags.some(tag => tag.toLowerCase().includes(search)))
+                );
+            }
+
+            filtered.sort((a, b) => {
+                switch(currentFilter.sort) {
+                    case 'date-desc': return new Date(b.date) - new Date(a.date);
+                    case 'date-asc': return new Date(a.date) - new Date(b.date);
+                    case 'name-asc': return a.name.localeCompare(b.name);
+                    case 'name-desc': return b.name.localeCompare(a.name);
+                    default: return 0;
+                }
+            });
+
+            return filtered;
+        }
+
+        function renderBooks() {
+            const container = document.getElementById('booksContainer');
+            const filtered = filterAndSortLibrary();
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="empty-shelf">Aucun grimoire ne correspond...</div>';
+                container.className = 'books-container';
+                return;
+            }
+
+            container.className = `books-container ${currentView}-view`;
+            container.innerHTML = '';
+
+            filtered.forEach(item => {
+                const book = document.createElement('div');
+                book.className = `book ${item.type} ${currentView}-view`;
+                if (selectedItems.has(item.id)) book.classList.add('selected');
+
+                const emoji = {
+                    photo: '🖼️',
+                    audio: '🎵',
+                    note: '📜',
+                    file: '📖'
+                }[item.type];
+
+                const favoriteIcon = item.favorite ? '⭐' : '☆';
+
+                let metaHtml = '';
+                if (currentView === 'list' || currentView === 'timeline') {
+                    metaHtml = `
+                        <div class="book-meta">
+                            <span>${new Date(item.date).toLocaleDateString('fr-FR')}</span>
+                            ${item.tags && item.tags.length > 0 ? `
+                                <div class="book-tags">
+                                    ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+
+                book.innerHTML = `
+                    <button class="favorite-btn ${item.favorite ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite('${item.id}')">${favoriteIcon}</button>
+                    ${selectionMode ? `<button class="select-btn ${selectedItems.has(item.id) ? 'active' : ''}" onclick="event.stopPropagation(); toggleSelection('${item.id}')">☑</button>` : ''}
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteBook('${item.id}')">×</button>
+                    <div class="book-spine">
+                        <div class="book-type">${emoji}</div>
+                        <div class="book-title">${item.name}</div>
+                        ${metaHtml}
+                    </div>
+                `;
+
+                book.onclick = (e) => {
+                    if (!e.target.classList.contains('delete-btn') &&
+                        !e.target.classList.contains('favorite-btn') &&
+                        !e.target.classList.contains('select-btn')) {
+                        if (selectionMode) {
+                            toggleSelection(item.id);
+                        } else {
+                            showPreview(item);
+                        }
+                    }
+                };
+
+                container.appendChild(book);
+            });
+
+            updateStats();
+        }
+
+        function toggleFavorite(id) {
+            const item = library.find(i => i.id == id);
+            if (item) {
+                saveState();
+                item.favorite = !item.favorite;
+                saveLibrary();
+                renderBooks();
+                showToast(item.favorite ? 'Ajouté aux favoris ⭐' : 'Retiré des favoris');
+            }
+        }
+
+        function toggleSelection(id) {
+            if (selectedItems.has(id)) {
+                selectedItems.delete(id);
+            } else {
+                selectedItems.add(id);
+            }
+            renderBooks();
+            updateBulkActions();
+        }
+
+        function clearSelection() {
+            selectedItems.clear();
+            selectionMode = false;
+            document.getElementById('selectionMode').classList.remove('active');
+            document.getElementById('bulkActions').classList.remove('show');
+            renderBooks();
+        }
+
+        function updateBulkActions() {
+            const count = selectedItems.size;
+            document.getElementById('selectedCount').textContent = `${count} sélectionné(s)`;
+            if (count > 0) {
+                document.getElementById('bulkActions').classList.add('show');
+            } else {
+                document.getElementById('bulkActions').classList.remove('show');
+            }
+        }
+
+        function showPreview(item) {
+            const modal = document.getElementById('previewModal');
+            const content = document.getElementById('previewContent');
+
+            let tagsHtml = '';
+            if (item.tags && item.tags.length > 0) {
+                tagsHtml = `<div class="book-tags">${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>`;
+            }
+
+            let html = `
+                <h2>${item.name}</h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">✦ Archivé le ${new Date(item.date).toLocaleDateString('fr-FR')} ✦</p>
+                ${tagsHtml}
+                ${item.description ? `<p style="color: var(--text-secondary); margin: 15px 0;">${item.description}</p>` : ''}
+            `;
+
+            if (item.type === 'photo') {
+                html += `<img src="${item.data}" class="preview-image" alt="${item.name}" onclick="openGallery('${item.id}')">`;
+            } else if (item.type === 'audio') {
+                html += `<audio controls class="preview-audio" src="${item.data}"></audio>`;
+            } else if (item.type === 'note') {
+                html += `<div class="preview-note">${item.data}</div>`;
+            } else {
+                html += `<p>Type: ${item.type}</p><p>Ce grimoire ne peut être dévoilé.</p>`;
+            }
+
+            html += `
+                <div class="modal-actions">
+                    <button class="modal-btn" onclick="toggleFavorite('${item.id}'); closePreview(); renderBooks();">
+                        ${item.favorite ? '☆ Retirer favoris' : '⭐ Ajouter favoris'}
+                    </button>
+                    <button class="modal-btn" onclick="duplicateItem('${item.id}')">📋 Dupliquer</button>
+                    <button class="modal-btn" onclick="shareItem('${item.id}')">🔗 Partager</button>
+                    <button class="modal-btn" onclick="deleteBook('${item.id}'); closePreview();">🗑️ Supprimer</button>
+                </div>
+            `;
+
+            content.innerHTML = html;
+            modal.classList.add('active');
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').classList.remove('active');
+        }
+
+        function deleteBook(id) {
+            const item = library.find(i => i.id == id);
+            if (item && confirm('Déplacer vers la corbeille?')) {
+                saveState();
+                item.deleted = true;
+                item.deletedDate = new Date().toISOString();
+                trash.push(item);
+                saveLibrary();
+                renderBooks();
+                showToast('Déplacé vers la corbeille');
+            }
+        }
+
+        function duplicateItem(id) {
+            const item = library.find(i => i.id == id);
+            if (item) {
+                saveState();
+                const newItem = {
+                    ...item,
+                    id: Date.now() + Math.random(),
+                    name: item.name + ' (copie)',
+                    date: new Date().toISOString()
+                };
+                library.push(newItem);
+                saveLibrary();
+                renderBooks();
+                closePreview();
+                showToast('Grimoire dupliqué!');
+            }
+        }
+
+        function shareItem(id) {
+            const item = library.find(i => i.id == id);
+            if (item) {
+                const shareData = JSON.stringify({
+                    name: item.name,
+                    type: item.type,
+                    tags: item.tags,
+                    description: item.description,
+                    date: item.date
+                });
+                const encoded = btoa(shareData);
+                const shareUrl = `${window.location.origin}${window.location.pathname}?share=${encoded}`;
+                navigator.clipboard.writeText(shareUrl);
+                showToast('Lien de partage copié!');
+            }
+        }
+
+        function updateStats() {
+            const active = library.filter(i => !i.deleted);
+            document.getElementById('totalBooks').textContent = active.length;
+            document.getElementById('totalPhotos').textContent = active.filter(i => i.type === 'photo').length;
+            document.getElementById('totalAudio').textContent = active.filter(i => i.type === 'audio').length;
+            document.getElementById('totalNotes').textContent = active.filter(i => i.type === 'note').length;
+            document.getElementById('totalFavorites').textContent = active.filter(i => i.favorite).length;
+            document.getElementById('totalTrash').textContent = trash.length;
+        }
+
+        function setView(view) {
+            currentView = view;
+            localStorage.setItem('view_mode', view);
+            document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(view + 'ViewBtn').classList.add('active');
+            renderBooks();
+        }
+
+        function filterByType(type) {
+            currentFilter.type = type;
+            currentFilter.favorites = (type === 'favorites');
+            if (type === 'favorites') currentFilter.type = 'all';
+            document.getElementById('filterType').value = type === 'favorites' ? 'all' : type;
+            document.getElementById('favoritesFilter').classList.toggle('active', type === 'favorites');
+            renderBooks();
+        }
+
+        // Search
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentFilter.search = e.target.value;
+            renderBooks();
+        });
+
+        // Sort
+        document.getElementById('sortSelect').addEventListener('change', (e) => {
+            currentFilter.sort = e.target.value;
+            renderBooks();
+        });
+
+        // Filter type
+        document.getElementById('filterType').addEventListener('change', (e) => {
+            currentFilter.type = e.target.value;
+            currentFilter.favorites = false;
+            document.getElementById('favoritesFilter').classList.remove('active');
+            renderBooks();
+        });
+
+        // Favorites filter
+        document.getElementById('favoritesFilter').addEventListener('click', () => {
+            currentFilter.favorites = !currentFilter.favorites;
+            document.getElementById('favoritesFilter').classList.toggle('active');
+            renderBooks();
+        });
+
+        // Selection mode
+        document.getElementById('selectionMode').addEventListener('click', () => {
+            selectionMode = !selectionMode;
+            document.getElementById('selectionMode').classList.toggle('active');
+            if (!selectionMode) clearSelection();
+            renderBooks();
+        });
+
+        // Bulk operations
+        function bulkAddToFavorites() {
+            saveState();
+            selectedItems.forEach(id => {
+                const item = library.find(i => i.id == id);
+                if (item) item.favorite = true;
+            });
+            saveLibrary();
+            renderBooks();
+            showToast(`${selectedItems.size} ajoutés aux favoris`);
+            clearSelection();
+        }
+
+        function bulkDelete() {
+            if (confirm(`Supprimer ${selectedItems.size} grimoire(s)?`)) {
+                saveState();
+                selectedItems.forEach(id => {
+                    const item = library.find(i => i.id == id);
+                    if (item) {
+                        item.deleted = true;
+                        item.deletedDate = new Date().toISOString();
+                        trash.push(item);
+                    }
+                });
+                saveLibrary();
+                renderBooks();
+                showToast(`${selectedItems.size} déplacés vers corbeille`);
+                clearSelection();
+            }
+        }
+
+        function bulkDuplicate() {
+            saveState();
+            selectedItems.forEach(id => {
+                const item = library.find(i => i.id == id);
+                if (item) {
+                    const newItem = {
+                        ...item,
+                        id: Date.now() + Math.random(),
+                        name: item.name + ' (copie)',
+                        date: new Date().toISOString()
+                    };
+                    library.push(newItem);
+                }
+            });
+            saveLibrary();
+            renderBooks();
+            showToast(`${selectedItems.size} dupliqués`);
+            clearSelection();
+        }
+
+        function bulkExport() {
+            const items = Array.from(selectedItems).map(id => library.find(i => i.id == id));
+            const dataStr = JSON.stringify(items, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `selection-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            showToast('Sélection exportée!');
+        }
+
+        // Export/Import
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            const dataStr = JSON.stringify(library.filter(i => !i.deleted), null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bibliotheque-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            showToast('Bibliothèque exportée!');
+        });
+
+        document.getElementById('importBtn').addEventListener('click', () => {
+            document.getElementById('importFile').click();
+        });
+
+        document.getElementById('importFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const importedData = JSON.parse(event.target.result);
+                        if (confirm(`Importer ${importedData.length} grimoires?`)) {
+                            library = [...library, ...importedData];
+                            saveLibrary();
+                            renderBooks();
+                            showToast(`${importedData.length} importés!`);
+                        }
+                    } catch (error) {
+                        showToast('Erreur import', 'error');
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // Trash management
+        function showTrash() {
+            const modal = document.getElementById('previewModal');
+            const content = document.getElementById('previewContent');
+
+            let html = '<h2>🗑️ Corbeille</h2>';
+            if (trash.length === 0) {
+                html += '<p>La corbeille est vide.</p>';
+            } else {
+                html += `<p>${trash.length} élément(s) dans la corbeille</p>`;
+                html += '<div style="max-height: 400px; overflow-y: auto;">';
+                trash.forEach(item => {
+                    html += `
+                        <div style="border: 1px solid var(--border-color); padding: 10px; margin: 10px 0; border-radius: 10px;">
+                            <strong>${item.name}</strong> - ${item.type}
+                            <div style="margin-top: 10px;">
+                                <button class="modal-btn" onclick="restoreItem('${item.id}')">↩️ Restaurer</button>
+                                <button class="modal-btn" onclick="permanentDelete('${item.id}')">🗑️ Supprimer</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                html += `<button class="modal-btn" style="margin-top: 20px;" onclick="emptyTrash()">🗑️ Vider la corbeille</button>`;
+            }
+
+            content.innerHTML = html;
+            modal.classList.add('active');
+        }
+
+        function restoreItem(id) {
+            const index = trash.findIndex(i => i.id == id);
+            if (index > -1) {
+                saveState();
+                const item = trash[index];
+                item.deleted = false;
+                delete item.deletedDate;
+                library.push(item);
+                trash.splice(index, 1);
+                saveLibrary();
+                renderBooks();
+                showTrash();
+                showToast('Grimoire restauré!');
+            }
+        }
+
+        function permanentDelete(id) {
+            if (confirm('Supprimer définitivement?')) {
+                const index = trash.findIndex(i => i.id == id);
+                if (index > -1) {
+                    trash.splice(index, 1);
+                    saveLibrary();
+                    showTrash();
+                    showToast('Supprimé définitivement');
+                }
+            }
+        }
+
+        function emptyTrash() {
+            if (confirm('Vider la corbeille?')) {
+                trash = [];
+                saveLibrary();
+                showTrash();
+                showToast('Corbeille vidée');
+            }
+        }
+
+        // Gallery
+        function openGallery(id) {
+            const photos = library.filter(i => i.type === 'photo' && !i.deleted);
+            galleryImages = photos;
+            currentGalleryIndex = photos.findIndex(i => i.id == id);
+            updateGalleryImage();
+            document.getElementById('galleryFullscreen').classList.add('active');
+            closePreview();
+        }
+
+        function updateGalleryImage() {
+            if (galleryImages.length > 0) {
+                document.getElementById('galleryImg').src = galleryImages[currentGalleryIndex].data;
+            }
+        }
+
+        function nextGalleryImage() {
+            currentGalleryIndex = (currentGalleryIndex + 1) % galleryImages.length;
+            updateGalleryImage();
+        }
+
+        function prevGalleryImage() {
+            currentGalleryIndex = (currentGalleryIndex - 1 + galleryImages.length) % galleryImages.length;
+            updateGalleryImage();
+        }
+
+        function closeGallery() {
+            document.getElementById('galleryFullscreen').classList.remove('active');
+        }
+
+        // Charts
+        document.getElementById('chartBtn').addEventListener('click', () => {
+            const chartContainer = document.getElementById('chartContainer');
+            chartContainer.style.display = chartContainer.style.display === 'none' ? 'block' : 'none';
+            if (chartContainer.style.display === 'block') {
+                drawChart();
+            }
+        });
+
+        function drawChart() {
+            const canvas = document.getElementById('statsChart');
+            const ctx = canvas.getContext('2d');
+            const active = library.filter(i => !i.deleted);
+
+            const data = {
+                photo: active.filter(i => i.type === 'photo').length,
+                audio: active.filter(i => i.type === 'audio').length,
+                note: active.filter(i => i.type === 'note').length,
+                file: active.filter(i => i.type === 'file').length
+            };
+
+            const total = Object.values(data).reduce((a, b) => a + b, 0);
+            const colors = ['#ec4899', '#06b6d4', '#f59e0b', '#8b5cf6'];
+            const labels = ['Visions', 'Échos', 'Manuscrits', 'Fichiers'];
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let currentAngle = 0;
+            Object.values(data).forEach((value, index) => {
+                const sliceAngle = (value / total) * 2 * Math.PI;
+                ctx.beginPath();
+                ctx.moveTo(200, 100);
+                ctx.arc(200, 100, 80, currentAngle, currentAngle + sliceAngle);
+                ctx.closePath();
+                ctx.fillStyle = colors[index];
+                ctx.fill();
+
+                // Label
+                const midAngle = currentAngle + sliceAngle / 2;
+                const labelX = 200 + Math.cos(midAngle) * 120;
+                const labelY = 100 + Math.sin(midAngle) * 120;
+                ctx.fillStyle = 'white';
+                ctx.font = '14px Philosopher';
+                ctx.fillText(`${labels[index]}: ${value}`, labelX - 30, labelY);
+
+                currentAngle += sliceAngle;
+            });
+        }
+
+        // Slideshow
+        let slideshowInterval;
+        document.getElementById('slideshowBtn').addEventListener('click', () => {
+            const photos = library.filter(i => i.type === 'photo' && !i.deleted);
+            if (photos.length === 0) {
+                showToast('Aucune image pour le diaporama', 'error');
+                return;
+            }
+
+            currentGalleryIndex = 0;
+            galleryImages = photos;
+            updateGalleryImage();
+            document.getElementById('galleryFullscreen').classList.add('active');
+
+            slideshowInterval = setInterval(() => {
+                nextGalleryImage();
+            }, 3000);
+        });
+
+        // Print
+        document.getElementById('printBtn').addEventListener('click', () => {
+            window.print();
+        });
+
+        // Help
+        document.getElementById('helpBtn').addEventListener('click', () => {
+            document.getElementById('shortcutsHelp').classList.toggle('show');
+        });
+
+        // Trash button
+        document.getElementById('trashBtn').addEventListener('click', showTrash);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'z') {
+                e.preventDefault();
+                undo();
+            }
+
+            if (e.ctrlKey && e.key === 'y') {
+                e.preventDefault();
+                redo();
+            }
+
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                document.getElementById('searchInput').focus();
+            }
+
+            if (e.ctrlKey && e.key === 'a' && selectionMode) {
+                e.preventDefault();
+                const filtered = filterAndSortLibrary();
+                filtered.forEach(item => selectedItems.add(item.id));
+                renderBooks();
+                updateBulkActions();
+            }
+
+            if (e.key === 'Escape') {
+                closePreview();
+                closeGallery();
+                closeSessions();
+                if (slideshowInterval) {
+                    clearInterval(slideshowInterval);
+                    slideshowInterval = null;
+                }
+                document.getElementById('shortcutsHelp').classList.remove('show');
+            }
+
+            if (e.key === '?') {
+                document.getElementById('shortcutsHelp').classList.toggle('show');
+            }
+
+            if (e.key === 'F5') {
+                e.preventDefault();
+                document.getElementById('slideshowBtn').click();
+            }
+        });
+
+        // Close modal on click outside
+        document.getElementById('previewModal').addEventListener('click', (e) => {
+            if (e.target.id === 'previewModal') {
+                closePreview();
+            }
+        });
+
+        // Gallery navigation with arrows
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('galleryFullscreen').classList.contains('active')) {
+                if (e.key === 'ArrowRight') nextGalleryImage();
+                if (e.key === 'ArrowLeft') prevGalleryImage();
+            }
+        });
+
+        // Close modal on click outside
+        document.getElementById('sessionsModal').addEventListener('click', (e) => {
+            if (e.target.id === 'sessionsModal') {
+                closeSessions();
+            }
+        });
+
+        // Initialize
+        setView(currentView);
+        renderBooks();
+        updateUndoRedoButtons();
+    </script>
+</body>
+</html>
