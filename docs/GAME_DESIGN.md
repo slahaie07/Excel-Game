@@ -4,7 +4,7 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v1.1)
+## Systèmes implémentés (v1.2)
 
 | Système | Statut | Description |
 |---------|--------|-------------|
@@ -12,7 +12,9 @@ Créer un MMORPG tactique mobile aussi complet que les références du genre, av
 | Création de personnage | ✅ | 8 classes, 5 slots |
 | Combat tactique | ✅ | Grille isométrique, PA/PM, sorts serveur, buffs cloud |
 | Donjons coop | ✅ | Jusqu'à 4 joueurs, combat partagé Convex |
-| CI / tests | ✅ | GitHub Actions, Vitest (effets combat) |
+| Guerres de guildes | ✅ | Déclaration, scores 24h, contribution membres |
+| Trade direct | ✅ | Sessions P2P avec double confirmation |
+| Boss monde | ✅ | HP partagé, leaderboard, respawn 4h |
 | Monde / zones | ✅ | 6 zones isométriques, voyage |
 | Inventaire | ✅ | 6 slots équipement |
 | Quêtes | ✅ | Main, side, daily |
@@ -122,6 +124,12 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 3. `startDungeonCombat` → combat partagé avec une entité par joueur
 4. Victoire → `advanceRoom` → salle suivante ou fin du donjon
 
-## Déploiement
+## v1.2 — Guerres, trade, boss monde
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Guerres | `guildWars.ts` | `declareWar`, `contributeToWar`, scores |
+| Trade P2P | `trade.ts` | `startTrade`, `updateTradeOffer`, `confirmTrade` |
+| Boss monde | `worldBoss.ts` | `attackWorldBoss`, `getBossLeaderboard` |
 
 Voir `docs/DEPLOYMENT.md`.

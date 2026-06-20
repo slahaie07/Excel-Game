@@ -301,4 +301,62 @@ export default defineSchema({
   })
     .index("by_zone", ["zoneId", "lastSeenAt"])
     .index("by_character", ["characterId"]),
+
+  guildWars: defineTable({
+    guildAId: v.id("guilds"),
+    guildBId: v.id("guilds"),
+    guildAName: v.string(),
+    guildBName: v.string(),
+    guildAScore: v.number(),
+    guildBScore: v.number(),
+    status: v.union(v.literal("active"), v.literal("completed")),
+    winnerGuildId: v.optional(v.id("guilds")),
+    startedAt: v.number(),
+    endsAt: v.number(),
+  }).index("by_status", ["status"]),
+
+  tradeSessions: defineTable({
+    initiatorId: v.id("characters"),
+    initiatorName: v.string(),
+    partnerId: v.id("characters"),
+    partnerName: v.string(),
+    initiatorOffer: v.object({
+      eclats: v.number(),
+      items: v.array(v.object({ itemId: v.string(), quantity: v.number() })),
+    }),
+    partnerOffer: v.object({
+      eclats: v.number(),
+      items: v.array(v.object({ itemId: v.string(), quantity: v.number() })),
+    }),
+    initiatorConfirmed: v.boolean(),
+    partnerConfirmed: v.boolean(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("completed"),
+      v.literal("cancelled")
+    ),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_initiator", ["initiatorId", "status"])
+    .index("by_partner", ["partnerId", "status"]),
+
+  worldBoss: defineTable({
+    bossId: v.string(),
+    name: v.string(),
+    maxHp: v.number(),
+    currentHp: v.number(),
+    zoneId: v.string(),
+    status: v.union(v.literal("active"), v.literal("defeated")),
+    respawnAt: v.optional(v.number()),
+    updatedAt: v.number(),
+  }).index("by_boss", ["bossId"]),
+
+  worldBossHits: defineTable({
+    bossId: v.string(),
+    characterId: v.id("characters"),
+    characterName: v.string(),
+    damage: v.number(),
+    createdAt: v.number(),
+  }).index("by_boss", ["bossId", "createdAt"]),
 });

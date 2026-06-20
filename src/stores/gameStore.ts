@@ -22,6 +22,7 @@ export type GameScreen =
   | "daily"
   | "achievements"
   | "friends"
+  | "trade"
   | "settings";
 
 interface GameState {
@@ -39,6 +40,7 @@ interface GameState {
   pvpMode: "1v1" | "2v2" | "3v3" | null;
   convexPvpMatchId: string | null;
   guildId: string | null;
+  tradePartnerId: string | null;
   isOnline: boolean;
 
   setScreen: (screen: GameScreen) => void;
@@ -49,6 +51,7 @@ interface GameState {
   setDungeon: (dungeonId: string | null, options?: { convexRunId?: string }) => void;
   setPvpMode: (mode: "1v1" | "2v2" | "3v3" | null, options?: { matchId?: string }) => void;
   setGuildId: (guildId: string | null) => void;
+  setTradePartner: (partnerId: string | null) => void;
   logout: () => void;
 }
 
@@ -69,6 +72,7 @@ export const useGameStore = create<GameState>()(
       pvpMode: null,
       convexPvpMatchId: null,
       guildId: null,
+      tradePartnerId: null,
       isOnline: !!import.meta.env.VITE_CONVEX_URL,
 
       setScreen: (screen) => set({ screen }),
@@ -92,6 +96,7 @@ export const useGameStore = create<GameState>()(
       setPvpMode: (pvpMode, options) =>
         set({ pvpMode, convexPvpMatchId: options?.matchId ?? null }),
       setGuildId: (guildId) => set({ guildId }),
+      setTradePartner: (tradePartnerId) => set({ tradePartnerId }),
       logout: () =>
         set({
           accountId: null,
@@ -106,6 +111,7 @@ export const useGameStore = create<GameState>()(
           pvpMode: null,
           convexPvpMatchId: null,
           guildId: null,
+          tradePartnerId: null,
           screen: "login",
         }),
     }),

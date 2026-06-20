@@ -15,6 +15,7 @@ import type * as combat from "../combat.js";
 import type * as dungeons from "../dungeons.js";
 import type * as events from "../events.js";
 import type * as friends from "../friends.js";
+import type * as guildWars from "../guildWars.js";
 import type * as havens from "../havens.js";
 import type * as inventory from "../inventory.js";
 import type * as lib_combatEffects from "../lib/combatEffects.js";
@@ -23,6 +24,8 @@ import type * as presence from "../presence.js";
 import type * as pvp from "../pvp.js";
 import type * as quests from "../quests.js";
 import type * as social from "../social.js";
+import type * as trade from "../trade.js";
+import type * as worldBoss from "../worldBoss.js";
 
 import type {
   ApiFromModules,
@@ -38,6 +41,7 @@ declare const fullApi: ApiFromModules<{
   dungeons: typeof dungeons;
   events: typeof events;
   friends: typeof friends;
+  guildWars: typeof guildWars;
   havens: typeof havens;
   inventory: typeof inventory;
   "lib/combatEffects": typeof lib_combatEffects;
@@ -46,6 +50,8 @@ declare const fullApi: ApiFromModules<{
   pvp: typeof pvp;
   quests: typeof quests;
   social: typeof social;
+  trade: typeof trade;
+  worldBoss: typeof worldBoss;
 }>;
 
 /**

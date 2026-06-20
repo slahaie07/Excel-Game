@@ -19,6 +19,7 @@ import EventsScreen from "./screens/EventsScreen";
 import DailyRewardsScreen from "./screens/DailyRewardsScreen";
 import AchievementsScreen from "./screens/AchievementsScreen";
 import FriendsScreen from "./screens/FriendsScreen";
+import TradeScreen from "./screens/TradeScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import ChatOverlay from "./components/ChatOverlay";
 
@@ -43,13 +44,14 @@ const SCREENS = {
   daily: DailyRewardsScreen,
   achievements: AchievementsScreen,
   friends: FriendsScreen,
+  trade: TradeScreen,
   settings: SettingsScreen,
 } as const;
 
 const IN_GAME_SCREENS = new Set([
   "world", "combat", "inventory", "quests", "guild", "marketplace",
   "professions", "pvp", "dungeons", "pets", "haven", "events",
-  "daily", "achievements", "friends", "settings",
+  "daily", "achievements", "friends", "trade", "settings",
 ]);
 
 export default function App() {

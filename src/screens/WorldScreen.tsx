@@ -9,6 +9,7 @@ import { IsoWorldScene, createMonsterEntities, getClassIcon } from "../game/rend
 import { loadCharacter } from "../lib/characterStorage";
 import { isCloudCharacter, isConvexEnabled } from "../lib/convexUtils";
 import { CloudEncounterStarter } from "../components/CloudEncounterStarter";
+import { CloudWorldBoss } from "../components/CloudWorldBoss";
 import type { Id } from "../../convex/_generated/dataModel";
 import { getClassIcon as getClassIconFromData } from "../game/rendering/isometric";
 
@@ -174,6 +175,10 @@ export default function WorldScreen() {
           </div>
           <span className="text-aether-400 text-xs">→</span>
         </button>
+      )}
+
+      {isConvexEnabled() && isCloudCharacter(characterId) && (
+        <CloudWorldBoss characterId={characterId as Id<"characters">} />
       )}
 
       <div className="h-1 bg-aether-900">

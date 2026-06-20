@@ -55,13 +55,13 @@ export function GuildScreenUI({
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-aether-950">
+    <div className="flex-1 flex flex-col bg-aether-950 overflow-hidden">
       <div className="flex items-center gap-3 p-4 border-b border-aether-700/40">
         <button onClick={() => setScreen("world")} className="text-aether-400 text-xl">←</button>
         <h1 className="font-display text-xl font-bold">Guildes</h1>
         {cloud && <span className="ml-auto text-green-400/70 text-xs">☁️ Live</span>}
       </div>
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-4 min-h-0">
         <button onClick={() => setShowCreate(true)} className="btn-primary w-full mb-4">Créer une guilde</button>
         {error && <p className="text-red-400 text-sm mb-2">{error}</p>}
         {loading && <p className="text-aether-400 text-sm text-center">Chargement...</p>}

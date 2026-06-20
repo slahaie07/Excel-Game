@@ -8,6 +8,7 @@ import { CLASSES } from "../game/data";
 export default function CloudFriends() {
   const characterId = useGameStore((s) => s.characterId)!;
   const setScreen = useGameStore((s) => s.setScreen);
+  const setTradePartner = useGameStore((s) => s.setTradePartner);
   const [searchName, setSearchName] = useState("");
   const [error, setError] = useState("");
 
@@ -53,6 +54,17 @@ export default function CloudFriends() {
                 <p className="font-bold text-white text-sm">{f.name}</p>
                 <p className="text-aether-500 text-xs">Niv. {f.level}</p>
               </div>
+              {f.status === "accepted" && !f.isIncoming && (
+                <button
+                  onClick={() => {
+                    setTradePartner(f.friendId);
+                    setScreen("trade");
+                  }}
+                  className="btn-secondary text-xs py-1 px-2"
+                >
+                  Échanger
+                </button>
+              )}
               {f.isIncoming && f.status === "pending" && (
                 <button
                   onClick={() => void acceptFriend({ characterId: characterId as Id<"characters">, friendId: f.friendId })}

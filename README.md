@@ -35,9 +35,12 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Craft : Alchimie, Forge, Joaillerie
 - 3 métiers max par personnage
 
-### Social & multijoueur (v1.0)
+### Social & multijoueur (v1.2)
 - Mode **hybride** : jeu solo hors-ligne + sync cloud Convex
 - Chat temps réel (global, zone, guilde, trade)
+- **Échange direct** joueur-à-joueur (`convex/trade.ts`)
+- **Guerres de guildes** 24h avec scores (`convex/guildWars.ts`)
+- **Boss monde** partagé — Colosse d'Aether (`convex/worldBoss.ts`)
 - Présence joueurs en ligne par zone (avatars sur la carte)
 - Guildes cloud (création, adhésion, liste)
 - Marché d'Halan synchronisé (annonces Convex)
@@ -133,7 +136,8 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Multijoueur Convex temps réel complet (v1.0)
 - [x] Combat cloud avancé + donjons coop (v1.1)
 - [x] CI GitHub Actions + tests Vitest (v1.1)
-- [ ] Guerres de guildes, trade direct, boss monde (v1.2+)
+- [x] Guerres de guildes, trade direct, boss monde (v1.2)
+- [ ] Raids 8 joueurs, housing cloud sync (v1.3+)
 
 ## Licence
 
