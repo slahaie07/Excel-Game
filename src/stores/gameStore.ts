@@ -26,7 +26,8 @@ export type GameScreen =
   | "achievements"
   | "friends"
   | "trade"
-  | "settings";
+  | "settings"
+  | "hall-of-fame";
 
 interface GameState {
   screen: GameScreen;

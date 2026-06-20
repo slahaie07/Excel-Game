@@ -4,6 +4,7 @@ import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useGameStore } from "../stores/gameStore";
 import { FURNITURE, GUILD_HALL_EMOTES, getFurnitureById } from "../game/data";
+import { getGuildCosmeticById } from "../game/data/guildCosmetics";
 
 const GUILD_FURNITURE_IDS = [
   "lit_cristal",
@@ -51,6 +52,7 @@ export default function CloudGuildHallScreen() {
   const visitedRef = useRef(false);
 
   const guild = useQuery(api.social.getGuild, isOwnGuild ? { guildId } : "skip");
+  const guildCosmetics = useQuery(api.guildCosmetics.getGuildCosmetics, { guildId });
   const ownHall = useQuery(api.guildHall.getGuildHall, isOwnGuild ? { guildId } : "skip");
   const publicHall = useQuery(api.guildHall.getGuildHallPublic, !isOwnGuild ? { guildId } : "skip");
   const hall = isOwnGuild ? ownHall : publicHall;
@@ -87,6 +89,10 @@ export default function CloudGuildHallScreen() {
   const visitors = hall?.visitors ?? 0;
   const guildName = isOwnGuild ? guild?.name : publicHall?.guildName;
   const guildTag = isOwnGuild ? guild?.tag : publicHall?.guildTag;
+  const displayEmblem = guildCosmetics?.displayEmblem ?? "🏰";
+  const equippedBanner = guildCosmetics?.equippedBanner
+    ? getGuildCosmeticById(guildCosmetics.equippedBanner)
+    : null;
   const nextUpgrade = isOwnGuild && level < 3 ? getGuildHallLevel(level + 1) : null;
 
   const handleBuy = async (itemId: string) => {
@@ -175,9 +181,12 @@ export default function CloudGuildHallScreen() {
       <div className="flex items-center gap-3 p-4 border-b border-aether-700/40">
         <button onClick={back} className="text-aether-400 text-xl">←</button>
         <div>
-          <h1 className="font-display text-xl font-bold">🏰 Guild Hall</h1>
+          <h1 className="font-display text-xl font-bold">{displayEmblem} Guild Hall</h1>
           {guildTag && (
             <p className="text-aether-500 text-xs">[{guildTag}] {guildName}</p>
+          )}
+          {equippedBanner && (
+            <p className="text-crystal-gold text-xs mt-0.5">{equippedBanner.icon} {equippedBanner.name}</p>
           )}
         </div>
         {viewingGuildHallId && myGuildId && (

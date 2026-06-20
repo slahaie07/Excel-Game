@@ -171,6 +171,12 @@ export default defineSchema({
     memberCount: v.number(),
     maxMembers: v.number(),
     emblem: v.string(),
+    cosmetics: v.optional(v.object({
+      unlockedEmblems: v.array(v.string()),
+      unlockedBanners: v.array(v.string()),
+      equippedEmblem: v.optional(v.string()),
+      equippedBanner: v.optional(v.string()),
+    })),
     createdAt: v.number(),
   })
     .index("by_name", ["name"])
@@ -513,4 +519,54 @@ export default defineSchema({
   })
     .index("by_character", ["characterId"])
     .index("by_token", ["token"]),
+
+  pvpTournaments: defineTable({
+    name: v.string(),
+    weekNumber: v.number(),
+    status: v.union(v.literal("active"), v.literal("ended")),
+    startsAt: v.number(),
+    endsAt: v.number(),
+  }).index("by_status", ["status"]),
+
+  pvpTournamentEntries: defineTable({
+    tournamentId: v.id("pvpTournaments"),
+    characterId: v.id("characters"),
+    characterName: v.string(),
+    classId: v.string(),
+    wins: v.number(),
+    losses: v.number(),
+    points: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_tournament", ["tournamentId"])
+    .index("by_tournament_and_character", ["tournamentId", "characterId"]),
+
+  pvpTournamentRewards: defineTable({
+    tournamentId: v.id("pvpTournaments"),
+    characterId: v.id("characters"),
+    rank: v.number(),
+    eclatsReward: v.number(),
+    claimedAt: v.optional(v.number()),
+  })
+    .index("by_character", ["characterId"])
+    .index("by_tournament_and_character", ["tournamentId", "characterId"]),
+
+  hallOfFameEntries: defineTable({
+    category: v.union(
+      v.literal("pvp_legend"),
+      v.literal("season_champion"),
+      v.literal("tournament_champion"),
+      v.literal("raid_hero"),
+      v.literal("live_legend"),
+      v.literal("guild_war_champion")
+    ),
+    characterId: v.optional(v.id("characters")),
+    guildId: v.optional(v.id("guilds")),
+    displayName: v.string(),
+    subtitle: v.string(),
+    value: v.number(),
+    icon: v.string(),
+    achievedAt: v.number(),
+    periodLabel: v.string(),
+  }).index("by_category", ["category", "achievedAt"]),
 });

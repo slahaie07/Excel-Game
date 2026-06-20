@@ -5,6 +5,7 @@ import type { Id } from "../../convex/_generated/dataModel";
 import { useGameStore } from "../stores/gameStore";
 import { isCloudCharacter } from "../lib/convexUtils";
 import { formatCountdown, warProgressPercent } from "../lib/formatTime";
+import { GUILD_EMBLEMS, GUILD_BANNERS } from "../game/data/guildCosmetics";
 import { GuildScreenUI } from "./GuildScreenUI";
 
 function CloudGuild() {
@@ -33,9 +34,21 @@ function CloudGuild() {
   const joinGuildMutation = useMutation(api.social.joinGuild);
   const declareWarMutation = useMutation(api.guildWars.declareWar);
   const contributeMutation = useMutation(api.guildWars.contributeToWar);
+  const purchaseGuildCosmetic = useMutation(api.guildCosmetics.purchaseGuildCosmetic);
+  const equipGuildCosmetic = useMutation(api.guildCosmetics.equipGuildCosmetic);
+  const guildCosmetics = useQuery(
+    api.guildCosmetics.getGuildCosmetics,
+    guildId ? { guildId: guildId as Id<"guilds"> } : "skip"
+  );
+  const myMembership = useQuery(
+    api.guildCosmetics.getMyGuildMembership,
+    { characterId: characterId as Id<"characters"> }
+  );
   const [error, setError] = useState("");
   const [targetGuildId, setTargetGuildId] = useState("");
   const [warMsg, setWarMsg] = useState("");
+  const [cosmeticMsg, setCosmeticMsg] = useState("");
+  const [showCosmetics, setShowCosmetics] = useState(false);
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
@@ -94,6 +107,122 @@ function CloudGuild() {
           >
             🏰 Guild Hall partagé
           </button>
+          {(myMembership?.role === "leader" || myMembership?.role === "officer") && (
+            <div className="card border-crystal-gold/30 space-y-2">
+              <button
+                onClick={() => setShowCosmetics(!showCosmetics)}
+                className="w-full flex items-center justify-between text-left"
+              >
+                <span className="text-crystal-gold text-xs font-bold uppercase">🎨 Cosmétiques de guilde</span>
+                <span className="text-aether-500 text-xs">💰 {guildCosmetics?.treasury ?? 0}</span>
+              </button>
+              {showCosmetics && (
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-aether-400 text-[10px] mb-1 uppercase">Emblèmes</p>
+                    {GUILD_EMBLEMS.map((item) => {
+                      const owned = guildCosmetics?.unlockedEmblems.includes(item.id);
+                      const equipped = guildCosmetics?.equippedEmblem === item.id;
+                      return (
+                        <div key={item.id} className="flex items-center gap-2 py-1">
+                          <span>{item.icon}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-white text-xs">{item.name}</p>
+                            <p className="text-aether-600 text-[10px]">
+                              {item.cost > 0 ? `💰 ${item.cost}` : "Récompense guerre"}
+                            </p>
+                          </div>
+                          {owned ? (
+                            <button
+                              onClick={() => {
+                                void equipGuildCosmetic({
+                                  guildId: guildId as Id<"guilds">,
+                                  characterId: characterId as Id<"characters">,
+                                  cosmeticId: equipped ? null : item.id,
+                                  slot: "emblem",
+                                }).then(() => setCosmeticMsg(equipped ? "Emblème retiré" : "Emblème équipé"))
+                                  .catch((e) => setCosmeticMsg(e instanceof Error ? e.message : "Erreur"));
+                              }}
+                              className={`text-[10px] py-0.5 px-2 rounded ${equipped ? "bg-crystal-gold text-black" : "btn-secondary"}`}
+                            >
+                              {equipped ? "Équipé" : "Équiper"}
+                            </button>
+                          ) : item.cost > 0 ? (
+                            <button
+                              onClick={() => {
+                                void purchaseGuildCosmetic({
+                                  guildId: guildId as Id<"guilds">,
+                                  characterId: characterId as Id<"characters">,
+                                  cosmeticId: item.id,
+                                }).then(() => setCosmeticMsg(`${item.name} acheté !`))
+                                  .catch((e) => setCosmeticMsg(e instanceof Error ? e.message : "Erreur"));
+                              }}
+                              className="btn-primary text-[10px] py-0.5 px-2"
+                            >
+                              Acheter
+                            </button>
+                          ) : (
+                            <span className="text-aether-600 text-[10px]">Verrouillé</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div>
+                    <p className="text-aether-400 text-[10px] mb-1 uppercase">Bannières</p>
+                    {GUILD_BANNERS.map((item) => {
+                      const owned = guildCosmetics?.unlockedBanners.includes(item.id);
+                      const equipped = guildCosmetics?.equippedBanner === item.id;
+                      return (
+                        <div key={item.id} className="flex items-center gap-2 py-1">
+                          <span>{item.icon}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-white text-xs">{item.name}</p>
+                            <p className="text-aether-600 text-[10px]">
+                              {item.cost > 0 ? `💰 ${item.cost}` : "Récompense guerre"}
+                            </p>
+                          </div>
+                          {owned ? (
+                            <button
+                              onClick={() => {
+                                void equipGuildCosmetic({
+                                  guildId: guildId as Id<"guilds">,
+                                  characterId: characterId as Id<"characters">,
+                                  cosmeticId: equipped ? null : item.id,
+                                  slot: "banner",
+                                }).then(() => setCosmeticMsg(equipped ? "Bannière retirée" : "Bannière équipée"))
+                                  .catch((e) => setCosmeticMsg(e instanceof Error ? e.message : "Erreur"));
+                              }}
+                              className={`text-[10px] py-0.5 px-2 rounded ${equipped ? "bg-crystal-gold text-black" : "btn-secondary"}`}
+                            >
+                              {equipped ? "Équipée" : "Équiper"}
+                            </button>
+                          ) : item.cost > 0 ? (
+                            <button
+                              onClick={() => {
+                                void purchaseGuildCosmetic({
+                                  guildId: guildId as Id<"guilds">,
+                                  characterId: characterId as Id<"characters">,
+                                  cosmeticId: item.id,
+                                }).then(() => setCosmeticMsg(`${item.name} achetée !`))
+                                  .catch((e) => setCosmeticMsg(e instanceof Error ? e.message : "Erreur"));
+                              }}
+                              className="btn-primary text-[10px] py-0.5 px-2"
+                            >
+                              Acheter
+                            </button>
+                          ) : (
+                            <span className="text-aether-600 text-[10px]">Verrouillée</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {cosmeticMsg && <p className="text-green-400 text-[10px]">{cosmeticMsg}</p>}
+                </div>
+              )}
+            </div>
+          )}
           <h2 className="font-display font-bold text-white text-sm">⚔️ Guerres de guildes</h2>
           {warSeason && (
             <div className="card border-red-500/30 bg-red-950/20">

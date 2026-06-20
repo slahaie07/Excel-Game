@@ -4,6 +4,7 @@ import type { MutationCtx } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
 import { getBonusCosmeticForRank, getSeasonRewardForRank } from "./lib/seasonRewards";
 import { getSeasonTheme } from "./lib/seasonThemes";
+import { addHallOfFameEntry } from "./lib/hallOfFame";
 
 type CharacterCosmetics = {
   titles: string[];
@@ -96,6 +97,18 @@ export async function finalizeSeasonRewards(
       cosmeticIds,
       rewardLabel: tier.label,
     });
+
+    if (rank === 1) {
+      await addHallOfFameEntry(ctx, {
+        category: "season_champion",
+        characterId: entry.characterId,
+        displayName: entry.characterName,
+        subtitle: `Rating ${entry.rating} • ${entry.wins}V / ${entry.losses}D`,
+        value: entry.rating,
+        icon: "👑",
+        periodLabel: seasonName,
+      });
+    }
   }
 }
 

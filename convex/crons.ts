@@ -24,4 +24,11 @@ crons.interval(
   {}
 );
 
+crons.interval(
+  "pvp weekly tournaments",
+  { hours: 12 },
+  internal.pvpTournaments.ensureActiveTournament,
+  {}
+);
+
 export default crons;

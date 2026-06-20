@@ -102,6 +102,9 @@ export default function SettingsScreen() {
               <button onClick={() => setScreen("live-events")} className="w-full text-left text-aether-300 text-sm py-1">
                 🌐 Événements live
               </button>
+              <button onClick={() => setScreen("hall-of-fame")} className="w-full text-left text-aether-300 text-sm py-1">
+                🏛️ Panthéon cross-serveur
+              </button>
             </>
           )}
         </section>
@@ -110,7 +113,7 @@ export default function SettingsScreen() {
           Déconnexion
         </button>
 
-        <p className="text-aether-600 text-xs text-center">Aetheris v1.8 — L&apos;Éveil des Cristaux</p>
+        <p className="text-aether-600 text-xs text-center">Aetheris v1.9 — L&apos;Héritage des Légendes</p>
       </div>
     </div>
   );

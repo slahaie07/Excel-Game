@@ -9,6 +9,33 @@ export interface PvpLeaderboardEntry {
   classId: string;
 }
 
+export interface TournamentInfo {
+  name: string;
+  weekNumber: number;
+  endsAt: number;
+  daysLeft: number;
+}
+
+export interface TournamentEntry {
+  wins: number;
+  losses: number;
+  points: number;
+  rank: number;
+}
+
+export interface TournamentReward {
+  _id: string;
+  rank: number;
+  eclatsReward: number;
+}
+
+export interface TournamentLeaderboardEntry {
+  name: string;
+  classId: string;
+  wins: number;
+  points: number;
+}
+
 export interface SeasonInfo {
   name: string;
   seasonNumber: number;
@@ -60,6 +87,12 @@ interface PvPScreenUIProps {
   seasonLeaderboard?: PvpLeaderboardEntry[];
   season?: SeasonInfo | null;
   seasonRating?: SeasonRating | null;
+  tournament?: TournamentInfo | null;
+  tournamentEntry?: TournamentEntry | null;
+  tournamentLeaderboard?: TournamentLeaderboardEntry[];
+  pendingTournamentRewards?: TournamentReward[];
+  tournamentClaimMessage?: string;
+  onClaimTournamentReward?: (rewardId: string) => void;
   pendingRewards?: SeasonReward[];
   cosmetics?: EquippedCosmetics | null;
   claimMessage?: string;
@@ -87,6 +120,12 @@ export function PvPScreenUI({
   seasonLeaderboard,
   season,
   seasonRating,
+  tournament,
+  tournamentEntry,
+  tournamentLeaderboard,
+  pendingTournamentRewards,
+  tournamentClaimMessage,
+  onClaimTournamentReward,
   pendingRewards,
   cosmetics,
   claimMessage,
@@ -134,6 +173,61 @@ export function PvPScreenUI({
               </div>
             ))}
             {claimMessage && <p className="text-green-400 text-xs">{claimMessage}</p>}
+          </div>
+        )}
+
+        {(pendingTournamentRewards ?? []).length > 0 && (
+          <div className="card border-red-500/40 bg-red-950/20 space-y-2">
+            <p className="text-red-300 text-xs font-bold uppercase">Récompenses tournoi</p>
+            {pendingTournamentRewards!.map((reward) => (
+              <div key={reward._id} className="flex items-center gap-3">
+                <div className="flex-1">
+                  <p className="text-white text-sm font-semibold">Tournoi hebdo</p>
+                  <p className="text-aether-400 text-xs">
+                    #{reward.rank} • ✦ {reward.eclatsReward}
+                  </p>
+                </div>
+                <button
+                  onClick={() => onClaimTournamentReward?.(reward._id)}
+                  className="btn-primary text-xs py-1 px-3"
+                >
+                  Réclamer
+                </button>
+              </div>
+            ))}
+            {tournamentClaimMessage && <p className="text-green-400 text-xs">{tournamentClaimMessage}</p>}
+          </div>
+        )}
+
+        {tournament && (
+          <div className="card border-red-500/30 bg-red-950/15">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-red-300 text-xs font-bold uppercase tracking-wide">🏆 Tournoi hebdo</p>
+                <p className="font-display font-bold text-white">{tournament.name}</p>
+                <p className="text-aether-400 text-xs mt-1">
+                  +3 pts par victoire • Top 5 récompensés
+                </p>
+                <p className="text-aether-400 text-xs">
+                  {tournament.daysLeft} jour{tournament.daysLeft > 1 ? "s" : ""} restant{tournament.daysLeft > 1 ? "s" : ""}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-orange-400 text-xs">⏱ {formatCountdown(tournament.endsAt, now)}</p>
+                {tournamentEntry ? (
+                  <p className="text-crystal-gold font-bold text-sm mt-1">
+                    #{tournamentEntry.rank} • {tournamentEntry.points} pts
+                  </p>
+                ) : (
+                  <p className="text-aether-500 text-xs mt-1">Jouez pour vous classer</p>
+                )}
+              </div>
+            </div>
+            {tournamentEntry && (
+              <p className="text-aether-500 text-xs mt-2">
+                {tournamentEntry.wins}V / {tournamentEntry.losses}D
+              </p>
+            )}
           </div>
         )}
 
@@ -269,6 +363,29 @@ export function PvPScreenUI({
               : "Recherche d'adversaire..."
             : `Lancer un ${mode}`}
         </button>
+
+        {(tournamentLeaderboard ?? []).length > 0 && (
+          <div>
+            <h2 className="text-aether-400 text-sm mb-2">Classement tournoi</h2>
+            {tournamentLeaderboard!.map((entry, i) => {
+              const cls = CLASSES.find((c) => c.id === entry.classId);
+              return (
+                <div
+                  key={`t-${entry.name}-${i}`}
+                  className={`card mb-1 flex items-center gap-3 py-2 ${entry.name === characterName ? "border-red-500" : ""}`}
+                >
+                  <span className="text-aether-500 w-6 text-center font-bold">#{i + 1}</span>
+                  <span className="text-lg">{cls?.icon}</span>
+                  <div className="flex-1">
+                    <p className="text-white text-sm font-semibold">{entry.name}</p>
+                    <p className="text-aether-500 text-xs">{entry.wins} victoires</p>
+                  </div>
+                  <span className="text-crystal-gold font-bold text-sm">{entry.points} pts</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         <div>
           <div className="flex items-center justify-between mb-2">

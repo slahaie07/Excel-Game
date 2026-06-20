@@ -4,7 +4,7 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v1.8)
+## Systèmes implémentés (v1.9)
 
 | Système | Statut | Description |
 |---------|--------|-------------|
@@ -175,5 +175,14 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Guerres | `guildWars.ts` | Finalisation auto, points saison, notifications victoire |
 | Succès | `lib/achievementUnlock.ts` | Déblocage auto combat/PvP/raid/guerre/live |
 | Raids | `game/data/raids.ts` | Étreinte du Nexus — raid endgame 8 phases |
+
+## v1.9 — Tournois, Panthéon & cosmétiques guilde
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Tournois PvP | `pvpTournaments.ts` | Tournois 7j, points +3/victoire, récompenses top 5 |
+| Panthéon | `hallOfFame.ts` | Hall of fame cross-serveur par catégorie |
+| Cosmétiques guilde | `guildCosmetics.ts` | Emblèmes/bannières, achat trésor, équipement |
+| Crons | `crons.ts` | Rotation tournoi hebdo (12h) |
 
 Voir `docs/DEPLOYMENT.md`.

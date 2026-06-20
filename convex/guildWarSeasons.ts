@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { internalMutation, mutation, query } from "./_generated/server";
 import type { MutationCtx } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
+import { addHallOfFameEntry } from "./lib/hallOfFame";
 
 const GUILD_WAR_SEASON_MS = 14 * 24 * 60 * 60 * 1000;
 const TREASURY_REWARDS = [5000, 3000, 1500];
@@ -55,6 +56,35 @@ async function finalizeGuildWarSeasonInternal(
       await ctx.db.patch("guilds", entry.guildId, {
         treasury: guild.treasury + reward,
       });
+
+      if (i === 0) {
+        await addHallOfFameEntry(ctx, {
+          category: "guild_war_champion",
+          guildId: entry.guildId,
+          displayName: entry.guildName,
+          subtitle: `${entry.warWins} victoires • ${entry.warPoints} pts`,
+          value: entry.warPoints,
+          icon: "🏰",
+          periodLabel: "Campagne de guerre",
+        });
+
+        const current = guild.cosmetics ?? {
+          unlockedEmblems: [] as string[],
+          unlockedBanners: [] as string[],
+        };
+        const emblems = new Set(current.unlockedEmblems);
+        const banners = new Set(current.unlockedBanners);
+        emblems.add("emblem_war_champion");
+        banners.add("banner_war_champion");
+        await ctx.db.patch("guilds", entry.guildId, {
+          cosmetics: {
+            unlockedEmblems: [...emblems],
+            unlockedBanners: [...banners],
+            equippedEmblem: current.equippedEmblem,
+            equippedBanner: current.equippedBanner,
+          },
+        });
+      }
     }
   }
 }

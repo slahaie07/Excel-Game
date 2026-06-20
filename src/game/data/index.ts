@@ -12,6 +12,13 @@ export { PETS, getPetById } from "./pets";
 export { FURNITURE, HAVEN_LEVELS, getFurnitureById, getHavenLevel } from "./housing";
 export { COSMETICS, GUILD_HALL_EMOTES, getCosmeticById } from "./cosmetics";
 export {
+  GUILD_EMBLEMS,
+  GUILD_BANNERS,
+  ALL_GUILD_COSMETICS,
+  getGuildCosmeticById,
+  type GuildCosmeticDefinition,
+} from "./guildCosmetics";
+export {
   SEASONAL_EVENTS,
   getActiveEvent,
   getEventById,

@@ -19,6 +19,7 @@ export default function CloudPvPScreen() {
   const [searching, setSearching] = useState(false);
   const [error, setError] = useState("");
   const [claimMessage, setClaimMessage] = useState("");
+  const [tournamentClaimMessage, setTournamentClaimMessage] = useState("");
   const [now, setNow] = useState(Date.now());
   const matchStarted = useRef(false);
 
@@ -36,6 +37,16 @@ export default function CloudPvPScreen() {
   );
   const pendingRewards = useQuery(api.cosmetics.getPendingSeasonRewards, { characterId });
   const myCosmetics = useQuery(api.cosmetics.getMyCosmetics, { characterId });
+  const activeTournament = useQuery(api.pvpTournaments.getActiveTournament, {});
+  const tournamentLeaderboard = useQuery(
+    api.pvpTournaments.getTournamentLeaderboard,
+    activeTournament ? { tournamentId: activeTournament._id, limit: 10 } : "skip"
+  );
+  const myTournamentEntry = useQuery(
+    api.pvpTournaments.getMyTournamentEntry,
+    activeTournament ? { tournamentId: activeTournament._id, characterId } : "skip"
+  );
+  const pendingTournamentRewards = useQuery(api.pvpTournaments.getPendingTournamentRewards, { characterId });
   const pendingMatch = useQuery(api.pvp.getPendingMatch, { characterId });
   const queueStatus = useQuery(
     api.pvp.getQueueStatus,
@@ -45,7 +56,9 @@ export default function CloudPvPScreen() {
   const leaveQueue = useMutation(api.pvp.leaveQueue);
   const startPvpCombat = useMutation(api.combat.startPvpCombat);
   const initSeason = useMutation(api.seasons.initSeason);
+  const initTournament = useMutation(api.pvpTournaments.initTournament);
   const claimReward = useMutation(api.cosmetics.claimSeasonReward);
+  const claimTournamentReward = useMutation(api.pvpTournaments.claimTournamentReward);
   const equipCosmetic = useMutation(api.cosmetics.equipCosmetic);
 
   useEffect(() => {
@@ -58,6 +71,12 @@ export default function CloudPvPScreen() {
       void initSeason({});
     }
   }, [activeSeason, initSeason]);
+
+  useEffect(() => {
+    if (activeTournament === null) {
+      void initTournament({});
+    }
+  }, [activeTournament, initTournament]);
 
   const rating = cloudChar?.pvpRating ?? char?.pvpRating ?? 1000;
   const wins = cloudChar?.pvpWins ?? char?.pvpWins ?? 0;
@@ -182,6 +201,34 @@ export default function CloudPvPScreen() {
         classId: e.classId,
       }))}
       seasonRating={mySeasonRating ?? null}
+      tournament={activeTournament ? {
+        name: activeTournament.name,
+        weekNumber: activeTournament.weekNumber,
+        endsAt: activeTournament.endsAt,
+        daysLeft: activeTournament.daysLeft,
+      } : null}
+      tournamentEntry={myTournamentEntry ?? null}
+      tournamentLeaderboard={(tournamentLeaderboard ?? []).map((e) => ({
+        name: e.characterName,
+        classId: e.classId,
+        wins: e.wins,
+        points: e.points,
+      }))}
+      pendingTournamentRewards={pendingTournamentRewards ?? []}
+      tournamentClaimMessage={tournamentClaimMessage}
+      onClaimTournamentReward={(rewardId) => {
+        void (async () => {
+          try {
+            const result = await claimTournamentReward({
+              characterId,
+              rewardId: rewardId as Id<"pvpTournamentRewards">,
+            });
+            setTournamentClaimMessage(`+${result.eclats} éclats (rang #${result.rank}) !`);
+          } catch (e) {
+            setTournamentClaimMessage(e instanceof Error ? e.message : "Erreur");
+          }
+        })();
+      }}
       pendingRewards={pendingRewards ?? []}
       cosmetics={myCosmetics ?? null}
       claimMessage={claimMessage}
