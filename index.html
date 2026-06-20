@@ -2,21 +2,1276 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <title>Excel Game</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101827">
+  <title>Chroniques d'Astralys - RPG tactique mobile</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 2em; background: #f5f5f5; }
-    h1 { color: #2675A6; }
-    .game-box { background: #fff; padding: 2em; border-radius: 10px; box-shadow: 0 2px 8px #0001; max-width: 600px; margin: auto; }
-    button { font-size: 1.1em; margin: 1em 0; }
+    :root {
+      --bg: #101827;
+      --panel: #162238;
+      --panel-2: #21304c;
+      --line: rgba(255, 255, 255, 0.12);
+      --text: #f8fbff;
+      --muted: #a9b8d1;
+      --gold: #f7c46c;
+      --aqua: #62e6ff;
+      --green: #69e6a3;
+      --red: #ff7373;
+      --purple: #b692ff;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(98, 230, 255, 0.16), transparent 32rem),
+        radial-gradient(circle at 90% 10%, rgba(182, 146, 255, 0.14), transparent 34rem),
+        linear-gradient(145deg, #0a101d 0%, var(--bg) 52%, #07121a 100%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app-shell {
+      width: min(100%, 560px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 14px 14px 92px;
+      position: relative;
+    }
+
+    .hero-card,
+    .panel,
+    .modal-card {
+      border: 1px solid var(--line);
+      background: linear-gradient(160deg, rgba(33, 48, 76, 0.92), rgba(15, 26, 45, 0.94));
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      padding: 18px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -70px -80px auto;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      background: rgba(98, 230, 255, 0.11);
+      filter: blur(2px);
+    }
+
+    .eyebrow {
+      color: var(--aqua);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      margin: 0 0 7px;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      font-size: clamp(1.75rem, 7vw, 2.45rem);
+      line-height: 1.02;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+    }
+
+    h3 {
+      font-size: 1rem;
+      margin-bottom: 7px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .top-grid,
+    .resource-grid,
+    .card-grid,
+    .action-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .top-grid {
+      grid-template-columns: 1fr 1fr;
+      margin-top: 14px;
+    }
+
+    .resource-grid {
+      grid-template-columns: repeat(4, 1fr);
+      margin: 14px 0;
+    }
+
+    .stat-pill,
+    .resource,
+    .tag,
+    .skill-btn,
+    .nav-btn,
+    .item-card,
+    .quest-card,
+    .zone-card,
+    .codex-card {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 18px;
+    }
+
+    .stat-pill,
+    .resource {
+      padding: 10px;
+    }
+
+    .stat-pill strong,
+    .resource strong {
+      display: block;
+      font-size: 1.05rem;
+    }
+
+    .stat-pill span,
+    .resource span {
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .panel {
+      margin-top: 12px;
+      padding: 16px;
+    }
+
+    .progress {
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+
+    .progress > span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--aqua), var(--green));
+    }
+
+    .btn {
+      min-height: 44px;
+      padding: 11px 14px;
+      border-radius: 16px;
+      color: #09111c;
+      background: linear-gradient(135deg, var(--gold), #ffdf9a);
+      font-weight: 850;
+      box-shadow: 0 12px 28px rgba(247, 196, 108, 0.2);
+    }
+
+    .btn.secondary {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: none;
+      border: 1px solid var(--line);
+    }
+
+    .btn.danger {
+      color: #fff;
+      background: linear-gradient(135deg, #ff7373, #b83054);
+    }
+
+    .btn:disabled,
+    .skill-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.45;
+    }
+
+    .action-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .card-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .zone-card,
+    .item-card,
+    .quest-card,
+    .codex-card {
+      padding: 13px;
+    }
+
+    .zone-card.active {
+      outline: 2px solid rgba(98, 230, 255, 0.7);
+    }
+
+    .split {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 9px;
+    }
+
+    .tag {
+      padding: 6px 9px;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .log {
+      display: grid;
+      gap: 8px;
+      max-height: 152px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .log p {
+      margin: 0;
+      padding: 9px 10px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .mobile-nav {
+      position: fixed;
+      z-index: 5;
+      left: 50%;
+      bottom: max(12px, env(safe-area-inset-bottom));
+      width: min(calc(100% - 18px), 542px);
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(9, 17, 30, 0.86);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
+    }
+
+    .nav-btn {
+      min-height: 52px;
+      color: var(--muted);
+      background: transparent;
+      font-size: 0.7rem;
+      font-weight: 800;
+    }
+
+    .nav-btn.active {
+      color: #08111c;
+      background: linear-gradient(135deg, var(--aqua), var(--green));
+    }
+
+    .nav-btn span {
+      display: block;
+      font-size: 1.18rem;
+      margin-bottom: 2px;
+    }
+
+    .modal {
+      position: fixed;
+      z-index: 10;
+      inset: 0;
+      display: grid;
+      place-items: end center;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.62);
+    }
+
+    .modal-card {
+      width: min(100%, 560px);
+      max-height: 92vh;
+      overflow: auto;
+      padding: 18px;
+    }
+
+    .name-input {
+      width: 100%;
+      min-height: 48px;
+      margin: 8px 0 14px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.08);
+      outline: 0;
+    }
+
+    .class-card {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 10px;
+      text-align: left;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .class-card strong {
+      color: var(--gold);
+    }
+
+    .combat-head {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .combatant {
+      padding: 10px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--line);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      margin: 14px 0;
+      touch-action: manipulation;
+    }
+
+    .cell {
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--muted);
+      background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: clamp(1rem, 5vw, 1.45rem);
+      transition: transform 120ms ease, border-color 120ms ease;
+    }
+
+    .cell:active {
+      transform: scale(0.95);
+    }
+
+    .cell.player {
+      border-color: rgba(98, 230, 255, 0.85);
+      background: rgba(98, 230, 255, 0.18);
+    }
+
+    .cell.enemy {
+      border-color: rgba(255, 115, 115, 0.85);
+      background: rgba(255, 115, 115, 0.14);
+    }
+
+    .skill-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .skill-btn {
+      min-height: 60px;
+      padding: 8px;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .skill-btn.active {
+      border-color: var(--gold);
+      background: rgba(247, 196, 108, 0.16);
+    }
+
+    .skill-btn small {
+      display: block;
+      color: var(--muted);
+      font-weight: 700;
+      margin-top: 3px;
+    }
+
+    .empty {
+      padding: 18px;
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .rarity-rare {
+      color: var(--aqua);
+    }
+
+    .rarity-epic {
+      color: var(--purple);
+    }
+
+    .rarity-common {
+      color: var(--muted);
+    }
+
+    @media (min-width: 620px) {
+      .app-shell {
+        padding-top: 24px;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="game-box">
-    <h1>Bienvenue sur le Excel Game !</h1>
-    <p>Pour jouer, personnalisez ce fichier avec votre propre contenu.</p>
-    <p>Ce fichier <strong>index.html</strong> s'affichera dans votre navigateur dès que vous l'ouvrirez.</p>
-    <button onclick="alert('Bravo, le jeu fonctionne !')">Testez le bouton</button>
-  </div>
+  <main id="app" class="app-shell" aria-live="polite"></main>
+  <script>
+    const SAVE_KEY = "astralys-save-v1";
+
+    const classes = {
+      aurora: {
+        name: "Lame d'Aurore",
+        icon: "⚔️",
+        text: "Dueliste agile qui grave la lumière dans l'acier.",
+        stats: { hp: 38, power: 8, wisdom: 4 },
+        skills: [
+          { id: "slash", name: "Entaille solaire", cost: 2, range: 1, damage: 11, type: "attack" },
+          { id: "dash", name: "Percée d'aube", cost: 3, range: 3, damage: 16, type: "attack" },
+          { id: "guard", name: "Garde opaline", cost: 2, range: 0, heal: 9, type: "heal" }
+        ]
+      },
+      mist: {
+        name: "Tisse-brume",
+        icon: "🌫️",
+        text: "Mage nomade qui plie la brume, les glyphes et les soins.",
+        stats: { hp: 31, power: 6, wisdom: 10 },
+        skills: [
+          { id: "bolt", name: "Éclat de brume", cost: 2, range: 4, damage: 9, type: "attack" },
+          { id: "nova", name: "Rosée astrale", cost: 3, range: 3, damage: 14, type: "attack" },
+          { id: "mend", name: "Voile réparateur", cost: 2, range: 0, heal: 13, type: "heal" }
+        ]
+      },
+      forge: {
+        name: "Forge-rune",
+        icon: "🔨",
+        text: "Artisan-combattant qui transforme les minerais en impacts.",
+        stats: { hp: 44, power: 7, wisdom: 5 },
+        skills: [
+          { id: "hammer", name: "Marteau-rune", cost: 2, range: 1, damage: 10, type: "attack" },
+          { id: "magnet", name: "Aimant de faille", cost: 3, range: 2, damage: 18, type: "attack" },
+          { id: "plate", name: "Plaque vivante", cost: 2, range: 0, heal: 10, type: "heal" }
+        ]
+      }
+    };
+
+    const zones = [
+      {
+        id: "sylve",
+        name: "Sylve des Lucioles",
+        danger: 1,
+        text: "Une forêt lumineuse où les mousses chantent quand on marche.",
+        enemy: "mousse",
+        loot: ["herbe-lune", "bois-songe"]
+      },
+      {
+        id: "salines",
+        name: "Salines du Verre",
+        danger: 2,
+        text: "Des lacs de sel et de cristal, balayés par des vents coupants.",
+        enemy: "golem",
+        loot: ["sel-bleu", "minerai-opale"]
+      },
+      {
+        id: "cendres",
+        name: "Archipel des Cendres",
+        danger: 3,
+        text: "Îles suspendues, dragons mineurs et ruines d'anciens ateliers.",
+        enemy: "mandragon",
+        loot: ["cendre-vive", "écaille-ambre"]
+      }
+    ];
+
+    const enemies = {
+      mousse: {
+        name: "Moussegriffe",
+        icon: "🍄",
+        hp: 28,
+        damage: 6,
+        range: 1,
+        xp: 28,
+        gold: 12,
+        drops: ["herbe-lune"]
+      },
+      golem: {
+        name: "Golem de Sel",
+        icon: "🪨",
+        hp: 44,
+        damage: 8,
+        range: 1,
+        xp: 46,
+        gold: 18,
+        drops: ["sel-bleu", "minerai-opale"]
+      },
+      mandragon: {
+        name: "Mandragon de Cendre",
+        icon: "🐉",
+        hp: 58,
+        damage: 11,
+        range: 2,
+        xp: 72,
+        gold: 31,
+        drops: ["cendre-vive", "écaille-ambre"]
+      }
+    };
+
+    const items = {
+      "herbe-lune": { name: "Herbe-lune", type: "ressource", rarity: "common", text: "Base des potions nomades." },
+      "bois-songe": { name: "Bois-songe", type: "ressource", rarity: "common", text: "Bois souple qui garde les rêves." },
+      "sel-bleu": { name: "Sel bleu", type: "ressource", rarity: "rare", text: "Cristal salin conducteur de magie." },
+      "minerai-opale": { name: "Minerai d'opale", type: "ressource", rarity: "rare", text: "Minerai utilisé pour les armes runiques." },
+      "cendre-vive": { name: "Cendre vive", type: "ressource", rarity: "epic", text: "Poudre chaude qui bouge seule." },
+      "écaille-ambre": { name: "Écaille ambre", type: "ressource", rarity: "epic", text: "Écaille légère et presque indestructible." },
+      "potion-lune": { name: "Potion de lune", type: "consommable", rarity: "common", text: "Rend 18 PV.", heal: 18 },
+      "amulette-sel": { name: "Amulette saline", type: "equipement", slot: "amulet", rarity: "rare", text: "+2 puissance, +8 PV.", power: 2, hp: 8 },
+      "marteau-ambre": { name: "Marteau d'ambre", type: "equipement", slot: "weapon", rarity: "epic", text: "+5 puissance.", power: 5, hp: 0 }
+    };
+
+    const recipes = [
+      { id: "potion-lune", name: "Potion de lune", job: "Alchimie", needs: { "herbe-lune": 2, "sel-bleu": 1 } },
+      { id: "amulette-sel", name: "Amulette saline", job: "Joaillerie", needs: { "sel-bleu": 2, "minerai-opale": 1 } },
+      { id: "marteau-ambre", name: "Marteau d'ambre", job: "Forge", needs: { "minerai-opale": 2, "cendre-vive": 2, "écaille-ambre": 1 } }
+    ];
+
+    const questTemplates = [
+      {
+        id: "q1",
+        title: "Premiers glyphes",
+        text: "Gagner 2 combats pour prouver que tu peux protéger les caravanes.",
+        type: "combat",
+        target: 2,
+        reward: { xp: 60, gold: 40, item: "potion-lune" }
+      },
+      {
+        id: "q2",
+        title: "Artisan de fortune",
+        text: "Récolter 4 ressources en explorant les régions d'Astralys.",
+        type: "gather",
+        target: 4,
+        reward: { xp: 45, gold: 25, item: "sel-bleu" }
+      },
+      {
+        id: "q3",
+        title: "Le premier chef-d'oeuvre",
+        text: "Fabriquer un objet de métier pour ouvrir l'accès aux commandes de guilde.",
+        type: "craft",
+        target: 1,
+        reward: { xp: 80, gold: 55, item: "minerai-opale" }
+      }
+    ];
+
+    const tips = [
+      "Astuce: en combat, clique une case vide proche pour te déplacer.",
+      "Les métiers donnent accès aux meilleurs équipements sans boutique payante.",
+      "Chaque zone possède ses ressources, monstres et futurs donjons.",
+      "Le prototype sauvegarde automatiquement la progression sur cet appareil."
+    ];
+
+    let state = loadGame();
+    let activeView = "accueil";
+
+    function freshGame(heroClass, name) {
+      const archetype = classes[heroClass];
+      return {
+        started: true,
+        day: 1,
+        player: {
+          name: name || "Nomade",
+          classId: heroClass,
+          level: 1,
+          xp: 0,
+          gold: 80,
+          hp: archetype.stats.hp,
+          maxHp: archetype.stats.hp,
+          power: archetype.stats.power,
+          wisdom: archetype.stats.wisdom,
+          location: "sylve"
+        },
+        inventory: { "herbe-lune": 2, "sel-bleu": 1, "potion-lune": 1 },
+        equipment: { weapon: null, amulet: null },
+        jobs: { Alchimie: 1, Joaillerie: 1, Forge: 1 },
+        quests: questTemplates.map((quest) => ({ ...quest, progress: 0, done: false, claimed: false })),
+        codex: { mousse: true },
+        log: ["Tu arrives à Astralys, là où les constellations tombent parfois en poussière."],
+        combat: null
+      };
+    }
+
+    function loadGame() {
+      try {
+        const raw = localStorage.getItem(SAVE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function saveGame() {
+      if (state) {
+        localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+      }
+    }
+
+    function resetGame() {
+      if (confirm("Recommencer l'aventure et effacer la sauvegarde locale ?")) {
+        localStorage.removeItem(SAVE_KEY);
+        state = null;
+        activeView = "accueil";
+        render();
+      }
+    }
+
+    function heroClass() {
+      return classes[state.player.classId];
+    }
+
+    function effectiveStats() {
+      const player = state.player;
+      const equipped = Object.values(state.equipment)
+        .filter(Boolean)
+        .map((id) => items[id]);
+      return equipped.reduce((stats, item) => ({
+        hp: stats.hp + (item.hp || 0),
+        power: stats.power + (item.power || 0),
+        wisdom: stats.wisdom
+      }), { hp: player.maxHp, power: player.power, wisdom: player.wisdom });
+    }
+
+    function xpToNext() {
+      return 100 + (state.player.level - 1) * 55;
+    }
+
+    function addLog(message) {
+      state.log.unshift(message);
+      state.log = state.log.slice(0, 9);
+    }
+
+    function addItem(id, qty = 1) {
+      state.inventory[id] = (state.inventory[id] || 0) + qty;
+    }
+
+    function removeItem(id, qty = 1) {
+      if ((state.inventory[id] || 0) < qty) return false;
+      state.inventory[id] -= qty;
+      if (state.inventory[id] <= 0) delete state.inventory[id];
+      return true;
+    }
+
+    function gainReward(reward) {
+      state.player.gold += reward.gold || 0;
+      gainXp(reward.xp || 0);
+      if (reward.item) addItem(reward.item, 1);
+    }
+
+    function gainXp(amount) {
+      state.player.xp += amount;
+      while (state.player.xp >= xpToNext()) {
+        state.player.xp -= xpToNext();
+        state.player.level += 1;
+        state.player.maxHp += 6;
+        state.player.power += 1;
+        state.player.wisdom += 1;
+        state.player.hp = effectiveStats().hp;
+        addLog("Niveau supérieur ! Tes constellations intérieures gagnent en éclat.");
+      }
+    }
+
+    function updateQuest(type, amount = 1) {
+      state.quests.forEach((quest) => {
+        if (!quest.done && quest.type === type) {
+          quest.progress = Math.min(quest.target, quest.progress + amount);
+          quest.done = quest.progress >= quest.target;
+          if (quest.done) addLog(`Quête terminée: ${quest.title}. Va réclamer ta récompense.`);
+        }
+      });
+    }
+
+    function startGame(classId) {
+      const input = document.getElementById("heroName");
+      state = freshGame(classId, input.value.trim());
+      saveGame();
+      render();
+    }
+
+    function setView(view) {
+      activeView = view;
+      render();
+    }
+
+    function travel(zoneId) {
+      state.player.location = zoneId;
+      addLog(`Tu voyages vers ${zoneName(zoneId)}.`);
+      saveGame();
+      render();
+    }
+
+    function zoneName(zoneId) {
+      return zones.find((zone) => zone.id === zoneId).name;
+    }
+
+    function currentZone() {
+      return zones.find((zone) => zone.id === state.player.location);
+    }
+
+    function explore() {
+      const zone = currentZone();
+      const roll = Math.random();
+      if (roll < 0.52) {
+        startCombat(zone.enemy);
+        return;
+      }
+      const found = zone.loot[Math.floor(Math.random() * zone.loot.length)];
+      const qty = Math.random() > 0.7 ? 2 : 1;
+      addItem(found, qty);
+      updateQuest("gather", qty);
+      addLog(`Exploration réussie: ${qty} x ${items[found].name} obtenu.`);
+      saveGame();
+      render();
+    }
+
+    function restAtHaven() {
+      const stats = effectiveStats();
+      state.player.hp = stats.hp;
+      state.day += 1;
+      addLog("Repos au Havre: tes PV sont restaurés et une nouvelle journée commence.");
+      saveGame();
+      render();
+    }
+
+    function startCombat(enemyId) {
+      const enemy = enemies[enemyId];
+      state.codex[enemyId] = true;
+      state.combat = {
+        enemyId,
+        enemyHp: enemy.hp + (currentZone().danger - 1) * 8,
+        enemyMaxHp: enemy.hp + (currentZone().danger - 1) * 8,
+        playerPos: 29,
+        enemyPos: 11,
+        ap: 6,
+        turn: "player",
+        selectedSkill: heroClass().skills[0].id,
+        log: [`${enemy.name} bloque le chemin.`]
+      };
+      activeView = "combat";
+      saveGame();
+      render();
+    }
+
+    function selectSkill(skillId) {
+      state.combat.selectedSkill = skillId;
+      render();
+    }
+
+    function cellDistance(a, b) {
+      return Math.abs((a % 7) - (b % 7)) + Math.abs(Math.floor(a / 7) - Math.floor(b / 7));
+    }
+
+    function clickCell(index) {
+      const combat = state.combat;
+      if (!combat || combat.turn !== "player") return;
+      if (index === combat.enemyPos) {
+        castSkill();
+        return;
+      }
+      if (index !== combat.playerPos && cellDistance(index, combat.playerPos) <= 2 && combat.ap >= 1) {
+        combat.playerPos = index;
+        combat.ap -= 1;
+        combat.log.unshift("Tu changes de position et cherches l'ouverture.");
+        if (combat.ap <= 0) enemyTurn();
+        saveGame();
+        render();
+      }
+    }
+
+    function selectedSkill() {
+      return heroClass().skills.find((skill) => skill.id === state.combat.selectedSkill);
+    }
+
+    function castSkill() {
+      const combat = state.combat;
+      const skill = selectedSkill();
+      if (!combat || combat.turn !== "player" || combat.ap < skill.cost) return;
+      combat.ap -= skill.cost;
+      if (skill.type === "heal") {
+        const stats = effectiveStats();
+        state.player.hp = Math.min(stats.hp, state.player.hp + skill.heal);
+        combat.log.unshift(`${skill.name} restaure ${skill.heal} PV.`);
+      } else if (cellDistance(combat.playerPos, combat.enemyPos) <= skill.range) {
+        const damage = skill.damage + effectiveStats().power + Math.floor(state.player.level / 2);
+        combat.enemyHp = Math.max(0, combat.enemyHp - damage);
+        combat.log.unshift(`${skill.name} inflige ${damage} dégâts.`);
+        if (combat.enemyHp <= 0) {
+          winCombat();
+          return;
+        }
+      } else {
+        combat.log.unshift("La cible est trop loin pour ce sort.");
+        combat.ap += skill.cost;
+      }
+      if (combat.ap <= 0) enemyTurn();
+      saveGame();
+      render();
+    }
+
+    function endPlayerTurn() {
+      if (!state.combat || state.combat.turn !== "player") return;
+      enemyTurn();
+      saveGame();
+      render();
+    }
+
+    function enemyTurn() {
+      const combat = state.combat;
+      const enemy = enemies[combat.enemyId];
+      combat.turn = "enemy";
+      if (cellDistance(combat.enemyPos, combat.playerPos) > enemy.range) {
+        const enemyX = combat.enemyPos % 7;
+        const enemyY = Math.floor(combat.enemyPos / 7);
+        const playerX = combat.playerPos % 7;
+        const playerY = Math.floor(combat.playerPos / 7);
+        const nextX = enemyX + Math.sign(playerX - enemyX);
+        const nextY = enemyY + Math.sign(playerY - enemyY);
+        const nextPos = nextY * 7 + nextX;
+        if (nextPos !== combat.playerPos && nextPos >= 0 && nextPos < 35) combat.enemyPos = nextPos;
+        combat.log.unshift(`${enemy.name} avance sur la grille.`);
+      }
+      if (cellDistance(combat.enemyPos, combat.playerPos) <= enemy.range) {
+        const damage = enemy.damage + currentZone().danger;
+        state.player.hp = Math.max(0, state.player.hp - damage);
+        combat.log.unshift(`${enemy.name} attaque et retire ${damage} PV.`);
+      }
+      if (state.player.hp <= 0) {
+        loseCombat();
+        return;
+      }
+      combat.turn = "player";
+      combat.ap = 6;
+    }
+
+    function winCombat() {
+      const combat = state.combat;
+      const enemy = enemies[combat.enemyId];
+      const drop = enemy.drops[Math.floor(Math.random() * enemy.drops.length)];
+      addItem(drop, 1);
+      state.player.gold += enemy.gold;
+      gainXp(enemy.xp);
+      updateQuest("combat", 1);
+      addLog(`Victoire contre ${enemy.name}: ${enemy.xp} XP, ${enemy.gold} or, ${items[drop].name}.`);
+      state.combat = null;
+      activeView = "accueil";
+      saveGame();
+      render();
+    }
+
+    function loseCombat() {
+      const stats = effectiveStats();
+      state.player.hp = Math.ceil(stats.hp * 0.45);
+      state.player.gold = Math.max(0, state.player.gold - 10);
+      addLog("Défaite: tu es rapatrié au Havre et perds 10 or.");
+      state.combat = null;
+      activeView = "accueil";
+    }
+
+    function useItem(id) {
+      const item = items[id];
+      if (!item || item.type !== "consommable") return;
+      if (!removeItem(id, 1)) return;
+      const stats = effectiveStats();
+      state.player.hp = Math.min(stats.hp, state.player.hp + item.heal);
+      addLog(`${item.name} utilisée: +${item.heal} PV.`);
+      saveGame();
+      render();
+    }
+
+    function equipItem(id) {
+      const item = items[id];
+      if (!item || item.type !== "equipement") return;
+      if (!state.inventory[id]) return;
+      const previous = state.equipment[item.slot];
+      removeItem(id, 1);
+      if (previous) addItem(previous, 1);
+      state.equipment[item.slot] = id;
+      state.player.hp = Math.min(state.player.hp, effectiveStats().hp);
+      addLog(`${item.name} équipé.`);
+      saveGame();
+      render();
+    }
+
+    function craft(recipeId) {
+      const recipe = recipes.find((entry) => entry.id === recipeId);
+      if (!recipe) return;
+      const canCraft = Object.entries(recipe.needs).every(([id, qty]) => (state.inventory[id] || 0) >= qty);
+      if (!canCraft) return;
+      Object.entries(recipe.needs).forEach(([id, qty]) => removeItem(id, qty));
+      addItem(recipe.id, 1);
+      state.jobs[recipe.job] += 1;
+      updateQuest("craft", 1);
+      addLog(`Métier réussi: ${recipe.name} fabriqué.`);
+      saveGame();
+      render();
+    }
+
+    function claimQuest(id) {
+      const quest = state.quests.find((entry) => entry.id === id);
+      if (!quest || !quest.done || quest.claimed) return;
+      quest.claimed = true;
+      gainReward(quest.reward);
+      addLog(`Récompense récupérée: ${quest.title}.`);
+      saveGame();
+      render();
+    }
+
+    function render() {
+      const app = document.getElementById("app");
+      if (!state || !state.started) {
+        app.innerHTML = renderOnboarding();
+        return;
+      }
+      app.innerHTML = `
+        ${renderHeader()}
+        ${renderView()}
+        ${renderNav()}
+      `;
+    }
+
+    function renderOnboarding() {
+      return `
+        <section class="modal">
+          <div class="modal-card">
+            <p class="eyebrow">Nouveau monde original</p>
+            <h1>Chroniques d'Astralys</h1>
+            <p class="muted">Un RPG tactique mobile jouable hors ligne: exploration, quêtes, métiers, équipement et combats au tour par tour dans un univers de constellations tombées.</p>
+            <label for="heroName" class="eyebrow">Nom du héros</label>
+            <input id="heroName" class="name-input" maxlength="18" placeholder="Ex: Solan, Mira, Kaël">
+            ${Object.entries(classes).map(([id, entry]) => `
+              <button class="class-card" onclick="startGame('${id}')">
+                <div class="split"><strong>${entry.icon} ${entry.name}</strong><span class="tag">Choisir</span></div>
+                <p class="muted">${entry.text}</p>
+                <div class="tag-row">
+                  <span class="tag">PV ${entry.stats.hp}</span>
+                  <span class="tag">Puissance ${entry.stats.power}</span>
+                  <span class="tag">Sagesse ${entry.stats.wisdom}</span>
+                </div>
+              </button>
+            `).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderHeader() {
+      const stats = effectiveStats();
+      const player = state.player;
+      const archetype = heroClass();
+      return `
+        <section class="hero-card">
+          <p class="eyebrow">Jour ${state.day} · ${zoneName(player.location)}</p>
+          <h1>${archetype.icon} ${player.name}</h1>
+          <p class="muted">${archetype.name} niveau ${player.level}. ${tips[state.day % tips.length]}</p>
+          <div class="top-grid">
+            <div>
+              <div class="split"><span class="muted">Vie</span><strong>${player.hp}/${stats.hp}</strong></div>
+              <div class="progress"><span style="width:${Math.max(4, (player.hp / stats.hp) * 100)}%"></span></div>
+            </div>
+            <div>
+              <div class="split"><span class="muted">XP</span><strong>${player.xp}/${xpToNext()}</strong></div>
+              <div class="progress"><span style="width:${Math.max(4, (player.xp / xpToNext()) * 100)}%"></span></div>
+            </div>
+          </div>
+          <div class="resource-grid">
+            <div class="resource"><strong>${player.gold}</strong><span>Or</span></div>
+            <div class="resource"><strong>${stats.power}</strong><span>Puissance</span></div>
+            <div class="resource"><strong>${stats.wisdom}</strong><span>Sagesse</span></div>
+            <div class="resource"><strong>${Object.keys(state.codex).length}</strong><span>Codex</span></div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderView() {
+      if (activeView === "combat") return renderCombat();
+      if (activeView === "monde") return renderWorld();
+      if (activeView === "quetes") return renderQuests();
+      if (activeView === "sac") return renderInventory();
+      if (activeView === "metiers") return renderJobs();
+      return renderHome();
+    }
+
+    function renderHome() {
+      const zone = currentZone();
+      return `
+        <section class="panel">
+          <h2>Tableau d'aventure</h2>
+          <div class="action-grid">
+            <button class="btn" onclick="explore()">Explorer</button>
+            <button class="btn secondary" onclick="startCombat('${zone.enemy}')">Défier un monstre</button>
+            <button class="btn secondary" onclick="restAtHaven()">Repos au Havre</button>
+            <button class="btn danger" onclick="resetGame()">Nouvelle partie</button>
+          </div>
+        </section>
+        <section class="panel">
+          <h2>Zone actuelle</h2>
+          <div class="zone-card active">
+            <div class="split"><h3>${zone.name}</h3><span class="tag">Danger ${zone.danger}</span></div>
+            <p class="muted">${zone.text}</p>
+            <div class="tag-row">
+              <span class="tag">Ennemi: ${enemies[zone.enemy].name}</span>
+              ${zone.loot.map((id) => `<span class="tag">${items[id].name}</span>`).join("")}
+            </div>
+          </div>
+        </section>
+        <section class="panel">
+          <h2>Journal</h2>
+          <div class="log">${state.log.map((entry) => `<p>${entry}</p>`).join("")}</div>
+        </section>
+      `;
+    }
+
+    function renderWorld() {
+      return `
+        <section class="panel">
+          <h2>Carte du monde</h2>
+          <div class="card-grid">
+            ${zones.map((zone) => `
+              <article class="zone-card ${zone.id === state.player.location ? "active" : ""}">
+                <div class="split"><h3>${zone.name}</h3><span class="tag">Danger ${zone.danger}</span></div>
+                <p class="muted">${zone.text}</p>
+                <button class="btn ${zone.id === state.player.location ? "secondary" : ""}" onclick="travel('${zone.id}')">
+                  ${zone.id === state.player.location ? "Position actuelle" : "Voyager"}
+                </button>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+        <section class="panel">
+          <h2>Bestiaire découvert</h2>
+          <div class="card-grid">
+            ${Object.keys(enemies).filter((id) => state.codex[id]).map((id) => {
+              const enemy = enemies[id];
+              return `<article class="codex-card">
+                <h3>${enemy.icon} ${enemy.name}</h3>
+                <p class="muted">PV ${enemy.hp} · Dégâts ${enemy.damage} · Portée ${enemy.range}</p>
+              </article>`;
+            }).join("") || `<div class="empty">Explore pour découvrir de nouvelles créatures.</div>`}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderQuests() {
+      return `
+        <section class="panel">
+          <h2>Quêtes et progression</h2>
+          <div class="card-grid">
+            ${state.quests.map((quest) => `
+              <article class="quest-card">
+                <div class="split"><h3>${quest.title}</h3><span class="tag">${quest.progress}/${quest.target}</span></div>
+                <p class="muted">${quest.text}</p>
+                <div class="progress"><span style="width:${(quest.progress / quest.target) * 100}%"></span></div>
+                <div class="tag-row">
+                  <span class="tag">${quest.reward.xp} XP</span>
+                  <span class="tag">${quest.reward.gold} or</span>
+                  <span class="tag">${items[quest.reward.item].name}</span>
+                </div>
+                <button class="btn" onclick="claimQuest('${quest.id}')" ${!quest.done || quest.claimed ? "disabled" : ""}>
+                  ${quest.claimed ? "Récompense prise" : quest.done ? "Réclamer" : "En cours"}
+                </button>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderInventory() {
+      const entries = Object.entries(state.inventory);
+      const equipped = Object.entries(state.equipment).filter(([, id]) => id);
+      return `
+        <section class="panel">
+          <h2>Équipement</h2>
+          <div class="card-grid">
+            ${["weapon", "amulet"].map((slot) => {
+              const itemId = state.equipment[slot];
+              return `<article class="item-card">
+                <h3>${slot === "weapon" ? "Arme" : "Amulette"}</h3>
+                <p class="muted">${itemId ? items[itemId].name : "Emplacement vide"}</p>
+              </article>`;
+            }).join("")}
+          </div>
+        </section>
+        <section class="panel">
+          <h2>Sac</h2>
+          <div class="card-grid">
+            ${entries.map(([id, qty]) => {
+              const item = items[id];
+              return `<article class="item-card">
+                <div class="split"><h3 class="rarity-${item.rarity}">${item.name}</h3><span class="tag">x${qty}</span></div>
+                <p class="muted">${item.text}</p>
+                ${item.type === "consommable" ? `<button class="btn" onclick="useItem('${id}')">Utiliser</button>` : ""}
+                ${item.type === "equipement" ? `<button class="btn" onclick="equipItem('${id}')">Équiper</button>` : ""}
+              </article>`;
+            }).join("") || `<div class="empty">Ton sac est vide.</div>`}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderJobs() {
+      return `
+        <section class="panel">
+          <h2>Métiers</h2>
+          <div class="resource-grid">
+            ${Object.entries(state.jobs).map(([job, level]) => `<div class="resource"><strong>${level}</strong><span>${job}</span></div>`).join("")}
+          </div>
+        </section>
+        <section class="panel">
+          <h2>Atelier de craft</h2>
+          <div class="card-grid">
+            ${recipes.map((recipe) => {
+              const canCraft = Object.entries(recipe.needs).every(([id, qty]) => (state.inventory[id] || 0) >= qty);
+              return `<article class="item-card">
+                <div class="split"><h3>${recipe.name}</h3><span class="tag">${recipe.job}</span></div>
+                <p class="muted">${items[recipe.id].text}</p>
+                <div class="tag-row">
+                  ${Object.entries(recipe.needs).map(([id, qty]) => `<span class="tag">${items[id].name} ${state.inventory[id] || 0}/${qty}</span>`).join("")}
+                </div>
+                <button class="btn" onclick="craft('${recipe.id}')" ${canCraft ? "" : "disabled"}>Fabriquer</button>
+              </article>`;
+            }).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderCombat() {
+      const combat = state.combat;
+      if (!combat) return renderHome();
+      const enemy = enemies[combat.enemyId];
+      const stats = effectiveStats();
+      return `
+        <section class="panel">
+          <h2>Combat tactique</h2>
+          <div class="combat-head">
+            <div class="combatant">
+              <div class="split"><strong>${heroClass().icon} ${state.player.name}</strong><span>${state.player.hp}/${stats.hp}</span></div>
+              <div class="progress"><span style="width:${(state.player.hp / stats.hp) * 100}%"></span></div>
+            </div>
+            <div class="combatant">
+              <div class="split"><strong>${enemy.icon} ${enemy.name}</strong><span>${combat.enemyHp}/${combat.enemyMaxHp}</span></div>
+              <div class="progress"><span style="width:${(combat.enemyHp / combat.enemyMaxHp) * 100}%"></span></div>
+            </div>
+          </div>
+          <div class="grid">
+            ${Array.from({ length: 35 }, (_, index) => {
+              const content = index === combat.playerPos ? heroClass().icon : index === combat.enemyPos ? enemy.icon : "";
+              const cls = index === combat.playerPos ? "player" : index === combat.enemyPos ? "enemy" : "";
+              return `<button class="cell ${cls}" onclick="clickCell(${index})" aria-label="Case ${index + 1}">${content}</button>`;
+            }).join("")}
+          </div>
+          <div class="split">
+            <strong>${combat.turn === "player" ? "À toi de jouer" : "Tour ennemi"}</strong>
+            <span class="tag">${combat.ap} PA</span>
+          </div>
+          <div class="skill-row">
+            ${heroClass().skills.map((skill) => `
+              <button class="skill-btn ${combat.selectedSkill === skill.id ? "active" : ""}" onclick="selectSkill('${skill.id}')" ${combat.turn !== "player" ? "disabled" : ""}>
+                ${skill.name}
+                <small>${skill.cost} PA · ${skill.type === "heal" ? "+" + skill.heal + " PV" : skill.damage + " dégâts · P" + skill.range}</small>
+              </button>
+            `).join("")}
+          </div>
+          <div class="action-grid">
+            <button class="btn" onclick="castSkill()" ${combat.turn !== "player" ? "disabled" : ""}>Lancer sur la cible</button>
+            <button class="btn secondary" onclick="endPlayerTurn()" ${combat.turn !== "player" ? "disabled" : ""}>Fin du tour</button>
+          </div>
+        </section>
+        <section class="panel">
+          <h2>Historique du combat</h2>
+          <div class="log">${combat.log.map((entry) => `<p>${entry}</p>`).join("")}</div>
+        </section>
+      `;
+    }
+
+    function renderNav() {
+      const nav = [
+        ["accueil", "🏕️", "Havre"],
+        ["monde", "🗺️", "Monde"],
+        ["quetes", "📜", "Quêtes"],
+        ["sac", "🎒", "Sac"],
+        ["metiers", "⚒️", "Métiers"]
+      ];
+      return `
+        <nav class="mobile-nav" aria-label="Navigation principale">
+          ${nav.map(([view, icon, label]) => `
+            <button class="nav-btn ${activeView === view ? "active" : ""}" onclick="setView('${view}')">
+              <span>${icon}</span>${label}
+            </button>
+          `).join("")}
+        </nav>
+      `;
+    }
+
+    window.startGame = startGame;
+    window.setView = setView;
+    window.travel = travel;
+    window.explore = explore;
+    window.restAtHaven = restAtHaven;
+    window.startCombat = startCombat;
+    window.selectSkill = selectSkill;
+    window.clickCell = clickCell;
+    window.castSkill = castSkill;
+    window.endPlayerTurn = endPlayerTurn;
+    window.useItem = useItem;
+    window.equipItem = equipItem;
+    window.craft = craft;
+    window.claimQuest = claimQuest;
+    window.resetGame = resetGame;
+
+    render();
+  </script>
 </body>
 </html>

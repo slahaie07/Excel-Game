@@ -1,11 +1,38 @@
-🎮 Jeu interactif — Raccourcis Excel pour la Comptabilité
+# Chroniques d'Astralys
 
-Ce projet propose un outil pédagogique moderne pour aider les étudiant·e·s en comptabilité à maîtriser les raccourcis clavier Excel de manière ludique, progressive et motivante. L’idée est simple : transformer l’apprentissage des touches et combinaisons les plus utiles en un jeu interactif accessible partout, que ce soit en classe, à la maison ou en autoapprentissage.
+Prototype mobile d'un RPG tactique dans un univers original. Le jeu tient dans `index.html`, fonctionne hors ligne et sauvegarde la progression dans le navigateur avec `localStorage`.
 
-Le jeu est structuré en trois niveaux de difficulté. Le mode Facile introduit les bases essentielles comme copier, coller, annuler, mettre en gras ou naviguer rapidement. Le mode Moyen ajoute des raccourcis intermédiaires liés au formatage, aux filtres et aux calculs simples. Enfin, le mode Difficile inclut l’ensemble des commandes, avec une limite de temps et seulement deux erreurs permises, pour simuler des conditions de performance réelles. Cette progression graduelle permet aux étudiants d’apprendre efficacement sans se décourager.
+## Univers
 
-Chaque exercice doit être réussi pour passer au suivant, et en cas d’erreur l’aide-mémoire intégré propose la bonne réponse. Un système de Top 10 enregistre les scores et le temps afin de stimuler une saine compétition et de suivre les progrès. Les données peuvent être exportées en CSV pour un usage pédagogique ou pour analyser les performances d’une classe entière.
+Astralys est un archipel où des fragments de constellations tombent sur terre. Les joueurs incarnent des nomades capables d'utiliser ces éclats pour combattre, fabriquer des objets et explorer des régions dangereuses.
 
-Le jeu fonctionne hors ligne, directement depuis un simple fichier HTML, et il est compatible avec PC Windows comme avec mobile. L’interface, au design sombre et moderne, a été pensée pour capter l’attention tout en restant claire et ergonomique.
+## Fonctionnalités présentes
 
-En résumé, ce projet illustre comment on peut moderniser l’enseignement de la bureautique et rendre l’apprentissage d’Excel plus engageant. Il a été conçu pour inspirer les futur·e·s comptables à devenir rapides, précis et confiants dans leur maîtrise des outils numériques.
+- Création de personnage avec 3 classes jouables:
+  - Lame d'Aurore
+  - Tisse-brume
+  - Forge-rune
+- Interface mobile-first avec navigation fixe.
+- Combat tactique au tour par tour sur grille 7x5.
+- Points d'action, déplacement, portée, attaques, soins et IA ennemie simple.
+- Monde explorable avec plusieurs zones, dangers, monstres et ressources.
+- Quêtes avec objectifs, progression et récompenses.
+- Inventaire, consommables, équipement et bonus de statistiques.
+- Métiers et recettes de craft.
+- Bestiaire/codex débloqué par découverte.
+- Journal d'aventure et sauvegarde automatique locale.
+
+## Lancer le jeu
+
+Ouvrir simplement `index.html` dans un navigateur moderne, sur mobile ou ordinateur.
+
+## Vision de production
+
+Cette version est une première tranche jouable. Pour atteindre l'ampleur d'un MMORPG tactique complet, les prochaines étapes seraient:
+
+1. Ajouter un moteur de carte isométrique avec tuiles, obstacles et transitions.
+2. Créer davantage de classes, sorts, panoplies, familiers et compagnons.
+3. Ajouter donjons, boss, économie, hôtel de vente et guildes.
+4. Remplacer `localStorage` par un backend avec comptes, sauvegardes cloud et anti-triche.
+5. Ajouter multijoueur temps réel/asynchrone, chat, amis et combats de groupe.
+6. Produire des assets visuels/sonores originaux et une vraie pipeline mobile.
