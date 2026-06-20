@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useGameStore } from "../stores/gameStore";
 import { loadCharacter } from "../lib/characterStorage";
+import { cacheCloudCombat, buildCloudCombatLocalId } from "../lib/cloudCombat";
 import { PvPScreenUI } from "./PvPScreenUI";
 
 export default function CloudPvPScreen() {
@@ -17,6 +18,7 @@ export default function CloudPvPScreen() {
   const [mode, setMode] = useState<"1v1" | "2v2" | "3v3">("1v1");
   const [searching, setSearching] = useState(false);
   const [error, setError] = useState("");
+  const matchStarted = useRef(false);
 
   const char = loadCharacter(characterId);
   const cloudChar = useQuery(api.characters.getCharacter, { characterId });
@@ -24,13 +26,14 @@ export default function CloudPvPScreen() {
   const pendingMatch = useQuery(api.pvp.getPendingMatch, { characterId });
   const joinQueue = useMutation(api.pvp.joinQueue);
   const leaveQueue = useMutation(api.pvp.leaveQueue);
+  const startPvpCombat = useMutation(api.combat.startPvpCombat);
 
   const rating = cloudChar?.pvpRating ?? char?.pvpRating ?? 1000;
   const wins = cloudChar?.pvpWins ?? char?.pvpWins ?? 0;
   const losses = cloudChar?.pvpLosses ?? char?.pvpLosses ?? 0;
 
   useEffect(() => {
-    if (!pendingMatch || !searching) return;
+    if (!pendingMatch || !searching || matchStarted.current) return;
 
     const isTeamA = pendingMatch.teamA.some(
       (p: { characterId: string }) => p.characterId === characterId
@@ -39,27 +42,41 @@ export default function CloudPvPScreen() {
     const opponent = opponents[0];
     if (!opponent) return;
 
-    const combatId = `pvp_${Date.now()}`;
-    localStorage.setItem(`aetheris-combat-${combatId}`, JSON.stringify({
-      type: "pvp",
-      mode: pendingMatch.mode,
-      monsterIds: [],
-      pvpOpponent: {
-        name: opponent.name,
-        classId: opponent.classId,
-        level: char?.level ?? 10,
-        characterId: opponent.characterId,
-      },
-      zoneId: "arene_pvp",
-      characterId,
-      convexMatchId: pendingMatch._id,
-      isTeamA,
-    }));
+    matchStarted.current = true;
 
-    setPvpMode(pendingMatch.mode, { matchId: pendingMatch._id });
-    setSearching(false);
-    setCombat(combatId, {});
-  }, [pendingMatch, searching, characterId, char?.level, setCombat, setPvpMode]);
+    void (async () => {
+      try {
+        const convexCombatId = await startPvpCombat({
+          matchId: pendingMatch._id as Id<"pvpMatches">,
+          characterId,
+          opponentCharacterId: opponent.characterId as Id<"characters">,
+        });
+
+        const localId = buildCloudCombatLocalId("pvp");
+        cacheCloudCombat(localId, convexCombatId, {
+          type: "pvp",
+          zoneId: "arene_pvp",
+          characterId,
+          convexMatchId: pendingMatch._id,
+          isTeamA,
+          pvpOpponent: {
+            name: opponent.name,
+            classId: opponent.classId,
+            level: char?.level ?? 10,
+            characterId: opponent.characterId,
+          },
+        });
+
+        setPvpMode(pendingMatch.mode, { matchId: pendingMatch._id });
+        setSearching(false);
+        setCombat(localId, { convexCombatId });
+      } catch (e) {
+        matchStarted.current = false;
+        setError(e instanceof Error ? e.message : "Erreur combat PvP");
+        setSearching(false);
+      }
+    })();
+  }, [pendingMatch, searching, characterId, char?.level, setCombat, setPvpMode, startPvpCombat]);
 
   const startMatchmaking = async () => {
     if ((char?.level ?? 1) < 10) {
@@ -68,9 +85,10 @@ export default function CloudPvPScreen() {
     }
     setError("");
     setSearching(true);
+    matchStarted.current = false;
 
     try {
-      const matchId = await joinQueue({
+      await joinQueue({
         characterId,
         characterName,
         classId,
@@ -78,11 +96,6 @@ export default function CloudPvPScreen() {
         rating,
         mode,
       });
-
-      if (matchId) {
-        // Match found immediately — useQuery will pick it up
-        return;
-      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur matchmaking");
       setSearching(false);

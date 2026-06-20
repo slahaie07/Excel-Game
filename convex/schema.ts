@@ -44,6 +44,7 @@ const combatEntity = v.object({
   x: v.number(),
   y: v.number(),
   team: v.union(v.literal("player"), v.literal("enemy")),
+  ownerCharacterId: v.optional(v.id("characters")),
   buffs: v.array(v.object({
     stat: v.string(),
     value: v.number(),
@@ -130,6 +131,14 @@ export default defineSchema({
     obstacles: v.array(v.object({ x: v.number(), y: v.number() })),
     isPvP: v.boolean(),
     opponentCharacterId: v.optional(v.id("characters")),
+    dungeonRunId: v.optional(v.id("dungeonRuns")),
+    participantCharacterIds: v.optional(v.array(v.id("characters"))),
+    combatType: v.optional(v.union(
+      v.literal("world"),
+      v.literal("dungeon"),
+      v.literal("pvp"),
+      v.literal("event")
+    )),
     rewards: v.optional(v.object({
       xp: v.number(),
       eclats: v.number(),
@@ -139,7 +148,8 @@ export default defineSchema({
     updatedAt: v.number(),
   })
     .index("by_character", ["characterId"])
-    .index("by_status", ["status"]),
+    .index("by_status", ["status"])
+    .index("by_dungeon_run", ["dungeonRunId"]),
 
   guilds: defineTable({
     name: v.string(),

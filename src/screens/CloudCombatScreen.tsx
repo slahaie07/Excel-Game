@@ -8,12 +8,14 @@ import { getSpellById, getSpellsForClass } from "../game/data";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
 import { formatBuffs } from "../game/combat/effects";
-import { advanceDungeonRoom, createNextRoomCombat } from "./DungeonsScreen";
+import { getDungeonById, getRoomMonsters } from "../game/data";
+import { cacheCloudCombat, buildCloudCombatLocalId } from "../lib/cloudCombat";
 
 interface CloudEntity {
   entityId: string;
   name: string;
   isPlayer: boolean;
+  ownerCharacterId?: string;
   classId?: string;
   monsterId?: string;
   hp: number;
@@ -43,6 +45,8 @@ export default function CloudCombatScreen() {
   const fleeMut = useMutation(api.combat.fleeCombat);
   const applyRewards = useMutation(api.combat.applyVictoryRewards);
   const completePvp = useMutation(api.pvp.completeMatch);
+  const advanceRoom = useMutation(api.dungeons.advanceRoom);
+  const startDungeonCombat = useMutation(api.combat.startDungeonCombat);
 
   const combatData = JSON.parse(localStorage.getItem(`aetheris-combat-${combatId}`) ?? "{}");
   const combatType = combatData.type ?? "world";
@@ -57,10 +61,14 @@ export default function CloudCombatScreen() {
   const [dungeonRewards, setDungeonRewards] = useState<{ xp: number; eclats: number } | null>(null);
 
   const entities: CloudEntity[] = combatDoc?.entities ?? [];
-  const player = entities.find((e) => e.isPlayer);
-  const playerEntityId = player?.entityId ?? "";
+  const myEntity = entities.find(
+    (e) => e.ownerCharacterId === characterId || (e.isPlayer && !entities.some((x) => x.ownerCharacterId))
+  );
+  const playerEntityId = myEntity?.entityId ?? "";
   const spells = getSpellsForClass(classId);
   const isPlayerTurn = combatDoc?.currentEntityId === playerEntityId && combatDoc?.status === "active";
+  const player = myEntity;
+  const coopAllies = entities.filter((e) => e.team === "player" && e.isAlive).length;
   const result = combatDoc?.status === "victory" ? "victory" as const
     : combatDoc?.status === "defeat" ? "defeat" as const : null;
 
@@ -70,7 +78,9 @@ export default function CloudCombatScreen() {
       name: e.name,
       gridX: e.x,
       gridY: e.y,
-      icon: e.isPlayer ? getClassIcon(classId) : getMonsterIcon(e.monsterId ?? "graine_ombre"),
+      icon: e.team === "player"
+        ? getClassIcon(e.classId ?? classId)
+        : getMonsterIcon(e.monsterId ?? "graine_ombre"),
       hp: e.hp,
       maxHp: e.maxHp,
       team: e.team,
@@ -124,12 +134,14 @@ export default function CloudCombatScreen() {
   useEffect(() => {
     if (combatDoc?.status === "victory") {
       void applyRewards({ combatId: convexCombatId, characterId });
-      if (combatType === "dungeon") {
-        const { complete, rewards } = advanceDungeonRoom(characterId);
-        if (complete) {
-          setDungeonComplete(true);
-          setDungeonRewards(rewards ?? null);
-        }
+      if (combatType === "dungeon" && combatData.convexRunId) {
+        void advanceRoom({ runId: combatData.convexRunId as Id<"dungeonRuns"> }).then((res) => {
+          if (res.isComplete) {
+            setDungeonComplete(true);
+            const dungeon = combatData.dungeonId ? getDungeonById(combatData.dungeonId) : null;
+            setDungeonRewards(dungeon?.rewards ?? null);
+          }
+        });
       }
       if (combatType === "pvp" && combatData.convexMatchId && combatData.pvpOpponent?.characterId) {
         const isTeamA = combatData.isTeamA ?? true;
@@ -150,7 +162,7 @@ export default function CloudCombatScreen() {
         loserCharacterId: characterId,
       });
     }
-  }, [combatDoc?.status, combatType, combatData, convexCombatId, characterId, applyRewards, completePvp]);
+  }, [combatDoc?.status, combatType, combatData, convexCombatId, characterId, applyRewards, completePvp, advanceRoom]);
 
   useEffect(() => {
     if (!gameRef.current || !combatDoc) return;
@@ -199,7 +211,7 @@ export default function CloudCombatScreen() {
     <div className="flex-1 flex flex-col bg-aether-950 relative">
       <div className="flex items-center justify-between p-3 bg-aether-900/80">
         <span className="font-display font-bold text-aether-200">
-          ☁️ Combat — Tour {combatDoc.turn}
+          ☁️ Combat{coopAllies > 1 ? ` (${coopAllies} joueurs)` : ""} — Tour {combatDoc.turn}
         </span>
         <button
           onClick={() => void fleeMut({ combatId: convexCombatId, characterId }).then(() => setCombat(null))}
@@ -270,8 +282,32 @@ export default function CloudCombatScreen() {
             {result === "victory" && combatType === "dungeon" && !dungeonComplete ? (
               <button
                 onClick={() => {
-                  const nextId = createNextRoomCombat(characterId);
-                  if (nextId) setCombat(nextId);
+                  void (async () => {
+                    const runId = combatData.convexRunId as Id<"dungeonRuns"> | undefined;
+                    const dungeonId = combatData.dungeonId as string | undefined;
+                    if (!runId || !dungeonId) return;
+                    const dungeon = getDungeonById(dungeonId);
+                    if (!dungeon) return;
+                    const roomIndex = (combatData.roomIndex ?? 0) + 1;
+                    const monsters = getRoomMonsters(dungeon, roomIndex);
+                    const convexId = await startDungeonCombat({
+                      runId,
+                      monsterIds: monsters,
+                      zoneId: dungeon.zoneId,
+                      leaderId: characterId,
+                    });
+                    const localId = buildCloudCombatLocalId("dungeon");
+                    cacheCloudCombat(localId, convexId, {
+                      type: "dungeon",
+                      dungeonId,
+                      roomIndex,
+                      monsterIds: monsters,
+                      zoneId: dungeon.zoneId,
+                      characterId,
+                      convexRunId: runId,
+                    });
+                    setCombat(localId, { convexCombatId: convexId });
+                  })();
                 }}
                 className="btn-primary w-full mb-2"
               >

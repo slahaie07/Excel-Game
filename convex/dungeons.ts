@@ -63,7 +63,9 @@ export const joinDungeonRun = mutation({
   returns: v.null(),
   handler: async (ctx, args) => {
     const run = await ctx.db.get("dungeonRuns", args.runId);
-    if (!run || run.status !== "waiting") throw new Error("Run non disponible");
+    if (!run || (run.status !== "waiting" && run.status !== "active")) {
+      throw new Error("Run non disponible");
+    }
     if (run.members.length >= 4) throw new Error("Groupe complet");
 
     await ctx.db.patch("dungeonRuns", args.runId, {
@@ -90,10 +92,18 @@ export const listActiveRuns = query({
   args: { dungeonId: v.optional(v.string()) },
   returns: v.array(v.any()),
   handler: async (ctx, args) => {
-    const runs = await ctx.db
+    const waiting = await ctx.db
       .query("dungeonRuns")
       .withIndex("by_status", (q) => q.eq("status", "waiting"))
       .take(20);
+
+    const active = await ctx.db
+      .query("dungeonRuns")
+      .withIndex("by_status", (q) => q.eq("status", "active"))
+      .take(20);
+
+    const joinable = active.filter((r) => r.members.length < 4);
+    const runs = [...waiting, ...joinable];
 
     if (args.dungeonId) {
       return runs.filter((r) => r.dungeonId === args.dungeonId);

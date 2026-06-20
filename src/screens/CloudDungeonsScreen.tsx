@@ -4,6 +4,7 @@ import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { DUNGEONS, getDungeonById, getRoomMonsters } from "../game/data";
 import { loadCharacter } from "../lib/characterStorage";
+import { cacheCloudCombat, buildCloudCombatLocalId } from "../lib/cloudCombat";
 import { DungeonsUI } from "./DungeonsUI";
 
 export default function CloudDungeonsScreen() {
@@ -20,6 +21,7 @@ export default function CloudDungeonsScreen() {
   const waitingRuns = useQuery(api.dungeons.listActiveRuns, {});
   const startRun = useMutation(api.dungeons.startDungeonRun);
   const joinRun = useMutation(api.dungeons.joinDungeonRun);
+  const startDungeonCombat = useMutation(api.combat.startDungeonCombat);
 
   const convexDungeonRunId = useGameStore((s) => s.convexDungeonRunId);
   const dungeonRun = useQuery(
@@ -31,13 +33,20 @@ export default function CloudDungeonsScreen() {
   const allDungeons = zoneDungeons.length > 0 ? zoneDungeons : DUNGEONS;
   const level = cloudChar?.level ?? char?.level ?? 1;
 
-  const startRoomCombat = (dungeonId: string, roomIndex: number, runId?: string) => {
+  const startRoomCombat = async (dungeonId: string, roomIndex: number, runId: string) => {
     const dungeon = getDungeonById(dungeonId);
     if (!dungeon) return;
 
     const monsters = getRoomMonsters(dungeon, roomIndex);
-    const combatId = `dungeon_${Date.now()}`;
-    localStorage.setItem(`aetheris-combat-${combatId}`, JSON.stringify({
+    const convexCombatId = await startDungeonCombat({
+      runId: runId as Id<"dungeonRuns">,
+      monsterIds: monsters,
+      zoneId: dungeon.zoneId,
+      leaderId: characterId,
+    });
+
+    const localId = buildCloudCombatLocalId("dungeon");
+    cacheCloudCombat(localId, convexCombatId, {
       type: "dungeon",
       dungeonId,
       roomIndex,
@@ -45,8 +54,8 @@ export default function CloudDungeonsScreen() {
       zoneId: dungeon.zoneId,
       characterId,
       convexRunId: runId,
-    }));
-    setCombat(combatId);
+    });
+    setCombat(localId, { convexCombatId });
   };
 
   const startDungeon = async (dungeonId: string) => {
@@ -62,7 +71,7 @@ export default function CloudDungeonsScreen() {
       totalRooms: dungeon.rooms === 999 ? 999 : dungeon.rooms,
     });
     setDungeon(dungeonId, { convexRunId: runId });
-    startRoomCombat(dungeonId, 0, runId);
+    await startRoomCombat(dungeonId, 0, runId);
   };
 
   const activeRun = dungeonRun
@@ -96,21 +105,17 @@ export default function CloudDungeonsScreen() {
           classId,
           level,
         });
-        setDungeon(null, { convexRunId: runId });
+        const run = dungeonRun ?? { dungeonId: "", currentRoom: 0 };
+        setDungeon(run.dungeonId || null, { convexRunId: runId });
       }}
       onStart={(id) => void startDungeon(id)}
       onContinue={() => {
-        if (activeRun) startRoomCombat(activeRun.dungeonId, activeRun.currentRoom, convexDungeonRunId ?? undefined);
+        if (activeRun && convexDungeonRunId) {
+          void startRoomCombat(activeRun.dungeonId, activeRun.currentRoom, convexDungeonRunId);
+        }
       }}
       onAbandon={() => setDungeon(null)}
       onBack={() => setScreen("world")}
     />
   );
-}
-
-export async function advanceCloudDungeonRoom(
-  advanceRoom: (args: { runId: Id<"dungeonRuns"> }) => Promise<{ currentRoom: number; isComplete: boolean }>,
-  runId: string
-) {
-  return await advanceRoom({ runId: runId as Id<"dungeonRuns"> });
 }

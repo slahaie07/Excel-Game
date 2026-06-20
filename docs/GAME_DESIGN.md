@@ -4,13 +4,15 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v0.3)
+## Systèmes implémentés (v1.1)
 
 | Système | Statut | Description |
 |---------|--------|-------------|
 | Création de compte | ✅ | Local + Convex |
 | Création de personnage | ✅ | 8 classes, 5 slots |
-| Combat tactique | ✅ | Grille isométrique, PA/PM, sorts, effets |
+| Combat tactique | ✅ | Grille isométrique, PA/PM, sorts serveur, buffs cloud |
+| Donjons coop | ✅ | Jusqu'à 4 joueurs, combat partagé Convex |
+| CI / tests | ✅ | GitHub Actions, Vitest (effets combat) |
 | Monde / zones | ✅ | 6 zones isométriques, voyage |
 | Inventaire | ✅ | 6 slots équipement |
 | Quêtes | ✅ | Main, side, daily |
@@ -98,4 +100,28 @@ Chaque événement propose : monstres exclusifs, quêtes, boutique limitée, mul
 Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité) :
 - `damage`, `defense`, `mp`, `shield`, `regen`, `invisibility`
 - Durée en tours, tick à chaque fin de tour
-- Implémenté localement (`src/game/combat/effects.ts`) et côté Convex (schema `combatEntity.buffs`)
+- Implémenté localement (`src/game/combat/effects.ts`) et côté serveur (`convex/lib/combatEffects.ts`)
+
+## Combat cloud v1.1
+
+### Mutations principales
+
+| Mutation | Rôle |
+|----------|------|
+| `startCombat` | Combat monde (monstres) |
+| `startDungeonCombat` | Combat coop lié à un `dungeonRun` |
+| `startPvpCombat` | Combat PvP lié à un `pvpMatch` |
+| `castSpell` | Lance un sort avec portée, coût PA, effets serveur |
+| `endTurn` | Tick buffs, tour suivant, IA ennemie auto |
+| `applyVictoryRewards` | XP/Éclats pour tous les `participantCharacterIds` |
+
+### Donjons coop
+
+1. `startDungeonRun` → leader crée le run
+2. `joinDungeonRun` → jusqu'à 4 membres (runs `waiting` ou `active`)
+3. `startDungeonCombat` → combat partagé avec une entité par joueur
+4. Victoire → `advanceRoom` → salle suivante ou fin du donjon
+
+## Déploiement
+
+Voir `docs/DEPLOYMENT.md`.

@@ -4,6 +4,7 @@ import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useGameStore } from "../stores/gameStore";
 import { getActiveEvent } from "../game/data/events";
+import { cacheCloudCombat, buildCloudCombatLocalId } from "../lib/cloudCombat";
 
 interface CloudEncounterStarterProps {
   characterId: Id<"characters">;
@@ -24,17 +25,16 @@ export function CloudEncounterStarter({ characterId, zoneId, onReady }: CloudEnc
       monsterIds: [monsterId],
       zoneId,
     });
-    const localId = `cloud_${combatId}`;
-    localStorage.setItem(`aetheris-combat-${localId}`, JSON.stringify({
+    const localId = buildCloudCombatLocalId("cloud");
+    cacheCloudCombat(localId, combatId, {
       type: isEventMonster ? "event" : "world",
       monsterIds: [monsterId],
       zoneId,
       characterId,
-      convexCombatId: combatId,
       eventId: isEventMonster ? activeEvent?.id : undefined,
       xpMultiplier: isEventMonster ? activeEvent?.bonuses.xpMultiplier : 1,
       eclatsMultiplier: isEventMonster ? activeEvent?.bonuses.eclatsMultiplier : 1,
-    }));
+    });
     setCombat(localId, { convexCombatId: combatId });
   }, [characterId, zoneId, startCombat, setCombat, activeEvent]);
 

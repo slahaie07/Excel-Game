@@ -17,6 +17,8 @@ import type * as events from "../events.js";
 import type * as friends from "../friends.js";
 import type * as havens from "../havens.js";
 import type * as inventory from "../inventory.js";
+import type * as lib_combatEffects from "../lib/combatEffects.js";
+import type * as lib_spells from "../lib/spells.js";
 import type * as presence from "../presence.js";
 import type * as pvp from "../pvp.js";
 import type * as quests from "../quests.js";
@@ -38,6 +40,8 @@ declare const fullApi: ApiFromModules<{
   friends: typeof friends;
   havens: typeof havens;
   inventory: typeof inventory;
+  "lib/combatEffects": typeof lib_combatEffects;
+  "lib/spells": typeof lib_spells;
   presence: typeof presence;
   pvp: typeof pvp;
   quests: typeof quests;

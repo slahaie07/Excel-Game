@@ -8,10 +8,12 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 
 ## Fonctionnalités
 
-### Combat tactique (v1.0)
+### Combat tactique (v1.1)
 - Grille isométrique au tour par tour (PA/PM)
 - 8 classes avec sorts à effets (dégâts, soins, buffs, debuffs)
-- Combat cloud synchronisé via Convex (`convex/combat.ts`)
+- Combat cloud synchronisé via Convex avec sorts serveur (`convex/lib/spells.ts`)
+- Buffs/debuffs côté serveur (`convex/lib/combatEffects.ts`) + IA ennemie automatique
+- Donjons coop jusqu'à 4 joueurs, PvP avec `startPvpCombat`
 - Mode local hors-ligne conservé
 
 ### Monde ouvert
@@ -87,10 +89,14 @@ Ouvrez http://localhost:5173 sur mobile ou desktop.
 ### Backend Convex (optionnel, multijoueur)
 
 ```bash
-npx convex dev
+npm run convex:dev
 ```
 
-Puis ajoutez `VITE_CONVEX_URL` dans `.env.local`.
+Puis ajoutez `VITE_CONVEX_URL` dans `.env.local` (voir `.env.example`).
+
+### Déploiement production
+
+Voir [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) pour Convex + Netlify + CI GitHub Actions.
 
 ## Structure
 
@@ -125,6 +131,9 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Événements saisonniers
 - [x] Graphismes isométriques avancés
 - [x] Multijoueur Convex temps réel complet (v1.0)
+- [x] Combat cloud avancé + donjons coop (v1.1)
+- [x] CI GitHub Actions + tests Vitest (v1.1)
+- [ ] Guerres de guildes, trade direct, boss monde (v1.2+)
 
 ## Licence
 
