@@ -4,14 +4,14 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v0.2)
+## Systèmes implémentés (v0.3)
 
 | Système | Statut | Description |
 |---------|--------|-------------|
 | Création de compte | ✅ | Local + Convex |
 | Création de personnage | ✅ | 8 classes, 5 slots |
-| Combat tactique | ✅ | Grille, PA/PM, sorts |
-| Monde / zones | ✅ | 6 zones, voyage |
+| Combat tactique | ✅ | Grille isométrique, PA/PM, sorts, effets |
+| Monde / zones | ✅ | 6 zones isométriques, voyage |
 | Inventaire | ✅ | 6 slots équipement |
 | Quêtes | ✅ | Main, side, daily |
 | Métiers | ✅ | 6 métiers, craft |
@@ -23,7 +23,13 @@ Créer un MMORPG tactique mobile aussi complet que les références du genre, av
 | Compagnons | ✅ | 6 pets, bonus passifs |
 | Havre (housing) | ✅ | Décoration, boutique, upgrades |
 | Présence multijoueur | ✅ | Joueurs en ligne par zone |
+| Événements saisonniers | ✅ | 4 saisons, quêtes, boutique, monstres |
+| Rendu isométrique | ✅ | Monde + combat Phaser 3 |
 | App natives | ✅ | Capacitor iOS/Android |
+
+## Systèmes v0.2 (précédent)
+
+Voir historique : PvP, donjons, pets, havre, chat, présence, Capacitor.
 
 ## Économie
 
@@ -45,6 +51,17 @@ Créer un MMORPG tactique mobile aussi complet que les références du genre, av
 4. Désert d'Umbra (25-40) — PvP
 5. Citadelle Stellaire (40-60) — Endgame
 6. Arène des Éveilleurs (10-60) — PvP
+
+## Événements saisonniers
+
+| Saison | Événement | Bonus |
+|--------|-----------|-------|
+| Printemps | Renaissance de Lumina | x1.25 XP |
+| Été | Éclipse d'Aether | x1.5 XP |
+| Automne | Invasion des Ombres | x1.35 XP |
+| Hiver | Fête des Cristaux | x1.4 XP, x1.5 Éclats |
+
+Chaque événement propose : monstres exclusifs, quêtes, boutique limitée, multiplicateurs de récompenses.
 
 ## Donjons
 

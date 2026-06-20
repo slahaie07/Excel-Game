@@ -45,6 +45,17 @@ export const ITEMS: ItemDefinition[] = [
 
   // Compagnons
   { id: "pet_wisp", name: "Wisp Compagnon", description: "Petit esprit stellaire fidèle.", type: "pet", level: 5, rarity: "rare", stats: { bonusXp: 5 }, stackable: false, maxStack: 1, sellPrice: 0, icon: "👾" },
+  { id: "pet_dragonnet", name: "Dragonnet d'Aether", description: "Jeune dragon stellaire de la Fête des Cristaux.", type: "pet", level: 40, rarity: "legendary", stats: { bonusXp: 10, bonusDamage: 5 }, stackable: false, maxStack: 1, sellPrice: 0, icon: "🐲" },
+
+  // Événements saisonniers
+  { id: "fleur_ether", name: "Fleur d'Éther", description: "Fleur magique de la Renaissance de Lumina.", type: "resource", level: 10, rarity: "uncommon", stackable: true, maxStack: 99, sellPrice: 25, icon: "🌸" },
+  { id: "couronne_florale", name: "Couronne Florale", description: "Couronne bénie par les Fées de Brume.", type: "helmet", level: 15, rarity: "epic", stats: { defense: 12, wisdom: 8 }, stackable: false, maxStack: 1, sellPrice: 400, icon: "👑" },
+  { id: "fragment_eclipse", name: "Fragment d'Éclipse", description: "Morceau d'ombre solaire cristallisée.", type: "resource", level: 25, rarity: "rare", stackable: true, maxStack: 50, sellPrice: 60, icon: "🌘" },
+  { id: "amulette_solaire", name: "Amulette Solaire", description: "Amulette forgée pendant l'Éclipse d'Aether.", type: "amulet", level: 28, rarity: "epic", stats: { intelligence: 12, damage: 8 }, stackable: false, maxStack: 1, sellPrice: 600, icon: "☀️" },
+  { id: "essence_ombre", name: "Essence d'Ombre", description: "Essence concentrée des Ombres Majeures.", type: "resource", level: 30, rarity: "rare", stackable: true, maxStack: 50, sellPrice: 80, icon: "👿" },
+  { id: "cape_umbra", name: "Cape d'Umbra", description: "Cape tissée dans les ténèbres du désert.", type: "armor", level: 35, rarity: "epic", stats: { defense: 22, agility: 10 }, stackable: false, maxStack: 1, sellPrice: 900, icon: "🧥" },
+  { id: "flocon_stellaire", name: "Flocon Stellaire", description: "Flocon magique tombé pendant la Fête des Cristaux.", type: "resource", level: 20, rarity: "uncommon", stackable: true, maxStack: 99, sellPrice: 30, icon: "❄️" },
+  { id: "armure_givre", name: "Armure de Givre", description: "Armure cristalline de l'hiver stellaire.", type: "armor", level: 40, rarity: "legendary", stats: { defense: 35, vitality: 20 }, stackable: false, maxStack: 1, sellPrice: 1200, icon: "🧊" },
 ];
 
 export const EQUIPMENT_SLOTS = ["weapon", "armor", "helmet", "boots", "amulet", "ring"] as const;

@@ -18,6 +18,7 @@ export type GameScreen =
   | "dungeon-run"
   | "pets"
   | "haven"
+  | "events"
   | "settings";
 
 interface GameState {

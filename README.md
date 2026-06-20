@@ -54,6 +54,16 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Havre personnel décorable
 - Boutique de meubles et upgrades
 
+### Événements saisonniers
+- 4 événements rotatifs (printemps, été, automne, hiver)
+- Bonus XP/Éclats, monstres exclusifs, quêtes et boutique
+- Progression locale + sync Convex (`convex/events.ts`)
+
+### Graphismes isométriques
+- Monde et combat en vue isométrique 2:1 (Phaser 3)
+- Tuiles thématiques par zone, ombres, tri de profondeur
+- Effets de particules sur les sorts en combat
+
 ### Mobile natif
 ```bash
 npm run build:mobile   # Build + sync Capacitor
@@ -108,9 +118,9 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Compagnons (pets)
 - [x] Housing / Havre
 - [x] App natives (Capacitor)
+- [x] Événements saisonniers
+- [x] Graphismes isométriques avancés
 - [ ] Multijoueur Convex temps réel complet
-- [ ] Événements saisonniers
-- [ ] Graphismes isométriques avancés
 
 ## Licence
 

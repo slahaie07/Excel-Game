@@ -15,6 +15,7 @@ import PvPScreen from "./screens/PvPScreen";
 import DungeonsScreen from "./screens/DungeonsScreen";
 import PetsScreen from "./screens/PetsScreen";
 import HavenScreen from "./screens/HavenScreen";
+import EventsScreen from "./screens/EventsScreen";
 import ChatOverlay from "./components/ChatOverlay";
 
 const SCREENS = {
@@ -34,10 +35,11 @@ const SCREENS = {
   "dungeon-run": DungeonsScreen,
   pets: PetsScreen,
   haven: HavenScreen,
+  events: EventsScreen,
   settings: LoginScreen,
 } as const;
 
-const IN_GAME_SCREENS = new Set(["world", "combat", "inventory", "quests", "guild", "marketplace", "professions", "pvp", "dungeons", "pets", "haven"]);
+const IN_GAME_SCREENS = new Set(["world", "combat", "inventory", "quests", "guild", "marketplace", "professions", "pvp", "dungeons", "pets", "haven", "events"]);
 
 export default function App() {
   const screen = useGameStore((s) => s.screen);

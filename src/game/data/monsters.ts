@@ -36,6 +36,12 @@ export const MONSTERS: MonsterDefinition[] = [
   // Zone: Citadelle Stellaire (niveau 40-60)
   { id: "golem_stellaire", name: "Golem Stellaire", description: "Construct magique des anciens.", level: 45, zoneId: "citadelle_stellaire", stats: { hp: 250, ap: 6, mp: 2, damage: 35, defense: 35 }, spells: ["poing_roche", "seisme"], drops: [{ itemId: "noyau_stellaire", chance: 0.2 }], xpReward: 200, eclatsReward: { min: 50, max: 100 }, icon: "🗿" },
   { id: "dragon_aether", name: "Dragon d'Aether", description: "Boss final — Avatar de l'étoile morte.", level: 60, zoneId: "citadelle_stellaire", stats: { hp: 2000, ap: 14, mp: 6, damage: 60, defense: 40 }, spells: ["souffle_stellaire", "apocalypse_ether", "vol_draconique"], drops: [{ itemId: "ecaille_dragon", chance: 0.3 }, { itemId: "couronne_aether", chance: 0.05 }], xpReward: 5000, eclatsReward: { min: 500, max: 1000 }, icon: "🐉", isBoss: true },
+
+  // Événements saisonniers
+  { id: "event_gardien_floral", name: "Gardien Floral", description: "Esprit printanier des Cristaux en fleur.", level: 12, zoneId: "foret_lumina", stats: { hp: 100, ap: 6, mp: 4, damage: 14, defense: 8 }, spells: ["pollen_ether"], drops: [{ itemId: "fleur_ether", chance: 0.5 }], xpReward: 80, eclatsReward: { min: 20, max: 40 }, icon: "🌸" },
+  { id: "event_esprit_eclipse", name: "Esprit d'Éclipse", description: "Ombre solaire née pendant l'éclipse d'Aether.", level: 25, zoneId: "desert_umbra", stats: { hp: 140, ap: 7, mp: 5, damage: 22, defense: 10 }, spells: ["rayon_eclipse"], drops: [{ itemId: "fragment_eclipse", chance: 0.45 }], xpReward: 120, eclatsReward: { min: 35, max: 70 }, icon: "🌘" },
+  { id: "event_ombre_majeur", name: "Ombre Majeure", description: "Soldat d'élite de l'invasion automnale.", level: 35, zoneId: "desert_umbra", stats: { hp: 200, ap: 8, mp: 4, damage: 28, defense: 18 }, spells: ["lame_ombre", "cri_corruption"], drops: [{ itemId: "essence_ombre", chance: 0.4 }], xpReward: 180, eclatsReward: { min: 50, max: 100 }, icon: "👿" },
+  { id: "event_cristal_ancien", name: "Gardien de Cristal Ancien", description: "Protecteur millénaire réveillé par la Fête des Cristaux.", level: 45, zoneId: "citadelle_stellaire", stats: { hp: 280, ap: 9, mp: 3, damage: 35, defense: 25 }, spells: ["barriere_cristal", "eclat_givre"], drops: [{ itemId: "flocon_stellaire", chance: 0.5 }], xpReward: 250, eclatsReward: { min: 70, max: 140 }, icon: "💠" },
 ];
 
 export function getMonstersByZone(zoneId: string): MonsterDefinition[] {

@@ -4,7 +4,10 @@ import { useGameStore } from "../stores/gameStore";
 import { getSpellById, getSpellsForClass, getMonsterById } from "../game/data";
 import { applyPvpResult } from "./PvPScreen";
 import { advanceDungeonRoom, createNextRoomCombat } from "./DungeonsScreen";
+import { recordEventKill } from "./EventsScreen";
 import { addXp } from "../lib/characterStorage";
+import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
+import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
 
 interface CombatEntity {
   entityId: string;
@@ -20,6 +23,7 @@ interface CombatEntity {
   y: number;
   team: "player" | "enemy";
   isAlive: boolean;
+  monsterId?: string;
 }
 
 interface CombatState {
@@ -31,99 +35,19 @@ interface CombatState {
   gridHeight: number;
 }
 
-class CombatScene extends Phaser.Scene {
-  private entities: CombatEntity[] = [];
-  private currentEntityId = "";
-  private cellSize = 40;
-  private sprites = new Map<string, Phaser.GameObjects.Text>();
-  private highlights: Phaser.GameObjects.Rectangle[] = [];
-  private onCellClick?: (x: number, y: number) => void;
-
-  constructor() {
-    super({ key: "CombatScene" });
-  }
-
-  init(data: {
-    entities: CombatEntity[];
-    currentEntityId: string;
-    onCellClick: (x: number, y: number) => void;
-  }) {
-    this.entities = data.entities;
-    this.currentEntityId = data.currentEntityId;
-    this.onCellClick = data.onCellClick;
-  }
-
-  create() {
-    this.cellSize = Math.min(this.scale.width, this.scale.height) / 14;
-
-    for (let x = 0; x < 12; x++) {
-      for (let y = 0; y < 8; y++) {
-        const isEven = (x + y) % 2 === 0;
-        const tile = this.add.rectangle(
-          x * this.cellSize + this.cellSize / 2 + 10,
-          y * this.cellSize + this.cellSize / 2 + 10,
-          this.cellSize - 2,
-          this.cellSize - 2,
-          isEven ? 0x1a3a2a : 0x2a4a3a
-        );
-        tile.setStrokeStyle(1, 0x3a5a4a);
-        tile.setInteractive();
-        tile.on("pointerdown", () => this.onCellClick?.(x, y));
-        tile.on("pointerover", () => tile.setFillStyle(0x4a6a5a));
-        tile.on("pointerout", () => tile.setFillStyle(isEven ? 0x1a3a2a : 0x2a4a3a));
-      }
-    }
-
-    this.renderEntities();
-  }
-
-  updateEntities(entities: CombatEntity[], currentEntityId: string) {
-    this.entities = entities;
-    this.currentEntityId = currentEntityId;
-    this.renderEntities();
-  }
-
-  private renderEntities() {
-    this.sprites.forEach((s) => s.destroy());
-    this.sprites.clear();
-    this.highlights.forEach((h) => h.destroy());
-    this.highlights = [];
-
-    this.entities.forEach((entity) => {
-      if (!entity.isAlive) return;
-
-      const icon = entity.isPlayer ? "🧙" : "👾";
-      const sprite = this.add.text(
-        entity.x * this.cellSize + this.cellSize / 2 + 10,
-        entity.y * this.cellSize + this.cellSize / 2 + 10,
-        icon,
-        { fontSize: entity.isPlayer ? "24px" : "20px" }
-      ).setOrigin(0.5);
-
-      if (entity.entityId === this.currentEntityId) {
-        const highlight = this.add.rectangle(
-          entity.x * this.cellSize + this.cellSize / 2 + 10,
-          entity.y * this.cellSize + this.cellSize / 2 + 10,
-          this.cellSize,
-          this.cellSize,
-          0xffff00,
-          0.2
-        );
-        this.highlights.push(highlight);
-      }
-
-      const hpBar = this.add.rectangle(
-        entity.x * this.cellSize + this.cellSize / 2 + 10,
-        entity.y * this.cellSize + 5,
-        (entity.hp / entity.maxHp) * (this.cellSize - 4),
-        4,
-        entity.team === "player" ? 0x00ff00 : 0xff0000
-      );
-      this.highlights.push(hpBar);
-
-      this.sprites.set(entity.entityId, sprite);
-    });
-  }
+function toVisualEntities(entities: CombatEntity[], currentEntityId: string, classId: string): CombatEntityVisual[] {
+  return entities.map((e) => ({
+    entityId: e.entityId,
+    name: e.name,
+    gridX: e.x,
+    gridY: e.y,
+    icon: e.isPlayer ? getClassIcon(classId) : getMonsterIcon(e.monsterId ?? "graine_ombre"),
+    hp: e.hp,
+    maxHp: e.maxHp,
+    team: e.team,
+    isAlive: e.isAlive,
+    isCurrent: e.entityId === currentEntityId,
+  }));
 }
 
 function initCombat(
@@ -179,6 +103,7 @@ function initCombat(
           y: 2 + Math.floor(i / 3),
           team: "enemy" as const,
           isAlive: true,
+          monsterId: id,
         };
       });
 
@@ -201,7 +126,7 @@ export default function CombatScreen() {
 
   const gameRef = useRef<HTMLDivElement>(null);
   const phaserRef = useRef<Phaser.Game | null>(null);
-  const sceneRef = useRef<CombatScene | null>(null);
+  const sceneRef = useRef<IsoCombatScene | null>(null);
 
   const combatData = JSON.parse(localStorage.getItem(`aetheris-combat-${combatId}`) ?? "{}");
   const combatType = combatData.type ?? "world";
@@ -216,6 +141,7 @@ export default function CombatScreen() {
   const [log, setLog] = useState<string[]>([
     combatType === "pvp" ? `⚔️ Duel PvP contre ${combatData.pvpOpponent?.name ?? "adversaire"} !` :
     combatType === "dungeon" ? `🏚️ Salle ${(combatData.roomIndex ?? 0) + 1} du donjon` :
+    combatType === "event" ? `🎉 Combat d'événement saisonnier !` :
     "Le combat commence !",
   ]);
   const [result, setResult] = useState<"victory" | "defeat" | null>(null);
@@ -243,6 +169,7 @@ export default function CombatScreen() {
           const dmg = Math.floor(Math.random() * 10) + 8;
           const newHp = Math.max(0, e.hp - dmg);
           setLog((prev) => [...prev, `${spell.name} inflige ${dmg} dégâts à ${e.name} !`]);
+          sceneRef.current?.playSpellEffect(player.x, player.y, x, y, spell.apCost > 3 ? 0xff6600 : 0x44aaff);
           return { ...e, hp: newHp, isAlive: newHp > 0 };
         }
         return e;
@@ -303,6 +230,27 @@ export default function CombatScreen() {
       addXp(characterId, 30);
       return;
     }
+    if (combatType === "event") {
+      const xpMult = combatData.xpMultiplier ?? 1;
+      const eclatsMult = combatData.eclatsMultiplier ?? 1;
+      const monsterId = combatData.monsterIds?.[0] as string | undefined;
+      const monster = monsterId ? getMonsterById(monsterId) : null;
+      const baseXp = monster?.xpReward ?? 80;
+      const baseEclats = monster
+        ? Math.floor((monster.eclatsReward.min + monster.eclatsReward.max) / 2)
+        : 40;
+      const xpGain = Math.floor(baseXp * xpMult);
+      const eclatsGain = Math.floor(baseEclats * eclatsMult);
+      addXp(characterId, xpGain);
+      const charKey = `aetheris-char-${characterId}`;
+      const data = JSON.parse(localStorage.getItem(charKey) ?? "{}");
+      data.eclats = (data.eclats ?? 0) + eclatsGain;
+      localStorage.setItem(charKey, JSON.stringify(data));
+      if (monsterId && combatData.eventId) {
+        recordEventKill(characterId, monsterId, combatData.eventId);
+      }
+      return;
+    }
     addXp(characterId, 50);
     const charKey = `aetheris-char-${characterId}`;
     const data = JSON.parse(localStorage.getItem(charKey) ?? "{}");
@@ -344,19 +292,20 @@ export default function CombatScreen() {
       type: Phaser.AUTO,
       parent: gameRef.current,
       width: gameRef.current.clientWidth,
-      height: 350,
-      backgroundColor: "#0d2818",
-      scene: CombatScene,
+      height: 380,
+      backgroundColor: "#0d0618",
+      scene: IsoCombatScene,
     };
 
     phaserRef.current = new Phaser.Game(config);
-    phaserRef.current.scene.start("CombatScene", {
-      entities: combat.entities,
+    phaserRef.current.scene.start("IsoCombatScene", {
+      entities: toVisualEntities(combat.entities, combat.currentEntityId, classId),
       currentEntityId: combat.currentEntityId,
       onCellClick: handleCellClick,
+      combatType,
     });
 
-    sceneRef.current = phaserRef.current.scene.getScene("CombatScene") as CombatScene;
+    sceneRef.current = phaserRef.current.scene.getScene("IsoCombatScene") as IsoCombatScene;
 
     return () => {
       phaserRef.current?.destroy(true);
@@ -365,19 +314,22 @@ export default function CombatScreen() {
   }, []);
 
   useEffect(() => {
-    sceneRef.current?.updateEntities(combat.entities, combat.currentEntityId);
-  }, [combat.entities, combat.currentEntityId]);
+    sceneRef.current?.updateEntities(
+      toVisualEntities(combat.entities, combat.currentEntityId, classId),
+      combat.currentEntityId
+    );
+  }, [combat.entities, combat.currentEntityId, classId]);
 
   return (
     <div className="flex-1 flex flex-col bg-aether-950">
       <div className="flex items-center justify-between p-3 bg-aether-900/80">
         <span className="font-display font-bold text-aether-200">
-          {combatType === "pvp" ? "⚔️ Arène" : combatType === "dungeon" ? "🏚️ Donjon" : "Combat"} — Tour {combat.turn}
+          {combatType === "pvp" ? "⚔️ Arène" : combatType === "dungeon" ? "🏚️ Donjon" : combatType === "event" ? "🎉 Événement" : "Combat"} — Tour {combat.turn}
         </span>
         <button onClick={() => setCombat(null)} className="text-aether-400 text-sm">Fuir</button>
       </div>
 
-      <div ref={gameRef} className="flex-shrink-0" style={{ height: 350 }} />
+      <div ref={gameRef} className="flex-shrink-0" style={{ height: 380 }} />
 
       {/* Player status */}
       <div className="px-4 py-2 flex gap-4 text-sm">
@@ -437,6 +389,11 @@ export default function CombatScreen() {
             )}
             {result === "victory" && combatType === "world" && (
               <p className="text-aether-300 text-sm mb-4">+50 XP • +25 ✦ Éclats</p>
+            )}
+            {result === "victory" && combatType === "event" && (
+              <p className="text-aether-300 text-sm mb-4">
+                Récompenses d'événement ! Bonus XP et Éclats appliqués
+              </p>
             )}
             {result === "victory" && combatType === "dungeon" && !dungeonComplete ? (
               <button
