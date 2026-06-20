@@ -648,6 +648,27 @@ export default defineSchema({
     updatedAt: v.number(),
   }).index("by_character", ["characterId"]),
 
+  factionQuestProgress: defineTable({
+    characterId: v.id("characters"),
+    weekKey: v.string(),
+    questId: v.string(),
+    factionId: v.union(v.literal("lumina"), v.literal("umbra"), v.literal("neutre")),
+    progress: v.number(),
+    completed: v.boolean(),
+    claimed: v.boolean(),
+    updatedAt: v.number(),
+  })
+    .index("by_character_and_week", ["characterId", "weekKey"])
+    .index("by_character", ["characterId"]),
+
+  factionShopPurchases: defineTable({
+    characterId: v.id("characters"),
+    weekKey: v.string(),
+    shopItemId: v.string(),
+    purchaseCount: v.number(),
+    updatedAt: v.number(),
+  }).index("by_character_week_item", ["characterId", "weekKey", "shopItemId"]),
+
   pvpDailyChallenges: defineTable({
     characterId: v.id("characters"),
     dayKey: v.string(),

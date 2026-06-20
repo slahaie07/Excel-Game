@@ -258,6 +258,7 @@ export default function WorldScreen() {
         <div className="flex gap-2 mt-1">
           <button onClick={() => setScreen("professions")} className="flex-1 text-aether-500 text-[10px] py-1 hover:text-aether-400">⚒️ Métiers</button>
           <button onClick={() => setScreen("marketplace")} className="flex-1 text-aether-500 text-[10px] py-1 hover:text-aether-400">🏪 Marché</button>
+          <button onClick={() => setScreen("factions")} className="flex-1 text-aether-500 text-[10px] py-1 hover:text-aether-400">🏛️ Factions</button>
           <button onClick={() => setScreen("raids")} className="flex-1 text-aether-500 text-[10px] py-1 hover:text-aether-400">🐉 Raids</button>
           <button onClick={() => setScreen("friends")} className="flex-1 text-aether-500 text-[10px] py-1 hover:text-aether-400">👥 Amis</button>
         </div>

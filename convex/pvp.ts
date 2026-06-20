@@ -8,7 +8,7 @@ import { recordTournamentMatch } from "./pvpTournaments";
 import { recordLeagueMatch } from "./lib/pvpLeagues";
 import { recordMenteePvpWin } from "./mentorship";
 import { recordPvpDailyProgress } from "./pvpDailyChallenges";
-import { addFactionReputation } from "./factions";
+import { addFactionReputation, recordFactionQuestProgress } from "./factions";
 
 const TEAM_SIZE: Record<"1v1" | "2v2" | "3v3", number> = {
   "1v1": 1,
@@ -255,6 +255,7 @@ export const completeMatch = mutation({
       await recordMenteePvpWin(ctx, w.characterId);
       await recordPvpDailyProgress(ctx, w.characterId, { won: true, mode: match.mode });
       await addFactionReputation(ctx, w.characterId, "umbra", 5);
+      await recordFactionQuestProgress(ctx, w.characterId, { type: "pvp_wins" });
     }
 
     for (const l of losers) {

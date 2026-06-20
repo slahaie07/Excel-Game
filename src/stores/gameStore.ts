@@ -28,7 +28,8 @@ export type GameScreen =
   | "trade"
   | "settings"
   | "hall-of-fame"
-  | "class";
+  | "class"
+  | "factions";
 
 interface GameState {
   screen: GameScreen;

@@ -27,6 +27,17 @@ export {
   type GuildCosmeticDefinition,
 } from "./guildCosmetics";
 export {
+  FACTION_META,
+  FACTION_RANKS,
+  FACTION_QUESTS,
+  FACTION_SHOP_ITEMS,
+  getFactionRank,
+  getNextFactionRank,
+  meetsRankRequirement,
+  getWeekKey,
+  type FactionId,
+} from "./factionContent";
+export {
   SEASONAL_EVENTS,
   getActiveEvent,
   getEventById,
