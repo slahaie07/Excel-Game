@@ -7,6 +7,7 @@ import {
 } from "../game/data/events";
 import { loadCharacter, saveCharacter, addXp } from "../lib/characterStorage";
 import { getMonsterIcon } from "../game/rendering/isometric";
+import { isCloudCharacter, isConvexEnabled } from "../lib/convexUtils";
 
 interface EventProgress {
   eventId: string;
@@ -116,6 +117,20 @@ export default function EventsScreen() {
       </div>
 
       {/* Bonus banner */}
+      {isConvexEnabled() && isCloudCharacter(characterId) && (
+        <button
+          onClick={() => setScreen("live-events")}
+          className="mx-4 mt-3 card py-3 px-4 flex items-center gap-3 border-purple-500/50 bg-purple-950/30 active:scale-[0.98]"
+        >
+          <span className="text-2xl">🌐</span>
+          <div className="flex-1 text-left">
+            <p className="text-purple-300 text-sm font-bold">Événement live cross-serveur</p>
+            <p className="text-aether-500 text-xs">Progression globale • Classement contributeurs</p>
+          </div>
+          <span className="text-purple-400 text-xs">→</span>
+        </button>
+      )}
+
       <div className="mx-4 mt-3 card py-2 px-3 flex justify-around text-center" style={{ borderColor: activeEvent.color + "60" }}>
         <div>
           <p className="text-green-400 font-bold text-sm">x{activeEvent.bonuses.xpMultiplier}</p>

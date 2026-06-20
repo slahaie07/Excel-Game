@@ -1,3 +1,6 @@
+import { useMutation, useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import type { Id } from "../../convex/_generated/dataModel";
 import { useGameStore } from "../stores/gameStore";
 import { isCloudAccount, isCloudCharacter, isConvexEnabled } from "../lib/convexUtils";
 
@@ -9,6 +12,25 @@ export default function SettingsScreen() {
   const isOnline = useGameStore((s) => s.isOnline);
   const setScreen = useGameStore((s) => s.setScreen);
   const logout = useGameStore((s) => s.logout);
+
+  const cloudChar = useQuery(
+    api.characters.getCharacter,
+    characterId && isCloudCharacter(characterId)
+      ? { characterId: characterId as Id<"characters"> }
+      : "skip"
+  );
+  const registerPush = useMutation(api.notifications.registerPushInterest);
+
+  const pushEnabled = cloudChar?.pushNotificationsEnabled ?? false;
+  const isCloud = isConvexEnabled() && isCloudCharacter(characterId);
+
+  const togglePush = () => {
+    if (!characterId || !isCloud) return;
+    void registerPush({
+      characterId: characterId as Id<"characters">,
+      enabled: !pushEnabled,
+    });
+  };
 
   return (
     <div className="flex-1 flex flex-col bg-aether-950">
@@ -43,6 +65,24 @@ export default function SettingsScreen() {
           </p>
         </section>
 
+        {isCloud && (
+          <section className="card space-y-3">
+            <h2 className="text-aether-400 text-sm font-semibold">Notifications</h2>
+            <p className="text-aether-500 text-xs">
+              Alertes navigateur pour matchs PvP, événements live et activité guilde.
+            </p>
+            <button
+              onClick={togglePush}
+              className="flex items-center justify-between w-full py-2"
+            >
+              <span className="text-aether-300 text-sm">Notifications push</span>
+              <span className={`text-sm font-bold ${pushEnabled ? "text-green-400" : "text-aether-500"}`}>
+                {pushEnabled ? "Activées" : "Désactivées"}
+              </span>
+            </button>
+          </section>
+        )}
+
         <section className="card space-y-2">
           <h2 className="text-aether-400 text-sm font-semibold">Jeu</h2>
           <button onClick={() => setScreen("daily")} className="w-full text-left text-aether-300 text-sm py-1">
@@ -52,9 +92,14 @@ export default function SettingsScreen() {
             🏆 Succès
           </button>
           {isCloudCharacter(characterId) && (
-            <button onClick={() => setScreen("friends")} className="w-full text-left text-aether-300 text-sm py-1">
-              👥 Amis
-            </button>
+            <>
+              <button onClick={() => setScreen("friends")} className="w-full text-left text-aether-300 text-sm py-1">
+                👥 Amis
+              </button>
+              <button onClick={() => setScreen("live-events")} className="w-full text-left text-aether-300 text-sm py-1">
+                🌐 Événements live
+              </button>
+            </>
           )}
         </section>
 
@@ -62,7 +107,7 @@ export default function SettingsScreen() {
           Déconnexion
         </button>
 
-        <p className="text-aether-600 text-xs text-center">Aetheris v1.0 — L&apos;Éveil des Cristaux</p>
+        <p className="text-aether-600 text-xs text-center">Aetheris v1.6 — L&apos;Éveil des Cristaux</p>
       </div>
     </div>
   );

@@ -156,23 +156,19 @@ export default function CloudCombatScreen() {
           }
         });
       }
-      if (combatType === "pvp" && combatData.convexMatchId && combatData.pvpOpponent?.characterId) {
+      if (combatType === "pvp" && combatData.convexMatchId) {
         const isTeamA = combatData.isTeamA ?? true;
         void completePvp({
           matchId: combatData.convexMatchId as Id<"pvpMatches">,
           winnerTeam: isTeamA ? "A" : "B",
-          winnerCharacterId: characterId,
-          loserCharacterId: combatData.pvpOpponent.characterId as Id<"characters">,
         });
       }
     }
-    if (combatDoc?.status === "defeat" && combatType === "pvp" && combatData.convexMatchId && combatData.pvpOpponent?.characterId) {
+    if (combatDoc?.status === "defeat" && combatType === "pvp" && combatData.convexMatchId) {
       const isTeamA = combatData.isTeamA ?? true;
       void completePvp({
         matchId: combatData.convexMatchId as Id<"pvpMatches">,
         winnerTeam: isTeamA ? "B" : "A",
-        winnerCharacterId: combatData.pvpOpponent.characterId as Id<"characters">,
-        loserCharacterId: characterId,
       });
     }
   }, [combatDoc?.status, combatType, combatData, convexCombatId, characterId, applyRewards, completePvp, advanceRoom, advancePhase]);

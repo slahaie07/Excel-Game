@@ -10,6 +10,7 @@ import { loadCharacter } from "../lib/characterStorage";
 import { isCloudCharacter, isConvexEnabled } from "../lib/convexUtils";
 import { CloudEncounterStarter } from "../components/CloudEncounterStarter";
 import { CloudWorldBoss } from "../components/CloudWorldBoss";
+import { NotificationBell } from "../components/NotificationBell";
 import type { Id } from "../../convex/_generated/dataModel";
 import { getClassIcon as getClassIconFromData } from "../game/rendering/isometric";
 
@@ -157,6 +158,7 @@ export default function WorldScreen() {
         <div className="flex items-center gap-3 text-sm">
           <span className="text-red-400">❤️ {charData?.hp ?? 100}/{charData?.maxHp ?? 100}</span>
           <span className="text-crystal-gold">✦ {charData?.eclats ?? 0}</span>
+          {isConvexEnabled() && isCloudCharacter(characterId) && <NotificationBell />}
           <button onClick={() => setShowMenu(!showMenu)} className="text-aether-400 text-xl">☰</button>
           <button onClick={() => setScreen("settings")} className="text-aether-400 text-lg" title="Paramètres">⚙️</button>
         </div>

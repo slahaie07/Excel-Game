@@ -1,6 +1,37 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import type { Id } from "./_generated/dataModel";
 import { recordSeasonMatch } from "./seasons";
+import { sendNotification } from "./lib/notifications";
+
+const TEAM_SIZE: Record<"1v1" | "2v2" | "3v3", number> = {
+  "1v1": 1,
+  "2v2": 2,
+  "3v3": 3,
+};
+
+type QueueEntry = {
+  _id: string;
+  characterId: Id<"characters">;
+  characterName: string;
+  classId: string;
+  level: number;
+  rating: number;
+  mode: "1v1" | "2v2" | "3v3";
+  queuedAt: number;
+};
+
+function snakeDraftTeams(players: QueueEntry[]) {
+  const sorted = [...players].sort((a, b) => b.rating - a.rating);
+  const teamA: QueueEntry[] = [];
+  const teamB: QueueEntry[] = [];
+
+  for (let i = 0; i < sorted.length; i++) {
+    if (i % 2 === 0) teamA.push(sorted[i]!);
+    else teamB.push(sorted[i]!);
+  }
+  return { teamA, teamB };
+}
 
 export const joinQueue = mutation({
   args: {
@@ -20,36 +51,6 @@ export const joinQueue = mutation({
 
     if (existing) await ctx.db.delete("pvpQueue", existing._id);
 
-    const waiting = await ctx.db
-      .query("pvpQueue")
-      .withIndex("by_mode", (q) => q.eq("mode", args.mode))
-      .order("asc")
-      .first();
-
-    if (waiting && waiting.characterId !== args.characterId) {
-      await ctx.db.delete("pvpQueue", waiting._id);
-
-      const matchId = await ctx.db.insert("pvpMatches", {
-        mode: args.mode,
-        teamA: [{
-          characterId: waiting.characterId,
-          name: waiting.characterName,
-          classId: waiting.classId,
-          rating: waiting.rating,
-        }],
-        teamB: [{
-          characterId: args.characterId,
-          name: args.characterName,
-          classId: args.classId,
-          rating: args.rating,
-        }],
-        status: "pending",
-        createdAt: Date.now(),
-      });
-
-      return matchId;
-    }
-
     await ctx.db.insert("pvpQueue", {
       characterId: args.characterId,
       characterName: args.characterName,
@@ -60,7 +61,56 @@ export const joinQueue = mutation({
       queuedAt: Date.now(),
     });
 
-    return null;
+    const teamSize = TEAM_SIZE[args.mode];
+    const playersNeeded = teamSize * 2;
+
+    const queued = await ctx.db
+      .query("pvpQueue")
+      .withIndex("by_mode", (q) => q.eq("mode", args.mode))
+      .order("asc")
+      .take(playersNeeded);
+
+    if (queued.length < playersNeeded) return null;
+
+    const participants = queued.slice(0, playersNeeded);
+    for (const p of participants) {
+      await ctx.db.delete("pvpQueue", p._id);
+    }
+
+    const { teamA, teamB } = snakeDraftTeams(participants as QueueEntry[]);
+
+    const matchId = await ctx.db.insert("pvpMatches", {
+      mode: args.mode,
+      teamA: teamA.map((p) => ({
+        characterId: p.characterId,
+        name: p.characterName,
+        classId: p.classId,
+        rating: p.rating,
+      })),
+      teamB: teamB.map((p) => ({
+        characterId: p.characterId,
+        name: p.characterName,
+        classId: p.classId,
+        rating: p.rating,
+      })),
+      status: "pending",
+      createdAt: Date.now(),
+    });
+
+    for (const p of participants) {
+      const character = await ctx.db.get("characters", p.characterId);
+      if (character?.pushNotificationsEnabled) {
+        await sendNotification(ctx, {
+          characterId: p.characterId,
+          type: "pvp_match_found",
+          title: "Match PvP trouvé !",
+          body: `Un ${args.mode} est prêt — rejoignez l'arène !`,
+          screen: "pvp",
+        });
+      }
+    }
+
+    return matchId;
   },
 });
 
@@ -77,6 +127,38 @@ export const leaveQueue = mutation({
   },
 });
 
+export const getQueueStatus = query({
+  args: {
+    characterId: v.id("characters"),
+    mode: v.union(v.literal("1v1"), v.literal("2v2"), v.literal("3v3")),
+  },
+  returns: v.object({
+    inQueue: v.boolean(),
+    playersWaiting: v.number(),
+    playersNeeded: v.number(),
+  }),
+  handler: async (ctx, args) => {
+    const teamSize = TEAM_SIZE[args.mode];
+    const playersNeeded = teamSize * 2;
+
+    const inQueue = await ctx.db
+      .query("pvpQueue")
+      .withIndex("by_character", (q) => q.eq("characterId", args.characterId))
+      .unique();
+
+    const queued = await ctx.db
+      .query("pvpQueue")
+      .withIndex("by_mode", (q) => q.eq("mode", args.mode))
+      .collect();
+
+    return {
+      inQueue: !!inQueue,
+      playersWaiting: queued.length,
+      playersNeeded,
+    };
+  },
+});
+
 export const getMatch = query({
   args: { matchId: v.id("pvpMatches") },
   returns: v.union(v.any(), v.null()),
@@ -89,30 +171,43 @@ export const completeMatch = mutation({
   args: {
     matchId: v.id("pvpMatches"),
     winnerTeam: v.union(v.literal("A"), v.literal("B")),
-    winnerCharacterId: v.id("characters"),
-    loserCharacterId: v.id("characters"),
   },
   returns: v.object({ ratingGain: v.number(), ratingLoss: v.number() }),
   handler: async (ctx, args) => {
     const match = await ctx.db.get("pvpMatches", args.matchId);
     if (!match) throw new Error("Match introuvable");
+    if (match.status === "completed") {
+      return { ratingGain: match.ratingChange ?? 0, ratingLoss: match.ratingChange ?? 0 };
+    }
 
-    const winner = await ctx.db.get("characters", args.winnerCharacterId);
-    const loser = await ctx.db.get("characters", args.loserCharacterId);
-    if (!winner || !loser) throw new Error("Personnage introuvable");
+    const winners = args.winnerTeam === "A" ? match.teamA : match.teamB;
+    const losers = args.winnerTeam === "A" ? match.teamB : match.teamA;
 
-    const ratingGain = Math.max(10, Math.floor((loser.pvpRating - winner.pvpRating) / 20) + 25);
-    const ratingLoss = Math.max(5, Math.floor((winner.pvpRating - loser.pvpRating) / 20) + 15);
+    const avgWinnerRating = winners.reduce((s, p) => s + p.rating, 0) / winners.length;
+    const avgLoserRating = losers.reduce((s, p) => s + p.rating, 0) / losers.length;
 
-    await ctx.db.patch("characters", args.winnerCharacterId, {
-      pvpRating: winner.pvpRating + ratingGain,
-      pvpWins: winner.pvpWins + 1,
-    });
+    const ratingGain = Math.max(10, Math.floor((avgLoserRating - avgWinnerRating) / 20) + 25);
+    const ratingLoss = Math.max(5, Math.floor((avgWinnerRating - avgLoserRating) / 20) + 15);
 
-    await ctx.db.patch("characters", args.loserCharacterId, {
-      pvpRating: Math.max(0, loser.pvpRating - ratingLoss),
-      pvpLosses: loser.pvpLosses + 1,
-    });
+    for (const w of winners) {
+      const char = await ctx.db.get("characters", w.characterId);
+      if (char) {
+        await ctx.db.patch("characters", w.characterId, {
+          pvpRating: char.pvpRating + ratingGain,
+          pvpWins: char.pvpWins + 1,
+        });
+      }
+    }
+
+    for (const l of losers) {
+      const char = await ctx.db.get("characters", l.characterId);
+      if (char) {
+        await ctx.db.patch("characters", l.characterId, {
+          pvpRating: Math.max(0, char.pvpRating - ratingLoss),
+          pvpLosses: char.pvpLosses + 1,
+        });
+      }
+    }
 
     await ctx.db.patch("pvpMatches", args.matchId, {
       status: "completed",
@@ -120,7 +215,9 @@ export const completeMatch = mutation({
       ratingChange: ratingGain,
     });
 
-    await recordSeasonMatch(ctx, args.winnerCharacterId, args.loserCharacterId, ratingGain, ratingLoss);
+    const winnerCap = winners[0]!;
+    const loserCap = losers[0]!;
+    await recordSeasonMatch(ctx, winnerCap.characterId, loserCap.characterId, ratingGain, ratingLoss);
 
     return { ratingGain, ratingLoss };
   },
@@ -130,12 +227,19 @@ export const getPendingMatch = query({
   args: { characterId: v.id("characters") },
   returns: v.union(v.any(), v.null()),
   handler: async (ctx, args) => {
-    const matches = await ctx.db
+    const pending = await ctx.db
       .query("pvpMatches")
       .withIndex("by_status", (q) => q.eq("status", "pending"))
-      .take(20);
+      .take(30);
 
-    return matches.find(
+    const active = await ctx.db
+      .query("pvpMatches")
+      .withIndex("by_status", (q) => q.eq("status", "active"))
+      .take(30);
+
+    const all = [...pending, ...active];
+
+    return all.find(
       (m) =>
         m.teamA.some((p) => p.characterId === args.characterId) ||
         m.teamB.some((p) => p.characterId === args.characterId)

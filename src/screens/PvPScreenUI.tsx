@@ -49,6 +49,7 @@ interface PvPScreenUIProps {
   mode: "1v1" | "2v2" | "3v3";
   onModeChange: (mode: "1v1" | "2v2" | "3v3") => void;
   searching: boolean;
+  queueStatus?: { playersWaiting: number; playersNeeded: number } | null;
   error: string;
   leaderboard: PvpLeaderboardEntry[];
   seasonLeaderboard?: PvpLeaderboardEntry[];
@@ -75,6 +76,7 @@ export function PvPScreenUI({
   mode,
   onModeChange,
   searching,
+  queueStatus,
   error,
   leaderboard,
   seasonLeaderboard,
@@ -232,12 +234,22 @@ export function PvPScreenUI({
 
         {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
+        {searching && queueStatus && (
+          <p className="text-aether-400 text-xs text-center">
+            Joueurs en file : {queueStatus.playersWaiting}/{queueStatus.playersNeeded}
+          </p>
+        )}
+
         <button
           onClick={onMatchmake}
           disabled={searching || loading}
           className="btn-primary w-full bg-gradient-to-r from-red-700 to-red-500 disabled:opacity-60"
         >
-          {searching ? "Recherche d'adversaire..." : `Lancer un ${mode}`}
+          {searching
+            ? queueStatus
+              ? `Recherche ${mode} (${queueStatus.playersWaiting}/${queueStatus.playersNeeded})...`
+              : "Recherche d'adversaire..."
+            : `Lancer un ${mode}`}
         </button>
 
         <div>

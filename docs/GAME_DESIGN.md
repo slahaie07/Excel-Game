@@ -4,7 +4,7 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v1.5)
+## Systèmes implémentés (v1.6)
 
 | Système | Statut | Description |
 |---------|--------|-------------|
@@ -149,5 +149,14 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Cosmétiques | `cosmetics.ts` | Récompenses, titres/cadres saison, équipement |
 | Guild Hall | `guildHall.ts` | Visites sociales, emotes, exploration publique |
 | Saisons | `seasons.ts` | Finalisation auto + distribution des récompenses |
+
+## v1.6 — Live events & PvP équipes
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Live Events | `liveEvents.ts` | Événements 48h cross-serveur, contribution globale, classement |
+| Notifications | `notifications.ts` | In-app + push navigateur (PvP, live, guilde) |
+| PvP | `pvp.ts` | Matchmaking snake draft 1v1/2v2/3v3, file d'attente |
+| Crons | `crons.ts` | Rotation automatique des événements live |
 
 Voir `docs/DEPLOYMENT.md`.

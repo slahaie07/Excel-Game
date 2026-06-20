@@ -111,6 +111,7 @@ export default defineSchema({
       equippedTitle: v.optional(v.string()),
       equippedFrame: v.optional(v.string()),
     })),
+    pushNotificationsEnabled: v.optional(v.boolean()),
     playTime: v.number(),
     createdAt: v.number(),
     lastPlayedAt: v.number(),
@@ -442,4 +443,39 @@ export default defineSchema({
     message: v.string(),
     visitedAt: v.number(),
   }).index("by_guild", ["guildId", "visitedAt"]),
+
+  liveEvents: defineTable({
+    eventId: v.string(),
+    name: v.string(),
+    description: v.string(),
+    type: v.union(v.literal("boss_rush"), v.literal("kill_race"), v.literal("harvest")),
+    status: v.union(v.literal("scheduled"), v.literal("active"), v.literal("ended")),
+    startsAt: v.number(),
+    endsAt: v.number(),
+    globalTarget: v.number(),
+    globalProgress: v.number(),
+    rewardEclats: v.number(),
+    rewardXp: v.number(),
+  }).index("by_status", ["status"]),
+
+  liveEventContributions: defineTable({
+    liveEventId: v.id("liveEvents"),
+    characterId: v.id("characters"),
+    characterName: v.string(),
+    contribution: v.number(),
+    rewardClaimed: v.boolean(),
+    updatedAt: v.number(),
+  })
+    .index("by_event_and_character", ["liveEventId", "characterId"])
+    .index("by_event", ["liveEventId"]),
+
+  notifications: defineTable({
+    characterId: v.id("characters"),
+    type: v.string(),
+    title: v.string(),
+    body: v.string(),
+    read: v.boolean(),
+    screen: v.optional(v.string()),
+    createdAt: v.number(),
+  }).index("by_character", ["characterId", "createdAt"]),
 });

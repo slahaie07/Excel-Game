@@ -9,6 +9,8 @@ export interface CloudCombatMeta {
   convexRunId?: string;
   convexRaidRunId?: string;
   isTeamA?: boolean;
+  pvpMode?: "1v1" | "2v2" | "3v3";
+  allies?: string[];
   pvpOpponent?: { name: string; classId: string; level: number; characterId?: string };
   roomIndex?: number;
   dungeonId?: string;

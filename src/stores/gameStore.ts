@@ -21,6 +21,7 @@ export type GameScreen =
   | "pets"
   | "haven"
   | "events"
+  | "live-events"
   | "daily"
   | "achievements"
   | "friends"

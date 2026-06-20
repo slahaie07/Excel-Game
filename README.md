@@ -68,6 +68,12 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Bonus XP/Éclats, monstres exclusifs, quêtes et boutique
 - Progression locale + sync Convex (`convex/events.ts`)
 
+### Live & notifications (v1.6)
+- **Événements live cross-serveur** 48h — contribution globale, classement (`convex/liveEvents.ts`)
+- **Notifications** in-app + push navigateur (PvP, live, guilde)
+- **PvP équipes** — matchmaking snake draft 1v1/2v2/3v3 complet
+- Cron automatique de rotation des événements live
+
 ### Graphismes isométriques
 - Monde et combat en vue isométrique 2:1 (Phaser 3)
 - Tuiles thématiques par zone, ombres, tri de profondeur
@@ -140,7 +146,7 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Raids 8 joueurs + housing cloud sync (v1.3)
 - [x] Saisons ranked PvP + guild hall partagé (v1.4)
 - [x] Récompenses de fin de saison, visites sociales, cosmétiques (v1.5)
-- [ ] Événements live cross-serveur (v1.6+)
+- [x] Événements live cross-serveur, PvP équipes 2v2/3v3, notifications (v1.6)
 
 ## Licence
 

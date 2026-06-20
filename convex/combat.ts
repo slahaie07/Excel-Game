@@ -245,29 +245,57 @@ export const startPvpCombat = mutation({
   args: {
     matchId: v.id("pvpMatches"),
     characterId: v.id("characters"),
-    opponentCharacterId: v.id("characters"),
   },
   returns: v.id("combats"),
   handler: async (ctx, args) => {
     const match = await ctx.db.get("pvpMatches", args.matchId);
     if (!match) throw new Error("Match introuvable");
 
-    const player = await ctx.db.get("characters", args.characterId);
-    const opponent = await ctx.db.get("characters", args.opponentCharacterId);
-    if (!player || !opponent) throw new Error("Personnage introuvable");
+    if (match.combatId) {
+      const inMatch =
+        match.teamA.some((p) => p.characterId === args.characterId) ||
+        match.teamB.some((p) => p.characterId === args.characterId);
+      if (!inMatch) throw new Error("Non participant");
+      return match.combatId;
+    }
 
-    const playerEntity = buildPlayerEntity(player, 2, 4);
-    const opponentEntity = buildPlayerEntity(opponent, 9, 4);
-    opponentEntity.team = "enemy";
-    opponentEntity.isPlayer = false;
+    const isTeamA = match.teamA.some((p) => p.characterId === args.characterId);
+    const myTeam = isTeamA ? match.teamA : match.teamB;
+    const enemyTeam = isTeamA ? match.teamB : match.teamA;
+
+    if (!myTeam.some((p) => p.characterId === args.characterId)) {
+      throw new Error("Non participant au match");
+    }
+
+    const playerEntities = [];
+    for (let i = 0; i < myTeam.length; i++) {
+      const member = myTeam[i]!;
+      const char = await ctx.db.get("characters", member.characterId);
+      if (!char) throw new Error("Joueur introuvable");
+      playerEntities.push(buildPlayerEntity(char, 1 + i * 2, 3 + (i % 2)));
+    }
+
+    const enemyEntities = [];
+    for (let i = 0; i < enemyTeam.length; i++) {
+      const member = enemyTeam[i]!;
+      const char = await ctx.db.get("characters", member.characterId);
+      if (!char) throw new Error("Adversaire introuvable");
+      const entity = buildPlayerEntity(char, 7 + i * 2, 3 + (i % 2));
+      entity.team = "enemy";
+      entity.isPlayer = false;
+      enemyEntities.push(entity);
+    }
+
+    const participantIds = [...match.teamA, ...match.teamB].map((p) => p.characterId);
 
     const combatId = await insertCombat(ctx, {
       characterId: args.characterId,
       zoneId: "arene_pvp",
-      entities: [playerEntity, opponentEntity],
+      entities: [...playerEntities, ...enemyEntities],
       isPvP: true,
-      opponentCharacterId: args.opponentCharacterId,
+      opponentCharacterId: enemyTeam[0]?.characterId,
       combatType: "pvp",
+      participantCharacterIds: participantIds,
     });
 
     await ctx.db.patch("pvpMatches", args.matchId, {

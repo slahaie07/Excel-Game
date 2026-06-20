@@ -18,6 +18,7 @@ import RaidsScreen from "./screens/RaidsScreen";
 import PetsScreen from "./screens/PetsScreen";
 import HavenScreen from "./screens/HavenScreen";
 import EventsScreen from "./screens/EventsScreen";
+import LiveEventsScreen from "./screens/LiveEventsScreen";
 import DailyRewardsScreen from "./screens/DailyRewardsScreen";
 import AchievementsScreen from "./screens/AchievementsScreen";
 import FriendsScreen from "./screens/FriendsScreen";
@@ -45,6 +46,7 @@ const SCREENS = {
   pets: PetsScreen,
   haven: HavenScreen,
   events: EventsScreen,
+  "live-events": LiveEventsScreen,
   daily: DailyRewardsScreen,
   achievements: AchievementsScreen,
   friends: FriendsScreen,
@@ -54,7 +56,7 @@ const SCREENS = {
 
 const IN_GAME_SCREENS = new Set([
   "world", "combat", "inventory", "quests", "guild", "guild-hall", "marketplace",
-  "professions", "pvp", "dungeons", "raids", "pets", "haven", "events",
+  "professions", "pvp", "dungeons", "raids", "pets", "haven", "events", "live-events",
   "daily", "achievements", "friends", "trade", "settings",
 ]);
 
