@@ -4,7 +4,7 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v1.6)
+## Systèmes implémentés (v1.7)
 
 | Système | Statut | Description |
 |---------|--------|-------------|
@@ -158,5 +158,13 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Notifications | `notifications.ts` | In-app + push navigateur (PvP, live, guilde) |
 | PvP | `pvp.ts` | Matchmaking snake draft 1v1/2v2/3v3, file d'attente |
 | Crons | `crons.ts` | Rotation automatique des événements live |
+
+## v1.7 — Saisons thématiques & push natives
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Thèmes saison | `lib/seasonThemes.ts` | 4 thèmes rotatifs, bonus rating, cosmétiques champion |
+| Push tokens | `notifications.ts` | Enregistrement tokens Capacitor iOS/Android |
+| Raids | `game/data/raids.ts` | Abîme Fractal — raid intermédiaire 5 phases |
 
 Voir `docs/DEPLOYMENT.md`.

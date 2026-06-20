@@ -59,6 +59,29 @@ export const RAIDS: RaidDefinition[] = [
     ],
     rewards: { xp: 25000, eclats: 12000, items: [{ itemId: "couronne_aether", chance: 0.15, quantity: 1 }] },
   },
+  {
+    id: "abime_fractal",
+    name: "Abîme Fractal",
+    description: "Raid intermédiaire pour 4 à 6 Éveilleurs. Les fractures d'Aether dévorent tout sur leur passage.",
+    zoneId: "desert_umbra",
+    levelRequired: 35,
+    phases: 5,
+    icon: "🌀",
+    minPlayers: 4,
+    maxPlayers: 6,
+    phaseMonsters: [
+      ["scorpion_ether", "scorpion_ether", "scorpion_ether"],
+      ["scorpion_ether", "event_ombre_majeur", "event_ombre_majeur"],
+      ["event_ombre_majeur", "event_ombre_majeur", "scorpion_ether", "scorpion_ether"],
+      ["sphinx_ombres", "event_ombre_majeur", "event_ombre_majeur", "scorpion_ether"],
+      ["sphinx_ombres", "sphinx_ombres", "event_ombre_majeur"],
+    ],
+    rewards: {
+      xp: 10000,
+      eclats: 5000,
+      items: [{ itemId: "fragment_fractal", chance: 0.2, quantity: 1 }],
+    },
+  },
 ];
 
 export function getRaidById(id: string): RaidDefinition | undefined {

@@ -109,3 +109,43 @@ export const registerPushInterest = mutation({
     return null;
   },
 });
+
+export const registerPushToken = mutation({
+  args: {
+    characterId: v.id("characters"),
+    token: v.string(),
+    platform: v.union(v.literal("ios"), v.literal("android"), v.literal("web")),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const character = await ctx.db.get("characters", args.characterId);
+    if (!character) throw new Error("Personnage introuvable");
+
+    const existing = await ctx.db
+      .query("pushTokens")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .unique();
+
+    const now = Date.now();
+    if (existing) {
+      await ctx.db.patch("pushTokens", existing._id, {
+        characterId: args.characterId,
+        platform: args.platform,
+        updatedAt: now,
+      });
+    } else {
+      await ctx.db.insert("pushTokens", {
+        characterId: args.characterId,
+        token: args.token,
+        platform: args.platform,
+        updatedAt: now,
+      });
+    }
+
+    await ctx.db.patch("characters", args.characterId, {
+      pushNotificationsEnabled: true,
+    });
+
+    return null;
+  },
+});

@@ -3,6 +3,7 @@ import { mutation, query } from "./_generated/server";
 import type { MutationCtx } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
 import { finalizeSeasonRewards } from "./cosmetics";
+import { getThemeForSeasonNumber } from "./lib/seasonThemes";
 
 const SEASON_DURATION_MS = 30 * 24 * 60 * 60 * 1000;
 const BASE_SEASON_RATING = 1000;
@@ -18,17 +19,24 @@ async function ensureActiveSeason(ctx: MutationCtx) {
 
   if (active) {
     await ctx.db.patch("pvpSeasons", active._id, { status: "ended" });
-    await finalizeSeasonRewards(ctx, active._id, active.name);
+    await finalizeSeasonRewards(ctx, active._id, active.name, active.themeId);
   }
 
   const allSeasons = await ctx.db.query("pvpSeasons").collect();
   const seasonNumber = allSeasons.length + 1;
+  const theme = getThemeForSeasonNumber(seasonNumber);
   const id = await ctx.db.insert("pvpSeasons", {
-    name: `Saison ${seasonNumber}`,
+    name: `${theme.name} — Saison ${seasonNumber}`,
     seasonNumber,
     status: "active",
     startsAt: now,
     endsAt: now + SEASON_DURATION_MS,
+    themeId: theme.id,
+    themeName: theme.name,
+    themeIcon: theme.icon,
+    themeDescription: theme.description,
+    themeColor: theme.color,
+    ratingBonusPercent: theme.ratingBonusPercent,
   });
   return (await ctx.db.get("pvpSeasons", id))!;
 }
@@ -92,6 +100,12 @@ export const getActiveSeason = query({
       startsAt: v.number(),
       endsAt: v.number(),
       daysLeft: v.number(),
+      themeId: v.union(v.string(), v.null()),
+      themeName: v.union(v.string(), v.null()),
+      themeIcon: v.union(v.string(), v.null()),
+      themeDescription: v.union(v.string(), v.null()),
+      themeColor: v.union(v.string(), v.null()),
+      ratingBonusPercent: v.number(),
     }),
     v.null()
   ),
@@ -113,6 +127,12 @@ export const getActiveSeason = query({
       startsAt: season.startsAt,
       endsAt: season.endsAt,
       daysLeft: Math.ceil((season.endsAt - now) / (24 * 60 * 60 * 1000)),
+      themeId: season.themeId ?? null,
+      themeName: season.themeName ?? null,
+      themeIcon: season.themeIcon ?? null,
+      themeDescription: season.themeDescription ?? null,
+      themeColor: season.themeColor ?? null,
+      ratingBonusPercent: season.ratingBonusPercent ?? 0,
     };
   },
 });

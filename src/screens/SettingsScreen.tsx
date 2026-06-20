@@ -3,6 +3,7 @@ import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useGameStore } from "../stores/gameStore";
 import { isCloudAccount, isCloudCharacter, isConvexEnabled } from "../lib/convexUtils";
+import { isNativePushAvailable } from "../lib/pushNotifications";
 
 export default function SettingsScreen() {
   const username = useGameStore((s) => s.username);
@@ -69,7 +70,9 @@ export default function SettingsScreen() {
           <section className="card space-y-3">
             <h2 className="text-aether-400 text-sm font-semibold">Notifications</h2>
             <p className="text-aether-500 text-xs">
-              Alertes navigateur pour matchs PvP, événements live et activité guilde.
+              {isNativePushAvailable()
+                ? "Push natives iOS/Android via Capacitor + alertes navigateur."
+                : "Alertes navigateur pour matchs PvP, événements live et guildes."}
             </p>
             <button
               onClick={togglePush}
@@ -107,7 +110,7 @@ export default function SettingsScreen() {
           Déconnexion
         </button>
 
-        <p className="text-aether-600 text-xs text-center">Aetheris v1.6 — L&apos;Éveil des Cristaux</p>
+        <p className="text-aether-600 text-xs text-center">Aetheris v1.7 — L&apos;Éveil des Cristaux</p>
       </div>
     </div>
   );

@@ -74,6 +74,11 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - **PvP équipes** — matchmaking snake draft 1v1/2v2/3v3 complet
 - Cron automatique de rotation des événements live
 
+### Saisons thématiques & endgame (v1.7)
+- **Saisons PvP thématiques** — 4 thèmes rotatifs, bonus rating, cosmétiques exclusifs
+- **Raid Abîme Fractal** — nouveau raid 4-6 joueurs (niv. 35, désert d'Umbra)
+- **Push natives Capacitor** — enregistrement token iOS/Android (`@capacitor/push-notifications`)
+
 ### Graphismes isométriques
 - Monde et combat en vue isométrique 2:1 (Phaser 3)
 - Tuiles thématiques par zone, ombres, tri de profondeur
@@ -147,6 +152,7 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Saisons ranked PvP + guild hall partagé (v1.4)
 - [x] Récompenses de fin de saison, visites sociales, cosmétiques (v1.5)
 - [x] Événements live cross-serveur, PvP équipes 2v2/3v3, notifications (v1.6)
+- [x] Saisons thématiques PvP, raid Abîme Fractal, push natives Capacitor (v1.7)
 
 ## Licence
 

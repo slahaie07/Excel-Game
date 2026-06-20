@@ -3,6 +3,7 @@ import { mutation, query } from "./_generated/server";
 import type { MutationCtx } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
 import { getBonusCosmeticForRank, getSeasonRewardForRank } from "./lib/seasonRewards";
+import { getSeasonTheme } from "./lib/seasonThemes";
 
 type CharacterCosmetics = {
   titles: string[];
@@ -51,8 +52,10 @@ async function grantCosmetics(
 export async function finalizeSeasonRewards(
   ctx: MutationCtx,
   seasonId: Id<"pvpSeasons">,
-  seasonName: string
+  seasonName: string,
+  themeId?: string
 ) {
+  const theme = getSeasonTheme(themeId);
   const ratings = await ctx.db
     .query("seasonRatings")
     .withIndex("by_season", (q) => q.eq("seasonId", seasonId))
@@ -79,6 +82,9 @@ export async function finalizeSeasonRewards(
     const cosmeticIds = [tier.cosmeticId, bonusFrame].filter(
       (id): id is string => id !== undefined
     );
+    if (rank === 1 && theme?.championCosmeticId) {
+      cosmeticIds.push(theme.championCosmeticId);
+    }
 
     await ctx.db.insert("seasonRewardClaims", {
       seasonId,

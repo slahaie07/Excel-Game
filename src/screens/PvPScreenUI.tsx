@@ -14,6 +14,11 @@ export interface SeasonInfo {
   seasonNumber: number;
   endsAt: number;
   daysLeft: number;
+  themeIcon?: string | null;
+  themeName?: string | null;
+  themeDescription?: string | null;
+  themeColor?: string | null;
+  ratingBonusPercent?: number;
 }
 
 export interface SeasonRating {
@@ -133,11 +138,24 @@ export function PvPScreenUI({
         )}
 
         {season && (
-          <div className="card bg-gradient-to-r from-crystal-gold/10 to-red-900/20 border-crystal-gold/30">
+          <div
+            className="card border-crystal-gold/30"
+            style={{
+              background: season.themeColor
+                ? `linear-gradient(to right, ${season.themeColor}18, rgba(127,29,29,0.2))`
+                : undefined,
+              borderColor: season.themeColor ? `${season.themeColor}50` : undefined,
+            }}
+          >
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-crystal-gold text-xs font-bold uppercase tracking-wide">Saison ranked</p>
+                <p className="text-crystal-gold text-xs font-bold uppercase tracking-wide">
+                  {season.themeIcon ? `${season.themeIcon} ` : ""}Saison thématique
+                </p>
                 <p className="font-display font-bold text-white">{season.name}</p>
+                {season.themeDescription && (
+                  <p className="text-aether-300 text-xs mt-1">{season.themeDescription}</p>
+                )}
                 <p className="text-aether-400 text-xs mt-1">
                   {season.daysLeft} jour{season.daysLeft > 1 ? "s" : ""} restant{season.daysLeft > 1 ? "s" : ""}
                 </p>

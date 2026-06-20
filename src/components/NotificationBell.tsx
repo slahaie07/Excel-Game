@@ -4,13 +4,7 @@ import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useGameStore } from "../stores/gameStore";
 import { isCloudCharacter, isConvexEnabled } from "../lib/convexUtils";
-
-function requestBrowserNotification(title: string, body: string) {
-  if (typeof Notification === "undefined") return;
-  if (Notification.permission === "granted") {
-    new Notification(title, { body, icon: "/favicon.svg" });
-  }
-}
+import { showLocalNotification } from "../lib/pushNotifications";
 
 export function NotificationBell() {
   const characterId = useGameStore((s) => s.characterId);
@@ -44,7 +38,7 @@ export function NotificationBell() {
     if (!notifications || notifications.length === 0) return;
     const latest = notifications.find((n) => !n.read);
     if (latest) {
-      requestBrowserNotification(latest.title, latest.body);
+      showLocalNotification(latest.title, latest.body);
     }
   }, [notifications]);
 

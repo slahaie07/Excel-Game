@@ -169,6 +169,11 @@ export default function CloudPvPScreen() {
         seasonNumber: activeSeason.seasonNumber,
         endsAt: activeSeason.endsAt,
         daysLeft: activeSeason.daysLeft,
+        themeIcon: activeSeason.themeIcon,
+        themeName: activeSeason.themeName,
+        themeDescription: activeSeason.themeDescription,
+        themeColor: activeSeason.themeColor,
+        ratingBonusPercent: activeSeason.ratingBonusPercent,
       } : null}
       seasonLeaderboard={(seasonLeaderboard ?? []).map((e) => ({
         name: e.characterName,

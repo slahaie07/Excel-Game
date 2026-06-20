@@ -48,6 +48,38 @@ export const COSMETICS: CosmeticDefinition[] = [
     description: "Cadre de profil exclusif saison — top 3.",
     seasonExclusive: true,
   },
+  {
+    id: "title_flames_champion",
+    name: "Champion des Flammes",
+    type: "title",
+    icon: "🔥",
+    description: "Champion de la saison Flammes d'Aether.",
+    seasonExclusive: true,
+  },
+  {
+    id: "title_shadow_champion",
+    name: "Souverain des Ombres",
+    type: "title",
+    icon: "🌑",
+    description: "Champion de la saison Couronne des Ombres.",
+    seasonExclusive: true,
+  },
+  {
+    id: "title_crystal_champion",
+    name: "Héros Cristallin",
+    type: "title",
+    icon: "💎",
+    description: "Champion de la saison Moisson Cristalline.",
+    seasonExclusive: true,
+  },
+  {
+    id: "title_storm_champion",
+    name: "Maître des Tempêtes",
+    type: "title",
+    icon: "⚡",
+    description: "Champion de la saison Légion des Tempêtes.",
+    seasonExclusive: true,
+  },
 ];
 
 export const GUILD_HALL_EMOTES = [

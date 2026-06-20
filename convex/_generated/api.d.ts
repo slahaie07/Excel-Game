@@ -24,6 +24,7 @@ import type * as inventory from "../inventory.js";
 import type * as lib_combatEffects from "../lib/combatEffects.js";
 import type * as lib_notifications from "../lib/notifications.js";
 import type * as lib_seasonRewards from "../lib/seasonRewards.js";
+import type * as lib_seasonThemes from "../lib/seasonThemes.js";
 import type * as lib_spells from "../lib/spells.js";
 import type * as liveEvents from "../liveEvents.js";
 import type * as notifications from "../notifications.js";
@@ -59,6 +60,7 @@ declare const fullApi: ApiFromModules<{
   "lib/combatEffects": typeof lib_combatEffects;
   "lib/notifications": typeof lib_notifications;
   "lib/seasonRewards": typeof lib_seasonRewards;
+  "lib/seasonThemes": typeof lib_seasonThemes;
   "lib/spells": typeof lib_spells;
   liveEvents: typeof liveEvents;
   notifications: typeof notifications;

@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import Phaser from "phaser";
 import { useGameStore } from "../stores/gameStore";
 import { ZONES, getZoneById, getMonstersByZone, CLASSES } from "../game/data";
@@ -11,6 +13,7 @@ import { isCloudCharacter, isConvexEnabled } from "../lib/convexUtils";
 import { CloudEncounterStarter } from "../components/CloudEncounterStarter";
 import { CloudWorldBoss } from "../components/CloudWorldBoss";
 import { NotificationBell } from "../components/NotificationBell";
+import { CloudPushSync } from "../components/CloudPushSync";
 import type { Id } from "../../convex/_generated/dataModel";
 import { getClassIcon as getClassIconFromData } from "../game/rendering/isometric";
 
@@ -25,6 +28,12 @@ export default function WorldScreen() {
   const gameRef = useRef<HTMLDivElement>(null);
   const phaserRef = useRef<Phaser.Game | null>(null);
   const [charData] = useState(() => loadCharacter(characterId));
+  const cloudChar = useQuery(
+    api.characters.getCharacter,
+    isConvexEnabled() && isCloudCharacter(characterId)
+      ? { characterId: characterId as Id<"characters"> }
+      : "skip"
+  );
   const [showMenu, setShowMenu] = useState(false);
   const [showPlayers, setShowPlayers] = useState(false);
   const [onlinePlayers, setOnlinePlayers] = useState(() =>
@@ -138,6 +147,12 @@ export default function WorldScreen() {
           zoneId={zoneId}
           excludeName={characterName}
           onPlayers={(players) => setOnlinePlayers(players)}
+        />
+      )}
+      {isConvexEnabled() && isCloudCharacter(characterId) && (
+        <CloudPushSync
+          characterId={characterId}
+          pushEnabled={cloudChar?.pushNotificationsEnabled ?? false}
         />
       )}
       {isConvexEnabled() && isCloudCharacter(characterId) && (

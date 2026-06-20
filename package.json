@@ -1,6 +1,6 @@
 {
   "name": "aetheris-mmorpg",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "private": true,
   "type": "module",
   "description": "Aetheris — MMORPG tactique mobile inspiré des grands RPG isométriques",
@@ -19,13 +19,14 @@
     "convex:deploy": "npx convex deploy"
   },
   "dependencies": {
+    "@capacitor/push-notifications": "^7.0.6",
+    "clsx": "^2.1.1",
     "convex": "^1.21.0",
     "phaser": "^3.88.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.0",
-    "zustand": "^5.0.3",
-    "clsx": "^2.1.1"
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@capacitor/android": "^7.0.0",

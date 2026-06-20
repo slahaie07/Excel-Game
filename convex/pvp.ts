@@ -189,11 +189,18 @@ export const completeMatch = mutation({
     const ratingGain = Math.max(10, Math.floor((avgLoserRating - avgWinnerRating) / 20) + 25);
     const ratingLoss = Math.max(5, Math.floor((avgWinnerRating - avgLoserRating) / 20) + 15);
 
+    const activeSeason = await ctx.db
+      .query("pvpSeasons")
+      .withIndex("by_status", (q) => q.eq("status", "active"))
+      .first();
+    const bonusPercent = activeSeason?.ratingBonusPercent ?? 0;
+    const effectiveGain = Math.floor(ratingGain * (1 + bonusPercent / 100));
+
     for (const w of winners) {
       const char = await ctx.db.get("characters", w.characterId);
       if (char) {
         await ctx.db.patch("characters", w.characterId, {
-          pvpRating: char.pvpRating + ratingGain,
+          pvpRating: char.pvpRating + effectiveGain,
           pvpWins: char.pvpWins + 1,
         });
       }
@@ -212,14 +219,14 @@ export const completeMatch = mutation({
     await ctx.db.patch("pvpMatches", args.matchId, {
       status: "completed",
       winnerTeam: args.winnerTeam,
-      ratingChange: ratingGain,
+      ratingChange: effectiveGain,
     });
 
     const winnerCap = winners[0]!;
     const loserCap = losers[0]!;
-    await recordSeasonMatch(ctx, winnerCap.characterId, loserCap.characterId, ratingGain, ratingLoss);
+    await recordSeasonMatch(ctx, winnerCap.characterId, loserCap.characterId, effectiveGain, ratingLoss);
 
-    return { ratingGain, ratingLoss };
+    return { ratingGain: effectiveGain, ratingLoss };
   },
 });
 

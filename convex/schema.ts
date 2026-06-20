@@ -393,6 +393,12 @@ export default defineSchema({
     status: v.union(v.literal("active"), v.literal("ended")),
     startsAt: v.number(),
     endsAt: v.number(),
+    themeId: v.optional(v.string()),
+    themeName: v.optional(v.string()),
+    themeIcon: v.optional(v.string()),
+    themeDescription: v.optional(v.string()),
+    themeColor: v.optional(v.string()),
+    ratingBonusPercent: v.optional(v.number()),
   }).index("by_status", ["status"]),
 
   seasonRatings: defineTable({
@@ -478,4 +484,13 @@ export default defineSchema({
     screen: v.optional(v.string()),
     createdAt: v.number(),
   }).index("by_character", ["characterId", "createdAt"]),
+
+  pushTokens: defineTable({
+    characterId: v.id("characters"),
+    token: v.string(),
+    platform: v.union(v.literal("ios"), v.literal("android"), v.literal("web")),
+    updatedAt: v.number(),
+  })
+    .index("by_character", ["characterId"])
+    .index("by_token", ["token"]),
 });
