@@ -231,10 +231,12 @@ export const sendMessage = mutation({
   handler: async (ctx, args) => {
     const character = await ctx.db.get("characters", args.senderId);
     const senderTitleId = character?.cosmetics?.equippedTitle;
+    const senderFrameId = character?.cosmetics?.equippedFrame;
 
     return await ctx.db.insert("chatMessages", {
       ...args,
       senderTitleId,
+      senderFrameId,
       createdAt: Date.now(),
     });
   },

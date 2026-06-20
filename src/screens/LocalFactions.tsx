@@ -16,6 +16,7 @@ import {
   loadLocalFactionCosmetics,
   getLocalFactionCampaigns,
   claimLocalFactionCampaignReward,
+  getLocalCampaignLeaderboard,
   recordLocalFactionQuestClaim,
   recordLocalFactionShopPurchase,
 } from "../lib/factionProgress";
@@ -158,6 +159,11 @@ export default function LocalFactions() {
   });
 
   const campaigns = getLocalFactionCampaigns(characterId);
+  const campaignLeaderboards = {
+    lumina: getLocalCampaignLeaderboard(characterId, "lumina"),
+    umbra: getLocalCampaignLeaderboard(characterId, "umbra"),
+    neutre: getLocalCampaignLeaderboard(characterId, "neutre"),
+  };
 
   const shopItems = FACTION_SHOP_ITEMS.map((item) => {
     const faction = factions.find((f) => f.factionId === item.factionId);
@@ -191,6 +197,7 @@ export default function LocalFactions() {
       quests={quests}
       shopItems={shopItems}
       campaigns={campaigns}
+      campaignLeaderboards={campaignLeaderboards}
       message={message}
       cosmetics={cosmetics}
       onPledge={async (factionId) => {

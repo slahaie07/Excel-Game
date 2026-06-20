@@ -13,6 +13,7 @@ export const heartbeat = mutation({
   handler: async (ctx, args) => {
     const character = await ctx.db.get("characters", args.characterId);
     const equippedTitleId = character?.cosmetics?.equippedTitle;
+    const equippedFrameId = character?.cosmetics?.equippedFrame;
 
     const existing = await ctx.db
       .query("presence")
@@ -26,6 +27,7 @@ export const heartbeat = mutation({
       level: args.level,
       zoneId: args.zoneId,
       equippedTitleId,
+      equippedFrameId,
       lastSeenAt: Date.now(),
     };
 
@@ -45,6 +47,7 @@ export const getPlayersInZone = query({
     classId: v.string(),
     level: v.number(),
     equippedTitleId: v.union(v.string(), v.null()),
+    equippedFrameId: v.union(v.string(), v.null()),
   })),
   handler: async (ctx, args) => {
     const fiveMinAgo = Date.now() - 5 * 60 * 1000;
@@ -61,6 +64,7 @@ export const getPlayersInZone = query({
         classId: p.classId,
         level: p.level,
         equippedTitleId: p.equippedTitleId ?? null,
+        equippedFrameId: p.equippedFrameId ?? null,
       }));
   },
 });

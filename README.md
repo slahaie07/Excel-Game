@@ -17,6 +17,12 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Progression quêtes faction en combat local
 - Badge faction alliée dans le monde
 
+### Visuels & classement campagnes (v1.18)
+- Art généré : zones (Vallée, Désert), combat tactique, portraits classes, roster héros
+- Fonds illustrés en monde et en combat (Phaser + overlay)
+- Cadres de profil visibles en chat et présence
+- Classement contributeurs campagne + bannière campagne dans le monde
+
 ### Campagnes faction & titres sociaux (v1.17)
 - Campagnes hebdomadaires coopératives par faction (contribution alliée)
 - Titres équipés visibles dans le chat et la présence en zone
@@ -212,6 +218,7 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Écran Factions — quêtes et boutique (v1.15)
 - [x] Récompenses de rang faction + progression locale (v1.16)
 - [x] Campagnes faction hebdo + titres visibles en social (v1.17)
+- [x] Visuels zones/combat/personnages + cadres sociaux + classement campagne (v1.18)
 
 ## Licence
 

@@ -50,6 +50,15 @@ export {
   type CampaignPointEvent,
 } from "./factionCampaigns";
 export {
+  ZONE_BACKGROUNDS,
+  COMBAT_BACKGROUNDS,
+  CLASS_PORTRAITS,
+  ROSTER_ART,
+  getZoneBackground,
+  getCombatBackground,
+  getClassPortrait,
+} from "./assets";
+export {
   SEASONAL_EVENTS,
   getActiveEvent,
   getEventById,

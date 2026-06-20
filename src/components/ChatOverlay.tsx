@@ -2,13 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { useGameStore } from "../stores/gameStore";
 import { isCloudCharacter, isConvexEnabled } from "../lib/convexUtils";
 import { ChatSenderLine } from "./ChatSenderLine";
-import { getLocalEquippedTitleId } from "../lib/factionProgress";
+import { getLocalEquippedTitleId, getLocalEquippedFrameId } from "../lib/factionProgress";
 import CloudChatOverlay from "./CloudChatOverlay";
 
 interface ChatMessage {
   id: string;
   senderName: string;
   senderTitleId?: string | null;
+  senderFrameId?: string | null;
   content: string;
   channel: string;
   createdAt: number;
@@ -40,6 +41,7 @@ function LocalChatOverlay({ channel = "zone" }: { channel?: "global" | "zone" | 
       id: `msg_${Date.now()}`,
       senderName: characterName,
       senderTitleId: characterId ? getLocalEquippedTitleId(characterId) : null,
+      senderFrameId: characterId ? getLocalEquippedFrameId(characterId) : null,
       content: input.trim(),
       channel: activeChannel,
       createdAt: Date.now(),
@@ -104,6 +106,7 @@ function ChatPanel({
             key={msg.id}
             name={msg.senderName}
             titleId={msg.senderTitleId}
+            frameId={msg.senderFrameId}
             content={msg.content}
           />
         ))}

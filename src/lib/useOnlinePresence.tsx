@@ -46,7 +46,7 @@ export function CloudZonePlayers({
 }: {
   zoneId: string;
   excludeName: string;
-  onPlayers: (players: { name: string; classId: string; level: number; equippedTitleId: string | null }[]) => void;
+  onPlayers: (players: { name: string; classId: string; level: number; equippedTitleId: string | null; equippedFrameId: string | null }[]) => void;
 }) {
   const players = useQuery(api.presence.getPlayersInZone, { zoneId });
   useEffect(() => {
@@ -55,6 +55,7 @@ export function CloudZonePlayers({
       classId: p.classId,
       level: p.level,
       equippedTitleId: p.equippedTitleId ?? null,
+      equippedFrameId: p.equippedFrameId ?? null,
     })));
   }, [players, excludeName, onPlayers]);
   return null;
@@ -74,7 +75,7 @@ export function useOnlinePresence() {
     const interval = setInterval(() => {
       const key = `aetheris-presence-${zoneId}`;
       const stored = JSON.parse(localStorage.getItem(key) ?? "[]") as {
-        name: string; classId: string; level: number; lastSeen: number; equippedTitleId?: string | null;
+        name: string; classId: string; level: number; lastSeen: number; equippedTitleId?: string | null; equippedFrameId?: string | null;
       }[];
       const char = loadCharacter(characterId);
       const cosmetics = char ? JSON.parse(localStorage.getItem(`aetheris-char-${characterId}`) ?? "{}").cosmetics : null;
@@ -84,6 +85,7 @@ export function useOnlinePresence() {
         level: char?.level ?? 1,
         lastSeen: Date.now(),
         equippedTitleId: cosmetics?.equippedTitle ?? null,
+        equippedFrameId: cosmetics?.equippedFrame ?? null,
       };
       const filtered = stored.filter((p) => p.name !== characterName && Date.now() - p.lastSeen < 300000);
       localStorage.setItem(key, JSON.stringify([...filtered, entry]));
@@ -96,9 +98,15 @@ export function useOnlinePresence() {
 export function getOnlinePlayersInZone(zoneId: string) {
   const key = `aetheris-presence-${zoneId}`;
   const players = JSON.parse(localStorage.getItem(key) ?? "[]") as {
-    name: string; classId: string; level: number; lastSeen: number; equippedTitleId?: string | null;
+    name: string; classId: string; level: number; lastSeen: number; equippedTitleId?: string | null; equippedFrameId?: string | null;
   }[];
   return players
     .filter((p) => Date.now() - p.lastSeen < 300000)
-    .map(({ name, classId, level, equippedTitleId }) => ({ name, classId, level, equippedTitleId: equippedTitleId ?? null }));
+    .map(({ name, classId, level, equippedTitleId, equippedFrameId }) => ({
+      name,
+      classId,
+      level,
+      equippedTitleId: equippedTitleId ?? null,
+      equippedFrameId: equippedFrameId ?? null,
+    }));
 }

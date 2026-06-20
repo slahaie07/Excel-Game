@@ -4,6 +4,7 @@ import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useGameStore } from "../stores/gameStore";
 import { FactionsUI } from "./FactionsUI";
+import type { FactionId } from "../game/data/factionContent";
 
 export default function CloudFactions() {
   const characterId = useGameStore((s) => s.characterId)!;
@@ -33,6 +34,24 @@ export default function CloudFactions() {
     ready ? { characterId: characterId as Id<"characters"> } : "skip"
   );
 
+  const leaderboardLumina = useQuery(
+    api.factionCampaigns.getCampaignLeaderboard,
+    ready ? { characterId: characterId as Id<"characters">, factionId: "lumina" as const } : "skip"
+  );
+  const leaderboardUmbra = useQuery(
+    api.factionCampaigns.getCampaignLeaderboard,
+    ready ? { characterId: characterId as Id<"characters">, factionId: "umbra" as const } : "skip"
+  );
+  const leaderboardNeutre = useQuery(
+    api.factionCampaigns.getCampaignLeaderboard,
+    ready ? { characterId: characterId as Id<"characters">, factionId: "neutre" as const } : "skip"
+  );
+
+  const campaignLeaderboards: Partial<Record<FactionId, NonNullable<typeof leaderboardLumina>>> = {};
+  if (leaderboardLumina) campaignLeaderboards.lumina = leaderboardLumina;
+  if (leaderboardUmbra) campaignLeaderboards.umbra = leaderboardUmbra;
+  if (leaderboardNeutre) campaignLeaderboards.neutre = leaderboardNeutre;
+
   return (
     <FactionsUI
       loading={!ready || hub === undefined}
@@ -43,6 +62,7 @@ export default function CloudFactions() {
       quests={(hub?.quests ?? []).map((q) => ({ ...q, _id: q._id ?? null }))}
       shopItems={hub?.shopItems ?? []}
       campaigns={campaigns?.campaigns ?? []}
+      campaignLeaderboards={campaignLeaderboards}
       message={message}
       cosmetics={myCosmetics ?? undefined}
       onPledge={async (factionId) => {

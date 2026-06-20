@@ -281,6 +281,38 @@ export function getLocalEquippedTitleId(characterId: string): string | null {
   return loadCosmetics(characterId).equippedTitle ?? null;
 }
 
+export function getLocalEquippedFrameId(characterId: string): string | null {
+  return loadCosmetics(characterId).equippedFrame ?? null;
+}
+
+export function getLocalCampaignLeaderboard(characterId: string, factionId: FactionId) {
+  const state = loadState(characterId);
+  const contrib = state.campaignContrib[factionId]?.points ?? 0;
+  const char = JSON.parse(localStorage.getItem(charKey(characterId)) ?? "{}") as {
+    name?: string;
+    classId?: string;
+  };
+  const weekKey = getWeekKey();
+  const entries =
+    contrib > 0
+      ? [
+          {
+            rank: 1,
+            characterName: char.name ?? "Vous",
+            classId: char.classId ?? "luminaire",
+            points: contrib,
+            isMe: true,
+          },
+        ]
+      : [];
+  return {
+    weekKey,
+    entries,
+    myRank: contrib > 0 ? 1 : null,
+    myPoints: contrib,
+  };
+}
+
 export function loadLocalFactionBadge(characterId: string): {
   pledgedFactionId: FactionId | null;
   rankLabel: string | null;

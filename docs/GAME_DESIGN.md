@@ -226,6 +226,16 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Contenu | `lib/factionContent.ts`, `lib/factionQuests.ts` | Quêtes, articles, progression |
 | Combat/PvP | `combat.ts`, `pvp.ts` | Progression quêtes cloud |
 
+## v1.18 — Visuels & classement campagnes
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Assets | `public/assets/`, `game/data/assets.ts` | Fonds zones, combat, portraits classes |
+| Rendu | `WorldScreen`, `*CombatScreen` | Overlays illustrés derrière Phaser |
+| Social | `playerDisplay.ts`, `presence.ts`, `social.ts` | Cadres visibles chat + présence |
+| Campagnes | `getCampaignLeaderboard`, `FactionsUI` | Top contributeurs par faction |
+| Monde | `WorldCampaignBanner.tsx` | Bannière progression campagne alliée |
+
 ## v1.17 — Campagnes faction & titres sociaux
 
 | Module | Fichier | Rôle |

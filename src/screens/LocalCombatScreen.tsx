@@ -10,6 +10,7 @@ import { recordLocalWorldVictory, recordLocalPvpVictory } from "../lib/factionPr
 import { applySpellEffects, tickBuffs, formatBuffs, applyCombatStartTalents, getEffectiveMaxRange, computeTalentModifiers } from "../game/combat/effects";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
+import { getCombatBackground } from "../game/data/assets";
 
 interface CombatEntity {
   entityId: string;
@@ -387,7 +388,14 @@ export default function LocalCombatScreen() {
         <button onClick={() => setCombat(null)} className="text-aether-400 text-sm">Fuir</button>
       </div>
 
-      <div ref={gameRef} className="flex-shrink-0" style={{ height: 380 }} />
+      <div className="relative flex-shrink-0" style={{ height: 380 }}>
+        <img
+          src={getCombatBackground(combatType)}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"
+        />
+        <div ref={gameRef} className="relative z-10 w-full h-full" />
+      </div>
 
       {/* Player status */}
       <div className="px-4 py-2 flex flex-wrap gap-4 text-sm">

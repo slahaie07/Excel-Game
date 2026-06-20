@@ -17,10 +17,12 @@ import { NotificationBell } from "../components/NotificationBell";
 import { CloudPushSync } from "../components/CloudPushSync";
 import { CloudAchievementSync } from "../components/CloudAchievementSync";
 import type { Id } from "../../convex/_generated/dataModel";
-import { loadLocalFactionBadge } from "../lib/factionProgress";
+import { loadLocalFactionBadge, getLocalFactionCampaigns } from "../lib/factionProgress";
 import { FACTION_META } from "../game/data/factionContent";
-import { getEquippedTitleLabel } from "../lib/playerDisplay";
 import { getClassIcon as getClassIconFromData } from "../game/rendering/isometric";
+import { getZoneBackground, getClassPortrait } from "../game/data/assets";
+import { WorldCampaignBanner } from "../components/WorldCampaignBanner";
+import { PlayerNameLine } from "../components/PlayerNameLine";
 
 export default function WorldScreen() {
   const characterId = useGameStore((s) => s.characterId)!;
@@ -138,6 +140,21 @@ export default function WorldScreen() {
     };
   }, [zoneId, classId, allMonsterIds.join(","), onlinePlayers.length, handleEncounter]);
 
+  const localCampaigns = !isCloudCharacter(characterId)
+    ? getLocalFactionCampaigns(characterId)
+    : [];
+  const cloudCampaigns = useQuery(
+    api.factionCampaigns.getFactionCampaigns,
+    isConvexEnabled() && isCloudCharacter(characterId)
+      ? { characterId: characterId as Id<"characters"> }
+      : "skip"
+  );
+  const campaigns = isCloudCharacter(characterId)
+    ? (cloudCampaigns?.campaigns ?? [])
+    : localCampaigns;
+  const pledgedFactionId = myFactions?.pledgedFactionId ?? localFactionBadge?.pledgedFactionId ?? null;
+  const zoneBackground = getZoneBackground(zoneId);
+  const classPortrait = getClassPortrait(classId);
   const pledgedFaction = myFactions?.pledgedFactionId
     ? myFactions.factions.find((f) => f.isPledged)
     : localFactionBadge?.pledgedFactionId
@@ -197,6 +214,13 @@ export default function WorldScreen() {
             title="Fiche de classe"
           >
             <span className="text-2xl">{classData?.icon}</span>
+            {classPortrait && (
+              <img
+                src={classPortrait}
+                alt={classData?.name ?? "Personnage"}
+                className="w-10 h-10 rounded-lg object-cover border border-aether-600/50"
+              />
+            )}
             <div className="text-left">
               <p className="font-bold text-white text-sm">{characterName}</p>
               <p className="text-aether-400 text-xs">
@@ -234,6 +258,8 @@ export default function WorldScreen() {
         </button>
       )}
 
+      <WorldCampaignBanner pledgedFactionId={pledgedFactionId} campaigns={campaigns} />
+
       {isConvexEnabled() && isCloudCharacter(characterId) && (
         <CloudWorldInvasion
           characterId={characterId as Id<"characters">}
@@ -253,7 +279,16 @@ export default function WorldScreen() {
         />
       </div>
 
-      <div ref={gameRef} className="flex-1 min-h-[280px]" />
+      <div className="relative flex-1 min-h-[280px]">
+        {zoneBackground && (
+          <img
+            src={zoneBackground}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-35 pointer-events-none"
+          />
+        )}
+        <div ref={gameRef} className="relative z-10 w-full h-full" />
+      </div>
 
       <div className="px-4 py-1 text-center">
         <button onClick={() => setShowPlayers(!showPlayers)} className="text-aether-400 text-xs underline">
@@ -261,17 +296,16 @@ export default function WorldScreen() {
         </button>
         {showPlayers && onlinePlayers.length > 0 && (
           <div className="mt-1 space-y-0.5">
-            {onlinePlayers.map((p) => {
-              const cls = CLASSES.find((c) => c.id === p.classId);
-              const title = getEquippedTitleLabel(p.equippedTitleId);
-              return (
-                <p key={p.name} className="text-aether-500 text-xs">
-                  {cls?.icon} {title && <span className="text-crystal-gold">{title.icon} </span>}
-                  {p.name} (Niv. {p.level})
-                  {title && <span className="text-crystal-gold/80"> — {title.name}</span>}
-                </p>
-              );
-            })}
+            {onlinePlayers.map((p) => (
+              <div key={p.name} className="flex justify-center">
+                <PlayerNameLine
+                  name={`${p.name} (Niv. ${p.level})`}
+                  titleId={p.equippedTitleId}
+                  frameId={p.equippedFrameId}
+                  className="text-aether-400 text-xs"
+                />
+              </div>
+            ))}
           </div>
         )}
       </div>

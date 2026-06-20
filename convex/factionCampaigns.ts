@@ -163,3 +163,62 @@ export const initFactionCampaigns = mutation({
     return null;
   },
 });
+
+const leaderboardEntryValidator = v.object({
+  rank: v.number(),
+  characterName: v.string(),
+  classId: v.string(),
+  points: v.number(),
+  isMe: v.boolean(),
+});
+
+export const getCampaignLeaderboard = query({
+  args: {
+    characterId: v.id("characters"),
+    factionId: factionIdValidator,
+    limit: v.optional(v.number()),
+  },
+  returns: v.object({
+    weekKey: v.string(),
+    entries: v.array(leaderboardEntryValidator),
+    myRank: v.union(v.number(), v.null()),
+    myPoints: v.number(),
+  }),
+  handler: async (ctx, args) => {
+    const weekKey = getWeekKey();
+    const limit = args.limit ?? 10;
+
+    const contributions = await ctx.db
+      .query("factionCampaignContributions")
+      .withIndex("by_week_and_faction", (q) =>
+        q.eq("weekKey", weekKey).eq("factionId", args.factionId)
+      )
+      .collect();
+
+    const sorted = contributions
+      .filter((c) => c.points > 0)
+      .sort((a, b) => b.points - a.points);
+
+    const myContrib = sorted.find((c) => c.characterId === args.characterId);
+    const myPoints = myContrib?.points ?? 0;
+    const myRank = myContrib
+      ? sorted.findIndex((c) => c.characterId === args.characterId) + 1
+      : null;
+
+    const top = sorted.slice(0, limit);
+    const entries = await Promise.all(
+      top.map(async (contrib, index) => {
+        const character = await ctx.db.get("characters", contrib.characterId);
+        return {
+          rank: index + 1,
+          characterName: character?.name ?? "Éveilleur",
+          classId: character?.classId ?? "luminaire",
+          points: contrib.points,
+          isMe: contrib.characterId === args.characterId,
+        };
+      })
+    );
+
+    return { weekKey, entries, myRank, myPoints };
+  },
+});

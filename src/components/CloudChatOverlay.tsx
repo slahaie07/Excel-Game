@@ -9,6 +9,7 @@ interface ChatMessage {
   id: string;
   senderName: string;
   senderTitleId?: string | null;
+  senderFrameId?: string | null;
   content: string;
   createdAt: number;
 }
@@ -36,12 +37,14 @@ export default function CloudChatOverlay({ channel = "zone" }: { channel?: "glob
     _id: string;
     senderName: string;
     senderTitleId?: string;
+    senderFrameId?: string;
     content: string;
     createdAt: number;
   }) => ({
     id: m._id,
     senderName: m.senderName,
     senderTitleId: m.senderTitleId ?? null,
+    senderFrameId: m.senderFrameId ?? null,
     content: m.content,
     createdAt: m.createdAt,
   }));
@@ -91,6 +94,7 @@ export default function CloudChatOverlay({ channel = "zone" }: { channel?: "glob
             key={msg.id}
             name={msg.senderName}
             titleId={msg.senderTitleId}
+            frameId={msg.senderFrameId}
             content={msg.content}
           />
         ))}

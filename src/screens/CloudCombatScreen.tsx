@@ -7,6 +7,7 @@ import { useGameStore } from "../stores/gameStore";
 import { getSpellById, getSpellsForClass } from "../game/data";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
+import { getCombatBackground } from "../game/data/assets";
 import { formatBuffs } from "../game/combat/effects";
 import { getDungeonById, getRoomMonsters, getRaidById, getPhaseMonsters } from "../game/data";
 import { cacheCloudCombat, buildCloudCombatLocalId } from "../lib/cloudCombat";
@@ -232,7 +233,14 @@ export default function CloudCombatScreen() {
         </button>
       </div>
 
-      <div ref={gameRef} className="flex-shrink-0" style={{ height: 380 }} />
+      <div className="relative flex-shrink-0" style={{ height: 380 }}>
+        <img
+          src={getCombatBackground(combatType)}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"
+        />
+        <div ref={gameRef} className="relative z-10 w-full h-full" />
+      </div>
 
       {player && (
         <div className="px-4 py-2 flex flex-wrap gap-4 text-sm">

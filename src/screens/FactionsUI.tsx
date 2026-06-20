@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useGameStore } from "../stores/gameStore";
 import { FACTION_META, FACTION_RANKS, type FactionId } from "../game/data/factionContent";
 import { FACTION_RANK_COSMETICS } from "../game/data/factionRewards";
-import { getCosmeticById, getItemById } from "../game/data";
+import { CLASSES, getCosmeticById, getItemById } from "../game/data";
 
 export type FactionTab = "reputation" | "quests" | "shop";
 
@@ -67,6 +67,20 @@ export interface FactionShopView {
   locked: boolean;
 }
 
+export interface FactionCampaignLeaderboardEntry {
+  rank: number;
+  characterName: string;
+  classId: string;
+  points: number;
+  isMe: boolean;
+}
+
+export interface FactionCampaignLeaderboard {
+  entries: FactionCampaignLeaderboardEntry[];
+  myRank: number | null;
+  myPoints: number;
+}
+
 interface FactionsUIProps {
   loading?: boolean;
   weekKey: string;
@@ -76,6 +90,7 @@ interface FactionsUIProps {
   quests: FactionQuestView[];
   shopItems: FactionShopView[];
   campaigns?: FactionCampaignView[];
+  campaignLeaderboards?: Partial<Record<FactionId, FactionCampaignLeaderboard>>;
   message?: string;
   cosmetics?: { titles: string[]; frames: string[]; equippedTitle?: string | null; equippedFrame?: string | null };
   onPledge: (factionId: FactionId) => Promise<void>;
@@ -94,6 +109,7 @@ export function FactionsUI({
   quests,
   shopItems,
   campaigns = [],
+  campaignLeaderboards,
   message,
   cosmetics,
   onPledge,
@@ -111,6 +127,7 @@ export function FactionsUI({
   const factionQuests = quests.filter((q) => q.factionId === selectedFaction);
   const factionShop = shopItems.filter((s) => s.factionId === selectedFaction);
   const factionCampaign = campaigns.find((c) => c.factionId === selectedFaction);
+  const campaignLeaderboard = campaignLeaderboards?.[selectedFaction] ?? null;
 
   const meetsRank = (currentRankId: string, requiredRankId: string) => {
     const order = ["stranger", "known", "ally", "champion", "exalted"];
@@ -249,6 +266,40 @@ export function FactionsUI({
                 )}
                 {factionCampaign.rewardClaimed && (
                   <p className="text-green-400 text-xs mt-2">✓ Récompense de campagne réclamée</p>
+                )}
+              </div>
+            )}
+
+            {campaignLeaderboard && (
+              <div className="card border border-aether-600/30">
+                <h3 className="text-aether-300 text-sm font-semibold mb-2">Classement contributeurs</h3>
+                {campaignLeaderboard.entries.length === 0 ? (
+                  <p className="text-aether-500 text-xs">Aucun contributeur cette semaine.</p>
+                ) : (
+                  <div className="space-y-1">
+                    {campaignLeaderboard.entries.map((entry) => {
+                      const cls = CLASSES.find((c) => c.id === entry.classId);
+                      return (
+                        <div
+                          key={`${entry.rank}-${entry.characterName}`}
+                          className={`flex items-center justify-between text-xs p-1.5 rounded ${
+                            entry.isMe ? "bg-crystal-gold/10 border border-crystal-gold/30" : "bg-aether-900/40"
+                          }`}
+                        >
+                          <span className="text-white">
+                            #{entry.rank} {cls?.icon} {entry.characterName}
+                            {entry.isMe && <span className="text-crystal-gold ml-1">(vous)</span>}
+                          </span>
+                          <span className="text-aether-400">{entry.points} pts</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {campaignLeaderboard.myRank && (
+                  <p className="text-aether-500 text-[10px] mt-2">
+                    Votre rang : #{campaignLeaderboard.myRank} • {campaignLeaderboard.myPoints} pts
+                  </p>
                 )}
               </div>
             )}
