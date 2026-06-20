@@ -24,7 +24,7 @@ const STARTING_SPELLS: Record<string, string[]> = {
 };
 
 function calculateMaxHp(stats: Record<string, number>, level: number): number {
-  return 50 + stats.vitality * 5 + level * 10;
+  return 50 + (stats.vitality ?? 8) * 5 + level * 10;
 }
 
 function calculateMaxAp(level: number): number {
@@ -32,7 +32,7 @@ function calculateMaxAp(level: number): number {
 }
 
 function calculateMaxMp(stats: Record<string, number>, level: number): number {
-  return 3 + Math.floor(stats.agility / 5) + Math.floor(level / 15);
+  return 3 + Math.floor((stats.agility ?? 6) / 5) + Math.floor(level / 15);
 }
 
 export const createCharacter = mutation({
@@ -78,12 +78,12 @@ export const createCharacter = mutation({
       xp: 0,
       xpToNext: 100,
       stats: {
-        vitality: stats.vitality,
-        wisdom: stats.wisdom,
-        strength: stats.strength,
-        intelligence: stats.intelligence,
-        agility: stats.agility,
-        chance: stats.chance,
+        vitality: stats.vitality ?? 8,
+        wisdom: stats.wisdom ?? 8,
+        strength: stats.strength ?? 8,
+        intelligence: stats.intelligence ?? 8,
+        agility: stats.agility ?? 8,
+        chance: stats.chance ?? 8,
       },
       statPoints: 0,
       spellPoints: 0,

@@ -141,7 +141,7 @@ export const createListing = mutation({
     }
 
     const now = Date.now();
-    return await ctx.db.insert("marketplace", {
+    const listingId = await ctx.db.insert("marketplace", {
       sellerId: args.sellerId,
       itemId: args.itemId,
       quantity: args.quantity,
@@ -149,6 +149,13 @@ export const createListing = mutation({
       listedAt: now,
       expiresAt: now + 7 * 24 * 60 * 60 * 1000,
     });
+
+    const newInventory = character.inventory.map((i) =>
+      i.itemId === args.itemId ? { ...i, quantity: i.quantity - args.quantity } : i
+    ).filter((i) => i.quantity > 0);
+
+    await ctx.db.patch("characters", args.sellerId, { inventory: newInventory });
+    return listingId;
   },
 });
 

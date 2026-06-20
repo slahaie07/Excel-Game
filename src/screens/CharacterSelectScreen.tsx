@@ -1,32 +1,37 @@
 import { useGameStore } from "../stores/gameStore";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import type { Id } from "../../convex/_generated/dataModel";
+import { CLASSES } from "../game/data";
+import { isCloudAccount, isConvexEnabled } from "../lib/convexUtils";
+import { cacheConvexCharacter } from "../lib/convexBridge";
 
 interface SavedCharacter {
   id: string;
   name: string;
   classId: string;
   level: number;
+  zoneId?: string;
 }
 
-function getSavedCharacters(accountId: string): SavedCharacter[] {
+function getLocalCharacters(accountId: string): SavedCharacter[] {
   try {
-    const key = `aetheris-chars-${accountId}`;
-    const data = localStorage.getItem(key);
-    return data ? JSON.parse(data) : [];
+    return JSON.parse(localStorage.getItem(`aetheris-chars-${accountId}`) ?? "[]");
   } catch {
     return [];
   }
 }
 
-export default function CharacterSelectScreen() {
-  const accountId = useGameStore((s) => s.accountId)!;
+function CharacterList({ characters, loading }: { characters: SavedCharacter[]; loading?: boolean }) {
   const username = useGameStore((s) => s.username);
   const setCharacter = useGameStore((s) => s.setCharacter);
   const setScreen = useGameStore((s) => s.setScreen);
-
-  const characters = getSavedCharacters(accountId);
+  const setZone = useGameStore((s) => s.setZone);
+  const accountId = useGameStore((s) => s.accountId)!;
 
   const selectCharacter = (char: SavedCharacter) => {
     setCharacter(char.id, char.name, char.classId);
+    if (char.zoneId) setZone(char.zoneId);
     setScreen("world");
   };
 
@@ -35,36 +40,27 @@ export default function CharacterSelectScreen() {
       <div className="text-center mb-8">
         <h1 className="font-display text-2xl font-bold text-aether-200">Choisissez votre Éveilleur</h1>
         <p className="text-aether-400 text-sm mt-1">Bienvenue, {username}</p>
+        {isCloudAccount(accountId) && <p className="text-green-400/70 text-xs mt-1">☁️ Cloud</p>}
       </div>
-
       <div className="flex-1 space-y-3 max-w-md mx-auto w-full overflow-y-auto">
+        {loading && <p className="text-aether-400 text-center text-sm">Chargement...</p>}
         {characters.map((char) => (
           <button
             key={char.id}
             onClick={() => selectCharacter(char)}
-            className="card w-full flex items-center gap-4 hover:border-aether-500 transition-colors active:scale-[0.98]"
+            className="card w-full flex items-center gap-4 hover:border-aether-500 active:scale-[0.98]"
           >
-            <div className="text-3xl">
-              {char.classId === "pyromancien" ? "🔥" :
-               char.classId === "gardien" ? "🛡️" :
-               char.classId === "eclaireur" ? "🗡️" :
-               char.classId === "invocateur" ? "✨" :
-               char.classId === "alchimiste" ? "⚗️" :
-               char.classId === "archer" ? "🏹" :
-               char.classId === "berserker" ? "⚔️" : "⏳"}
-            </div>
+            <div className="text-3xl">{CLASSES.find((c) => c.id === char.classId)?.icon ?? "🧙"}</div>
             <div className="text-left flex-1">
               <p className="font-bold text-white">{char.name}</p>
               <p className="text-aether-400 text-sm">Niveau {char.level}</p>
             </div>
-            <span className="text-aether-500">→</span>
           </button>
         ))}
-
         {characters.length < 5 && (
           <button
             onClick={() => setScreen("character-create")}
-            className="card w-full flex items-center justify-center gap-2 border-dashed border-aether-600/50 py-6 hover:border-aether-500"
+            className="card w-full flex justify-center gap-2 border-dashed py-6"
           >
             <span className="text-2xl">+</span>
             <span className="text-aether-300">Créer un personnage</span>
@@ -73,4 +69,33 @@ export default function CharacterSelectScreen() {
       </div>
     </div>
   );
+}
+
+function CloudSelect() {
+  const accountId = useGameStore((s) => s.accountId)!;
+  const cloudChars = useQuery(api.characters.getCharactersByAccount, {
+    accountId: accountId as Id<"accounts">,
+  });
+  const characters = (cloudChars ?? []).map((c) => ({
+    id: c._id, name: c.name, classId: c.classId, level: c.level, zoneId: c.zoneId,
+  }));
+  return <CharacterList characters={characters} loading={cloudChars === undefined} />;
+}
+
+function LocalSelect() {
+  const accountId = useGameStore((s) => s.accountId)!;
+  return <CharacterList characters={getLocalCharacters(accountId)} />;
+}
+
+export default function CharacterSelectScreen() {
+  const accountId = useGameStore((s) => s.accountId)!;
+  return isCloudAccount(accountId) && isConvexEnabled() ? <CloudSelect /> : <LocalSelect />;
+}
+
+export function CloudCharacterSync({ characterId }: { characterId: string }) {
+  const doc = useQuery(api.characters.getCharacter, {
+    characterId: characterId as Id<"characters">,
+  });
+  if (doc) cacheConvexCharacter(doc as Record<string, unknown>);
+  return null;
 }

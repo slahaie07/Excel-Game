@@ -1,12 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-const furnitureItem = v.object({
-  itemId: v.string(),
-  x: v.number(),
-  y: v.number(),
-});
-
 export const getHaven = query({
   args: { characterId: v.id("characters") },
   returns: v.union(v.any(), v.null()),

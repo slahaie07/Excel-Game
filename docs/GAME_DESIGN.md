@@ -70,3 +70,32 @@ Chaque événement propose : monstres exclusifs, quêtes, boutique limitée, mul
 - Pyramide des Ombres (niv. 30)
 - Nexus d'Aether (niv. 50)
 - Tour Infinie (niv. 40, endless)
+
+## Multijoueur Convex (v1.0)
+
+### Architecture hybride
+
+- **Comptes locaux** (`local_*`) : tout en localStorage, pas de Convex
+- **Comptes cloud** : auth Convex, personnages synchronisés
+- Pattern **Cloud/Local** sur chaque écran sensible aux hooks React
+
+### Backend Convex
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Comptes & persos | `accounts.ts`, `characters.ts` | Auth, création, sync |
+| Combat | `combat.ts` | Combats synchronisés, buffs |
+| Social | `social.ts` | Guildes, marché, chat, daily |
+| PvP | `pvp.ts` | File d'attente, matchs, classement |
+| Donjons | `dungeons.ts` | Runs multijoueur |
+| Présence | `presence.ts` | Joueurs en ligne par zone |
+| Amis | `friends.ts` | Liste d'amis |
+| Succès | `achievements.ts` | Achievements & daily status |
+| Événements | `events.ts` | Progression saisonnière cloud |
+
+### Buffs & debuffs
+
+Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité) :
+- `damage`, `defense`, `mp`, `shield`, `regen`, `invisibility`
+- Durée en tours, tick à chaque fin de tour
+- Implémenté localement (`src/game/combat/effects.ts`) et côté Convex (schema `combatEntity.buffs`)

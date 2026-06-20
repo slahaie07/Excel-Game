@@ -3,9 +3,14 @@ import Phaser from "phaser";
 import { useGameStore } from "../stores/gameStore";
 import { ZONES, getZoneById, getMonstersByZone, CLASSES } from "../game/data";
 import { getActiveEvent } from "../game/data/events";
-import { useOnlinePresence, getOnlinePlayersInZone } from "../lib/useOnlinePresence";
+import { useOnlinePresence, getOnlinePlayersInZone, OnlinePresenceSync, CloudZonePlayers } from "../lib/useOnlinePresence";
+import { CloudCharacterSync } from "./CharacterSelectScreen";
 import { IsoWorldScene, createMonsterEntities, getClassIcon } from "../game/rendering/IsoWorldScene";
 import { loadCharacter } from "../lib/characterStorage";
+import { isCloudCharacter, isConvexEnabled } from "../lib/convexUtils";
+import { CloudEncounterStarter } from "../components/CloudEncounterStarter";
+import type { Id } from "../../convex/_generated/dataModel";
+import { getClassIcon as getClassIconFromData } from "../game/rendering/isometric";
 
 export default function WorldScreen() {
   const characterId = useGameStore((s) => s.characterId)!;
@@ -20,9 +25,13 @@ export default function WorldScreen() {
   const [charData] = useState(() => loadCharacter(characterId));
   const [showMenu, setShowMenu] = useState(false);
   const [showPlayers, setShowPlayers] = useState(false);
+  const [onlinePlayers, setOnlinePlayers] = useState(() =>
+    getOnlinePlayersInZone(zoneId).filter((p) => p.name !== characterName)
+  );
+
+  const [cloudEncounterStart, setCloudEncounterStart] = useState<((monsterId: string) => Promise<void>) | null>(null);
 
   useOnlinePresence();
-  const onlinePlayers = getOnlinePlayersInZone(zoneId).filter((p) => p.name !== characterName);
   const activeEvent = getActiveEvent();
 
   const zone = getZoneById(zoneId)!;
@@ -35,7 +44,25 @@ export default function WorldScreen() {
     ...zoneMonsters.slice(0, 3).map((m) => m.id),
   ].slice(0, 4);
 
-  const handleEncounter = useCallback((monsterId: string) => {
+  const otherPlayerEntities = onlinePlayers.slice(0, 3).map((p, i) => ({
+    id: `player_${p.name}`,
+    gridX: 3 + i,
+    gridY: 2 + i,
+    icon: getClassIconFromData(p.classId),
+    label: p.name,
+    isPlayer: true,
+  }));
+
+  const worldEntities = [
+    ...otherPlayerEntities,
+    ...createMonsterEntities(allMonsterIds),
+  ];
+
+  const handleEncounter = useCallback(async (monsterId: string) => {
+    if (cloudEncounterStart) {
+      await cloudEncounterStart(monsterId);
+      return;
+    }
     const combatId = `combat_${Date.now()}`;
     const isEventMonster = eventMonsters.includes(monsterId);
     localStorage.setItem(`aetheris-combat-${combatId}`, JSON.stringify({
@@ -48,7 +75,7 @@ export default function WorldScreen() {
       eclatsMultiplier: isEventMonster ? activeEvent?.bonuses.eclatsMultiplier : 1,
     }));
     setCombat(combatId);
-  }, [characterId, zoneId, setCombat, eventMonsters, activeEvent]);
+  }, [characterId, zoneId, setCombat, eventMonsters, activeEvent, cloudEncounterStart]);
 
   useEffect(() => {
     if (!gameRef.current) return;
@@ -75,7 +102,7 @@ export default function WorldScreen() {
       gridH: 8,
       zoneId,
       playerIcon: getClassIcon(classId),
-      entities: createMonsterEntities(allMonsterIds),
+      entities: worldEntities,
       onMove: () => {},
       onEncounter: handleEncounter,
     });
@@ -84,7 +111,7 @@ export default function WorldScreen() {
       phaserRef.current?.destroy(true);
       phaserRef.current = null;
     };
-  }, [zoneId, classId, allMonsterIds.join(","), handleEncounter]);
+  }, [zoneId, classId, allMonsterIds.join(","), onlinePlayers.length, handleEncounter]);
 
   const navItems = [
     { id: "inventory", icon: "🎒", label: "Sac" },
@@ -94,11 +121,30 @@ export default function WorldScreen() {
     { id: "pets", icon: "✨", label: "Pets" },
     { id: "haven", icon: "🏠", label: "Havre" },
     { id: "events", icon: activeEvent?.icon ?? "🎉", label: "Évent" },
+    { id: "daily", icon: "🎁", label: "Daily" },
     { id: "guild", icon: "🏰", label: "Guilde" },
   ] as const;
 
   return (
     <div className="flex-1 flex flex-col bg-aether-950">
+      <OnlinePresenceSync />
+      {isConvexEnabled() && isCloudCharacter(characterId) && (
+        <CloudCharacterSync characterId={characterId} />
+      )}
+      {isConvexEnabled() && isCloudCharacter(characterId) && (
+        <CloudZonePlayers
+          zoneId={zoneId}
+          excludeName={characterName}
+          onPlayers={(players) => setOnlinePlayers(players)}
+        />
+      )}
+      {isConvexEnabled() && isCloudCharacter(characterId) && (
+        <CloudEncounterStarter
+          characterId={characterId as Id<"characters">}
+          zoneId={zoneId}
+          onReady={setCloudEncounterStart}
+        />
+      )}
       <div className="flex items-center justify-between p-3 bg-aether-900/80 border-b border-aether-700/40">
         <div className="flex items-center gap-2">
           <span className="text-2xl">{classData?.icon}</span>
@@ -111,6 +157,7 @@ export default function WorldScreen() {
           <span className="text-red-400">❤️ {charData?.hp ?? 100}/{charData?.maxHp ?? 100}</span>
           <span className="text-crystal-gold">✦ {charData?.eclats ?? 0}</span>
           <button onClick={() => setShowMenu(!showMenu)} className="text-aether-400 text-xl">☰</button>
+          <button onClick={() => setScreen("settings")} className="text-aether-400 text-lg" title="Paramètres">⚙️</button>
         </div>
       </div>
 

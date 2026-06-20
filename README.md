@@ -8,11 +8,11 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 
 ## Fonctionnalités
 
-### Combat tactique
+### Combat tactique (v1.0)
 - Grille isométrique au tour par tour (PA/PM)
-- 8 classes uniques avec sorts propres
-- IA ennemie, buffs/debuffs, victoire/défaite
-- Boss et donjons
+- 8 classes avec sorts à effets (dégâts, soins, buffs, debuffs)
+- Combat cloud synchronisé via Convex (`convex/combat.ts`)
+- Mode local hors-ligne conservé
 
 ### Monde ouvert
 - 6 zones : Vallée des Éveils, Port de Nébula, Forêt de Lumina, Désert d'Umbra, Citadelle Stellaire, Arène PvP
@@ -33,16 +33,20 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Craft : Alchimie, Forge, Joaillerie
 - 3 métiers max par personnage
 
-### Social & multijoueur
-- Chat en temps réel (4 canaux : global, zone, guilde, trade)
-- Présence joueurs en ligne par zone
-- Guildes (création, adhésion)
-- Marché d'Halan (achat/vente)
+### Social & multijoueur (v1.0)
+- Mode **hybride** : jeu solo hors-ligne + sync cloud Convex
+- Chat temps réel (global, zone, guilde, trade)
+- Présence joueurs en ligne par zone (avatars sur la carte)
+- Guildes cloud (création, adhésion, liste)
+- Marché d'Halan synchronisé (annonces Convex)
+- Amis (demandes, acceptation, recherche par nom)
+- Récompenses quotidiennes et succès
 
-### PvP
+### PvP (v1.0)
 - Arène classée 1v1, 2v2, 3v3
-- Système de rating et classement
-- Matchmaking avec adversaires
+- Matchmaking Convex (file d'attente temps réel)
+- Classement global synchronisé
+- Rating et récompenses cloud
 
 ### Donjons
 - 5 donjons avec progression par salles
@@ -120,7 +124,7 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] App natives (Capacitor)
 - [x] Événements saisonniers
 - [x] Graphismes isométriques avancés
-- [ ] Multijoueur Convex temps réel complet
+- [x] Multijoueur Convex temps réel complet (v1.0)
 
 ## Licence
 

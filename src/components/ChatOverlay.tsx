@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useGameStore } from "../stores/gameStore";
+import { isCloudCharacter, isConvexEnabled } from "../lib/convexUtils";
 
 interface ChatMessage {
   id: string;
@@ -11,36 +12,17 @@ interface ChatMessage {
 
 const CHAT_KEY = "aetheris-chat";
 
-function loadMessages(channel: string): ChatMessage[] {
-  try {
-    const all: ChatMessage[] = JSON.parse(localStorage.getItem(CHAT_KEY) ?? "[]");
-    return all.filter((m) => m.channel === channel).slice(-50);
-  } catch {
-    return [];
-  }
-}
-
-function saveMessage(msg: ChatMessage) {
-  const all: ChatMessage[] = JSON.parse(localStorage.getItem(CHAT_KEY) ?? "[]");
-  all.push(msg);
-  localStorage.setItem(CHAT_KEY, JSON.stringify(all.slice(-200)));
-}
-
-interface ChatOverlayProps {
-  channel?: "global" | "zone" | "guild" | "trade";
-}
-
-export default function ChatOverlay({ channel = "zone" }: ChatOverlayProps) {
+function LocalChatOverlay({ channel = "zone" }: { channel?: "global" | "zone" | "guild" | "trade" }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [activeChannel, setActiveChannel] = useState(channel);
   const characterName = useGameStore((s) => s.characterName);
-  const zoneId = useGameStore((s) => s.zoneId);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setMessages(loadMessages(activeChannel));
+    const all: ChatMessage[] = JSON.parse(localStorage.getItem(CHAT_KEY) ?? "[]");
+    setMessages(all.filter((m) => m.channel === activeChannel).slice(-50));
   }, [activeChannel, open]);
 
   useEffect(() => {
@@ -56,74 +38,84 @@ export default function ChatOverlay({ channel = "zone" }: ChatOverlayProps) {
       channel: activeChannel,
       createdAt: Date.now(),
     };
-    saveMessage(msg);
+    const all: ChatMessage[] = JSON.parse(localStorage.getItem(CHAT_KEY) ?? "[]");
+    all.push(msg);
+    localStorage.setItem(CHAT_KEY, JSON.stringify(all.slice(-200)));
     setMessages((prev) => [...prev, msg]);
     setInput("");
   };
 
-  const channels = ["global", "zone", "guild", "trade"] as const;
-
   if (!open) {
     return (
-      <button
-        onClick={() => setOpen(true)}
-        className="fixed bottom-20 right-4 z-40 w-12 h-12 rounded-full bg-aether-700 border border-aether-500 shadow-lg flex items-center justify-center text-xl active:scale-95"
-        aria-label="Ouvrir le chat"
-      >
+      <button onClick={() => setOpen(true)} className="fixed bottom-20 right-4 z-40 w-12 h-12 rounded-full bg-aether-700 border border-aether-500 shadow-lg flex items-center justify-center text-xl">
         💬
       </button>
     );
   }
 
   return (
+    <ChatPanel
+      messages={messages}
+      activeChannel={activeChannel}
+      setActiveChannel={setActiveChannel}
+      input={input}
+      setInput={setInput}
+      onSend={send}
+      onClose={() => setOpen(false)}
+      bottomRef={bottomRef}
+    />
+  );
+}
+
+function ChatPanel({
+  messages, activeChannel, setActiveChannel, input, setInput, onSend, onClose, bottomRef,
+}: {
+  messages: ChatMessage[];
+  activeChannel: string;
+  setActiveChannel: (c: "global" | "zone" | "guild" | "trade") => void;
+  input: string;
+  setInput: (v: string) => void;
+  onSend: () => void;
+  onClose: () => void;
+  bottomRef: React.RefObject<HTMLDivElement | null>;
+}) {
+  const channels = ["global", "zone", "guild", "trade"] as const;
+  return (
     <div className="fixed inset-x-0 bottom-0 z-50 game-panel rounded-t-2xl flex flex-col" style={{ height: "45vh" }}>
       <div className="flex items-center justify-between p-3 border-b border-aether-700/40">
         <div className="flex gap-1">
           {channels.map((ch) => (
-            <button
-              key={ch}
-              onClick={() => setActiveChannel(ch)}
-              className={`text-xs px-2 py-1 rounded-lg capitalize ${
-                activeChannel === ch ? "bg-aether-600 text-white" : "text-aether-400"
-              }`}
-            >
+            <button key={ch} onClick={() => setActiveChannel(ch)} className={`px-2 py-1 rounded-lg text-xs capitalize ${activeChannel === ch ? "bg-aether-700 text-white" : "text-aether-400"}`}>
               {ch}
             </button>
           ))}
         </div>
-        <button onClick={() => setOpen(false)} className="text-aether-400 text-lg">✕</button>
+        <button onClick={onClose} className="text-aether-400 text-lg">✕</button>
       </div>
-
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
-        {messages.length === 0 && (
-          <p className="text-aether-500 text-xs text-center py-4">
-            {activeChannel === "zone" ? `Chat de ${zoneId}` : `Canal ${activeChannel}`} — soyez le premier à parler !
-          </p>
-        )}
         {messages.map((msg) => (
           <div key={msg.id} className="text-sm">
-              <span className="font-bold text-aether-300">{msg.senderName}</span>
-              <span className="text-aether-500 text-xs ml-2">
-                {new Date(msg.createdAt).toLocaleTimeString("fr", { hour: "2-digit", minute: "2-digit" })}
-              </span>
-              <p className="text-aether-200">{msg.content}</p>
+            <span className="text-aether-300 font-semibold">{msg.senderName}: </span>
+            <span className="text-aether-400">{msg.content}</span>
           </div>
         ))}
         <div ref={bottomRef} />
       </div>
-
       <div className="p-3 flex gap-2 border-t border-aether-700/40">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && send()}
-          placeholder="Votre message..."
-          maxLength={200}
-          className="flex-1 bg-aether-950 border border-aether-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-aether-500"
-        />
-        <button onClick={send} className="btn-primary px-4 py-2 text-sm">Envoyer</button>
+        <input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && onSend()} placeholder="Message..." className="flex-1 bg-aether-900 border border-aether-700 rounded-xl px-3 py-2 text-sm text-white" maxLength={200} />
+        <button onClick={onSend} className="btn-primary px-4 py-2 text-sm">Envoyer</button>
       </div>
     </div>
   );
+}
+
+// Cloud chat loaded lazily when convex is available
+import CloudChatOverlay from "./CloudChatOverlay";
+
+export default function ChatOverlay(props: { channel?: "global" | "zone" | "guild" | "trade" }) {
+  const characterId = useGameStore((s) => s.characterId);
+  if (isConvexEnabled() && isCloudCharacter(characterId)) {
+    return <CloudChatOverlay {...props} />;
+  }
+  return <LocalChatOverlay {...props} />;
 }

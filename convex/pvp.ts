@@ -123,6 +123,23 @@ export const completeMatch = mutation({
   },
 });
 
+export const getPendingMatch = query({
+  args: { characterId: v.id("characters") },
+  returns: v.union(v.any(), v.null()),
+  handler: async (ctx, args) => {
+    const matches = await ctx.db
+      .query("pvpMatches")
+      .withIndex("by_status", (q) => q.eq("status", "pending"))
+      .take(20);
+
+    return matches.find(
+      (m) =>
+        m.teamA.some((p) => p.characterId === args.characterId) ||
+        m.teamB.some((p) => p.characterId === args.characterId)
+    ) ?? null;
+  },
+});
+
 export const getLeaderboard = query({
   args: { limit: v.optional(v.number()) },
   returns: v.array(v.object({

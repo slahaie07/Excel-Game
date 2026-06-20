@@ -203,7 +203,7 @@ export const castSpell = mutation({
     const enemiesAlive = updatedEntities.filter((e) => e.team === "enemy" && e.isAlive);
     const playersAlive = updatedEntities.filter((e) => e.team === "player" && e.isAlive);
 
-    let status = combat.status;
+    let status: "active" | "victory" | "defeat" = combat.status;
     let rewards = combat.rewards;
 
     if (enemiesAlive.length === 0) {
@@ -257,6 +257,39 @@ export const endTurn = mutation({
       updatedAt: Date.now(),
     });
 
+    return null;
+  },
+});
+
+export const applyVictoryRewards = mutation({
+  args: {
+    combatId: v.id("combats"),
+    characterId: v.id("characters"),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const combat = await ctx.db.get("combats", args.combatId);
+    if (!combat || combat.status !== "victory" || !combat.rewards) return null;
+
+    const character = await ctx.db.get("characters", args.characterId);
+    if (!character) return null;
+
+    let newXp = character.xp + combat.rewards.xp;
+    let newLevel = character.level;
+    let xpToNext = character.xpToNext;
+
+    while (newXp >= xpToNext && newLevel < 60) {
+      newXp -= xpToNext;
+      newLevel++;
+      xpToNext = newLevel * 100 + (newLevel - 1) * 50;
+    }
+
+    await ctx.db.patch("characters", args.characterId, {
+      xp: newXp,
+      level: newLevel,
+      xpToNext,
+      eclats: character.eclats + combat.rewards.eclats,
+    });
     return null;
   },
 });
