@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { tryUnlockAchievement } from "./lib/achievementUnlock";
 
 export const startDungeonRun = mutation({
   args: {
@@ -43,6 +44,12 @@ export const advanceRoom = mutation({
       currentRoom: nextRoom,
       status: isComplete ? "completed" : "active",
     });
+
+    if (isComplete) {
+      for (const member of run.members) {
+        await tryUnlockAchievement(ctx, member.characterId, "dungeon_clear");
+      }
+    }
 
     return {
       currentRoom: nextRoom,

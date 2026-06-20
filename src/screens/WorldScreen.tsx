@@ -14,6 +14,7 @@ import { CloudEncounterStarter } from "../components/CloudEncounterStarter";
 import { CloudWorldBoss } from "../components/CloudWorldBoss";
 import { NotificationBell } from "../components/NotificationBell";
 import { CloudPushSync } from "../components/CloudPushSync";
+import { CloudAchievementSync } from "../components/CloudAchievementSync";
 import type { Id } from "../../convex/_generated/dataModel";
 import { getClassIcon as getClassIconFromData } from "../game/rendering/isometric";
 
@@ -148,6 +149,9 @@ export default function WorldScreen() {
           excludeName={characterName}
           onPlayers={(players) => setOnlinePlayers(players)}
         />
+      )}
+      {isConvexEnabled() && isCloudCharacter(characterId) && (
+        <CloudAchievementSync characterId={characterId} />
       )}
       {isConvexEnabled() && isCloudCharacter(characterId) && (
         <CloudPushSync

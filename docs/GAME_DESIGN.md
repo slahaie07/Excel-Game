@@ -4,7 +4,7 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v1.7)
+## Systèmes implémentés (v1.8)
 
 | Système | Statut | Description |
 |---------|--------|-------------|
@@ -166,5 +166,14 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Thèmes saison | `lib/seasonThemes.ts` | 4 thèmes rotatifs, bonus rating, cosmétiques champion |
 | Push tokens | `notifications.ts` | Enregistrement tokens Capacitor iOS/Android |
 | Raids | `game/data/raids.ts` | Abîme Fractal — raid intermédiaire 5 phases |
+
+## v1.8 — Guerres saisonnières & succès cloud
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Campagnes guerre | `guildWarSeasons.ts` | Saisons 14j, classement guildes, trésor top 3 |
+| Guerres | `guildWars.ts` | Finalisation auto, points saison, notifications victoire |
+| Succès | `lib/achievementUnlock.ts` | Déblocage auto combat/PvP/raid/guerre/live |
+| Raids | `game/data/raids.ts` | Étreinte du Nexus — raid endgame 8 phases |
 
 Voir `docs/DEPLOYMENT.md`.

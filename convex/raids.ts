@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { tryUnlockAchievement } from "./lib/achievementUnlock";
 
 const MAX_RAID_MEMBERS = 8;
 
@@ -95,6 +96,12 @@ export const advancePhase = mutation({
       currentPhase: nextPhase,
       status: isComplete ? "completed" : "active",
     });
+
+    if (isComplete) {
+      for (const member of run.members) {
+        await tryUnlockAchievement(ctx, member.characterId, "raid_clear");
+      }
+    }
 
     return { currentPhase: nextPhase, isComplete };
   },

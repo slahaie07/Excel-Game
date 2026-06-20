@@ -110,7 +110,7 @@ export default function SettingsScreen() {
           Déconnexion
         </button>
 
-        <p className="text-aether-600 text-xs text-center">Aetheris v1.7 — L&apos;Éveil des Cristaux</p>
+        <p className="text-aether-600 text-xs text-center">Aetheris v1.8 — L&apos;Éveil des Cristaux</p>
       </div>
     </div>
   );

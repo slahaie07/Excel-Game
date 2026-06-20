@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { tryUnlockAchievement } from "./lib/achievementUnlock";
 
 export const createGuild = mutation({
   args: {
@@ -81,6 +82,7 @@ export const joinGuild = mutation({
 
     await ctx.db.patch("guilds", args.guildId, { memberCount: guild.memberCount + 1 });
     await ctx.db.patch("characters", args.characterId, { guildId: args.guildId });
+    await tryUnlockAchievement(ctx, args.characterId, "guild_member");
     return null;
   },
 });

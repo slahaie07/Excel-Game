@@ -1,16 +1,10 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-
-const ACHIEVEMENT_DEFS: Record<string, { name: string; description: string; icon: string }> = {
-  first_victory: { name: "Première Victoire", description: "Gagner un combat", icon: "⚔️" },
-  level_10: { name: "Éveilleur Confirmé", description: "Atteindre le niveau 10", icon: "⭐" },
-  level_30: { name: "Maître Cristallin", description: "Atteindre le niveau 30", icon: "💎" },
-  dungeon_clear: { name: "Explorateur", description: "Terminer un donjon", icon: "🏚️" },
-  pvp_win_10: { name: "Gladiateur", description: "10 victoires PvP", icon: "🏆" },
-  guild_member: { name: "Fraternité", description: "Rejoindre une guilde", icon: "🏰" },
-  event_participant: { name: "Fêtard", description: "Participer à un événement", icon: "🎉" },
-  pet_owner: { name: "Dresseur", description: "Obtenir un compagnon", icon: "✨" },
-};
+import {
+  ACHIEVEMENT_DEFS,
+  syncCharacterAchievements,
+  tryUnlockAchievement,
+} from "./lib/achievementUnlock";
 
 export const listAchievements = query({
   args: { characterId: v.id("characters") },
@@ -48,21 +42,15 @@ export const unlockAchievement = mutation({
   },
   returns: v.boolean(),
   handler: async (ctx, args) => {
-    if (!ACHIEVEMENT_DEFS[args.achievementId]) return false;
+    return await tryUnlockAchievement(ctx, args.characterId, args.achievementId);
+  },
+});
 
-    const existing = await ctx.db
-      .query("achievements")
-      .withIndex("by_character", (q) => q.eq("characterId", args.characterId))
-      .collect();
-
-    if (existing.some((a) => a.achievementId === args.achievementId)) return false;
-
-    await ctx.db.insert("achievements", {
-      characterId: args.characterId,
-      achievementId: args.achievementId,
-      unlockedAt: Date.now(),
-    });
-    return true;
+export const syncAchievements = mutation({
+  args: { characterId: v.id("characters") },
+  returns: v.array(v.string()),
+  handler: async (ctx, args) => {
+    return await syncCharacterAchievements(ctx, args.characterId);
   },
 });
 

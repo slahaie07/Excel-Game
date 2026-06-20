@@ -82,6 +82,32 @@ export const RAIDS: RaidDefinition[] = [
       items: [{ itemId: "fragment_fractal", chance: 0.2, quantity: 1 }],
     },
   },
+  {
+    id: "etreinte_nexus",
+    name: "Étreinte du Nexus",
+    description: "Le raid endgame ultime. 6 à 8 Éveilleurs niveau 58+ affrontent l'essence pure d'Aether.",
+    zoneId: "citadelle_stellaire",
+    levelRequired: 58,
+    phases: 8,
+    icon: "💫",
+    minPlayers: 6,
+    maxPlayers: 8,
+    phaseMonsters: [
+      ["golem_stellaire", "golem_stellaire", "golem_stellaire", "golem_stellaire"],
+      ["golem_stellaire", "gardien_ruines", "gardien_ruines", "golem_stellaire"],
+      ["gardien_ruines", "gardien_ruines", "golem_stellaire", "golem_stellaire", "gardien_ruines"],
+      ["dragon_aether", "golem_stellaire", "golem_stellaire"],
+      ["dragon_aether", "gardien_ruines", "gardien_ruines", "golem_stellaire"],
+      ["dragon_aether", "dragon_aether", "golem_stellaire"],
+      ["dragon_aether", "dragon_aether", "gardien_ruines", "gardien_ruines"],
+      ["dragon_aether", "dragon_aether", "dragon_aether"],
+    ],
+    rewards: {
+      xp: 35000,
+      eclats: 15000,
+      items: [{ itemId: "coeur_nexus", chance: 0.1, quantity: 1 }],
+    },
+  },
 ];
 
 export function getRaidById(id: string): RaidDefinition | undefined {

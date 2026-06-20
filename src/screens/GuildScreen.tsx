@@ -15,6 +15,16 @@ function CloudGuild() {
   const setScreen = useGameStore((s) => s.setScreen);
   const cloudGuilds = useQuery(api.social.listGuilds, {});
   const activeWars = useQuery(api.guildWars.listActiveWars, {});
+  const warSeason = useQuery(api.guildWarSeasons.getActiveGuildWarSeason, {});
+  const seasonLeaderboard = useQuery(
+    api.guildWarSeasons.getGuildWarSeasonLeaderboard,
+    warSeason ? { seasonId: warSeason._id, limit: 5 } : "skip"
+  );
+  const mySeasonScore = useQuery(
+    api.guildWarSeasons.getMyGuildWarSeasonScore,
+    warSeason && guildId ? { seasonId: warSeason._id, guildId: guildId as Id<"guilds"> } : "skip"
+  );
+  const initWarSeason = useMutation(api.guildWarSeasons.initGuildWarSeason);
   const myWar = useQuery(
     api.guildWars.getGuildWar,
     guildId ? { guildId: guildId as Id<"guilds"> } : "skip"
@@ -32,6 +42,12 @@ function CloudGuild() {
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
+
+  useEffect(() => {
+    if (warSeason === null) {
+      void initWarSeason({});
+    }
+  }, [warSeason, initWarSeason]);
 
   const guilds = (cloudGuilds ?? []).map((g) => ({
     id: g._id as string,
@@ -79,6 +95,29 @@ function CloudGuild() {
             🏰 Guild Hall partagé
           </button>
           <h2 className="font-display font-bold text-white text-sm">⚔️ Guerres de guildes</h2>
+          {warSeason && (
+            <div className="card border-red-500/30 bg-red-950/20">
+              <p className="text-red-300 text-xs font-bold uppercase">Campagne saisonnière</p>
+              <p className="text-white text-sm font-semibold">{warSeason.name}</p>
+              <p className="text-aether-400 text-[10px]">
+                {warSeason.daysLeft} jour{warSeason.daysLeft > 1 ? "s" : ""} • Top 3 guildes → trésor
+              </p>
+              {mySeasonScore && (
+                <p className="text-crystal-gold text-xs mt-1">
+                  Notre guilde : #{mySeasonScore.rank} • {mySeasonScore.warWins} victoire(s) • {mySeasonScore.warPoints} pts
+                </p>
+              )}
+              {(seasonLeaderboard ?? []).length > 0 && (
+                <div className="mt-2 space-y-0.5">
+                  {seasonLeaderboard!.map((entry, i) => (
+                    <p key={i} className="text-aether-500 text-[10px]">
+                      #{i + 1} {entry.guildName} — {entry.warWins}V / {entry.warPoints} pts
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
           {myWar ? (
             <div className="card">
               <div className="flex justify-between items-center mb-2">

@@ -19,6 +19,9 @@ export function AchievementsUI({ achievements, loading }: { achievements: Achiev
         <h1 className="font-display text-xl font-bold">Succès</h1>
         <span className="ml-auto text-aether-400 text-sm">{unlockedCount}/{achievements.length}</span>
       </div>
+      <p className="text-aether-500 text-xs text-center px-4 py-1">
+        ☁️ Les succès cloud se débloquent automatiquement lors de vos actions en jeu.
+      </p>
       <div className="flex-1 overflow-y-auto p-4 space-y-2">
         {loading && <p className="text-aether-400 text-center text-sm">Chargement...</p>}
         {achievements.map((a) => (

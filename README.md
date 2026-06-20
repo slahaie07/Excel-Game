@@ -79,6 +79,11 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - **Raid Abîme Fractal** — nouveau raid 4-6 joueurs (niv. 35, désert d'Umbra)
 - **Push natives Capacitor** — enregistrement token iOS/Android (`@capacitor/push-notifications`)
 
+### Guerres saisonnières & succès cloud (v1.8)
+- **Campagnes de guerre** — saisons 14j, classement guildes, récompenses trésor top 3
+- **Raid Étreinte du Nexus** — raid endgame 6-8 joueurs (niv. 58)
+- **Succès cloud auto-sync** — déblocage automatique (combat, PvP, raids, guerres, live)
+
 ### Graphismes isométriques
 - Monde et combat en vue isométrique 2:1 (Phaser 3)
 - Tuiles thématiques par zone, ombres, tri de profondeur
@@ -153,6 +158,7 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Récompenses de fin de saison, visites sociales, cosmétiques (v1.5)
 - [x] Événements live cross-serveur, PvP équipes 2v2/3v3, notifications (v1.6)
 - [x] Saisons thématiques PvP, raid Abîme Fractal, push natives Capacitor (v1.7)
+- [x] Campagnes guerre de guildes, raid Nexus endgame, succès cloud sync (v1.8)
 
 ## Licence
 

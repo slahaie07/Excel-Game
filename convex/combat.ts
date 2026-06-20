@@ -3,6 +3,7 @@ import { mutation, query } from "./_generated/server";
 import type { MutationCtx } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
 import { getSpellById } from "./lib/spells";
+import { tryUnlockAchievement, syncCharacterAchievements } from "./lib/achievementUnlock";
 import { applySpellEffects, tickBuffs } from "./lib/combatEffects";
 
 const MONSTER_DATA: Record<string, { hp: number; ap: number; mp: number; damage: number; name: string }> = {
@@ -642,6 +643,9 @@ export const applyVictoryRewards = mutation({
         xpToNext,
         eclats: character.eclats + combat.rewards.eclats,
       });
+
+      await tryUnlockAchievement(ctx, charId, "first_victory");
+      await syncCharacterAchievements(ctx, charId);
     }
     return null;
   },

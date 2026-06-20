@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { internalMutation, mutation, query } from "./_generated/server";
 import type { MutationCtx } from "./_generated/server";
 import { sendNotification } from "./lib/notifications";
+import { tryUnlockAchievement } from "./lib/achievementUnlock";
 
 const LIVE_EVENT_DURATION_MS = 48 * 60 * 60 * 1000;
 const LIVE_EVENT_TEMPLATES = [
@@ -184,6 +185,8 @@ export const contributeToLiveEvent = mutation({
         screen: "live-events",
       });
     }
+
+    await tryUnlockAchievement(ctx, args.characterId, "live_contributor");
 
     return { globalProgress: newProgress, myContribution, completed };
   },

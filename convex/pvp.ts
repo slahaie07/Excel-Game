@@ -3,6 +3,7 @@ import { mutation, query } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
 import { recordSeasonMatch } from "./seasons";
 import { sendNotification } from "./lib/notifications";
+import { syncCharacterAchievements } from "./lib/achievementUnlock";
 
 const TEAM_SIZE: Record<"1v1" | "2v2" | "3v3", number> = {
   "1v1": 1,
@@ -225,6 +226,10 @@ export const completeMatch = mutation({
     const winnerCap = winners[0]!;
     const loserCap = losers[0]!;
     await recordSeasonMatch(ctx, winnerCap.characterId, loserCap.characterId, effectiveGain, ratingLoss);
+
+    for (const w of winners) {
+      await syncCharacterAchievements(ctx, w.characterId);
+    }
 
     return { ratingGain: effectiveGain, ratingLoss };
   },

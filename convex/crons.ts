@@ -10,4 +10,18 @@ crons.interval(
   {}
 );
 
+crons.interval(
+  "guild war seasons",
+  { hours: 12 },
+  internal.guildWarSeasons.ensureActiveGuildWarSeason,
+  {}
+);
+
+crons.interval(
+  "finalize guild wars",
+  { hours: 1 },
+  internal.guildWars.finalizeExpiredWars,
+  {}
+);
+
 export default crons;

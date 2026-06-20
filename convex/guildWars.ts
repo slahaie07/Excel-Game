@@ -1,7 +1,51 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
+import type { MutationCtx } from "./_generated/server";
+import type { Id } from "./_generated/dataModel";
+import { recordWarSeasonResult } from "./guildWarSeasons";
+import { tryUnlockAchievement } from "./lib/achievementUnlock";
+import { sendNotification } from "./lib/notifications";
 
 const WAR_DURATION_MS = 24 * 60 * 60 * 1000;
+
+async function finalizeWar(ctx: MutationCtx, warId: Id<"guildWars">) {
+  const war = await ctx.db.get("guildWars", warId);
+  if (!war || war.status !== "active") return;
+
+  const winnerId = war.guildAScore >= war.guildBScore ? war.guildAId : war.guildBId;
+  const winnerName = war.guildAScore >= war.guildBScore ? war.guildAName : war.guildBName;
+  const winnerScore = Math.max(war.guildAScore, war.guildBScore);
+
+  await ctx.db.patch("guildWars", warId, {
+    status: "completed",
+    winnerGuildId: winnerId,
+  });
+
+  await recordWarSeasonResult(ctx, war.seasonId, winnerId, winnerName, winnerScore);
+
+  const winnerGuild = await ctx.db.get("guilds", winnerId);
+  if (winnerGuild) {
+    await ctx.db.patch("guilds", winnerId, {
+      treasury: winnerGuild.treasury + 500,
+    });
+  }
+
+  const members = await ctx.db.query("guildMembers").collect();
+  const winnerMembers = members.filter((m) => m.guildId === winnerId);
+  for (const member of winnerMembers) {
+    await tryUnlockAchievement(ctx, member.characterId, "guild_war_victor");
+    const character = await ctx.db.get("characters", member.characterId);
+    if (character?.pushNotificationsEnabled) {
+      await sendNotification(ctx, {
+        characterId: member.characterId,
+        type: "guild_war_won",
+        title: "Victoire de guilde !",
+        body: `${winnerName} remporte la guerre contre ${war.guildAId === winnerId ? war.guildBName : war.guildAName} !`,
+        screen: "guild",
+      });
+    }
+  }
+}
 
 export const declareWar = mutation({
   args: {
@@ -39,6 +83,11 @@ export const declareWar = mutation({
     );
     if (conflict) throw new Error("Une guerre est déjà en cours entre ces guildes");
 
+    const activeSeason = await ctx.db
+      .query("guildWarSeasons")
+      .withIndex("by_status", (q) => q.eq("status", "active"))
+      .first();
+
     const now = Date.now();
     return await ctx.db.insert("guildWars", {
       guildAId: args.guildAId,
@@ -48,6 +97,7 @@ export const declareWar = mutation({
       guildAScore: 0,
       guildBScore: 0,
       status: "active",
+      seasonId: activeSeason?._id,
       startedAt: now,
       endsAt: now + WAR_DURATION_MS,
     });
@@ -67,11 +117,7 @@ export const contributeToWar = mutation({
 
     const now = Date.now();
     if (now >= war.endsAt) {
-      const winnerId = war.guildAScore >= war.guildBScore ? war.guildAId : war.guildBId;
-      await ctx.db.patch("guildWars", args.warId, {
-        status: "completed",
-        winnerGuildId: winnerId,
-      });
+      await finalizeWar(ctx, args.warId);
       throw new Error("La guerre est terminée");
     }
 
@@ -96,11 +142,32 @@ export const contributeToWar = mutation({
       await ctx.db.patch("guildWars", args.warId, { guildBScore: war.guildBScore + dmg });
     }
 
+    await tryUnlockAchievement(ctx, args.characterId, "war_hero");
+
     const updated = await ctx.db.get("guildWars", args.warId);
     return {
       guildScore: isGuildA ? updated!.guildAScore : updated!.guildBScore,
       enemyScore: isGuildA ? updated!.guildBScore : updated!.guildAScore,
     };
+  },
+});
+
+export const finalizeExpiredWars = internalMutation({
+  args: {},
+  returns: v.null(),
+  handler: async (ctx) => {
+    const wars = await ctx.db
+      .query("guildWars")
+      .withIndex("by_status", (q) => q.eq("status", "active"))
+      .collect();
+
+    const now = Date.now();
+    for (const war of wars) {
+      if (now >= war.endsAt) {
+        await finalizeWar(ctx, war._id);
+      }
+    }
+    return null;
   },
 });
 

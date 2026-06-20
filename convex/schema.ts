@@ -338,9 +338,29 @@ export default defineSchema({
     guildBScore: v.number(),
     status: v.union(v.literal("active"), v.literal("completed")),
     winnerGuildId: v.optional(v.id("guilds")),
+    seasonId: v.optional(v.id("guildWarSeasons")),
     startedAt: v.number(),
     endsAt: v.number(),
   }).index("by_status", ["status"]),
+
+  guildWarSeasons: defineTable({
+    name: v.string(),
+    seasonNumber: v.number(),
+    status: v.union(v.literal("active"), v.literal("ended")),
+    startsAt: v.number(),
+    endsAt: v.number(),
+  }).index("by_status", ["status"]),
+
+  guildWarSeasonScores: defineTable({
+    seasonId: v.id("guildWarSeasons"),
+    guildId: v.id("guilds"),
+    guildName: v.string(),
+    warWins: v.number(),
+    warPoints: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_season", ["seasonId"])
+    .index("by_season_and_guild", ["seasonId", "guildId"]),
 
   tradeSessions: defineTable({
     initiatorId: v.id("characters"),
