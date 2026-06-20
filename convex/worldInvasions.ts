@@ -4,8 +4,10 @@ import type { MutationCtx } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
 import { sendNotification } from "./lib/notifications";
 import { tryUnlockAchievement } from "./lib/achievementUnlock";
+import { addZoneFactionReputation } from "./factions";
 
 const INVASION_DURATION_MS = 72 * 60 * 60 * 1000;
+const INVASION_BOSS_NAME = "Avatar des Ombres";
 
 const INVASION_TEMPLATES = [
   {
@@ -114,22 +116,33 @@ export async function recordInvasionKill(
   }
 
   const newProgress = Math.min(invasion.globalTarget, invasion.globalProgress + amount);
-  const completed = newProgress >= invasion.globalTarget;
-  await ctx.db.patch("worldInvasions", invasion._id, {
-    globalProgress: newProgress,
-    status: completed ? "ended" : "active",
-  });
+  const barFull = newProgress >= invasion.globalTarget;
 
-  if (completed) {
+  if (barFull && !invasion.bossActive) {
+    const bossMaxHp = invasion.threatLevel * 500;
+    await ctx.db.patch("worldInvasions", invasion._id, {
+      globalProgress: newProgress,
+      bossActive: true,
+      bossName: INVASION_BOSS_NAME,
+      bossMaxHp,
+      bossCurrentHp: bossMaxHp,
+      bossDefeated: false,
+    });
+
     await sendNotification(ctx, {
       characterId,
-      type: "invasion_repelled",
-      title: "Invasion repoussée !",
-      body: `${invasion.name} — Terreval est sauvée ! Réclamez votre récompense.`,
+      type: "invasion_boss_spawn",
+      title: "L'Avatar des Ombres apparaît !",
+      body: `${invasion.name} — la menace ultime est là. Attaquez-le !`,
       screen: "world",
+    });
+  } else if (!invasion.bossActive) {
+    await ctx.db.patch("worldInvasions", invasion._id, {
+      globalProgress: newProgress,
     });
   }
 
+  await addZoneFactionReputation(ctx, characterId, zoneId, 3);
   await tryUnlockAchievement(ctx, characterId, "invasion_defender");
 }
 
@@ -168,6 +181,12 @@ export const getActiveInvasion = query({
       progressPercent: v.number(),
       rewardEclats: v.number(),
       hoursLeft: v.number(),
+      bossActive: v.boolean(),
+      bossName: v.union(v.string(), v.null()),
+      bossMaxHp: v.union(v.number(), v.null()),
+      bossCurrentHp: v.union(v.number(), v.null()),
+      bossHpPercent: v.union(v.number(), v.null()),
+      bossDefeated: v.boolean(),
     }),
     v.null()
   ),
@@ -195,6 +214,15 @@ export const getActiveInvasion = query({
       progressPercent: Math.min(100, Math.round((invasion.globalProgress / invasion.globalTarget) * 100)),
       rewardEclats: invasion.rewardEclats,
       hoursLeft: Math.ceil((invasion.endsAt - now) / (60 * 60 * 1000)),
+      bossActive: invasion.bossActive ?? false,
+      bossName: invasion.bossName ?? null,
+      bossMaxHp: invasion.bossMaxHp ?? null,
+      bossCurrentHp: invasion.bossCurrentHp ?? null,
+      bossHpPercent:
+        invasion.bossMaxHp && invasion.bossCurrentHp !== undefined
+          ? Math.round((invasion.bossCurrentHp / invasion.bossMaxHp) * 100)
+          : null,
+      bossDefeated: invasion.bossDefeated ?? false,
     };
   },
 });
@@ -207,6 +235,7 @@ export const getMyInvasionContribution = query({
   returns: v.union(
     v.object({
       kills: v.number(),
+      bossDamage: v.number(),
       rewardClaimed: v.boolean(),
       rank: v.number(),
     }),
@@ -230,7 +259,104 @@ export const getMyInvasionContribution = query({
     const sorted = all.sort((a, b) => b.kills - a.kills);
     const rank = sorted.findIndex((c) => c.characterId === args.characterId) + 1;
 
-    return { kills: mine.kills, rewardClaimed: mine.rewardClaimed, rank };
+    return {
+      kills: mine.kills,
+      bossDamage: mine.bossDamage ?? 0,
+      rewardClaimed: mine.rewardClaimed,
+      rank,
+    };
+  },
+});
+
+export const attackInvasionBoss = mutation({
+  args: {
+    invasionId: v.id("worldInvasions"),
+    characterId: v.id("characters"),
+    characterName: v.string(),
+    damage: v.optional(v.number()),
+  },
+  returns: v.object({
+    damage: v.number(),
+    bossHpPercent: v.number(),
+    defeated: v.boolean(),
+    rewardEclats: v.number(),
+  }),
+  handler: async (ctx, args) => {
+    const invasion = await ctx.db.get("worldInvasions", args.invasionId);
+    if (!invasion || !invasion.bossActive || invasion.bossDefeated) {
+      throw new Error("Aucun boss d'invasion actif");
+    }
+
+    const character = await ctx.db.get("characters", args.characterId);
+    if (!character) throw new Error("Personnage introuvable");
+
+    const damage = args.damage ?? Math.max(50, Math.floor(character.level * 12 + character.stats.strength * 2));
+    const bossHp = invasion.bossCurrentHp ?? 0;
+    const newHp = Math.max(0, bossHp - damage);
+    const defeated = newHp <= 0;
+
+    const existing = await ctx.db
+      .query("worldInvasionContributions")
+      .withIndex("by_invasion_and_character", (q) =>
+        q.eq("invasionId", args.invasionId).eq("characterId", args.characterId)
+      )
+      .unique();
+
+    const now = Date.now();
+    if (existing) {
+      await ctx.db.patch("worldInvasionContributions", existing._id, {
+        bossDamage: (existing.bossDamage ?? 0) + damage,
+        updatedAt: now,
+      });
+    } else {
+      await ctx.db.insert("worldInvasionContributions", {
+        invasionId: args.invasionId,
+        characterId: args.characterId,
+        characterName: args.characterName,
+        kills: 0,
+        bossDamage: damage,
+        rewardClaimed: false,
+        updatedAt: now,
+      });
+    }
+
+    const rewardEclats = Math.floor(damage / 100) + 10;
+
+    await ctx.db.patch("characters", args.characterId, {
+      eclats: character.eclats + rewardEclats,
+    });
+
+    if (defeated) {
+      await ctx.db.patch("worldInvasions", args.invasionId, {
+        bossCurrentHp: 0,
+        bossDefeated: true,
+        status: "ended",
+      });
+
+      await sendNotification(ctx, {
+        characterId: args.characterId,
+        type: "invasion_boss_defeated",
+        title: "Avatar des Ombres vaincu !",
+        body: `${invasion.name} — Terreval est sauvée ! Réclamez votre récompense.`,
+        screen: "world",
+      });
+
+      await tryUnlockAchievement(ctx, args.characterId, "invasion_boss_slayer");
+    } else {
+      await ctx.db.patch("worldInvasions", args.invasionId, {
+        bossCurrentHp: newHp,
+      });
+    }
+
+    await addZoneFactionReputation(ctx, args.characterId, invasion.zoneId, 5);
+
+    const bossMaxHp = invasion.bossMaxHp ?? 1;
+    return {
+      damage,
+      bossHpPercent: Math.round((newHp / bossMaxHp) * 100),
+      defeated,
+      rewardEclats,
+    };
   },
 });
 
@@ -256,6 +382,7 @@ export const claimInvasionReward = mutation({
 
     const canClaim =
       invasion.status === "ended" ||
+      invasion.bossDefeated === true ||
       invasion.globalProgress >= invasion.globalTarget ||
       Date.now() >= invasion.endsAt;
     if (!canClaim) throw new Error("Invasion encore en cours");

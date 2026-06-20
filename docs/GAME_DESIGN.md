@@ -4,7 +4,7 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v1.10)
+## Systèmes implémentés (v1.11)
 
 | Système | Statut | Description |
 |---------|--------|-------------|
@@ -194,5 +194,14 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Invasions | `worldInvasions.ts` | Invasions zone 72h, kills auto combat monde |
 | Combat | `combat.ts` | Hook invasion + mentorat PvE |
 | PvP | `pvp.ts` | Hook ligue + mentorat PvP |
+
+## v1.11 — Réputation, défis & boss invasion
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Factions | `factions.ts`, `lib/factions.ts` | Réputation Lumina/Umbra/Neutre, allégeance |
+| Défis PvP | `pvpDailyChallenges.ts` | 3 défis quotidiens, récompenses ligue |
+| Boss invasion | `worldInvasions.ts` | Avatar des Ombres à 100 % progression |
+| Combat | `combat.ts` | Réputation zone sur victoire PvE |
 
 Voir `docs/DEPLOYMENT.md`.

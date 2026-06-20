@@ -611,6 +611,11 @@ export default defineSchema({
     globalTarget: v.number(),
     globalProgress: v.number(),
     rewardEclats: v.number(),
+    bossActive: v.optional(v.boolean()),
+    bossName: v.optional(v.string()),
+    bossMaxHp: v.optional(v.number()),
+    bossCurrentHp: v.optional(v.number()),
+    bossDefeated: v.optional(v.boolean()),
   }).index("by_status", ["status"]),
 
   worldInvasionContributions: defineTable({
@@ -618,9 +623,41 @@ export default defineSchema({
     characterId: v.id("characters"),
     characterName: v.string(),
     kills: v.number(),
+    bossDamage: v.optional(v.number()),
     rewardClaimed: v.boolean(),
     updatedAt: v.number(),
   })
     .index("by_invasion_and_character", ["invasionId", "characterId"])
     .index("by_invasion", ["invasionId"]),
+
+  factionReputations: defineTable({
+    characterId: v.id("characters"),
+    factionId: v.union(v.literal("lumina"), v.literal("umbra"), v.literal("neutre")),
+    reputation: v.number(),
+    rank: v.string(),
+    updatedAt: v.number(),
+  })
+    .index("by_character", ["characterId"])
+    .index("by_character_and_faction", ["characterId", "factionId"]),
+
+  factionProfiles: defineTable({
+    characterId: v.id("characters"),
+    pledgedFactionId: v.union(v.literal("lumina"), v.literal("umbra"), v.literal("neutre")),
+    updatedAt: v.number(),
+  }).index("by_character", ["characterId"]),
+
+  pvpDailyChallenges: defineTable({
+    characterId: v.id("characters"),
+    dayKey: v.string(),
+    challengeId: v.string(),
+    label: v.string(),
+    description: v.string(),
+    target: v.number(),
+    progress: v.number(),
+    completed: v.boolean(),
+    claimed: v.boolean(),
+    rewardEclats: v.number(),
+    rewardLeaguePoints: v.number(),
+    updatedAt: v.number(),
+  }).index("by_character_and_day", ["characterId", "dayKey"]),
 });

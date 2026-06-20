@@ -6,6 +6,7 @@ import { getSpellById } from "./lib/spells";
 import { tryUnlockAchievement, syncCharacterAchievements } from "./lib/achievementUnlock";
 import { recordInvasionKill } from "./worldInvasions";
 import { recordMenteePveWin } from "./mentorship";
+import { addZoneFactionReputation } from "./factions";
 import { applySpellEffects, tickBuffs } from "./lib/combatEffects";
 
 const MONSTER_DATA: Record<string, { hp: number; ap: number; mp: number; damage: number; name: string }> = {
@@ -652,6 +653,7 @@ export const applyVictoryRewards = mutation({
       if (combat.combatType === "world" || combat.combatType === "event") {
         await recordInvasionKill(ctx, charId, character.name, combat.zoneId);
         await recordMenteePveWin(ctx, charId);
+        await addZoneFactionReputation(ctx, charId, combat.zoneId, 2);
       }
     }
     return null;

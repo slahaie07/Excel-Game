@@ -94,6 +94,11 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - **Mentorat** — veterans (niv. 30+) guident apprentis (niv. ≤25), points mentor
 - **Invasions dynamiques** — Ombres Cristallines par zone, kills auto en combat monde, récompenses
 
+### Réputation, défis & boss invasion (v1.11)
+- **Réputation factions** — Lumina, Umbra, Marchands Libres, rangs et allégeance
+- **Défis PvP quotidiens** — 3 missions/jour, récompenses éclats + points ligue
+- **Boss d'invasion** — Avatar des Ombres quand la barre atteint 100 %
+
 ### Graphismes isométriques
 - Monde et combat en vue isométrique 2:1 (Phaser 3)
 - Tuiles thématiques par zone, ombres, tri de profondeur
@@ -171,6 +176,7 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Campagnes guerre de guildes, raid Nexus endgame, succès cloud sync (v1.8)
 - [x] Tournois PvP hebdo, Panthéon cross-serveur, cosmétiques de guilde (v1.9)
 - [x] Ligues PvP, mentorat joueurs, invasions monde dynamiques (v1.10)
+- [x] Réputation factions, défis PvP quotidiens, boss invasion (v1.11)
 
 ## Licence
 

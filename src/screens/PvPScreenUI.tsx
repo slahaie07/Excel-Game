@@ -57,6 +57,18 @@ export interface LeagueLeaderboardEntry {
   wins: number;
 }
 
+export interface DailyChallenge {
+  _id: string;
+  label: string;
+  description: string;
+  target: number;
+  progress: number;
+  completed: boolean;
+  claimed: boolean;
+  rewardEclats: number;
+  rewardLeaguePoints: number;
+}
+
 export interface SeasonInfo {
   name: string;
   seasonNumber: number;
@@ -116,6 +128,9 @@ interface PvPScreenUIProps {
   onClaimTournamentReward?: (rewardId: string) => void;
   league?: LeagueStatus | null;
   leagueLeaderboard?: LeagueLeaderboardEntry[];
+  dailyChallenges?: DailyChallenge[];
+  dailyClaimMessage?: string;
+  onClaimDailyChallenge?: (challengeId: string) => void;
   pendingRewards?: SeasonReward[];
   cosmetics?: EquippedCosmetics | null;
   claimMessage?: string;
@@ -151,6 +166,9 @@ export function PvPScreenUI({
   onClaimTournamentReward,
   league,
   leagueLeaderboard,
+  dailyChallenges,
+  dailyClaimMessage,
+  onClaimDailyChallenge,
   pendingRewards,
   cosmetics,
   claimMessage,
@@ -253,6 +271,39 @@ export function PvPScreenUI({
                 />
               </div>
             )}
+          </div>
+        )}
+
+        {(dailyChallenges ?? []).length > 0 && (
+          <div className="card border-orange-500/30 bg-orange-950/10 space-y-2">
+            <p className="text-orange-300 text-xs font-bold uppercase">Défis quotidiens PvP</p>
+            {dailyChallenges!.map((c) => (
+              <div key={c._id} className="flex items-center gap-3">
+                <div className="flex-1 min-w-0">
+                  <p className="text-white text-sm font-semibold">{c.label}</p>
+                  <p className="text-aether-500 text-xs truncate">{c.description}</p>
+                  <div className="h-1 bg-aether-900 rounded-full mt-1 overflow-hidden">
+                    <div
+                      className="h-full bg-orange-500 transition-all"
+                      style={{ width: `${Math.min(100, (c.progress / c.target) * 100)}%` }}
+                    />
+                  </div>
+                  <p className="text-aether-600 text-[10px] mt-0.5">
+                    {c.progress}/{c.target} • ✦ {c.rewardEclats} + {c.rewardLeaguePoints} pts ligue
+                  </p>
+                </div>
+                {c.completed && !c.claimed && (
+                  <button
+                    onClick={() => onClaimDailyChallenge?.(c._id)}
+                    className="btn-primary text-xs py-1 px-2"
+                  >
+                    Réclamer
+                  </button>
+                )}
+                {c.claimed && <span className="text-green-400 text-xs">✓</span>}
+              </div>
+            ))}
+            {dailyClaimMessage && <p className="text-green-400 text-xs">{dailyClaimMessage}</p>}
           </div>
         )}
 

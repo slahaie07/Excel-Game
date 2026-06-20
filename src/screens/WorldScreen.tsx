@@ -200,7 +200,11 @@ export default function WorldScreen() {
       )}
 
       {isConvexEnabled() && isCloudCharacter(characterId) && (
-        <CloudWorldInvasion characterId={characterId as Id<"characters">} zoneId={zoneId} />
+        <CloudWorldInvasion
+          characterId={characterId as Id<"characters">}
+          zoneId={zoneId}
+          characterName={characterName}
+        />
       )}
 
       {isConvexEnabled() && isCloudCharacter(characterId) && (

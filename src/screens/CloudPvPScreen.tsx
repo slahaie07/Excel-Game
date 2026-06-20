@@ -20,6 +20,7 @@ export default function CloudPvPScreen() {
   const [error, setError] = useState("");
   const [claimMessage, setClaimMessage] = useState("");
   const [tournamentClaimMessage, setTournamentClaimMessage] = useState("");
+  const [dailyClaimMessage, setDailyClaimMessage] = useState("");
   const [now, setNow] = useState(Date.now());
   const matchStarted = useRef(false);
 
@@ -52,6 +53,9 @@ export default function CloudPvPScreen() {
     api.pvpLeagues.getLeagueLeaderboard,
     myLeague ? { tier: myLeague.tier, limit: 10 } : "skip"
   );
+  const dailyChallenges = useQuery(api.pvpDailyChallenges.getDailyChallenges, { characterId });
+  const initDailyChallenges = useMutation(api.pvpDailyChallenges.initDailyChallenges);
+  const claimDailyChallenge = useMutation(api.pvpDailyChallenges.claimDailyChallenge);
   const pendingMatch = useQuery(api.pvp.getPendingMatch, { characterId });
   const queueStatus = useQuery(
     api.pvp.getQueueStatus,
@@ -82,6 +86,12 @@ export default function CloudPvPScreen() {
       void initTournament({});
     }
   }, [activeTournament, initTournament]);
+
+  useEffect(() => {
+    if (dailyChallenges !== undefined && dailyChallenges.length === 0) {
+      void initDailyChallenges({ characterId });
+    }
+  }, [dailyChallenges, initDailyChallenges, characterId]);
 
   const rating = cloudChar?.pvpRating ?? char?.pvpRating ?? 1000;
   const wins = cloudChar?.pvpWins ?? char?.pvpWins ?? 0;
@@ -242,6 +252,21 @@ export default function CloudPvPScreen() {
         leaguePoints: e.leaguePoints,
         wins: e.wins,
       }))}
+      dailyChallenges={dailyChallenges ?? []}
+      dailyClaimMessage={dailyClaimMessage}
+      onClaimDailyChallenge={(challengeId) => {
+        void (async () => {
+          try {
+            const result = await claimDailyChallenge({
+              characterId,
+              challengeId: challengeId as Id<"pvpDailyChallenges">,
+            });
+            setDailyClaimMessage(`+${result.eclats} ✦ +${result.leaguePoints} pts ligue !`);
+          } catch (e) {
+            setDailyClaimMessage(e instanceof Error ? e.message : "Erreur");
+          }
+        })();
+      }}
       pendingRewards={pendingRewards ?? []}
       cosmetics={myCosmetics ?? null}
       claimMessage={claimMessage}
