@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Convex
+.convex/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build
+*.tsbuildinfo
+
+# Old files
+Optimisation de connaissances*
+Excel-Game.html

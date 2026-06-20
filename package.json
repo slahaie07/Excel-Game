@@ -1,0 +1,38 @@
+{
+  "name": "aetheris-mmorpg",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Aetheris — MMORPG tactique mobile inspiré des grands RPG isométriques",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "convex:dev": "CONVEX_AGENT_MODE=anonymous npx convex dev",
+    "convex:deploy": "npx convex deploy"
+  },
+  "dependencies": {
+    "convex": "^1.21.0",
+    "phaser": "^3.88.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.1.0",
+    "zustand": "^5.0.3",
+    "clsx": "^2.1.1"
+  },
+  "devDependencies": {
+    "@convex-dev/eslint-plugin": "^1.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.17.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5",
+    "vite-plugin-pwa": "^0.21.1"
+  }
+}

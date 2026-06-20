@@ -1,11 +1,98 @@
-🎮 Jeu interactif — Raccourcis Excel pour la Comptabilité
+# Aetheris — L'Éveil des Cristaux
 
-Ce projet propose un outil pédagogique moderne pour aider les étudiant·e·s en comptabilité à maîtriser les raccourcis clavier Excel de manière ludique, progressive et motivante. L’idée est simple : transformer l’apprentissage des touches et combinaisons les plus utiles en un jeu interactif accessible partout, que ce soit en classe, à la maison ou en autoapprentissage.
+MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, avec un univers fantasy original.
 
-Le jeu est structuré en trois niveaux de difficulté. Le mode Facile introduit les bases essentielles comme copier, coller, annuler, mettre en gras ou naviguer rapidement. Le mode Moyen ajoute des raccourcis intermédiaires liés au formatage, aux filtres et aux calculs simples. Enfin, le mode Difficile inclut l’ensemble des commandes, avec une limite de temps et seulement deux erreurs permises, pour simuler des conditions de performance réelles. Cette progression graduelle permet aux étudiants d’apprendre efficacement sans se décourager.
+## Univers
 
-Chaque exercice doit être réussi pour passer au suivant, et en cas d’erreur l’aide-mémoire intégré propose la bonne réponse. Un système de Top 10 enregistre les scores et le temps afin de stimuler une saine compétition et de suivre les progrès. Les données peuvent être exportées en CSV pour un usage pédagogique ou pour analyser les performances d’une classe entière.
+**Aetheris** se déroule sur **Terreval**, un monde où les fragments d'une étoile morte — les **Cristaux d'Aether** — ont accordé des pouvoirs extraordinaires à certains individus, les **Éveilleurs**. Mais les Ombres Cristallines corrompent tout sur leur passage...
 
-Le jeu fonctionne hors ligne, directement depuis un simple fichier HTML, et il est compatible avec PC Windows comme avec mobile. L’interface, au design sombre et moderne, a été pensée pour capter l’attention tout en restant claire et ergonomique.
+## Fonctionnalités
 
-En résumé, ce projet illustre comment on peut moderniser l’enseignement de la bureautique et rendre l’apprentissage d’Excel plus engageant. Il a été conçu pour inspirer les futur·e·s comptables à devenir rapides, précis et confiants dans leur maîtrise des outils numériques.
+### Combat tactique
+- Grille isométrique au tour par tour (PA/PM)
+- 8 classes uniques avec sorts propres
+- IA ennemie, buffs/debuffs, victoire/défaite
+- Boss et donjons
+
+### Monde ouvert
+- 6 zones : Vallée des Éveils, Port de Nébula, Forêt de Lumina, Désert d'Umbra, Citadelle Stellaire, Arène PvP
+- Voyages entre zones, monstres par zone
+- Niveaux 1 à 60
+
+### Progression
+- 8 classes : Pyromancien, Gardien Cristallin, Éclaireur des Brumes, Invocateur d'Aether, Alchimiste des Runes, Archer Lunaire, Berserker Tellurique, Chronomancien
+- XP, montée de niveau, stats, sorts
+- Équipement (6 slots) et inventaire
+
+### Quêtes
+- Quêtes principales, secondaires et quotidiennes
+- Objectifs : tuer, collecter, explorer, parler
+
+### Métiers
+- Récolte : Herboriste, Mineur, Bûcheron
+- Craft : Alchimie, Forge, Joaillerie
+- 3 métiers max par personnage
+
+### Social
+- Guildes (création, adhésion)
+- Marché d'Halan (achat/vente)
+- Chat (backend Convex)
+
+### Mobile
+- PWA installable
+- Interface tactile optimisée
+- Mode portrait
+
+## Démarrage rapide
+
+```bash
+npm install
+npm run dev
+```
+
+Ouvrez http://localhost:5173 sur mobile ou desktop.
+
+### Backend Convex (optionnel, multijoueur)
+
+```bash
+npx convex dev
+```
+
+Puis ajoutez `VITE_CONVEX_URL` dans `.env.local`.
+
+## Structure
+
+```
+src/
+  game/data/     # Univers, classes, sorts, monstres, zones, items, quêtes
+  screens/       # Écrans React (monde, combat, inventaire, etc.)
+  stores/        # État global Zustand
+convex/          # Backend temps réel (combat, guildes, marché, chat)
+```
+
+## Classes
+
+| Classe | Rôle | Spécialité |
+|--------|------|------------|
+| Pyromancien | DPS | Dégâts de feu en zone |
+| Gardien Cristallin | Tank | Protection et provocation |
+| Éclaireur des Brumes | DPS | Furtivité et pièges |
+| Invocateur d'Aether | Support | Invocations et contrôle |
+| Alchimiste des Runes | Healer | Soins et buffs |
+| Archer Lunaire | DPS | Tir à longue portée |
+| Berserker Tellurique | DPS | Mêlée dévastatrice |
+| Chronomancien | Support | Manipulation du temps |
+
+## Roadmap
+
+- [ ] Multijoueur temps réel (Convex)
+- [ ] PvP arène classée
+- [ ] Donjons en groupe
+- [ ] Compagnons (pets)
+- [ ] Housing / Havre
+- [ ] Événements saisonniers
+- [ ] App natives (Capacitor)
+
+## Licence
+
+Projet original — Univers Aetheris © 2026
