@@ -1,11 +1,81 @@
-🎮 Jeu interactif — Raccourcis Excel pour la Comptabilité
+# Chroniques d'Étheris
 
-Ce projet propose un outil pédagogique moderne pour aider les étudiant·e·s en comptabilité à maîtriser les raccourcis clavier Excel de manière ludique, progressive et motivante. L’idée est simple : transformer l’apprentissage des touches et combinaisons les plus utiles en un jeu interactif accessible partout, que ce soit en classe, à la maison ou en autoapprentissage.
+**MMORPG tactique mobile au tour par tour** — un univers fantasy original inspiré des grands MMORPG tactiques, développé avec notre propre lore, classes et systèmes de jeu.
 
-Le jeu est structuré en trois niveaux de difficulté. Le mode Facile introduit les bases essentielles comme copier, coller, annuler, mettre en gras ou naviguer rapidement. Le mode Moyen ajoute des raccourcis intermédiaires liés au formatage, aux filtres et aux calculs simples. Enfin, le mode Difficile inclut l’ensemble des commandes, avec une limite de temps et seulement deux erreurs permises, pour simuler des conditions de performance réelles. Cette progression graduelle permet aux étudiants d’apprendre efficacement sans se décourager.
+## Univers d'Étheris
 
-Chaque exercice doit être réussi pour passer au suivant, et en cas d’erreur l’aide-mémoire intégré propose la bonne réponse. Un système de Top 10 enregistre les scores et le temps afin de stimuler une saine compétition et de suivre les progrès. Les données peuvent être exportées en CSV pour un usage pédagogique ou pour analyser les performances d’une classe entière.
+Le Continent d'Étheris a été brisé par la Grande Faille. Cinq cités-refuges subsistent, peuplées d'aventuriers de l'Étherium. Explorez 6 zones, affrontez 12 familles de monstres, et restaurez l'équilibre du monde.
 
-Le jeu fonctionne hors ligne, directement depuis un simple fichier HTML, et il est compatible avec PC Windows comme avec mobile. L’interface, au design sombre et moderne, a été pensée pour capter l’attention tout en restant claire et ergonomique.
+## Fonctionnalités
 
-En résumé, ce projet illustre comment on peut moderniser l’enseignement de la bureautique et rendre l’apprentissage d’Excel plus engageant. Il a été conçu pour inspirer les futur·e·s comptables à devenir rapides, précis et confiants dans leur maîtrise des outils numériques.
+### Gameplay Core
+- **Combat tactique au tour par tour** — grille isométrique, PA/PM, sorts, effets de zone
+- **8 classes jouables** — Gardien, Arcaniste, Rôdeur, Mystique, Forgeur, Ombrelame, Invocateur, Alchimiste
+- **32+ sorts** — dégâts, soins, buffs, debuffs, invocations, contrôle
+- **Exploration isométrique** — 6 zones avec niveaux 1-80
+- **Rencontres aléatoires** — groupes de monstres adaptés au niveau
+
+### Progression
+- **Système de niveaux** — XP, montée de stats, 80 niveaux max
+- **Équipement** — armes, armures, accessoires (5 raretés)
+- **Inventaire** — 30 emplacements, objets empilables
+- **Familiers** — œufs, dressage, compagnons de combat
+
+### Quêtes & Contenu
+- **Quêtes principales** — histoire en 4 chapitres
+- **Quêtes secondaires** — familiers, exploration
+- **Quêtes quotidiennes** — récompenses récurrentes
+- **Donjons** — contenu coopératif
+
+### Social & Économie
+- **Chat multi-canaux** — global, zone, guilde, commerce
+- **Guildes** — création, grades, coffre, guerres
+- **Boutique & échanges** — achat/vente d'objets
+- **8 métiers d'artisanat** — forge, alchimie, couture, etc.
+- **PvP** — arène classée (backend prêt)
+
+### Technique
+- **Frontend** — React 19 + Phaser 3 + TypeScript
+- **Backend** — Convex (temps réel, persistance, multijoueur)
+- **Mobile-first** — contrôles tactiles, responsive, PWA-ready
+
+## Démarrage
+
+```bash
+npm install
+npm run dev
+```
+
+Pour le backend Convex (optionnel, mode invité par défaut) :
+
+```bash
+npm run convex:dev
+```
+
+## Structure
+
+```
+src/
+├── data/          # Univers, classes, sorts, monstres, items, quêtes
+├── game/
+│   ├── combat/    # Moteur de combat tactique
+│   └── scenes/    # Scènes Phaser (monde, combat)
+├── store/         # État global (Zustand)
+├── ui/            # Interface React (HUD, panneaux)
+└── styles/        # CSS global mobile-first
+convex/            # Backend temps réel
+```
+
+## Roadmap
+
+- [ ] Sprites et animations pixel art
+- [ ] Multijoueur en temps réel (Convex)
+- [ ] Donjons instanciés coopératifs
+- [ ] PvP arène classée
+- [ ] Montures et enclos de guilde
+- [ ] Événements saisonniers
+- [ ] Export mobile (Capacitor)
+
+## Licence
+
+Projet original — Univers Étheris © 2026
