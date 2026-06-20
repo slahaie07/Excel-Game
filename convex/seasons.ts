@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import type { MutationCtx } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
+import { finalizeSeasonRewards } from "./cosmetics";
 
 const SEASON_DURATION_MS = 30 * 24 * 60 * 60 * 1000;
 const BASE_SEASON_RATING = 1000;
@@ -17,6 +18,7 @@ async function ensureActiveSeason(ctx: MutationCtx) {
 
   if (active) {
     await ctx.db.patch("pvpSeasons", active._id, { status: "ended" });
+    await finalizeSeasonRewards(ctx, active._id, active.name);
   }
 
   const allSeasons = await ctx.db.query("pvpSeasons").collect();

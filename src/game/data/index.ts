@@ -10,6 +10,7 @@ export { DUNGEONS, getDungeonById, getDungeonsForZone, getRoomMonsters } from ".
 export { RAIDS, getRaidById, getPhaseMonsters } from "./raids";
 export { PETS, getPetById } from "./pets";
 export { FURNITURE, HAVEN_LEVELS, getFurnitureById, getHavenLevel } from "./housing";
+export { COSMETICS, GUILD_HALL_EMOTES, getCosmeticById } from "./cosmetics";
 export {
   SEASONAL_EVENTS,
   getActiveEvent,

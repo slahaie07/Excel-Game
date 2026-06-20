@@ -18,6 +18,7 @@ export default function CloudPvPScreen() {
   const [mode, setMode] = useState<"1v1" | "2v2" | "3v3">("1v1");
   const [searching, setSearching] = useState(false);
   const [error, setError] = useState("");
+  const [claimMessage, setClaimMessage] = useState("");
   const [now, setNow] = useState(Date.now());
   const matchStarted = useRef(false);
 
@@ -33,11 +34,15 @@ export default function CloudPvPScreen() {
     api.seasons.getMySeasonRating,
     activeSeason ? { seasonId: activeSeason._id, characterId } : "skip"
   );
+  const pendingRewards = useQuery(api.cosmetics.getPendingSeasonRewards, { characterId });
+  const myCosmetics = useQuery(api.cosmetics.getMyCosmetics, { characterId });
   const pendingMatch = useQuery(api.pvp.getPendingMatch, { characterId });
   const joinQueue = useMutation(api.pvp.joinQueue);
   const leaveQueue = useMutation(api.pvp.leaveQueue);
   const startPvpCombat = useMutation(api.combat.startPvpCombat);
   const initSeason = useMutation(api.seasons.initSeason);
+  const claimReward = useMutation(api.cosmetics.claimSeasonReward);
+  const equipCosmetic = useMutation(api.cosmetics.equipCosmetic);
 
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
@@ -162,7 +167,28 @@ export default function CloudPvPScreen() {
         classId: e.classId,
       }))}
       seasonRating={mySeasonRating ?? null}
+      pendingRewards={pendingRewards ?? []}
+      cosmetics={myCosmetics ?? null}
+      claimMessage={claimMessage}
       now={now}
+      onClaimReward={(claimId) => {
+        void (async () => {
+          try {
+            const result = await claimReward({
+              characterId,
+              claimId: claimId as Id<"seasonRewardClaims">,
+            });
+            setClaimMessage(
+              `+${result.eclats} éclats${result.cosmeticIds.length ? ` + ${result.cosmeticIds.length} cosmétique(s)` : ""} !`
+            );
+          } catch (e) {
+            setClaimMessage(e instanceof Error ? e.message : "Erreur");
+          }
+        })();
+      }}
+      onEquipCosmetic={(cosmeticId, slot) => {
+        void equipCosmetic({ characterId, cosmeticId, slot });
+      }}
       onMatchmake={() => void startMatchmaking()}
       onBack={() => {
         void leaveQueue({ characterId });

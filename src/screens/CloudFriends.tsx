@@ -9,6 +9,7 @@ export default function CloudFriends() {
   const characterId = useGameStore((s) => s.characterId)!;
   const setScreen = useGameStore((s) => s.setScreen);
   const setTradePartner = useGameStore((s) => s.setTradePartner);
+  const setViewingGuildHall = useGameStore((s) => s.setViewingGuildHall);
   const [searchName, setSearchName] = useState("");
   const [error, setError] = useState("");
 
@@ -55,15 +56,28 @@ export default function CloudFriends() {
                 <p className="text-aether-500 text-xs">Niv. {f.level}</p>
               </div>
               {f.status === "accepted" && !f.isIncoming && (
-                <button
-                  onClick={() => {
-                    setTradePartner(f.friendId);
-                    setScreen("trade");
-                  }}
-                  className="btn-secondary text-xs py-1 px-2"
-                >
-                  Échanger
-                </button>
+                <>
+                  <button
+                    onClick={() => {
+                      setTradePartner(f.friendId);
+                      setScreen("trade");
+                    }}
+                    className="btn-secondary text-xs py-1 px-2"
+                  >
+                    Échanger
+                  </button>
+                  {f.guildId && (
+                    <button
+                      onClick={() => {
+                        setViewingGuildHall(f.guildId);
+                        setScreen("guild-hall");
+                      }}
+                      className="btn-secondary text-xs py-1 px-2"
+                    >
+                      🏰 Hall{f.guildTag ? ` [${f.guildTag}]` : ""}
+                    </button>
+                  )}
+                </>
               )}
               {f.isIncoming && f.status === "pending" && (
                 <button

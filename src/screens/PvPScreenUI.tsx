@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CLASSES } from "../game/data";
+import { CLASSES, COSMETICS, getCosmeticById } from "../game/data";
 import { formatCountdown } from "../lib/formatTime";
 
 export interface PvpLeaderboardEntry {
@@ -23,6 +23,22 @@ export interface SeasonRating {
   rank: number;
 }
 
+export interface SeasonReward {
+  _id: string;
+  seasonName: string;
+  rank: number;
+  eclatsReward: number;
+  cosmeticIds: string[];
+  rewardLabel: string;
+}
+
+export interface EquippedCosmetics {
+  equippedTitle: string | null;
+  equippedFrame: string | null;
+  titles: string[];
+  frames: string[];
+}
+
 interface PvPScreenUIProps {
   characterName: string;
   classId: string;
@@ -38,8 +54,13 @@ interface PvPScreenUIProps {
   seasonLeaderboard?: PvpLeaderboardEntry[];
   season?: SeasonInfo | null;
   seasonRating?: SeasonRating | null;
+  pendingRewards?: SeasonReward[];
+  cosmetics?: EquippedCosmetics | null;
+  claimMessage?: string;
   now?: number;
   loading?: boolean;
+  onClaimReward?: (claimId: string) => void;
+  onEquipCosmetic?: (cosmeticId: string | null, slot: "title" | "frame") => void;
   onMatchmake: () => void;
   onBack: () => void;
 }
@@ -59,14 +80,22 @@ export function PvPScreenUI({
   seasonLeaderboard,
   season,
   seasonRating,
+  pendingRewards,
+  cosmetics,
+  claimMessage,
   now = Date.now(),
   loading,
+  onClaimReward,
+  onEquipCosmetic,
   onMatchmake,
   onBack,
 }: PvPScreenUIProps) {
   const classData = CLASSES.find((c) => c.id === classId);
   const [boardTab, setBoardTab] = useState<"global" | "season">("season");
+  const [showCosmetics, setShowCosmetics] = useState(false);
   const activeBoard = boardTab === "season" && season ? (seasonLeaderboard ?? []) : leaderboard;
+  const equippedTitle = cosmetics?.equippedTitle ? getCosmeticById(cosmetics.equippedTitle) : null;
+  const equippedFrame = cosmetics?.equippedFrame ? getCosmeticById(cosmetics.equippedFrame) : null;
 
   return (
     <div className="flex-1 flex flex-col bg-gradient-to-b from-aether-950 to-red-950/20">
@@ -77,6 +106,30 @@ export function PvPScreenUI({
       </div>
 
       <div className="p-4 space-y-4 flex-1 overflow-y-auto">
+        {(pendingRewards ?? []).length > 0 && (
+          <div className="card border-crystal-gold/40 bg-crystal-gold/5 space-y-2">
+            <p className="text-crystal-gold text-xs font-bold uppercase">Récompenses de saison</p>
+            {pendingRewards!.map((reward) => (
+              <div key={reward._id} className="flex items-center gap-3">
+                <div className="flex-1">
+                  <p className="text-white text-sm font-semibold">{reward.seasonName}</p>
+                  <p className="text-aether-400 text-xs">
+                    {reward.rewardLabel} • #{reward.rank} • ✦ {reward.eclatsReward}
+                    {reward.cosmeticIds.length > 0 && ` • ${reward.cosmeticIds.length} cosmétique(s)`}
+                  </p>
+                </div>
+                <button
+                  onClick={() => onClaimReward?.(reward._id)}
+                  className="btn-primary text-xs py-1 px-3"
+                >
+                  Réclamer
+                </button>
+              </div>
+            ))}
+            {claimMessage && <p className="text-green-400 text-xs">{claimMessage}</p>}
+          </div>
+        )}
+
         {season && (
           <div className="card bg-gradient-to-r from-crystal-gold/10 to-red-900/20 border-crystal-gold/30">
             <div className="flex justify-between items-start">
@@ -99,10 +152,15 @@ export function PvPScreenUI({
           </div>
         )}
 
-        <div className="card flex items-center gap-4">
+        <div className={`card flex items-center gap-4 ${equippedFrame ? "ring-2 ring-crystal-gold/40" : ""}`}>
           <span className="text-3xl">{classData?.icon}</span>
           <div className="flex-1">
-            <p className="font-bold text-white">{characterName}</p>
+            <p className="font-bold text-white">
+              {equippedTitle ? `${equippedTitle.icon} ` : ""}{characterName}
+            </p>
+            {equippedTitle && (
+              <p className="text-crystal-gold text-xs">{equippedTitle.name}</p>
+            )}
             <p className="text-aether-400 text-sm">Rating global : {rating}</p>
             {seasonRating && (
               <p className="text-crystal-gold text-xs">Saison : {seasonRating.rating} ({seasonRating.wins}V / {seasonRating.losses}D)</p>
@@ -114,6 +172,45 @@ export function PvPScreenUI({
             {streak > 0 && <p className="text-crystal-gold">🔥 {streak}</p>}
           </div>
         </div>
+
+        {cosmetics && (cosmetics.titles.length > 0 || cosmetics.frames.length > 0) && (
+          <div>
+            <button
+              onClick={() => setShowCosmetics(!showCosmetics)}
+              className="text-aether-400 text-sm mb-2"
+            >
+              {showCosmetics ? "▼" : "▶"} Cosmétiques saison ({cosmetics.titles.length + cosmetics.frames.length})
+            </button>
+            {showCosmetics && (
+              <div className="space-y-2">
+                {COSMETICS.filter((c) =>
+                  c.type === "title" ? cosmetics.titles.includes(c.id) : cosmetics.frames.includes(c.id)
+                ).map((c) => {
+                  const isEquipped =
+                    (c.type === "title" && cosmetics.equippedTitle === c.id) ||
+                    (c.type === "frame" && cosmetics.equippedFrame === c.id);
+                  return (
+                    <div key={c.id} className="card flex items-center gap-3 py-2">
+                      <span>{c.icon}</span>
+                      <div className="flex-1">
+                        <p className="text-white text-sm">{c.name}</p>
+                        <p className="text-aether-500 text-xs">{c.description}</p>
+                      </div>
+                      <button
+                        onClick={() =>
+                          onEquipCosmetic?.(isEquipped ? null : c.id, c.type)
+                        }
+                        className={`text-xs py-1 px-2 rounded ${isEquipped ? "bg-crystal-gold text-black" : "btn-secondary"}`}
+                      >
+                        {isEquipped ? "Équipé" : "Équiper"}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
 
         <div>
           <h2 className="text-aether-400 text-sm mb-2">Mode de combat</h2>

@@ -201,6 +201,8 @@ export const visitGuildHall = mutation({
   args: {
     guildId: v.id("guilds"),
     visitorId: v.id("characters"),
+    visitorName: v.string(),
+    message: v.optional(v.string()),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
@@ -210,11 +212,118 @@ export const visitGuildHall = mutation({
       .unique();
     if (!hall) return null;
 
+    const message = args.message ?? "👋 Salut !";
+    const now = Date.now();
+
     await ctx.db.patch("guildHalls", hall._id, {
       visitors: hall.visitors + 1,
-      updatedAt: Date.now(),
+      updatedAt: now,
+    });
+
+    await ctx.db.insert("guildHallVisits", {
+      guildId: args.guildId,
+      visitorId: args.visitorId,
+      visitorName: args.visitorName,
+      message,
+      visitedAt: now,
     });
     return null;
+  },
+});
+
+export const listGuildHallVisitors = query({
+  args: { guildId: v.id("guilds"), limit: v.optional(v.number()) },
+  returns: v.array(v.object({
+    visitorName: v.string(),
+    message: v.string(),
+    visitedAt: v.number(),
+  })),
+  handler: async (ctx, args) => {
+    const visits = await ctx.db
+      .query("guildHallVisits")
+      .withIndex("by_guild", (q) => q.eq("guildId", args.guildId))
+      .order("desc")
+      .take(args.limit ?? 20);
+
+    return visits.map((v) => ({
+      visitorName: v.visitorName,
+      message: v.message,
+      visitedAt: v.visitedAt,
+    }));
+  },
+});
+
+export const listPublicGuildHalls = query({
+  args: { limit: v.optional(v.number()) },
+  returns: v.array(v.object({
+    guildId: v.id("guilds"),
+    guildName: v.string(),
+    guildTag: v.string(),
+    level: v.number(),
+    visitors: v.number(),
+    furnitureCount: v.number(),
+  })),
+  handler: async (ctx, args) => {
+    const halls = await ctx.db.query("guildHalls").take(100);
+    const results = [];
+
+    for (const hall of halls) {
+      const guild = await ctx.db.get("guilds", hall.guildId);
+      if (!guild) continue;
+      results.push({
+        guildId: hall.guildId,
+        guildName: guild.name,
+        guildTag: guild.tag,
+        level: hall.level,
+        visitors: hall.visitors,
+        furnitureCount: hall.furniture.length,
+      });
+    }
+
+    return results
+      .sort((a, b) => b.visitors - a.visitors)
+      .slice(0, args.limit ?? 15);
+  },
+});
+
+export const getGuildHallPublic = query({
+  args: { guildId: v.id("guilds") },
+  returns: v.union(
+    v.object({
+      guildName: v.string(),
+      guildTag: v.string(),
+      level: v.number(),
+      furniture: v.array(v.object({
+        itemId: v.string(),
+        x: v.number(),
+        y: v.number(),
+        placedByName: v.string(),
+      })),
+      visitors: v.number(),
+    }),
+    v.null()
+  ),
+  handler: async (ctx, args) => {
+    const guild = await ctx.db.get("guilds", args.guildId);
+    const hall = await ctx.db
+      .query("guildHalls")
+      .withIndex("by_guild", (q) => q.eq("guildId", args.guildId))
+      .unique();
+
+    if (!guild || !hall) return null;
+
+    return {
+      guildName: guild.name,
+      guildTag: guild.tag,
+      level: hall.level,
+      furniture: hall.furniture.map((f) => ({
+        itemId: f.itemId,
+        x: f.x,
+        y: f.y,
+        placedByName: f.placedByName,
+      })),
+      visitors: hall.visitors,
+    };
   },
 });
 

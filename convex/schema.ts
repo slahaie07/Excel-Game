@@ -105,6 +105,12 @@ export default defineSchema({
     pvpRating: v.number(),
     pvpWins: v.number(),
     pvpLosses: v.number(),
+    cosmetics: v.optional(v.object({
+      titles: v.array(v.string()),
+      frames: v.array(v.string()),
+      equippedTitle: v.optional(v.string()),
+      equippedFrame: v.optional(v.string()),
+    })),
     playTime: v.number(),
     createdAt: v.number(),
     lastPlayedAt: v.number(),
@@ -414,4 +420,26 @@ export default defineSchema({
     visitors: v.number(),
     updatedAt: v.number(),
   }).index("by_guild", ["guildId"]),
+
+  seasonRewardClaims: defineTable({
+    seasonId: v.id("pvpSeasons"),
+    seasonName: v.string(),
+    characterId: v.id("characters"),
+    rank: v.number(),
+    rating: v.number(),
+    eclatsReward: v.number(),
+    cosmeticIds: v.array(v.string()),
+    rewardLabel: v.string(),
+    claimedAt: v.optional(v.number()),
+  })
+    .index("by_character", ["characterId"])
+    .index("by_season_and_character", ["seasonId", "characterId"]),
+
+  guildHallVisits: defineTable({
+    guildId: v.id("guilds"),
+    visitorId: v.id("characters"),
+    visitorName: v.string(),
+    message: v.string(),
+    visitedAt: v.number(),
+  }).index("by_guild", ["guildId", "visitedAt"]),
 });

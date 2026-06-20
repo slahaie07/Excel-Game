@@ -4,7 +4,7 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v1.4)
+## Systèmes implémentés (v1.5)
 
 | Système | Statut | Description |
 |---------|--------|-------------|
@@ -141,5 +141,13 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Saisons | `seasons.ts` | Saisons 30j, classement saison, rating isolé |
 | Guild Hall | `guildHall.ts` | Meubles partagés, trésor guilde, upgrade 3 niveaux |
 | PvP | `pvp.ts` | Enregistrement automatique des matchs saison |
+
+## v1.5 — Récompenses saison & social
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Cosmétiques | `cosmetics.ts` | Récompenses, titres/cadres saison, équipement |
+| Guild Hall | `guildHall.ts` | Visites sociales, emotes, exploration publique |
+| Saisons | `seasons.ts` | Finalisation auto + distribution des récompenses |
 
 Voir `docs/DEPLOYMENT.md`.

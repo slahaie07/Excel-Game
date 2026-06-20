@@ -45,6 +45,7 @@ interface GameState {
   raidId: string | null;
   guildId: string | null;
   tradePartnerId: string | null;
+  viewingGuildHallId: string | null;
   isOnline: boolean;
 
   setScreen: (screen: GameScreen) => void;
@@ -57,6 +58,7 @@ interface GameState {
   setRaid: (raidId: string | null, options?: { convexRunId?: string }) => void;
   setGuildId: (guildId: string | null) => void;
   setTradePartner: (partnerId: string | null) => void;
+  setViewingGuildHall: (guildId: string | null) => void;
   logout: () => void;
 }
 
@@ -80,6 +82,7 @@ export const useGameStore = create<GameState>()(
       raidId: null,
       guildId: null,
       tradePartnerId: null,
+      viewingGuildHallId: null,
       isOnline: !!import.meta.env.VITE_CONVEX_URL,
 
       setScreen: (screen) => set({ screen }),
@@ -106,6 +109,7 @@ export const useGameStore = create<GameState>()(
         set({ raidId, convexRaidRunId: options?.convexRunId ?? null }),
       setGuildId: (guildId) => set({ guildId }),
       setTradePartner: (tradePartnerId) => set({ tradePartnerId }),
+      setViewingGuildHall: (viewingGuildHallId) => set({ viewingGuildHallId }),
       logout: () =>
         set({
           accountId: null,
@@ -123,6 +127,7 @@ export const useGameStore = create<GameState>()(
           raidId: null,
           guildId: null,
           tradePartnerId: null,
+          viewingGuildHallId: null,
           screen: "login",
         }),
     }),

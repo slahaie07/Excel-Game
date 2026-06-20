@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import type { Id } from "./_generated/dataModel";
 
 export const sendFriendRequest = mutation({
   args: {
@@ -67,6 +68,8 @@ export const listFriends = query({
     level: v.number(),
     status: v.union(v.literal("pending"), v.literal("accepted"), v.literal("blocked")),
     isIncoming: v.boolean(),
+    guildId: v.union(v.id("guilds"), v.null()),
+    guildTag: v.union(v.string(), v.null()),
   })),
   handler: async (ctx, args) => {
     const outgoing = await ctx.db
@@ -86,11 +89,18 @@ export const listFriends = query({
       level: number;
       status: "pending" | "accepted" | "blocked";
       isIncoming: boolean;
+      guildId: Id<"guilds"> | null;
+      guildTag: string | null;
     }[] = [];
 
     for (const f of outgoing) {
       const char = await ctx.db.get("characters", f.friendId);
       if (char) {
+        let guildTag: string | null = null;
+        if (char.guildId) {
+          const guild = await ctx.db.get("guilds", char.guildId);
+          guildTag = guild?.tag ?? null;
+        }
         results.push({
           friendId: f.friendId,
           name: char.name,
@@ -98,6 +108,8 @@ export const listFriends = query({
           level: char.level,
           status: f.status,
           isIncoming: false,
+          guildId: char.guildId ?? null,
+          guildTag,
         });
       }
     }
@@ -105,6 +117,11 @@ export const listFriends = query({
     for (const f of incoming.filter((f) => f.status === "pending")) {
       const char = await ctx.db.get("characters", f.characterId);
       if (char) {
+        let guildTag: string | null = null;
+        if (char.guildId) {
+          const guild = await ctx.db.get("guilds", char.guildId);
+          guildTag = guild?.tag ?? null;
+        }
         results.push({
           friendId: f.characterId,
           name: char.name,
@@ -112,6 +129,8 @@ export const listFriends = query({
           level: char.level,
           status: f.status,
           isIncoming: true,
+          guildId: char.guildId ?? null,
+          guildTag,
         });
       }
     }

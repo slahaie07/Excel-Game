@@ -139,7 +139,8 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Guerres de guildes, trade direct, boss monde (v1.2)
 - [x] Raids 8 joueurs + housing cloud sync (v1.3)
 - [x] Saisons ranked PvP + guild hall partagé (v1.4)
-- [ ] Récompenses de fin de saison, visites sociales guild hall (v1.5+)
+- [x] Récompenses de fin de saison, visites sociales, cosmétiques (v1.5)
+- [ ] Événements live cross-serveur (v1.6+)
 
 ## Licence
 
