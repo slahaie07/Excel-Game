@@ -13,6 +13,7 @@ import MarketplaceScreen from "./screens/MarketplaceScreen";
 import ProfessionsScreen from "./screens/ProfessionsScreen";
 import PvPScreen from "./screens/PvPScreen";
 import DungeonsScreen from "./screens/DungeonsScreen";
+import RaidsScreen from "./screens/RaidsScreen";
 import PetsScreen from "./screens/PetsScreen";
 import HavenScreen from "./screens/HavenScreen";
 import EventsScreen from "./screens/EventsScreen";
@@ -38,6 +39,7 @@ const SCREENS = {
   pvp: PvPScreen,
   dungeons: DungeonsScreen,
   "dungeon-run": DungeonsScreen,
+  raids: RaidsScreen,
   pets: PetsScreen,
   haven: HavenScreen,
   events: EventsScreen,
@@ -50,7 +52,7 @@ const SCREENS = {
 
 const IN_GAME_SCREENS = new Set([
   "world", "combat", "inventory", "quests", "guild", "marketplace",
-  "professions", "pvp", "dungeons", "pets", "haven", "events",
+  "professions", "pvp", "dungeons", "raids", "pets", "haven", "events",
   "daily", "achievements", "friends", "trade", "settings",
 ]);
 

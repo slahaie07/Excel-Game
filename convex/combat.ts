@@ -131,6 +131,7 @@ async function insertCombat(
     isPvP: boolean;
     opponentCharacterId?: Id<"characters">;
     dungeonRunId?: Id<"dungeonRuns">;
+    raidRunId?: Id<"raidRuns">;
     participantCharacterIds?: Id<"characters">[];
     combatType: "world" | "dungeon" | "pvp" | "event";
     rewards?: { xp: number; eclats: number; items: { itemId: string; quantity: number }[] };
@@ -150,6 +151,7 @@ async function insertCombat(
     isPvP: opts.isPvP,
     opponentCharacterId: opts.opponentCharacterId,
     dungeonRunId: opts.dungeonRunId,
+    raidRunId: opts.raidRunId,
     participantCharacterIds: opts.participantCharacterIds,
     combatType: opts.combatType,
     rewards: opts.rewards,
@@ -274,6 +276,64 @@ export const startPvpCombat = mutation({
     });
 
     return combatId;
+  },
+});
+
+export const startRaidCombat = mutation({
+  args: {
+    runId: v.id("raidRuns"),
+    monsterIds: v.array(v.string()),
+    zoneId: v.string(),
+    leaderId: v.id("characters"),
+  },
+  returns: v.id("combats"),
+  handler: async (ctx, args) => {
+    const run = await ctx.db.get("raidRuns", args.runId);
+    if (!run) throw new Error("Raid introuvable");
+
+    const existing = await ctx.db
+      .query("combats")
+      .withIndex("by_raid_run", (q) => q.eq("raidRunId", args.runId))
+      .filter((q) => q.eq(q.field("status"), "active"))
+      .first();
+    if (existing) return existing._id;
+
+    const players: Entity[] = [];
+    for (let i = 0; i < run.members.length; i++) {
+      const member = run.members[i]!;
+      const char = await ctx.db.get("characters", member.characterId);
+      if (!char) continue;
+      const col = i % 4;
+      const row = Math.floor(i / 4);
+      players.push(buildPlayerEntity(char, 1 + col, 3 + row));
+    }
+    if (players.length === 0) throw new Error("Aucun joueur");
+
+    const entities = [...players, ...buildEnemies(args.monsterIds)];
+    const participantIds = run.members.map((m) => m.characterId);
+
+    return await insertCombat(ctx, {
+      characterId: args.leaderId,
+      zoneId: args.zoneId,
+      entities,
+      isPvP: false,
+      raidRunId: args.runId,
+      participantCharacterIds: participantIds,
+      combatType: "dungeon",
+      rewards: { xp: 80, eclats: 40, items: [] },
+    });
+  },
+});
+
+export const getCombatByRaidRun = query({
+  args: { runId: v.id("raidRuns") },
+  returns: v.union(v.any(), v.null()),
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("combats")
+      .withIndex("by_raid_run", (q) => q.eq("raidRunId", args.runId))
+      .filter((q) => q.eq(q.field("status"), "active"))
+      .first();
   },
 });
 

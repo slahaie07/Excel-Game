@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useGameStore } from "../stores/gameStore";
 import { isCloudCharacter } from "../lib/convexUtils";
+import { formatCountdown, warProgressPercent } from "../lib/formatTime";
 import { GuildScreenUI } from "./GuildScreenUI";
 
 function CloudGuild() {
@@ -24,6 +25,12 @@ function CloudGuild() {
   const [error, setError] = useState("");
   const [targetGuildId, setTargetGuildId] = useState("");
   const [warMsg, setWarMsg] = useState("");
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
 
   const guilds = (cloudGuilds ?? []).map((g) => ({
     id: g._id as string,
@@ -67,8 +74,25 @@ function CloudGuild() {
           <h2 className="font-display font-bold text-white text-sm">⚔️ Guerres de guildes</h2>
           {myWar ? (
             <div className="card">
-              <p className="text-white text-xs font-bold">
-                {myWar.guildAName} ({myWar.guildAScore}) vs {myWar.guildBName} ({myWar.guildBScore})
+              <div className="flex justify-between items-center mb-2">
+                <p className="text-white text-xs font-bold">
+                  {myWar.guildAName} vs {myWar.guildBName}
+                </p>
+                <span className="text-orange-400 text-[10px]">⏱ {formatCountdown(myWar.endsAt, now)}</span>
+              </div>
+              <div className="h-2 bg-aether-900 rounded-full overflow-hidden flex mb-2">
+                <div
+                  className="h-full bg-aether-500 transition-all"
+                  style={{ width: `${warProgressPercent(myWar.isGuildA ? myWar.guildAScore : myWar.guildBScore, myWar.isGuildA ? myWar.guildBScore : myWar.guildAScore)}%` }}
+                />
+                <div
+                  className="h-full bg-red-600 transition-all"
+                  style={{ width: `${100 - warProgressPercent(myWar.isGuildA ? myWar.guildAScore : myWar.guildBScore, myWar.isGuildA ? myWar.guildBScore : myWar.guildAScore)}%` }}
+                />
+              </div>
+              <p className="text-aether-400 text-[10px] mb-2">
+                Notre score : {myWar.isGuildA ? myWar.guildAScore : myWar.guildBScore} •
+                Ennemi : {myWar.isGuildA ? myWar.guildBScore : myWar.guildAScore}
               </p>
               <button
                 onClick={async () => {

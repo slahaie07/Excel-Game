@@ -132,6 +132,7 @@ export default defineSchema({
     isPvP: v.boolean(),
     opponentCharacterId: v.optional(v.id("characters")),
     dungeonRunId: v.optional(v.id("dungeonRuns")),
+    raidRunId: v.optional(v.id("raidRuns")),
     participantCharacterIds: v.optional(v.array(v.id("characters"))),
     combatType: v.optional(v.union(
       v.literal("world"),
@@ -149,7 +150,8 @@ export default defineSchema({
   })
     .index("by_character", ["characterId"])
     .index("by_status", ["status"])
-    .index("by_dungeon_run", ["dungeonRunId"]),
+    .index("by_dungeon_run", ["dungeonRunId"])
+    .index("by_raid_run", ["raidRunId"]),
 
   guilds: defineTable({
     name: v.string(),
@@ -278,6 +280,24 @@ export default defineSchema({
   })
     .index("by_leader", ["leaderId"])
     .index("by_status", ["status"]),
+
+  raidRuns: defineTable({
+    raidId: v.string(),
+    leaderId: v.id("characters"),
+    members: v.array(v.object({
+      characterId: v.id("characters"),
+      name: v.string(),
+      classId: v.string(),
+      level: v.number(),
+    })),
+    currentPhase: v.number(),
+    totalPhases: v.number(),
+    status: v.union(v.literal("waiting"), v.literal("active"), v.literal("completed"), v.literal("failed")),
+    createdAt: v.number(),
+  })
+    .index("by_leader", ["leaderId"])
+    .index("by_status", ["status"])
+    .index("by_raid", ["raidId", "status"]),
 
   havens: defineTable({
     characterId: v.id("characters"),

@@ -137,7 +137,8 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Combat cloud avancé + donjons coop (v1.1)
 - [x] CI GitHub Actions + tests Vitest (v1.1)
 - [x] Guerres de guildes, trade direct, boss monde (v1.2)
-- [ ] Raids 8 joueurs, housing cloud sync (v1.3+)
+- [x] Raids 8 joueurs + housing cloud sync (v1.3)
+- [ ] Saisons ranked, guild hall partagé (v1.4+)
 
 ## Licence
 

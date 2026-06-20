@@ -23,6 +23,7 @@ import type * as lib_spells from "../lib/spells.js";
 import type * as presence from "../presence.js";
 import type * as pvp from "../pvp.js";
 import type * as quests from "../quests.js";
+import type * as raids from "../raids.js";
 import type * as social from "../social.js";
 import type * as trade from "../trade.js";
 import type * as worldBoss from "../worldBoss.js";
@@ -49,6 +50,7 @@ declare const fullApi: ApiFromModules<{
   presence: typeof presence;
   pvp: typeof pvp;
   quests: typeof quests;
+  raids: typeof raids;
   social: typeof social;
   trade: typeof trade;
   worldBoss: typeof worldBoss;

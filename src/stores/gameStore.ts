@@ -16,6 +16,7 @@ export type GameScreen =
   | "pvp"
   | "dungeons"
   | "dungeon-run"
+  | "raids"
   | "pets"
   | "haven"
   | "events"
@@ -39,6 +40,8 @@ interface GameState {
   convexDungeonRunId: string | null;
   pvpMode: "1v1" | "2v2" | "3v3" | null;
   convexPvpMatchId: string | null;
+  convexRaidRunId: string | null;
+  raidId: string | null;
   guildId: string | null;
   tradePartnerId: string | null;
   isOnline: boolean;
@@ -50,6 +53,7 @@ interface GameState {
   setCombat: (combatId: string | null, options?: { convexCombatId?: string }) => void;
   setDungeon: (dungeonId: string | null, options?: { convexRunId?: string }) => void;
   setPvpMode: (mode: "1v1" | "2v2" | "3v3" | null, options?: { matchId?: string }) => void;
+  setRaid: (raidId: string | null, options?: { convexRunId?: string }) => void;
   setGuildId: (guildId: string | null) => void;
   setTradePartner: (partnerId: string | null) => void;
   logout: () => void;
@@ -71,6 +75,8 @@ export const useGameStore = create<GameState>()(
       convexDungeonRunId: null,
       pvpMode: null,
       convexPvpMatchId: null,
+      convexRaidRunId: null,
+      raidId: null,
       guildId: null,
       tradePartnerId: null,
       isOnline: !!import.meta.env.VITE_CONVEX_URL,
@@ -95,6 +101,8 @@ export const useGameStore = create<GameState>()(
         set({ dungeonId, convexDungeonRunId: options?.convexRunId ?? null }),
       setPvpMode: (pvpMode, options) =>
         set({ pvpMode, convexPvpMatchId: options?.matchId ?? null }),
+      setRaid: (raidId, options) =>
+        set({ raidId, convexRaidRunId: options?.convexRunId ?? null }),
       setGuildId: (guildId) => set({ guildId }),
       setTradePartner: (tradePartnerId) => set({ tradePartnerId }),
       logout: () =>
@@ -110,6 +118,8 @@ export const useGameStore = create<GameState>()(
           convexDungeonRunId: null,
           pvpMode: null,
           convexPvpMatchId: null,
+          convexRaidRunId: null,
+          raidId: null,
           guildId: null,
           tradePartnerId: null,
           screen: "login",

@@ -1,16 +1,19 @@
 import type { Id } from "../../convex/_generated/dataModel";
 
 export interface CloudCombatMeta {
-  type: "world" | "dungeon" | "pvp" | "event";
+  type: "world" | "dungeon" | "raid" | "pvp" | "event";
   monsterIds?: string[];
   zoneId?: string;
   characterId: string;
   convexMatchId?: string;
   convexRunId?: string;
+  convexRaidRunId?: string;
   isTeamA?: boolean;
   pvpOpponent?: { name: string; classId: string; level: number; characterId?: string };
   roomIndex?: number;
   dungeonId?: string;
+  raidId?: string;
+  phaseIndex?: number;
   eventId?: string;
   xpMultiplier?: number;
   eclatsMultiplier?: number;

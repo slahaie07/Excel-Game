@@ -8,7 +8,7 @@ import { getSpellById, getSpellsForClass } from "../game/data";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
 import { formatBuffs } from "../game/combat/effects";
-import { getDungeonById, getRoomMonsters } from "../game/data";
+import { getDungeonById, getRoomMonsters, getRaidById, getPhaseMonsters } from "../game/data";
 import { cacheCloudCombat, buildCloudCombatLocalId } from "../lib/cloudCombat";
 
 interface CloudEntity {
@@ -46,7 +46,9 @@ export default function CloudCombatScreen() {
   const applyRewards = useMutation(api.combat.applyVictoryRewards);
   const completePvp = useMutation(api.pvp.completeMatch);
   const advanceRoom = useMutation(api.dungeons.advanceRoom);
+  const advancePhase = useMutation(api.raids.advancePhase);
   const startDungeonCombat = useMutation(api.combat.startDungeonCombat);
+  const startRaidCombat = useMutation(api.combat.startRaidCombat);
 
   const combatData = JSON.parse(localStorage.getItem(`aetheris-combat-${combatId}`) ?? "{}");
   const combatType = combatData.type ?? "world";
@@ -59,6 +61,8 @@ export default function CloudCombatScreen() {
   const [log, setLog] = useState<string[]>(["Combat cloud synchronisé !"]);
   const [dungeonComplete, setDungeonComplete] = useState(false);
   const [dungeonRewards, setDungeonRewards] = useState<{ xp: number; eclats: number } | null>(null);
+  const [raidComplete, setRaidComplete] = useState(false);
+  const [raidRewards, setRaidRewards] = useState<{ xp: number; eclats: number } | null>(null);
 
   const entities: CloudEntity[] = combatDoc?.entities ?? [];
   const myEntity = entities.find(
@@ -143,6 +147,15 @@ export default function CloudCombatScreen() {
           }
         });
       }
+      if (combatType === "raid" && combatData.convexRaidRunId) {
+        void advancePhase({ runId: combatData.convexRaidRunId as Id<"raidRuns"> }).then((res) => {
+          if (res.isComplete) {
+            setRaidComplete(true);
+            const raid = combatData.raidId ? getRaidById(combatData.raidId) : null;
+            setRaidRewards(raid?.rewards ?? null);
+          }
+        });
+      }
       if (combatType === "pvp" && combatData.convexMatchId && combatData.pvpOpponent?.characterId) {
         const isTeamA = combatData.isTeamA ?? true;
         void completePvp({
@@ -162,7 +175,7 @@ export default function CloudCombatScreen() {
         loserCharacterId: characterId,
       });
     }
-  }, [combatDoc?.status, combatType, combatData, convexCombatId, characterId, applyRewards, completePvp, advanceRoom]);
+  }, [combatDoc?.status, combatType, combatData, convexCombatId, characterId, applyRewards, completePvp, advanceRoom, advancePhase]);
 
   useEffect(() => {
     if (!gameRef.current || !combatDoc) return;
@@ -279,6 +292,46 @@ export default function CloudCombatScreen() {
                 Donjon terminé ! +{dungeonRewards.xp} XP • +{dungeonRewards.eclats} ✦
               </p>
             )}
+            {result === "victory" && raidComplete && raidRewards && (
+              <p className="text-aether-300 text-sm mb-4">
+                Raid terminé ! +{raidRewards.xp} XP • +{raidRewards.eclats} ✦
+              </p>
+            )}
+            {result === "victory" && combatType === "raid" && !raidComplete ? (
+              <button
+                onClick={() => {
+                  void (async () => {
+                    const runId = combatData.convexRaidRunId as Id<"raidRuns"> | undefined;
+                    const raidId = combatData.raidId as string | undefined;
+                    if (!runId || !raidId) return;
+                    const raid = getRaidById(raidId);
+                    if (!raid) return;
+                    const phaseIndex = (combatData.phaseIndex ?? 0) + 1;
+                    const monsters = getPhaseMonsters(raid, phaseIndex);
+                    const convexId = await startRaidCombat({
+                      runId,
+                      monsterIds: monsters,
+                      zoneId: raid.zoneId,
+                      leaderId: characterId,
+                    });
+                    const localId = buildCloudCombatLocalId("raid");
+                    cacheCloudCombat(localId, convexId, {
+                      type: "raid",
+                      raidId,
+                      phaseIndex,
+                      monsterIds: monsters,
+                      zoneId: raid.zoneId,
+                      characterId,
+                      convexRaidRunId: runId,
+                    });
+                    setCombat(localId, { convexCombatId: convexId });
+                  })();
+                }}
+                className="btn-primary w-full mb-2"
+              >
+                Phase suivante →
+              </button>
+            ) : null}
             {result === "victory" && combatType === "dungeon" && !dungeonComplete ? (
               <button
                 onClick={() => {

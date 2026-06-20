@@ -4,7 +4,7 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v1.2)
+## Systèmes implémentés (v1.3)
 
 | Système | Statut | Description |
 |---------|--------|-------------|
@@ -14,7 +14,9 @@ Créer un MMORPG tactique mobile aussi complet que les références du genre, av
 | Donjons coop | ✅ | Jusqu'à 4 joueurs, combat partagé Convex |
 | Guerres de guildes | ✅ | Déclaration, scores 24h, contribution membres |
 | Trade direct | ✅ | Sessions P2P avec double confirmation |
-| Boss monde | ✅ | HP partagé, leaderboard, respawn 4h |
+| Raids 8 joueurs | ✅ | 2 raids, phases, combat coop Convex |
+| Havre cloud | ✅ | Sync Convex, achat/upgrade meubles |
+| UX trade/guerres | ✅ | Étapes échange, timer guerre, barre score |
 | Monde / zones | ✅ | 6 zones isométriques, voyage |
 | Inventaire | ✅ | 6 slots équipement |
 | Quêtes | ✅ | Main, side, daily |
@@ -124,12 +126,12 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 3. `startDungeonCombat` → combat partagé avec une entité par joueur
 4. Victoire → `advanceRoom` → salle suivante ou fin du donjon
 
-## v1.2 — Guerres, trade, boss monde
+## v1.3 — Raids & Havre cloud
 
 | Module | Fichier | Rôle |
 |--------|---------|------|
-| Guerres | `guildWars.ts` | `declareWar`, `contributeToWar`, scores |
-| Trade P2P | `trade.ts` | `startTrade`, `updateTradeOffer`, `confirmTrade` |
-| Boss monde | `worldBoss.ts` | `attackWorldBoss`, `getBossLeaderboard` |
+| Raids | `raids.ts` | Runs 8 joueurs, phases, lancement |
+| Havre | `havens.ts` | Achat meubles, upgrade, visiteurs |
+| Combat raid | `combat.ts` | `startRaidCombat`, `getCombatByRaidRun` |
 
 Voir `docs/DEPLOYMENT.md`.
