@@ -10,7 +10,7 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 
 ### Combat tactique (v1.1)
 - Grille isométrique au tour par tour (PA/PM)
-- 8 classes avec sorts à effets (dégâts, soins, buffs, debuffs)
+- 10 classes équilibrées (2 soins, 2 magie, 2 bouclier, 2 gros dégâts, 2 à distance) avec sorts synchronisés client/serveur
 - Combat cloud synchronisé via Convex avec sorts serveur (`convex/lib/spells.ts`)
 - Buffs/debuffs côté serveur (`convex/lib/combatEffects.ts`) + IA ennemie automatique
 - Donjons coop jusqu'à 4 joueurs, PvP avec `startPvpCombat`
@@ -22,7 +22,12 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Niveaux 1 à 60
 
 ### Progression
-- 8 classes : Pyromancien, Gardien Cristallin, Éclaireur des Brumes, Invocateur d'Aether, Alchimiste des Runes, Archer Lunaire, Berserker Tellurique, Chronomancien
+- 10 classes équilibrées :
+  - **Soins** : Alchimiste des Runes, Luminaire
+  - **Magie** : Pyromancien, Cryomancien
+  - **Bouclier** : Gardien Cristallin, Bastion de Fer
+  - **Gros dégâts** : Berserker Tellurique, Éclaireur des Brumes
+  - **À distance** : Archer Lunaire, Invocateur d'Aether
 - XP, montée de niveau, stats, sorts
 - Équipement (6 slots) et inventaire
 

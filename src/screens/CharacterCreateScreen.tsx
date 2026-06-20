@@ -3,7 +3,7 @@ import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useGameStore } from "../stores/gameStore";
-import { CLASSES } from "../game/data";
+import { CLASSES, ARCHETYPE_LABELS } from "../game/data";
 import { isCloudAccount } from "../lib/convexUtils";
 
 function CharacterCreateForm({
@@ -56,6 +56,7 @@ function CharacterCreateForm({
               >
                 <div className="text-2xl mb-1">{cls.icon}</div>
                 <p className="font-bold text-sm text-white">{cls.name}</p>
+                <p className="text-xs text-aether-500">{ARCHETYPE_LABELS[cls.archetype]}</p>
               </button>
             ))}
           </div>

@@ -1,5 +1,5 @@
 export { UNIVERSE } from "./universe";
-export { CLASSES, getClassById } from "./classes";
+export { CLASSES, getClassById, getClassesByArchetype, ARCHETYPE_LABELS, type ClassArchetype } from "./classes";
 export { SPELLS, getSpellById, getSpellsForClass } from "./spells";
 export { MONSTERS, getMonstersByZone, getMonsterById } from "./monsters";
 export { ZONES, getZoneById } from "./zones";

@@ -4,12 +4,12 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v1.11)
+## Systèmes implémentés (v1.12)
 
 | Système | Statut | Description |
 |---------|--------|-------------|
 | Création de compte | ✅ | Local + Convex |
-| Création de personnage | ✅ | 8 classes, 5 slots |
+| Création de personnage | ✅ | 10 classes équilibrées (5 archétypes × 2), 5 slots |
 | Combat tactique | ✅ | Grille isométrique, PA/PM, sorts serveur, buffs cloud |
 | Donjons coop | ✅ | Jusqu'à 4 joueurs, combat partagé Convex |
 | Guerres de guildes | ✅ | Déclaration, scores 24h, contribution membres |
@@ -36,6 +36,20 @@ Créer un MMORPG tactique mobile aussi complet que les références du genre, av
 ## Systèmes v0.2 (précédent)
 
 Voir historique : PvP, donjons, pets, havre, chat, présence, Capacitor.
+
+## Classes (v1.12)
+
+10 classes équilibrées — 60 points de stats chacune, 3 sorts de départ, synchronisation client (`src/game/data/`) et serveur (`convex/characters.ts`, `convex/lib/spells.ts`).
+
+| Archétype | Classes |
+|-----------|---------|
+| Soins | Alchimiste des Runes, Luminaire |
+| Magie | Pyromancien, Cryomancien |
+| Bouclier | Gardien Cristallin, Bastion de Fer |
+| Gros dégâts | Berserker Tellurique, Éclaireur des Brumes |
+| À distance | Archer Lunaire, Invocateur d'Aether |
+
+Équilibrage sorts : sort de base (3 PA) ≈ 9–15 dégâts ou 15–25 soins ; sort de zone (5–6 PA) ≈ 11–19 dégâts.
 
 ## Économie
 

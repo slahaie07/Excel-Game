@@ -2,25 +2,29 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 const BASE_STATS: Record<string, Record<string, number>> = {
-  pyromancien: { vitality: 8, wisdom: 12, strength: 4, intelligence: 16, agility: 6, chance: 4 },
-  gardien: { vitality: 18, wisdom: 6, strength: 14, intelligence: 4, agility: 4, chance: 4 },
-  eclaireur: { vitality: 10, wisdom: 8, strength: 10, intelligence: 6, agility: 16, chance: 10 },
-  invocateur: { vitality: 10, wisdom: 14, strength: 4, intelligence: 14, agility: 6, chance: 12 },
-  alchimiste: { vitality: 12, wisdom: 16, strength: 4, intelligence: 12, agility: 6, chance: 10 },
-  archer: { vitality: 10, wisdom: 8, strength: 8, intelligence: 8, agility: 14, chance: 12 },
-  berserker: { vitality: 14, wisdom: 4, strength: 18, intelligence: 4, agility: 8, chance: 12 },
-  chronomancien: { vitality: 8, wisdom: 14, strength: 4, intelligence: 16, agility: 10, chance: 8 },
+  alchimiste: { vitality: 12, wisdom: 16, strength: 4, intelligence: 12, agility: 8, chance: 8 },
+  luminaire: { vitality: 10, wisdom: 18, strength: 4, intelligence: 14, agility: 8, chance: 6 },
+  pyromancien: { vitality: 10, wisdom: 12, strength: 4, intelligence: 16, agility: 10, chance: 8 },
+  cryomancien: { vitality: 10, wisdom: 12, strength: 4, intelligence: 16, agility: 12, chance: 6 },
+  gardien: { vitality: 18, wisdom: 6, strength: 14, intelligence: 4, agility: 6, chance: 12 },
+  bastion: { vitality: 18, wisdom: 6, strength: 16, intelligence: 4, agility: 4, chance: 12 },
+  berserker: { vitality: 14, wisdom: 4, strength: 18, intelligence: 4, agility: 10, chance: 10 },
+  eclaireur: { vitality: 10, wisdom: 8, strength: 12, intelligence: 6, agility: 16, chance: 8 },
+  archer: { vitality: 10, wisdom: 8, strength: 10, intelligence: 8, agility: 16, chance: 8 },
+  invocateur: { vitality: 10, wisdom: 14, strength: 4, intelligence: 14, agility: 8, chance: 10 },
 };
 
 const STARTING_SPELLS: Record<string, string[]> = {
-  pyromancien: ["flamme_cristalline", "explosion_ether", "bouclier_flamme"],
-  gardien: ["mur_cristal", "provocation", "fracas_tellurique"],
-  eclaireur: ["coup_brume", "invisibilite", "piege_ether"],
-  invocateur: ["invocation_wisp", "lien_ether", "tempete_esprits"],
   alchimiste: ["soin_rune", "potion_regen", "barriere_alchimique"],
-  archer: ["fleche_lune", "pluie_fleches", "marque_cible"],
+  luminaire: ["lumiere_sacree", "benediction", "aura_protectrice"],
+  pyromancien: ["flamme_cristalline", "explosion_ether", "bouclier_flamme"],
+  cryomancien: ["eclat_glace", "blizzard_ether", "prison_glace"],
+  gardien: ["mur_cristal", "provocation", "fracas_tellurique"],
+  bastion: ["egide_fer", "defi_bastion", "charge_bouclier"],
   berserker: ["coup_tellurique", "rage_cristal", "entaille_sismique"],
-  chronomancien: ["ralentissement", "acceleration", "paradoxe_temporel"],
+  eclaireur: ["coup_brume", "invisibilite", "piege_ether"],
+  archer: ["fleche_lune", "pluie_fleches", "marque_cible"],
+  invocateur: ["invocation_wisp", "lien_ether", "tempete_esprits"],
 };
 
 function calculateMaxHp(stats: Record<string, number>, level: number): number {
