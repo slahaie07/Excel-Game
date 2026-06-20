@@ -13,6 +13,11 @@ export default function CloudFactions() {
   const purchaseItem = useMutation(api.factions.purchaseFactionItem);
   const [message, setMessage] = useState("");
   const [ready, setReady] = useState(false);
+  const equipCosmetic = useMutation(api.cosmetics.equipCosmetic);
+  const myCosmetics = useQuery(
+    api.cosmetics.getMyCosmetics,
+    ready ? { characterId: characterId as Id<"characters"> } : "skip"
+  );
 
   useEffect(() => {
     void initHub({ characterId: characterId as Id<"characters"> }).then(() => setReady(true));
@@ -33,6 +38,7 @@ export default function CloudFactions() {
       quests={(hub?.quests ?? []).map((q) => ({ ...q, _id: q._id ?? null }))}
       shopItems={hub?.shopItems ?? []}
       message={message}
+      cosmetics={myCosmetics ?? undefined}
       onPledge={async (factionId) => {
         await pledgeFaction({ characterId: characterId as Id<"characters">, factionId });
         setMessage(`Allégeance prêtée à ${factionId} !`);
@@ -51,6 +57,14 @@ export default function CloudFactions() {
           shopItemId,
         });
         setMessage(`Acheté : ${result.quantity}× ${result.itemId} (−${result.costEclats} ✦)`);
+      }}
+      onEquipCosmetic={async (cosmeticId, slot) => {
+        await equipCosmetic({
+          characterId: characterId as Id<"characters">,
+          cosmeticId,
+          slot,
+        });
+        setMessage(cosmeticId ? "Cosmétique équipé !" : "Cosmétique retiré");
       }}
     />
   );

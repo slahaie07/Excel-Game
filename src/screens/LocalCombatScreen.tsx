@@ -6,6 +6,7 @@ import { applyPvpResult } from "./PvPScreen";
 import { advanceDungeonRoom, createNextRoomCombat } from "./DungeonsScreen";
 import { recordEventKill } from "./EventsScreen";
 import { addXp, loadCharacter } from "../lib/characterStorage";
+import { recordLocalWorldVictory, recordLocalPvpVictory } from "../lib/factionProgress";
 import { applySpellEffects, tickBuffs, formatBuffs, applyCombatStartTalents, getEffectiveMaxRange, computeTalentModifiers } from "../game/combat/effects";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
@@ -269,6 +270,7 @@ export default function LocalCombatScreen() {
   const awardRewards = () => {
     if (combatType === "pvp") {
       applyPvpResult(characterId, true, combatData.convexMatchId);
+      recordLocalPvpVictory(characterId);
       return;
     }
     if (combatType === "dungeon") {
@@ -299,6 +301,7 @@ export default function LocalCombatScreen() {
       if (monsterId && combatData.eventId) {
         recordEventKill(characterId, monsterId, combatData.eventId);
       }
+      recordLocalWorldVictory(characterId, useGameStore.getState().zoneId);
       return;
     }
     addXp(characterId, 50);
@@ -306,6 +309,8 @@ export default function LocalCombatScreen() {
     const data = JSON.parse(localStorage.getItem(charKey) ?? "{}");
     data.eclats = (data.eclats ?? 0) + 25;
     localStorage.setItem(charKey, JSON.stringify(data));
+    const zoneId = useGameStore.getState().zoneId;
+    recordLocalWorldVictory(characterId, zoneId);
   };
 
   const endTurn = () => {

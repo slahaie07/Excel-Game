@@ -218,6 +218,22 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Boss invasion | `worldInvasions.ts` | Avatar des Ombres à 100 % progression |
 | Combat | `combat.ts` | Réputation zone sur victoire PvE |
 
+## v1.15 — Écran Factions
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Hub factions | `factions.ts`, `FactionsScreen.tsx` | Réputation, quêtes hebdo, boutique |
+| Contenu | `lib/factionContent.ts`, `lib/factionQuests.ts` | Quêtes, articles, progression |
+| Combat/PvP | `combat.ts`, `pvp.ts` | Progression quêtes cloud |
+
+## v1.16 — Récompenses faction & local
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Cosmétiques rang | `lib/factionRewards.ts`, `cosmetics.ts` | Titres/cadres Champion & Exalté |
+| Progression locale | `lib/factionProgress.ts` | Réputation + quêtes hors-ligne |
+| Monde | `WorldScreen.tsx` | Badge faction alliée |
+
 ## v1.14 — Talents actifs en combat
 
 | Effet talent | Application |

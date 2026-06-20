@@ -17,6 +17,8 @@ import { NotificationBell } from "../components/NotificationBell";
 import { CloudPushSync } from "../components/CloudPushSync";
 import { CloudAchievementSync } from "../components/CloudAchievementSync";
 import type { Id } from "../../convex/_generated/dataModel";
+import { loadLocalFactionBadge } from "../lib/factionProgress";
+import { FACTION_META } from "../game/data/factionContent";
 import { getClassIcon as getClassIconFromData } from "../game/rendering/isometric";
 
 export default function WorldScreen() {
@@ -36,6 +38,15 @@ export default function WorldScreen() {
       ? { characterId: characterId as Id<"characters"> }
       : "skip"
   );
+  const myFactions = useQuery(
+    api.factions.getMyFactions,
+    isConvexEnabled() && isCloudCharacter(characterId)
+      ? { characterId: characterId as Id<"characters"> }
+      : "skip"
+  );
+  const localFactionBadge = !isCloudCharacter(characterId)
+    ? loadLocalFactionBadge(characterId)
+    : null;
   const [showMenu, setShowMenu] = useState(false);
   const [showPlayers, setShowPlayers] = useState(false);
   const [onlinePlayers, setOnlinePlayers] = useState(() =>
@@ -126,6 +137,16 @@ export default function WorldScreen() {
     };
   }, [zoneId, classId, allMonsterIds.join(","), onlinePlayers.length, handleEncounter]);
 
+  const pledgedFaction = myFactions?.pledgedFactionId
+    ? myFactions.factions.find((f) => f.isPledged)
+    : localFactionBadge?.pledgedFactionId
+      ? {
+          icon: FACTION_META[localFactionBadge.pledgedFactionId].icon,
+          rankIcon: localFactionBadge.rankIcon,
+          rankLabel: localFactionBadge.rankLabel,
+        }
+      : null;
+
   const navItems = [
     { id: "inventory", icon: "🎒", label: "Sac" },
     { id: "quests", icon: "📜", label: "Quêtes" },
@@ -177,7 +198,14 @@ export default function WorldScreen() {
             <span className="text-2xl">{classData?.icon}</span>
             <div className="text-left">
               <p className="font-bold text-white text-sm">{characterName}</p>
-              <p className="text-aether-400 text-xs">Niv. {charData?.level ?? 1} • {zone.name}</p>
+              <p className="text-aether-400 text-xs">
+                Niv. {charData?.level ?? 1} • {zone.name}
+                {pledgedFaction && (
+                  <span className="text-crystal-gold ml-1">
+                    • {pledgedFaction.icon}{pledgedFaction.rankIcon}
+                  </span>
+                )}
+              </p>
             </div>
           </button>
         </div>

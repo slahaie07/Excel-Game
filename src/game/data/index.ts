@@ -35,8 +35,14 @@ export {
   getNextFactionRank,
   meetsRankRequirement,
   getWeekKey,
+  ZONE_FACTION_MAP,
   type FactionId,
 } from "./factionContent";
+export {
+  FACTION_RANK_COSMETICS,
+  getFactionRankCosmeticIds,
+  getAllFactionCosmeticIds,
+} from "./factionRewards";
 export {
   SEASONAL_EVENTS,
   getActiveEvent,

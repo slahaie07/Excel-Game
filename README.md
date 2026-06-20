@@ -8,6 +8,15 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 
 ## Fonctionnalités
 
+### Écran Factions (v1.15)
+- Hub dédié : réputation, quêtes hebdomadaires, boutique par rang
+- Allégeance, progression auto combat/PvP, mode local + cloud
+
+### Récompenses de rang faction (v1.16)
+- Titres et cadres débloqués à Champion / Exalté par faction
+- Progression quêtes faction en combat local
+- Badge faction alliée dans le monde
+
 ### Talents actifs en combat (v1.14)
 - Bonus de talents appliqués aux dégâts, soins, buffs et défense
 - PV max et PM bonus au début du combat
@@ -195,6 +204,8 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] 10 classes équilibrées synchronisées (v1.12)
 - [x] Progression sorts + talents par archétype (v1.13)
 - [x] Bonus de talents actifs en combat (v1.14)
+- [x] Écran Factions — quêtes et boutique (v1.15)
+- [x] Récompenses de rang faction + progression locale (v1.16)
 
 ## Licence
 

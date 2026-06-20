@@ -11,6 +11,10 @@ import {
   meetsRankRequirement,
   type FactionId,
 } from "../game/data/factionContent";
+import {
+  equipLocalFactionCosmetic,
+  loadLocalFactionCosmetics,
+} from "../lib/factionProgress";
 import { FactionsUI } from "./FactionsUI";
 
 interface LocalFactionState {
@@ -93,6 +97,7 @@ export default function LocalFactions() {
   const [eclats, setEclats] = useState(() => loadEclats(characterId));
   const [message, setMessage] = useState("");
   const [, bump] = useState(0);
+  const [cosmetics, setCosmetics] = useState(() => loadLocalFactionCosmetics(characterId));
 
   const refresh = (next: LocalFactionState, nextEclats?: number) => {
     saveState(characterId, next);
@@ -102,6 +107,7 @@ export default function LocalFactions() {
       setEclats(nextEclats);
     }
     bump((n) => n + 1);
+    setCosmetics(loadLocalFactionCosmetics(characterId));
   };
 
   const factions = (["lumina", "umbra", "neutre"] as const).map((factionId) => {
@@ -179,6 +185,7 @@ export default function LocalFactions() {
       quests={quests}
       shopItems={shopItems}
       message={message}
+      cosmetics={cosmetics}
       onPledge={async (factionId) => {
         const next = { ...state };
         next.pledgedFactionId = factionId;
@@ -224,6 +231,11 @@ export default function LocalFactions() {
         next.purchases = { ...next.purchases, [shopItemId]: purchased + 1 };
         refresh(next, eclats - item.costEclats);
         setMessage(`Acheté : ${item.label}`);
+      }}
+      onEquipCosmetic={async (cosmeticId, slot) => {
+        equipLocalFactionCosmetic(characterId, cosmeticId, slot);
+        setCosmetics(loadLocalFactionCosmetics(characterId));
+        setMessage(cosmeticId ? "Cosmétique équipé !" : "Cosmétique retiré");
       }}
     />
   );

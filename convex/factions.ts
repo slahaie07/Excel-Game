@@ -17,6 +17,7 @@ import {
   meetsRankRequirement,
 } from "./lib/factionContent";
 import { ensureFactionQuests, recordFactionQuestProgress } from "./lib/factionQuests";
+import { syncFactionRankRewards } from "./lib/factionRewards";
 
 const factionIdValidator = v.union(
   v.literal("lumina"),
@@ -48,6 +49,7 @@ export async function addFactionReputation(
     .unique();
 
   const newRep = (existing?.reputation ?? 0) + amount;
+  const previousRep = existing?.reputation ?? 0;
   const rank = getFactionRank(newRep).id;
 
   if (existing) {
@@ -65,6 +67,8 @@ export async function addFactionReputation(
       updatedAt: Date.now(),
     });
   }
+
+  await syncFactionRankRewards(ctx, characterId, factionId, previousRep, newRep);
 }
 
 export async function addZoneFactionReputation(
@@ -319,6 +323,21 @@ export const initFactionHub = mutation({
   returns: v.null(),
   handler: async (ctx, args) => {
     await ensureFactionQuests(ctx, args.characterId);
+
+    const reps = await ctx.db
+      .query("factionReputations")
+      .withIndex("by_character", (q) => q.eq("characterId", args.characterId))
+      .collect();
+
+    for (const rep of reps) {
+      await syncFactionRankRewards(
+        ctx,
+        args.characterId,
+        rep.factionId,
+        0,
+        rep.reputation
+      );
+    }
     return null;
   },
 });

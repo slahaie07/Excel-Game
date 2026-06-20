@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useGameStore } from "../stores/gameStore";
-import { FACTION_META, type FactionId } from "../game/data/factionContent";
-import { getItemById } from "../game/data";
+import { FACTION_META, FACTION_RANKS, type FactionId } from "../game/data/factionContent";
+import { FACTION_RANK_COSMETICS } from "../game/data/factionRewards";
+import { getCosmeticById, getItemById } from "../game/data";
 
 export type FactionTab = "reputation" | "quests" | "shop";
 
@@ -58,9 +59,11 @@ interface FactionsUIProps {
   quests: FactionQuestView[];
   shopItems: FactionShopView[];
   message?: string;
+  cosmetics?: { titles: string[]; frames: string[]; equippedTitle?: string | null; equippedFrame?: string | null };
   onPledge: (factionId: FactionId) => Promise<void>;
   onClaimQuest: (questProgressId: string) => Promise<void>;
   onPurchase: (shopItemId: string) => Promise<void>;
+  onEquipCosmetic?: (cosmeticId: string | null, slot: "title" | "frame") => Promise<void>;
 }
 
 export function FactionsUI({
@@ -72,9 +75,11 @@ export function FactionsUI({
   quests,
   shopItems,
   message,
+  cosmetics,
   onPledge,
   onClaimQuest,
   onPurchase,
+  onEquipCosmetic,
 }: FactionsUIProps) {
   const setScreen = useGameStore((s) => s.setScreen);
   const [tab, setTab] = useState<FactionTab>("reputation");
@@ -84,6 +89,11 @@ export function FactionsUI({
   const faction = factions.find((f) => f.factionId === selectedFaction);
   const factionQuests = quests.filter((q) => q.factionId === selectedFaction);
   const factionShop = shopItems.filter((s) => s.factionId === selectedFaction);
+
+  const meetsRank = (currentRankId: string, requiredRankId: string) => {
+    const order = ["stranger", "known", "ally", "champion", "exalted"];
+    return order.indexOf(currentRankId) >= order.indexOf(requiredRankId);
+  };
 
   const run = async (fn: () => Promise<void>) => {
     setBusy(true);
@@ -187,6 +197,46 @@ export function FactionsUI({
                   Prêter allégeance (+25 réputation)
                 </button>
               )}
+            </div>
+
+            <div className="card">
+              <h3 className="text-aether-300 text-sm font-semibold mb-2">Récompenses de rang</h3>
+              <div className="space-y-2 text-xs">
+                {(["champion", "exalted"] as const).map((rankId) => {
+                  const rank = FACTION_RANKS.find((r) => r.id === rankId);
+                  const rewardIds = FACTION_RANK_COSMETICS[selectedFaction]?.[rankId] ?? [];
+                  const unlocked = faction && meetsRank(faction.rank, rankId);
+                  return (
+                    <div key={rankId} className={`p-2 rounded-lg ${unlocked ? "bg-crystal-gold/10 border border-crystal-gold/30" : "bg-aether-900/40"}`}>
+                      <p className="text-white font-medium">{rank?.icon} {rank?.label}</p>
+                      <div className="mt-1 flex flex-wrap gap-1">
+                        {rewardIds.map((id) => {
+                          const cosmetic = getCosmeticById(id);
+                          const owned = cosmetics?.titles.includes(id) || cosmetics?.frames.includes(id);
+                          const equipped = cosmetics?.equippedTitle === id || cosmetics?.equippedFrame === id;
+                          return (
+                            <button
+                              key={id}
+                              disabled={!owned || !onEquipCosmetic || busy}
+                              onClick={() => {
+                                if (!onEquipCosmetic || !cosmetic) return;
+                                const slot = cosmetic.type === "title" ? "title" : "frame";
+                                void run(() => onEquipCosmetic(equipped ? null : id, slot));
+                              }}
+                              className={`px-2 py-1 rounded text-[10px] ${
+                                owned ? "bg-aether-800 text-white" : "bg-aether-950 text-aether-600"
+                              } ${equipped ? "ring-1 ring-crystal-gold" : ""}`}
+                            >
+                              {cosmetic?.icon} {cosmetic?.name ?? id}
+                              {equipped ? " ✓" : ""}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="card">
