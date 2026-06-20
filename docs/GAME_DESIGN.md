@@ -4,7 +4,7 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v0.1)
+## Systèmes implémentés (v0.2)
 
 | Système | Statut | Description |
 |---------|--------|-------------|
@@ -17,10 +17,13 @@ Créer un MMORPG tactique mobile aussi complet que les références du genre, av
 | Métiers | ✅ | 6 métiers, craft |
 | Guildes | ✅ | Création, adhésion |
 | Marché | ✅ | Achat/vente |
-| PvP | 🔶 | Zone prévue, arène à venir |
-| Donjons | 🔶 | Données définies, gameplay à venir |
-| Chat | 🔶 | Backend Convex prêt |
-| Compagnons | 🔶 | Données pets, UI à venir |
+| PvP Arène | ✅ | 1v1/2v2/3v3, rating, classement |
+| Donjons | ✅ | 5 donjons, salles, boss, récompenses |
+| Chat | ✅ | 4 canaux, overlay mobile |
+| Compagnons | ✅ | 6 pets, bonus passifs |
+| Havre (housing) | ✅ | Décoration, boutique, upgrades |
+| Présence multijoueur | ✅ | Joueurs en ligne par zone |
+| App natives | ✅ | Capacitor iOS/Android |
 
 ## Économie
 

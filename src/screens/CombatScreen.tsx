@@ -2,6 +2,9 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import Phaser from "phaser";
 import { useGameStore } from "../stores/gameStore";
 import { getSpellById, getSpellsForClass, getMonsterById } from "../game/data";
+import { applyPvpResult } from "./PvPScreen";
+import { advanceDungeonRoom, createNextRoomCombat } from "./DungeonsScreen";
+import { addXp } from "../lib/characterStorage";
 
 interface CombatEntity {
   entityId: string;
@@ -123,7 +126,11 @@ class CombatScene extends Phaser.Scene {
   }
 }
 
-function initCombat(monsterIds: string[], playerName = "Éveilleur"): CombatState {
+function initCombat(
+  monsterIds: string[],
+  playerName = "Éveilleur",
+  pvpOpponent?: { name: string; classId: string; level: number }
+): CombatState {
   const playerEntity: CombatEntity = {
     entityId: "player",
     name: playerName,
@@ -140,24 +147,40 @@ function initCombat(monsterIds: string[], playerName = "Éveilleur"): CombatStat
     isAlive: true,
   };
 
-  const enemies = monsterIds.map((id, i) => {
-    const monster = getMonsterById(id);
-    return {
-      entityId: `enemy_${i}`,
-      name: monster?.name ?? "Monstre",
-      isPlayer: false,
-      hp: monster?.stats.hp ?? 50,
-      maxHp: monster?.stats.hp ?? 50,
-      ap: monster?.stats.ap ?? 4,
-      maxAp: monster?.stats.ap ?? 4,
-      mp: monster?.stats.mp ?? 3,
-      maxMp: monster?.stats.mp ?? 3,
-      x: 8 + (i % 3),
-      y: 2 + Math.floor(i / 3),
-      team: "enemy" as const,
-      isAlive: true,
-    };
-  });
+  const enemies = pvpOpponent
+    ? [{
+        entityId: "enemy_0",
+        name: pvpOpponent.name,
+        isPlayer: false,
+        hp: 80 + pvpOpponent.level * 8,
+        maxHp: 80 + pvpOpponent.level * 8,
+        ap: 6,
+        maxAp: 6,
+        mp: 3,
+        maxMp: 3,
+        x: 9,
+        y: 4,
+        team: "enemy" as const,
+        isAlive: true,
+      }]
+    : monsterIds.map((id, i) => {
+        const monster = getMonsterById(id);
+        return {
+          entityId: `enemy_${i}`,
+          name: monster?.name ?? "Monstre",
+          isPlayer: false,
+          hp: monster?.stats.hp ?? 50,
+          maxHp: monster?.stats.hp ?? 50,
+          ap: monster?.stats.ap ?? 4,
+          maxAp: monster?.stats.ap ?? 4,
+          mp: monster?.stats.mp ?? 3,
+          maxMp: monster?.stats.mp ?? 3,
+          x: 8 + (i % 3),
+          y: 2 + Math.floor(i / 3),
+          team: "enemy" as const,
+          isAlive: true,
+        };
+      });
 
   return {
     entities: [playerEntity, ...enemies],
@@ -181,12 +204,23 @@ export default function CombatScreen() {
   const sceneRef = useRef<CombatScene | null>(null);
 
   const combatData = JSON.parse(localStorage.getItem(`aetheris-combat-${combatId}`) ?? "{}");
+  const combatType = combatData.type ?? "world";
   const [combat, setCombatState] = useState<CombatState>(() =>
-    initCombat(combatData.monsterIds ?? ["graine_ombre"], characterName)
+    initCombat(
+      combatData.monsterIds ?? ["graine_ombre"],
+      characterName,
+      combatData.pvpOpponent
+    )
   );
   const [selectedSpell, setSelectedSpell] = useState<string | null>(null);
-  const [log, setLog] = useState<string[]>(["Le combat commence !"]);
+  const [log, setLog] = useState<string[]>([
+    combatType === "pvp" ? `⚔️ Duel PvP contre ${combatData.pvpOpponent?.name ?? "adversaire"} !` :
+    combatType === "dungeon" ? `🏚️ Salle ${(combatData.roomIndex ?? 0) + 1} du donjon` :
+    "Le combat commence !",
+  ]);
   const [result, setResult] = useState<"victory" | "defeat" | null>(null);
+  const [dungeonComplete, setDungeonComplete] = useState(false);
+  const [dungeonRewards, setDungeonRewards] = useState<{ xp: number; eclats: number } | null>(null);
 
   const player = combat.entities.find((e) => e.isPlayer)!;
   const spells = getSpellsForClass(classId);
@@ -248,6 +282,7 @@ export default function CombatScreen() {
       setResult("defeat");
       setCombatState({ ...combat, entities, status: "defeat" });
       setLog((prev) => [...prev, "💀 Défaite..."]);
+      if (combatType === "pvp") applyPvpResult(characterId, false);
       return;
     }
 
@@ -255,18 +290,23 @@ export default function CombatScreen() {
   };
 
   const awardRewards = () => {
+    if (combatType === "pvp") {
+      applyPvpResult(characterId, true);
+      return;
+    }
+    if (combatType === "dungeon") {
+      const { complete, rewards } = advanceDungeonRoom(characterId);
+      if (complete) {
+        setDungeonComplete(true);
+        setDungeonRewards(rewards ?? null);
+      }
+      addXp(characterId, 30);
+      return;
+    }
+    addXp(characterId, 50);
     const charKey = `aetheris-char-${characterId}`;
     const data = JSON.parse(localStorage.getItem(charKey) ?? "{}");
-    const xpGain = 50;
-    data.xp = (data.xp ?? 0) + xpGain;
     data.eclats = (data.eclats ?? 0) + 25;
-    if (data.xp >= data.xpToNext) {
-      data.level = (data.level ?? 1) + 1;
-      data.xp -= data.xpToNext;
-      data.xpToNext = data.level * 100;
-      data.maxHp = 100 + data.level * 10;
-      data.hp = data.maxHp;
-    }
     localStorage.setItem(charKey, JSON.stringify(data));
   };
 
@@ -331,7 +371,9 @@ export default function CombatScreen() {
   return (
     <div className="flex-1 flex flex-col bg-aether-950">
       <div className="flex items-center justify-between p-3 bg-aether-900/80">
-        <span className="font-display font-bold text-aether-200">Combat — Tour {combat.turn}</span>
+        <span className="font-display font-bold text-aether-200">
+          {combatType === "pvp" ? "⚔️ Arène" : combatType === "dungeon" ? "🏚️ Donjon" : "Combat"} — Tour {combat.turn}
+        </span>
         <button onClick={() => setCombat(null)} className="text-aether-400 text-sm">Fuir</button>
       </div>
 
@@ -382,11 +424,33 @@ export default function CombatScreen() {
             <h2 className="font-display text-2xl font-bold mb-2">
               {result === "victory" ? "Victoire !" : "Défaite"}
             </h2>
-            {result === "victory" && (
+            {result === "victory" && !dungeonComplete && combatType === "dungeon" && (
+              <p className="text-aether-300 text-sm mb-4">Salle terminée ! +30 XP</p>
+            )}
+            {result === "victory" && dungeonComplete && dungeonRewards && (
+              <p className="text-aether-300 text-sm mb-4">
+                Donjon terminé ! +{dungeonRewards.xp} XP • +{dungeonRewards.eclats} ✦
+              </p>
+            )}
+            {result === "victory" && combatType === "pvp" && (
+              <p className="text-aether-300 text-sm mb-4">Victoire PvP ! Rating augmenté</p>
+            )}
+            {result === "victory" && combatType === "world" && (
               <p className="text-aether-300 text-sm mb-4">+50 XP • +25 ✦ Éclats</p>
             )}
+            {result === "victory" && combatType === "dungeon" && !dungeonComplete ? (
+              <button
+                onClick={() => {
+                  const nextId = createNextRoomCombat(characterId);
+                  if (nextId) setCombat(nextId);
+                }}
+                className="btn-primary w-full mb-2"
+              >
+                Salle suivante →
+              </button>
+            ) : null}
             <button onClick={() => setCombat(null)} className="btn-primary w-full">
-              Retour au monde
+              {dungeonComplete ? "Retour au monde" : combatType === "dungeon" && result === "victory" ? "Quitter le donjon" : "Retour"}
             </button>
           </div>
         </div>

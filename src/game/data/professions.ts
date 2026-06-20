@@ -79,14 +79,6 @@ export const PROFESSIONS: ProfessionDefinition[] = [
   },
 ];
 
-export const DUNGEONS = [
-  { id: "ruines_corrompues", name: "Ruines Corrompues", zoneId: "vallee_eveils", levelRequired: 8, rooms: 5, bossId: "gardien_ruines", icon: "🏚️" },
-  { id: "sanctuaire_lumina", name: "Sanctuaire de Lumina", zoneId: "foret_lumina", levelRequired: 15, rooms: 8, bossId: "champion_lumina", icon: "⛪" },
-  { id: "pyramide_ombres", name: "Pyramide des Ombres", zoneId: "desert_umbra", levelRequired: 30, rooms: 10, bossId: "sphinx_ombres", icon: "🔺" },
-  { id: "nexus_aether", name: "Nexus d'Aether", zoneId: "citadelle_stellaire", levelRequired: 50, rooms: 15, bossId: "dragon_aether", icon: "🌀" },
-  { id: "tour_infinie", name: "Tour Infinie", zoneId: "citadelle_stellaire", levelRequired: 40, rooms: 999, bossId: "random", icon: "🗼" },
-];
-
 export function getProfessionById(id: string): ProfessionDefinition | undefined {
   return PROFESSIONS.find((p) => p.id === id);
 }

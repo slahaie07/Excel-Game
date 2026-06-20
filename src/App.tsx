@@ -11,6 +11,11 @@ import QuestsScreen from "./screens/QuestsScreen";
 import GuildScreen from "./screens/GuildScreen";
 import MarketplaceScreen from "./screens/MarketplaceScreen";
 import ProfessionsScreen from "./screens/ProfessionsScreen";
+import PvPScreen from "./screens/PvPScreen";
+import DungeonsScreen from "./screens/DungeonsScreen";
+import PetsScreen from "./screens/PetsScreen";
+import HavenScreen from "./screens/HavenScreen";
+import ChatOverlay from "./components/ChatOverlay";
 
 const SCREENS = {
   splash: SplashScreen,
@@ -24,18 +29,28 @@ const SCREENS = {
   guild: GuildScreen,
   marketplace: MarketplaceScreen,
   professions: ProfessionsScreen,
+  pvp: PvPScreen,
+  dungeons: DungeonsScreen,
+  "dungeon-run": DungeonsScreen,
+  pets: PetsScreen,
+  haven: HavenScreen,
   settings: LoginScreen,
 } as const;
 
+const IN_GAME_SCREENS = new Set(["world", "combat", "inventory", "quests", "guild", "marketplace", "professions", "pvp", "dungeons", "pets", "haven"]);
+
 export default function App() {
   const screen = useGameStore((s) => s.screen);
+  const characterId = useGameStore((s) => s.characterId);
   const Screen = SCREENS[screen] ?? SplashScreen;
+  const showChat = characterId && IN_GAME_SCREENS.has(screen);
 
   return (
     <div className="h-dvh w-full flex flex-col overflow-hidden">
       <Routes>
         <Route path="*" element={<Screen />} />
       </Routes>
+      {showChat && <ChatOverlay />}
     </div>
   );
 }

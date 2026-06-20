@@ -58,6 +58,7 @@ export default function CharacterCreateScreen() {
       activeQuests: [],
       completedQuests: [],
       stats: selectedClassData.baseStats,
+      haven: { level: 1, furniture: [], visitors: 0 },
     }));
 
     setCharacter(charId, name.trim(), selectedClass);

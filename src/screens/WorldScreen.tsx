@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import Phaser from "phaser";
 import { useGameStore } from "../stores/gameStore";
 import { ZONES, getZoneById, getMonstersByZone, CLASSES } from "../game/data";
+import { useOnlinePresence, getOnlinePlayersInZone } from "../lib/useOnlinePresence";
 
 interface CharacterData {
   level: number;
@@ -109,6 +110,10 @@ export default function WorldScreen() {
   const phaserRef = useRef<Phaser.Game | null>(null);
   const [charData] = useState(() => loadCharacterData(characterId));
   const [showMenu, setShowMenu] = useState(false);
+  const [showPlayers, setShowPlayers] = useState(false);
+
+  useOnlinePresence();
+  const onlinePlayers = getOnlinePlayersInZone(zoneId).filter((p) => p.name !== characterName);
 
   const zone = getZoneById(zoneId)!;
   const classData = CLASSES.find((c) => c.id === classId);
@@ -154,9 +159,12 @@ export default function WorldScreen() {
   }, [zoneId, classData, zoneMonsters, handleEncounter]);
 
   const navItems = [
-    { id: "inventory", icon: "🎒", label: "Inventaire" },
+    { id: "inventory", icon: "🎒", label: "Sac" },
     { id: "quests", icon: "📜", label: "Quêtes" },
-    { id: "professions", icon: "⚒️", label: "Métiers" },
+    { id: "dungeons", icon: "🏚️", label: "Donjons" },
+    { id: "pvp", icon: "⚔️", label: "Arène" },
+    { id: "pets", icon: "✨", label: "Pets" },
+    { id: "haven", icon: "🏠", label: "Havre" },
     { id: "guild", icon: "🏰", label: "Guilde" },
     { id: "marketplace", icon: "🏪", label: "Marché" },
   ] as const;
@@ -197,22 +205,46 @@ export default function WorldScreen() {
           Niveau {zone.levelRange[0]}-{zone.levelRange[1]}
           {zone.isPvP && " • ⚔️ Zone PvP"}
         </p>
+        <button
+          onClick={() => setShowPlayers(!showPlayers)}
+          className="text-aether-400 text-xs mt-1 underline"
+        >
+          👥 {onlinePlayers.length} joueur{onlinePlayers.length !== 1 ? "s" : ""} en ligne
+        </button>
+        {showPlayers && onlinePlayers.length > 0 && (
+          <div className="mt-2 space-y-1">
+            {onlinePlayers.map((p) => {
+              const cls = CLASSES.find((c) => c.id === p.classId);
+              return (
+                <p key={p.name} className="text-aether-500 text-xs">
+                  {cls?.icon} {p.name} (Niv. {p.level})
+                </p>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Navigation */}
       <div className="game-panel p-2">
-        <div className="flex justify-around">
+        <div className="grid grid-cols-4 gap-1">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => setScreen(item.id)}
-              className="flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-aether-800/50 active:scale-95"
+              className="flex flex-col items-center gap-0.5 p-1.5 rounded-xl hover:bg-aether-800/50 active:scale-95"
             >
-              <span className="text-xl">{item.icon}</span>
-              <span className="text-aether-400 text-[10px]">{item.label}</span>
+              <span className="text-lg">{item.icon}</span>
+              <span className="text-aether-400 text-[9px]">{item.label}</span>
             </button>
           ))}
         </div>
+        <button
+          onClick={() => setScreen("professions")}
+          className="w-full mt-1 text-aether-500 text-[10px] py-1 hover:text-aether-400"
+        >
+          ⚒️ Métiers
+        </button>
       </div>
 
       {/* Zone travel */}

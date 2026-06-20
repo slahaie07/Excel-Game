@@ -33,15 +33,33 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Craft : Alchimie, Forge, Joaillerie
 - 3 métiers max par personnage
 
-### Social
+### Social & multijoueur
+- Chat en temps réel (4 canaux : global, zone, guilde, trade)
+- Présence joueurs en ligne par zone
 - Guildes (création, adhésion)
 - Marché d'Halan (achat/vente)
-- Chat (backend Convex)
 
-### Mobile
-- PWA installable
-- Interface tactile optimisée
-- Mode portrait
+### PvP
+- Arène classée 1v1, 2v2, 3v3
+- Système de rating et classement
+- Matchmaking avec adversaires
+
+### Donjons
+- 5 donjons avec progression par salles
+- Boss finaux et récompenses
+- Tour Infinie (endless)
+
+### Compagnons & Havre
+- 6 pets avec bonus passifs (XP, dégâts, soins...)
+- Havre personnel décorable
+- Boutique de meubles et upgrades
+
+### Mobile natif
+```bash
+npm run build:mobile   # Build + sync Capacitor
+npm run cap:android    # Ouvrir Android Studio
+npm run cap:ios        # Ouvrir Xcode
+```
 
 ## Démarrage rapide
 
@@ -85,13 +103,14 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 
 ## Roadmap
 
-- [ ] Multijoueur temps réel (Convex)
-- [ ] PvP arène classée
-- [ ] Donjons en groupe
-- [ ] Compagnons (pets)
-- [ ] Housing / Havre
+- [x] PvP arène classée
+- [x] Donjons en groupe
+- [x] Compagnons (pets)
+- [x] Housing / Havre
+- [x] App natives (Capacitor)
+- [ ] Multijoueur Convex temps réel complet
 - [ ] Événements saisonniers
-- [ ] App natives (Capacitor)
+- [ ] Graphismes isométriques avancés
 
 ## Licence
 

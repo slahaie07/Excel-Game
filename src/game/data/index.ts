@@ -5,4 +5,7 @@ export { MONSTERS, getMonstersByZone, getMonsterById } from "./monsters";
 export { ZONES, getZoneById } from "./zones";
 export { ITEMS, EQUIPMENT_SLOTS, getItemById } from "./items";
 export { QUESTS, getQuestById, getQuestsForZone } from "./quests";
-export { PROFESSIONS, DUNGEONS, getProfessionById } from "./professions";
+export { PROFESSIONS, getProfessionById } from "./professions";
+export { DUNGEONS, getDungeonById, getDungeonsForZone, getRoomMonsters } from "./dungeons";
+export { PETS, getPetById } from "./pets";
+export { FURNITURE, HAVEN_LEVELS, getFurnitureById, getHavenLevel } from "./housing";

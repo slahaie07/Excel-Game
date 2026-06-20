@@ -218,4 +218,77 @@ export default defineSchema({
     achievementId: v.string(),
     unlockedAt: v.number(),
   }).index("by_character", ["characterId"]),
+
+  pvpQueue: defineTable({
+    characterId: v.id("characters"),
+    characterName: v.string(),
+    classId: v.string(),
+    level: v.number(),
+    rating: v.number(),
+    mode: v.union(v.literal("1v1"), v.literal("2v2"), v.literal("3v3")),
+    queuedAt: v.number(),
+  })
+    .index("by_mode", ["mode", "queuedAt"])
+    .index("by_character", ["characterId"]),
+
+  pvpMatches: defineTable({
+    mode: v.union(v.literal("1v1"), v.literal("2v2"), v.literal("3v3")),
+    teamA: v.array(v.object({
+      characterId: v.id("characters"),
+      name: v.string(),
+      classId: v.string(),
+      rating: v.number(),
+    })),
+    teamB: v.array(v.object({
+      characterId: v.id("characters"),
+      name: v.string(),
+      classId: v.string(),
+      rating: v.number(),
+    })),
+    combatId: v.optional(v.id("combats")),
+    status: v.union(v.literal("pending"), v.literal("active"), v.literal("completed")),
+    winnerTeam: v.optional(v.union(v.literal("A"), v.literal("B"))),
+    ratingChange: v.optional(v.number()),
+    createdAt: v.number(),
+  }).index("by_status", ["status"]),
+
+  dungeonRuns: defineTable({
+    dungeonId: v.string(),
+    leaderId: v.id("characters"),
+    members: v.array(v.object({
+      characterId: v.id("characters"),
+      name: v.string(),
+      classId: v.string(),
+      level: v.number(),
+    })),
+    currentRoom: v.number(),
+    totalRooms: v.number(),
+    status: v.union(v.literal("waiting"), v.literal("active"), v.literal("completed"), v.literal("failed")),
+    createdAt: v.number(),
+  })
+    .index("by_leader", ["leaderId"])
+    .index("by_status", ["status"]),
+
+  havens: defineTable({
+    characterId: v.id("characters"),
+    level: v.number(),
+    furniture: v.array(v.object({
+      itemId: v.string(),
+      x: v.number(),
+      y: v.number(),
+    })),
+    visitors: v.number(),
+    updatedAt: v.number(),
+  }).index("by_character", ["characterId"]),
+
+  presence: defineTable({
+    characterId: v.id("characters"),
+    characterName: v.string(),
+    classId: v.string(),
+    level: v.number(),
+    zoneId: v.string(),
+    lastSeenAt: v.number(),
+  })
+    .index("by_zone", ["zoneId", "lastSeenAt"])
+    .index("by_character", ["characterId"]),
 });
