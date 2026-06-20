@@ -47,6 +47,11 @@ export default function CloudPvPScreen() {
     activeTournament ? { tournamentId: activeTournament._id, characterId } : "skip"
   );
   const pendingTournamentRewards = useQuery(api.pvpTournaments.getPendingTournamentRewards, { characterId });
+  const myLeague = useQuery(api.pvpLeagues.getMyLeagueStatus, { characterId });
+  const leagueLeaderboard = useQuery(
+    api.pvpLeagues.getLeagueLeaderboard,
+    myLeague ? { tier: myLeague.tier, limit: 10 } : "skip"
+  );
   const pendingMatch = useQuery(api.pvp.getPendingMatch, { characterId });
   const queueStatus = useQuery(
     api.pvp.getQueueStatus,
@@ -229,6 +234,14 @@ export default function CloudPvPScreen() {
           }
         })();
       }}
+      league={myLeague ?? null}
+      leagueLeaderboard={(leagueLeaderboard ?? []).map((e) => ({
+        name: e.characterName,
+        classId: e.classId,
+        tierIcon: e.tierIcon,
+        leaguePoints: e.leaguePoints,
+        wins: e.wins,
+      }))}
       pendingRewards={pendingRewards ?? []}
       cosmetics={myCosmetics ?? null}
       claimMessage={claimMessage}

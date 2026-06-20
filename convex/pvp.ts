@@ -5,6 +5,8 @@ import { recordSeasonMatch } from "./seasons";
 import { sendNotification } from "./lib/notifications";
 import { syncCharacterAchievements } from "./lib/achievementUnlock";
 import { recordTournamentMatch } from "./pvpTournaments";
+import { recordLeagueMatch } from "./lib/pvpLeagues";
+import { recordMenteePvpWin } from "./mentorship";
 
 const TEAM_SIZE: Record<"1v1" | "2v2" | "3v3", number> = {
   "1v1": 1,
@@ -239,6 +241,17 @@ export const completeMatch = mutation({
       losers.map((l) => l.characterId),
       allParticipants
     );
+
+    await recordLeagueMatch(
+      ctx,
+      winners.map((w) => w.characterId),
+      losers.map((l) => l.characterId),
+      effectiveGain
+    );
+
+    for (const w of winners) {
+      await recordMenteePvpWin(ctx, w.characterId);
+    }
 
     for (const w of winners) {
       await syncCharacterAchievements(ctx, w.characterId);

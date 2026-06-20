@@ -15,6 +15,7 @@ export const ACHIEVEMENT_DEFS: Record<string, { name: string; description: strin
   war_hero: { name: "Héros de Guerre", description: "Contribuer à une guerre de guilde", icon: "⚔️" },
   live_contributor: { name: "Éveilleur Global", description: "Contribuer à un événement live", icon: "🌐" },
   guild_war_victor: { name: "Victorieux", description: "Gagner une guerre de guilde", icon: "🏅" },
+  invasion_defender: { name: "Défenseur de Terreval", description: "Repousser une invasion des Ombres", icon: "🛡️" },
 };
 
 export async function tryUnlockAchievement(

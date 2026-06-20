@@ -113,7 +113,7 @@ export default function SettingsScreen() {
           Déconnexion
         </button>
 
-        <p className="text-aether-600 text-xs text-center">Aetheris v1.9 — L&apos;Héritage des Légendes</p>
+        <p className="text-aether-600 text-xs text-center">Aetheris v1.10 — Les Légendes S&apos;Éveillent</p>
       </div>
     </div>
   );

@@ -89,6 +89,11 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - **Panthéon cross-serveur** — hall of fame par catégorie (PvP, saison, tournoi, raid, live, guerre)
 - **Cosmétiques de guilde** — emblèmes et bannières achetables au trésor, récompenses campagne #1
 
+### Ligues, mentorat & invasions (v1.10)
+- **Ligues PvP** — Bronze → Diamant, points de ligue, classement par palier
+- **Mentorat** — veterans (niv. 30+) guident apprentis (niv. ≤25), points mentor
+- **Invasions dynamiques** — Ombres Cristallines par zone, kills auto en combat monde, récompenses
+
 ### Graphismes isométriques
 - Monde et combat en vue isométrique 2:1 (Phaser 3)
 - Tuiles thématiques par zone, ombres, tri de profondeur
@@ -165,6 +170,7 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Saisons thématiques PvP, raid Abîme Fractal, push natives Capacitor (v1.7)
 - [x] Campagnes guerre de guildes, raid Nexus endgame, succès cloud sync (v1.8)
 - [x] Tournois PvP hebdo, Panthéon cross-serveur, cosmétiques de guilde (v1.9)
+- [x] Ligues PvP, mentorat joueurs, invasions monde dynamiques (v1.10)
 
 ## Licence
 

@@ -36,6 +36,27 @@ export interface TournamentLeaderboardEntry {
   points: number;
 }
 
+export interface LeagueStatus {
+  tierLabel: string;
+  tierIcon: string;
+  leaguePoints: number;
+  wins: number;
+  losses: number;
+  rank: number;
+  nextTier: string | null;
+  nextTierIcon: string | null;
+  pointsToNext: number | null;
+  progressPercent: number;
+}
+
+export interface LeagueLeaderboardEntry {
+  name: string;
+  classId: string;
+  tierIcon: string;
+  leaguePoints: number;
+  wins: number;
+}
+
 export interface SeasonInfo {
   name: string;
   seasonNumber: number;
@@ -93,6 +114,8 @@ interface PvPScreenUIProps {
   pendingTournamentRewards?: TournamentReward[];
   tournamentClaimMessage?: string;
   onClaimTournamentReward?: (rewardId: string) => void;
+  league?: LeagueStatus | null;
+  leagueLeaderboard?: LeagueLeaderboardEntry[];
   pendingRewards?: SeasonReward[];
   cosmetics?: EquippedCosmetics | null;
   claimMessage?: string;
@@ -126,6 +149,8 @@ export function PvPScreenUI({
   pendingTournamentRewards,
   tournamentClaimMessage,
   onClaimTournamentReward,
+  league,
+  leagueLeaderboard,
   pendingRewards,
   cosmetics,
   claimMessage,
@@ -196,6 +221,38 @@ export function PvPScreenUI({
               </div>
             ))}
             {tournamentClaimMessage && <p className="text-green-400 text-xs">{tournamentClaimMessage}</p>}
+          </div>
+        )}
+
+        {league && (
+          <div className="card border-purple-500/30 bg-purple-950/15">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-purple-300 text-xs font-bold uppercase tracking-wide">Ligue classée</p>
+                <p className="font-display font-bold text-white">
+                  {league.tierIcon} {league.tierLabel}
+                </p>
+                <p className="text-aether-400 text-xs mt-1">
+                  {league.leaguePoints} pts • {league.wins}V / {league.losses}D
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-crystal-gold text-sm font-bold">#{league.rank}</p>
+                {league.nextTier && league.pointsToNext !== null && (
+                  <p className="text-aether-500 text-[10px] mt-1">
+                    {league.nextTierIcon} {league.pointsToNext} pts → {league.nextTier}
+                  </p>
+                )}
+              </div>
+            </div>
+            {league.nextTier && (
+              <div className="mt-2 h-1.5 bg-aether-900 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-purple-600 to-crystal-gold transition-all"
+                  style={{ width: `${league.progressPercent}%` }}
+                />
+              </div>
+            )}
           </div>
         )}
 
@@ -363,6 +420,29 @@ export function PvPScreenUI({
               : "Recherche d'adversaire..."
             : `Lancer un ${mode}`}
         </button>
+
+        {(leagueLeaderboard ?? []).length > 0 && (
+          <div>
+            <h2 className="text-aether-400 text-sm mb-2">Ligue {league?.tierLabel ?? ""}</h2>
+            {leagueLeaderboard!.map((entry, i) => {
+              const cls = CLASSES.find((c) => c.id === entry.classId);
+              return (
+                <div
+                  key={`l-${entry.name}-${i}`}
+                  className={`card mb-1 flex items-center gap-3 py-2 ${entry.name === characterName ? "border-purple-500" : ""}`}
+                >
+                  <span className="text-aether-500 w-6 text-center font-bold">#{i + 1}</span>
+                  <span className="text-lg">{cls?.icon}</span>
+                  <div className="flex-1">
+                    <p className="text-white text-sm font-semibold">{entry.tierIcon} {entry.name}</p>
+                    <p className="text-aether-500 text-xs">{entry.wins} victoires</p>
+                  </div>
+                  <span className="text-crystal-gold font-bold text-sm">{entry.leaguePoints}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {(tournamentLeaderboard ?? []).length > 0 && (
           <div>

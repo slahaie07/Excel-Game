@@ -4,7 +4,7 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v1.9)
+## Systèmes implémentés (v1.10)
 
 | Système | Statut | Description |
 |---------|--------|-------------|
@@ -184,5 +184,15 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Panthéon | `hallOfFame.ts` | Hall of fame cross-serveur par catégorie |
 | Cosmétiques guilde | `guildCosmetics.ts` | Emblèmes/bannières, achat trésor, équipement |
 | Crons | `crons.ts` | Rotation tournoi hebdo (12h) |
+
+## v1.10 — Ligues, mentorat & invasions
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Ligues PvP | `pvpLeagues.ts`, `lib/pvpLeagues.ts` | Bronze→Diamant, points ligue, classement |
+| Mentorat | `mentorship.ts` | Demande/acceptation, points mentor, progrès apprenti |
+| Invasions | `worldInvasions.ts` | Invasions zone 72h, kills auto combat monde |
+| Combat | `combat.ts` | Hook invasion + mentorat PvE |
+| PvP | `pvp.ts` | Hook ligue + mentorat PvP |
 
 Voir `docs/DEPLOYMENT.md`.

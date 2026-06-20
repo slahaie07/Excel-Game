@@ -12,6 +12,7 @@ import { loadCharacter } from "../lib/characterStorage";
 import { isCloudCharacter, isConvexEnabled } from "../lib/convexUtils";
 import { CloudEncounterStarter } from "../components/CloudEncounterStarter";
 import { CloudWorldBoss } from "../components/CloudWorldBoss";
+import { CloudWorldInvasion } from "../components/CloudWorldInvasion";
 import { NotificationBell } from "../components/NotificationBell";
 import { CloudPushSync } from "../components/CloudPushSync";
 import { CloudAchievementSync } from "../components/CloudAchievementSync";
@@ -196,6 +197,10 @@ export default function WorldScreen() {
           </div>
           <span className="text-aether-400 text-xs">→</span>
         </button>
+      )}
+
+      {isConvexEnabled() && isCloudCharacter(characterId) && (
+        <CloudWorldInvasion characterId={characterId as Id<"characters">} zoneId={zoneId} />
       )}
 
       {isConvexEnabled() && isCloudCharacter(characterId) && (

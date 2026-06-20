@@ -28,13 +28,16 @@ import type * as lib_achievementUnlock from "../lib/achievementUnlock.js";
 import type * as lib_combatEffects from "../lib/combatEffects.js";
 import type * as lib_hallOfFame from "../lib/hallOfFame.js";
 import type * as lib_notifications from "../lib/notifications.js";
+import type * as lib_pvpLeagues from "../lib/pvpLeagues.js";
 import type * as lib_seasonRewards from "../lib/seasonRewards.js";
 import type * as lib_seasonThemes from "../lib/seasonThemes.js";
 import type * as lib_spells from "../lib/spells.js";
 import type * as liveEvents from "../liveEvents.js";
+import type * as mentorship from "../mentorship.js";
 import type * as notifications from "../notifications.js";
 import type * as presence from "../presence.js";
 import type * as pvp from "../pvp.js";
+import type * as pvpLeagues from "../pvpLeagues.js";
 import type * as pvpTournaments from "../pvpTournaments.js";
 import type * as quests from "../quests.js";
 import type * as raids from "../raids.js";
@@ -42,6 +45,7 @@ import type * as seasons from "../seasons.js";
 import type * as social from "../social.js";
 import type * as trade from "../trade.js";
 import type * as worldBoss from "../worldBoss.js";
+import type * as worldInvasions from "../worldInvasions.js";
 
 import type {
   ApiFromModules,
@@ -70,13 +74,16 @@ declare const fullApi: ApiFromModules<{
   "lib/combatEffects": typeof lib_combatEffects;
   "lib/hallOfFame": typeof lib_hallOfFame;
   "lib/notifications": typeof lib_notifications;
+  "lib/pvpLeagues": typeof lib_pvpLeagues;
   "lib/seasonRewards": typeof lib_seasonRewards;
   "lib/seasonThemes": typeof lib_seasonThemes;
   "lib/spells": typeof lib_spells;
   liveEvents: typeof liveEvents;
+  mentorship: typeof mentorship;
   notifications: typeof notifications;
   presence: typeof presence;
   pvp: typeof pvp;
+  pvpLeagues: typeof pvpLeagues;
   pvpTournaments: typeof pvpTournaments;
   quests: typeof quests;
   raids: typeof raids;
@@ -84,6 +91,7 @@ declare const fullApi: ApiFromModules<{
   social: typeof social;
   trade: typeof trade;
   worldBoss: typeof worldBoss;
+  worldInvasions: typeof worldInvasions;
 }>;
 
 /**

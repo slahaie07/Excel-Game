@@ -569,4 +569,58 @@ export default defineSchema({
     achievedAt: v.number(),
     periodLabel: v.string(),
   }).index("by_category", ["category", "achievedAt"]),
+
+  pvpLeagueEntries: defineTable({
+    characterId: v.id("characters"),
+    tier: v.union(
+      v.literal("bronze"),
+      v.literal("silver"),
+      v.literal("gold"),
+      v.literal("platinum"),
+      v.literal("diamond")
+    ),
+    leaguePoints: v.number(),
+    wins: v.number(),
+    losses: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_character", ["characterId"])
+    .index("by_tier", ["tier", "leaguePoints"]),
+
+  mentorships: defineTable({
+    mentorId: v.id("characters"),
+    menteeId: v.id("characters"),
+    status: v.union(v.literal("pending"), v.literal("active"), v.literal("completed")),
+    mentorPoints: v.number(),
+    menteeProgress: v.number(),
+    startedAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_mentor", ["mentorId"])
+    .index("by_mentee", ["menteeId"]),
+
+  worldInvasions: defineTable({
+    invasionId: v.string(),
+    name: v.string(),
+    description: v.string(),
+    zoneId: v.string(),
+    status: v.union(v.literal("active"), v.literal("ended")),
+    startsAt: v.number(),
+    endsAt: v.number(),
+    threatLevel: v.number(),
+    globalTarget: v.number(),
+    globalProgress: v.number(),
+    rewardEclats: v.number(),
+  }).index("by_status", ["status"]),
+
+  worldInvasionContributions: defineTable({
+    invasionId: v.id("worldInvasions"),
+    characterId: v.id("characters"),
+    characterName: v.string(),
+    kills: v.number(),
+    rewardClaimed: v.boolean(),
+    updatedAt: v.number(),
+  })
+    .index("by_invasion_and_character", ["invasionId", "characterId"])
+    .index("by_invasion", ["invasionId"]),
 });

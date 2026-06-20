@@ -31,4 +31,11 @@ crons.interval(
   {}
 );
 
+crons.interval(
+  "world invasions",
+  { hours: 12 },
+  internal.worldInvasions.ensureActiveInvasion,
+  {}
+);
+
 export default crons;

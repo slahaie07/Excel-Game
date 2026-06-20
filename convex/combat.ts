@@ -4,6 +4,8 @@ import type { MutationCtx } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
 import { getSpellById } from "./lib/spells";
 import { tryUnlockAchievement, syncCharacterAchievements } from "./lib/achievementUnlock";
+import { recordInvasionKill } from "./worldInvasions";
+import { recordMenteePveWin } from "./mentorship";
 import { applySpellEffects, tickBuffs } from "./lib/combatEffects";
 
 const MONSTER_DATA: Record<string, { hp: number; ap: number; mp: number; damage: number; name: string }> = {
@@ -646,6 +648,11 @@ export const applyVictoryRewards = mutation({
 
       await tryUnlockAchievement(ctx, charId, "first_victory");
       await syncCharacterAchievements(ctx, charId);
+
+      if (combat.combatType === "world" || combat.combatType === "event") {
+        await recordInvasionKill(ctx, charId, character.name, combat.zoneId);
+        await recordMenteePveWin(ctx, charId);
+      }
     }
     return null;
   },
