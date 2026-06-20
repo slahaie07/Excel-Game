@@ -46,7 +46,7 @@ export function CloudZonePlayers({
 }: {
   zoneId: string;
   excludeName: string;
-  onPlayers: (players: { name: string; classId: string; level: number }[]) => void;
+  onPlayers: (players: { name: string; classId: string; level: number; equippedTitleId: string | null }[]) => void;
 }) {
   const players = useQuery(api.presence.getPlayersInZone, { zoneId });
   useEffect(() => {
@@ -54,6 +54,7 @@ export function CloudZonePlayers({
       name: p.characterName,
       classId: p.classId,
       level: p.level,
+      equippedTitleId: p.equippedTitleId ?? null,
     })));
   }, [players, excludeName, onPlayers]);
   return null;
@@ -73,14 +74,16 @@ export function useOnlinePresence() {
     const interval = setInterval(() => {
       const key = `aetheris-presence-${zoneId}`;
       const stored = JSON.parse(localStorage.getItem(key) ?? "[]") as {
-        name: string; classId: string; level: number; lastSeen: number;
+        name: string; classId: string; level: number; lastSeen: number; equippedTitleId?: string | null;
       }[];
       const char = loadCharacter(characterId);
+      const cosmetics = char ? JSON.parse(localStorage.getItem(`aetheris-char-${characterId}`) ?? "{}").cosmetics : null;
       const entry = {
         name: characterName,
         classId,
         level: char?.level ?? 1,
         lastSeen: Date.now(),
+        equippedTitleId: cosmetics?.equippedTitle ?? null,
       };
       const filtered = stored.filter((p) => p.name !== characterName && Date.now() - p.lastSeen < 300000);
       localStorage.setItem(key, JSON.stringify([...filtered, entry]));
@@ -93,9 +96,9 @@ export function useOnlinePresence() {
 export function getOnlinePlayersInZone(zoneId: string) {
   const key = `aetheris-presence-${zoneId}`;
   const players = JSON.parse(localStorage.getItem(key) ?? "[]") as {
-    name: string; classId: string; level: number; lastSeen: number;
+    name: string; classId: string; level: number; lastSeen: number; equippedTitleId?: string | null;
   }[];
   return players
     .filter((p) => Date.now() - p.lastSeen < 300000)
-    .map(({ name, classId, level }) => ({ name, classId, level }));
+    .map(({ name, classId, level, equippedTitleId }) => ({ name, classId, level, equippedTitleId: equippedTitleId ?? null }));
 }

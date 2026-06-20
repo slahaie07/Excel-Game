@@ -14,6 +14,10 @@ import {
 import {
   equipLocalFactionCosmetic,
   loadLocalFactionCosmetics,
+  getLocalFactionCampaigns,
+  claimLocalFactionCampaignReward,
+  recordLocalFactionQuestClaim,
+  recordLocalFactionShopPurchase,
 } from "../lib/factionProgress";
 import { FactionsUI } from "./FactionsUI";
 
@@ -153,6 +157,8 @@ export default function LocalFactions() {
     };
   });
 
+  const campaigns = getLocalFactionCampaigns(characterId);
+
   const shopItems = FACTION_SHOP_ITEMS.map((item) => {
     const faction = factions.find((f) => f.factionId === item.factionId);
     const rank = FACTION_RANKS.find((r) => r.id === item.requiredRankId);
@@ -184,6 +190,7 @@ export default function LocalFactions() {
       factions={factions}
       quests={quests}
       shopItems={shopItems}
+      campaigns={campaigns}
       message={message}
       cosmetics={cosmetics}
       onPledge={async (factionId) => {
@@ -216,6 +223,7 @@ export default function LocalFactions() {
           [template.factionId]: (next.reputations[template.factionId] ?? 0) + totalRep,
         };
         refresh(next, nextEclats);
+        recordLocalFactionQuestClaim(characterId);
         setMessage(`+${totalRep} réputation • +${template.rewardEclats} ✦`);
       }}
       onPurchase={async (shopItemId) => {
@@ -230,7 +238,15 @@ export default function LocalFactions() {
         const next = { ...state };
         next.purchases = { ...next.purchases, [shopItemId]: purchased + 1 };
         refresh(next, eclats - item.costEclats);
+        recordLocalFactionShopPurchase(characterId);
         setMessage(`Acheté : ${item.label}`);
+      }}
+      onClaimCampaign={async (factionId) => {
+        const result = claimLocalFactionCampaignReward(characterId, factionId);
+        setState(loadState(characterId));
+        setEclats(loadEclats(characterId));
+        bump((n) => n + 1);
+        setMessage(`Campagne réussie ! +${result.reputation} rép. • +${result.eclats} ✦`);
       }}
       onEquipCosmetic={async (cosmeticId, slot) => {
         equipLocalFactionCosmetic(characterId, cosmeticId, slot);

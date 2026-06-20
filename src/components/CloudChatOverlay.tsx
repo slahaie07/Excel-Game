@@ -3,10 +3,12 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useGameStore } from "../stores/gameStore";
+import { ChatSenderLine } from "./ChatSenderLine";
 
 interface ChatMessage {
   id: string;
   senderName: string;
+  senderTitleId?: string | null;
   content: string;
   createdAt: number;
 }
@@ -31,10 +33,15 @@ export default function CloudChatOverlay({ channel = "zone" }: { channel?: "glob
   const sendMessage = useMutation(api.social.sendMessage);
 
   const messages: ChatMessage[] = (cloudMessages ?? []).slice().reverse().map((m: {
-    _id: string; senderName: string; content: string; createdAt: number;
+    _id: string;
+    senderName: string;
+    senderTitleId?: string;
+    content: string;
+    createdAt: number;
   }) => ({
     id: m._id,
     senderName: m.senderName,
+    senderTitleId: m.senderTitleId ?? null,
     content: m.content,
     createdAt: m.createdAt,
   }));
@@ -80,10 +87,12 @@ export default function CloudChatOverlay({ channel = "zone" }: { channel?: "glob
       </div>
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {messages.map((msg) => (
-          <div key={msg.id} className="text-sm">
-            <span className="text-aether-300 font-semibold">{msg.senderName}: </span>
-            <span className="text-aether-400">{msg.content}</span>
-          </div>
+          <ChatSenderLine
+            key={msg.id}
+            name={msg.senderName}
+            titleId={msg.senderTitleId}
+            content={msg.content}
+          />
         ))}
         <div ref={bottomRef} />
       </div>

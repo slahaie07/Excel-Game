@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useGameStore } from "../stores/gameStore";
 import { isCloudCharacter, isConvexEnabled } from "../lib/convexUtils";
+import { ChatSenderLine } from "./ChatSenderLine";
+import { getLocalEquippedTitleId } from "../lib/factionProgress";
+import CloudChatOverlay from "./CloudChatOverlay";
 
 interface ChatMessage {
   id: string;
   senderName: string;
+  senderTitleId?: string | null;
   content: string;
   channel: string;
   createdAt: number;
@@ -17,6 +21,7 @@ function LocalChatOverlay({ channel = "zone" }: { channel?: "global" | "zone" | 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [activeChannel, setActiveChannel] = useState(channel);
+  const characterId = useGameStore((s) => s.characterId);
   const characterName = useGameStore((s) => s.characterName);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -34,6 +39,7 @@ function LocalChatOverlay({ channel = "zone" }: { channel?: "global" | "zone" | 
     const msg: ChatMessage = {
       id: `msg_${Date.now()}`,
       senderName: characterName,
+      senderTitleId: characterId ? getLocalEquippedTitleId(characterId) : null,
       content: input.trim(),
       channel: activeChannel,
       createdAt: Date.now(),
@@ -94,10 +100,12 @@ function ChatPanel({
       </div>
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {messages.map((msg) => (
-          <div key={msg.id} className="text-sm">
-            <span className="text-aether-300 font-semibold">{msg.senderName}: </span>
-            <span className="text-aether-400">{msg.content}</span>
-          </div>
+          <ChatSenderLine
+            key={msg.id}
+            name={msg.senderName}
+            titleId={msg.senderTitleId}
+            content={msg.content}
+          />
         ))}
         <div ref={bottomRef} />
       </div>
@@ -108,9 +116,6 @@ function ChatPanel({
     </div>
   );
 }
-
-// Cloud chat loaded lazily when convex is available
-import CloudChatOverlay from "./CloudChatOverlay";
 
 export default function ChatOverlay(props: { channel?: "global" | "zone" | "guild" | "trade" }) {
   const characterId = useGameStore((s) => s.characterId);

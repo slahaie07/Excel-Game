@@ -7,6 +7,7 @@ import { tryUnlockAchievement, syncCharacterAchievements } from "./lib/achieveme
 import { recordInvasionKill } from "./worldInvasions";
 import { recordMenteePveWin } from "./mentorship";
 import { addZoneFactionReputation, recordFactionQuestProgress } from "./factions";
+import { recordPledgedCampaignEvent } from "./factionCampaigns";
 import { applySpellEffects, tickBuffs } from "./lib/combatEffects";
 import {
   applyCombatStartTalents,
@@ -697,6 +698,7 @@ export const applyVictoryRewards = mutation({
         await addZoneFactionReputation(ctx, charId, combat.zoneId, 2);
         await recordFactionQuestProgress(ctx, charId, { type: "world_kills" });
         await recordFactionQuestProgress(ctx, charId, { type: "zone_kills", zoneId: combat.zoneId });
+        await recordPledgedCampaignEvent(ctx, charId, "world_kill");
       }
     }
     return null;

@@ -19,6 +19,7 @@ import { CloudAchievementSync } from "../components/CloudAchievementSync";
 import type { Id } from "../../convex/_generated/dataModel";
 import { loadLocalFactionBadge } from "../lib/factionProgress";
 import { FACTION_META } from "../game/data/factionContent";
+import { getEquippedTitleLabel } from "../lib/playerDisplay";
 import { getClassIcon as getClassIconFromData } from "../game/rendering/isometric";
 
 export default function WorldScreen() {
@@ -262,8 +263,13 @@ export default function WorldScreen() {
           <div className="mt-1 space-y-0.5">
             {onlinePlayers.map((p) => {
               const cls = CLASSES.find((c) => c.id === p.classId);
+              const title = getEquippedTitleLabel(p.equippedTitleId);
               return (
-                <p key={p.name} className="text-aether-500 text-xs">{cls?.icon} {p.name} (Niv. {p.level})</p>
+                <p key={p.name} className="text-aether-500 text-xs">
+                  {cls?.icon} {title && <span className="text-crystal-gold">{title.icon} </span>}
+                  {p.name} (Niv. {p.level})
+                  {title && <span className="text-crystal-gold/80"> — {title.name}</span>}
+                </p>
               );
             })}
           </div>

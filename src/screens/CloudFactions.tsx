@@ -11,6 +11,7 @@ export default function CloudFactions() {
   const pledgeFaction = useMutation(api.factions.pledgeFaction);
   const claimQuest = useMutation(api.factions.claimFactionQuest);
   const purchaseItem = useMutation(api.factions.purchaseFactionItem);
+  const claimCampaign = useMutation(api.factionCampaigns.claimFactionCampaignReward);
   const [message, setMessage] = useState("");
   const [ready, setReady] = useState(false);
   const equipCosmetic = useMutation(api.cosmetics.equipCosmetic);
@@ -27,6 +28,10 @@ export default function CloudFactions() {
     api.factions.getFactionHub,
     ready ? { characterId: characterId as Id<"characters"> } : "skip"
   );
+  const campaigns = useQuery(
+    api.factionCampaigns.getFactionCampaigns,
+    ready ? { characterId: characterId as Id<"characters"> } : "skip"
+  );
 
   return (
     <FactionsUI
@@ -37,6 +42,7 @@ export default function CloudFactions() {
       factions={hub?.factions ?? []}
       quests={(hub?.quests ?? []).map((q) => ({ ...q, _id: q._id ?? null }))}
       shopItems={hub?.shopItems ?? []}
+      campaigns={campaigns?.campaigns ?? []}
       message={message}
       cosmetics={myCosmetics ?? undefined}
       onPledge={async (factionId) => {
@@ -65,6 +71,13 @@ export default function CloudFactions() {
           slot,
         });
         setMessage(cosmeticId ? "Cosmétique équipé !" : "Cosmétique retiré");
+      }}
+      onClaimCampaign={async (factionId) => {
+        const result = await claimCampaign({
+          characterId: characterId as Id<"characters">,
+          factionId,
+        });
+        setMessage(`Campagne réussie ! +${result.reputation} rép. • +${result.eclats} ✦`);
       }}
     />
   );

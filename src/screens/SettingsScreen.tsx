@@ -116,7 +116,7 @@ export default function SettingsScreen() {
           Déconnexion
         </button>
 
-        <p className="text-aether-600 text-xs text-center">Aetheris v1.16 — Récompenses Factions</p>
+        <p className="text-aether-600 text-xs text-center">Aetheris v1.17 — Campagnes Factions</p>
       </div>
     </div>
   );

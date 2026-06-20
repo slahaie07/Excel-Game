@@ -6,6 +6,11 @@ import {
   type FactionId,
 } from "../game/data/factionContent";
 import { getFactionRankCosmeticIds } from "../game/data/factionRewards";
+import {
+  CAMPAIGN_POINT_VALUES,
+  FACTION_CAMPAIGN_TEMPLATES,
+  type CampaignPointEvent,
+} from "../game/data/factionCampaigns";
 
 interface LocalFactionState {
   reputations: Record<FactionId, number>;
@@ -13,6 +18,8 @@ interface LocalFactionState {
   weekKey: string;
   quests: Record<string, { progress: number; completed: boolean; claimed: boolean }>;
   purchases: Record<string, number>;
+  campaigns: Record<FactionId, { progress: number; status: "active" | "completed" }>;
+  campaignContrib: Record<FactionId, { points: number; rewardClaimed: boolean }>;
 }
 
 interface LocalCosmetics {
@@ -30,6 +37,22 @@ function charKey(characterId: string) {
   return `aetheris-char-${characterId}`;
 }
 
+function defaultCampaigns(): LocalFactionState["campaigns"] {
+  return {
+    lumina: { progress: 0, status: "active" },
+    umbra: { progress: 0, status: "active" },
+    neutre: { progress: 0, status: "active" },
+  };
+}
+
+function defaultCampaignContrib(): LocalFactionState["campaignContrib"] {
+  return {
+    lumina: { points: 0, rewardClaimed: false },
+    umbra: { points: 0, rewardClaimed: false },
+    neutre: { points: 0, rewardClaimed: false },
+  };
+}
+
 function loadState(characterId: string): LocalFactionState {
   const weekKey = getWeekKey();
   try {
@@ -41,6 +64,8 @@ function loadState(characterId: string): LocalFactionState {
         weekKey,
         quests: {},
         purchases: {},
+        campaigns: defaultCampaigns(),
+        campaignContrib: defaultCampaignContrib(),
       };
     }
     return {
@@ -49,6 +74,8 @@ function loadState(characterId: string): LocalFactionState {
       weekKey: raw.weekKey ?? weekKey,
       quests: raw.quests ?? {},
       purchases: raw.purchases ?? {},
+      campaigns: raw.campaigns ?? defaultCampaigns(),
+      campaignContrib: raw.campaignContrib ?? defaultCampaignContrib(),
     };
   } catch {
     return {
@@ -57,6 +84,8 @@ function loadState(characterId: string): LocalFactionState {
       weekKey,
       quests: {},
       purchases: {},
+      campaigns: defaultCampaigns(),
+      campaignContrib: defaultCampaignContrib(),
     };
   }
 }
@@ -152,6 +181,30 @@ function incrementQuests(
   saveState(characterId, state);
 }
 
+function recordPledgedCampaignPoints(characterId: string, event: CampaignPointEvent, amount = 1) {
+  const state = loadState(characterId);
+  if (!state.pledgedFactionId) return;
+  const factionId = state.pledgedFactionId;
+  const points = CAMPAIGN_POINT_VALUES[event] * amount;
+  if (points <= 0) return;
+
+  const template = FACTION_CAMPAIGN_TEMPLATES.find((c) => c.factionId === factionId);
+  if (!template) return;
+
+  const campaign = state.campaigns[factionId] ?? { progress: 0, status: "active" as const };
+  const contrib = state.campaignContrib[factionId] ?? { points: 0, rewardClaimed: false };
+
+  campaign.progress += points;
+  if (campaign.progress >= template.target) {
+    campaign.status = "completed";
+  }
+  contrib.points += points;
+
+  state.campaigns[factionId] = campaign;
+  state.campaignContrib[factionId] = contrib;
+  saveState(characterId, state);
+}
+
 export function recordLocalWorldVictory(characterId: string, zoneId: string) {
   const factionId = ZONE_FACTION_MAP[zoneId];
   if (factionId) {
@@ -159,11 +212,73 @@ export function recordLocalWorldVictory(characterId: string, zoneId: string) {
   }
   incrementQuests(characterId, { type: "world_kills" });
   incrementQuests(characterId, { type: "zone_kills", zoneId });
+  recordPledgedCampaignPoints(characterId, "world_kill");
 }
 
 export function recordLocalPvpVictory(characterId: string) {
   addLocalReputation(characterId, "umbra", 5);
   incrementQuests(characterId, { type: "pvp_wins" });
+  recordPledgedCampaignPoints(characterId, "pvp_win");
+}
+
+export function recordLocalFactionQuestClaim(characterId: string) {
+  recordPledgedCampaignPoints(characterId, "quest_claim");
+}
+
+export function recordLocalFactionShopPurchase(characterId: string) {
+  recordPledgedCampaignPoints(characterId, "shop_purchase");
+}
+
+export function getLocalFactionCampaigns(characterId: string) {
+  const state = loadState(characterId);
+  return FACTION_CAMPAIGN_TEMPLATES.map((template) => {
+    const campaign = state.campaigns[template.factionId] ?? { progress: 0, status: "active" as const };
+    const contrib = state.campaignContrib[template.factionId] ?? { points: 0, rewardClaimed: false };
+    const completed = campaign.status === "completed";
+    return {
+      factionId: template.factionId,
+      campaignId: template.id,
+      name: template.name,
+      description: template.description,
+      target: template.target,
+      progress: campaign.progress,
+      status: campaign.status,
+      progressPercent: Math.min(100, Math.round((campaign.progress / template.target) * 100)),
+      myPoints: contrib.points,
+      minContribution: template.minContribution,
+      rewardReputation: template.rewardReputation,
+      rewardEclats: template.rewardEclats,
+      canClaim: completed && contrib.points >= template.minContribution && !contrib.rewardClaimed,
+      rewardClaimed: contrib.rewardClaimed,
+    };
+  });
+}
+
+export function claimLocalFactionCampaignReward(characterId: string, factionId: FactionId) {
+  const state = loadState(characterId);
+  const template = FACTION_CAMPAIGN_TEMPLATES.find((c) => c.factionId === factionId);
+  if (!template) throw new Error("Campagne introuvable");
+
+  const campaign = state.campaigns[factionId];
+  const contrib = state.campaignContrib[factionId];
+  if (!campaign || campaign.status !== "completed") throw new Error("Campagne non terminée");
+  if (!contrib || contrib.points < template.minContribution) throw new Error("Contribution insuffisante");
+  if (contrib.rewardClaimed) throw new Error("Déjà réclamée");
+
+  contrib.rewardClaimed = true;
+  state.campaignContrib[factionId] = contrib;
+  state.reputations[factionId] = (state.reputations[factionId] ?? 0) + template.rewardReputation;
+  saveState(characterId, state);
+
+  const char = JSON.parse(localStorage.getItem(charKey(characterId)) ?? "{}");
+  char.eclats = (char.eclats ?? 0) + template.rewardEclats;
+  localStorage.setItem(charKey(characterId), JSON.stringify(char));
+
+  return { reputation: template.rewardReputation, eclats: template.rewardEclats };
+}
+
+export function getLocalEquippedTitleId(characterId: string): string | null {
+  return loadCosmetics(characterId).equippedTitle ?? null;
 }
 
 export function loadLocalFactionBadge(characterId: string): {

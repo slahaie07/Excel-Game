@@ -18,6 +18,8 @@ import {
 } from "./lib/factionContent";
 import { ensureFactionQuests, recordFactionQuestProgress } from "./lib/factionQuests";
 import { syncFactionRankRewards } from "./lib/factionRewards";
+import { ensureFactionCampaigns } from "./lib/factionCampaignProgress";
+import { recordPledgedCampaignEvent } from "./factionCampaigns";
 
 const factionIdValidator = v.union(
   v.literal("lumina"),
@@ -323,6 +325,7 @@ export const initFactionHub = mutation({
   returns: v.null(),
   handler: async (ctx, args) => {
     await ensureFactionQuests(ctx, args.characterId);
+    await ensureFactionCampaigns(ctx);
 
     const reps = await ctx.db
       .query("factionReputations")
@@ -418,6 +421,8 @@ export const claimFactionQuest = mutation({
       eclats: character.eclats + template.rewardEclats,
     });
 
+    await recordPledgedCampaignEvent(ctx, args.characterId, "quest_claim");
+
     return {
       reputation: totalRep,
       eclats: template.rewardEclats,
@@ -492,6 +497,8 @@ export const purchaseFactionItem = mutation({
         updatedAt: Date.now(),
       });
     }
+
+    await recordPledgedCampaignEvent(ctx, args.characterId, "shop_purchase");
 
     return {
       itemId: shopItem.itemId,

@@ -226,6 +226,14 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Contenu | `lib/factionContent.ts`, `lib/factionQuests.ts` | Quêtes, articles, progression |
 | Combat/PvP | `combat.ts`, `pvp.ts` | Progression quêtes cloud |
 
+## v1.17 — Campagnes faction & titres sociaux
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Campagnes | `factionCampaigns.ts`, `lib/factionCampaignProgress.ts` | Objectifs hebdo coop, contributions, récompenses |
+| Social | `social.ts`, `presence.ts`, `ChatSenderLine.tsx` | Titres visibles chat + présence zone |
+| Local | `factionProgress.ts` | Campagnes et titres hors-ligne |
+
 ## v1.16 — Récompenses faction & local
 
 | Module | Fichier | Rôle |

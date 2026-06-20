@@ -44,6 +44,12 @@ export {
   getAllFactionCosmeticIds,
 } from "./factionRewards";
 export {
+  FACTION_CAMPAIGN_TEMPLATES,
+  CAMPAIGN_POINT_VALUES,
+  getCampaignTemplate,
+  type CampaignPointEvent,
+} from "./factionCampaigns";
+export {
   SEASONAL_EVENTS,
   getActiveEvent,
   getEventById,

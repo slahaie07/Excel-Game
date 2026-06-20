@@ -35,6 +35,23 @@ export interface FactionQuestView {
   rewardEclats: number;
 }
 
+export interface FactionCampaignView {
+  factionId: FactionId;
+  campaignId: string;
+  name: string;
+  description: string;
+  target: number;
+  progress: number;
+  status: "active" | "completed";
+  progressPercent: number;
+  myPoints: number;
+  minContribution: number;
+  rewardReputation: number;
+  rewardEclats: number;
+  canClaim: boolean;
+  rewardClaimed: boolean;
+}
+
 export interface FactionShopView {
   id: string;
   factionId: FactionId;
@@ -58,11 +75,13 @@ interface FactionsUIProps {
   factions: FactionSummary[];
   quests: FactionQuestView[];
   shopItems: FactionShopView[];
+  campaigns?: FactionCampaignView[];
   message?: string;
   cosmetics?: { titles: string[]; frames: string[]; equippedTitle?: string | null; equippedFrame?: string | null };
   onPledge: (factionId: FactionId) => Promise<void>;
   onClaimQuest: (questProgressId: string) => Promise<void>;
   onPurchase: (shopItemId: string) => Promise<void>;
+  onClaimCampaign?: (factionId: FactionId) => Promise<void>;
   onEquipCosmetic?: (cosmeticId: string | null, slot: "title" | "frame") => Promise<void>;
 }
 
@@ -74,11 +93,13 @@ export function FactionsUI({
   factions,
   quests,
   shopItems,
+  campaigns = [],
   message,
   cosmetics,
   onPledge,
   onClaimQuest,
   onPurchase,
+  onClaimCampaign,
   onEquipCosmetic,
 }: FactionsUIProps) {
   const setScreen = useGameStore((s) => s.setScreen);
@@ -89,6 +110,7 @@ export function FactionsUI({
   const faction = factions.find((f) => f.factionId === selectedFaction);
   const factionQuests = quests.filter((q) => q.factionId === selectedFaction);
   const factionShop = shopItems.filter((s) => s.factionId === selectedFaction);
+  const factionCampaign = campaigns.find((c) => c.factionId === selectedFaction);
 
   const meetsRank = (currentRankId: string, requiredRankId: string) => {
     const order = ["stranger", "known", "ally", "champion", "exalted"];
@@ -198,6 +220,38 @@ export function FactionsUI({
                 </button>
               )}
             </div>
+
+            {factionCampaign && (
+              <div className="card border border-aether-600/40">
+                <h3 className="text-aether-300 text-sm font-semibold mb-1">Campagne hebdomadaire</h3>
+                <p className="text-white text-sm font-medium">{factionCampaign.name}</p>
+                <p className="text-aether-500 text-xs mt-1">{factionCampaign.description}</p>
+                <div className="mt-2 h-2 bg-aether-900 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-aether-500 to-crystal-cyan"
+                    style={{ width: `${factionCampaign.progressPercent}%` }}
+                  />
+                </div>
+                <p className="text-aether-500 text-[10px] mt-1">
+                  {factionCampaign.progress}/{factionCampaign.target} pts communautaires • Vous : {factionCampaign.myPoints} pts
+                </p>
+                {factionCampaign.status === "completed" && !factionCampaign.rewardClaimed && (
+                  <p className="text-green-400 text-xs mt-2">Campagne réussie ! Réclamez votre récompense.</p>
+                )}
+                {factionCampaign.canClaim && onClaimCampaign && (
+                  <button
+                    disabled={busy}
+                    onClick={() => run(() => onClaimCampaign(selectedFaction))}
+                    className="btn-primary w-full mt-2 text-xs"
+                  >
+                    Réclamer (+{factionCampaign.rewardReputation} rép. • +{factionCampaign.rewardEclats} ✦)
+                  </button>
+                )}
+                {factionCampaign.rewardClaimed && (
+                  <p className="text-green-400 text-xs mt-2">✓ Récompense de campagne réclamée</p>
+                )}
+              </div>
+            )}
 
             <div className="card">
               <h3 className="text-aether-300 text-sm font-semibold mb-2">Récompenses de rang</h3>

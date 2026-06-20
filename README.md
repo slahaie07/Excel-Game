@@ -17,6 +17,11 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Progression quêtes faction en combat local
 - Badge faction alliée dans le monde
 
+### Campagnes faction & titres sociaux (v1.17)
+- Campagnes hebdomadaires coopératives par faction (contribution alliée)
+- Titres équipés visibles dans le chat et la présence en zone
+- Récompenses de campagne : réputation + éclats
+
 ### Talents actifs en combat (v1.14)
 - Bonus de talents appliqués aux dégâts, soins, buffs et défense
 - PV max et PM bonus au début du combat
@@ -206,6 +211,7 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Bonus de talents actifs en combat (v1.14)
 - [x] Écran Factions — quêtes et boutique (v1.15)
 - [x] Récompenses de rang faction + progression locale (v1.16)
+- [x] Campagnes faction hebdo + titres visibles en social (v1.17)
 
 ## Licence
 

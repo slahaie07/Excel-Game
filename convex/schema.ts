@@ -215,6 +215,7 @@ export default defineSchema({
     ),
     senderId: v.id("characters"),
     senderName: v.string(),
+    senderTitleId: v.optional(v.string()),
     content: v.string(),
     zoneId: v.optional(v.string()),
     guildId: v.optional(v.id("guilds")),
@@ -332,6 +333,7 @@ export default defineSchema({
     classId: v.string(),
     level: v.number(),
     zoneId: v.string(),
+    equippedTitleId: v.optional(v.string()),
     lastSeenAt: v.number(),
   })
     .index("by_zone", ["zoneId", "lastSeenAt"])
@@ -668,6 +670,31 @@ export default defineSchema({
     purchaseCount: v.number(),
     updatedAt: v.number(),
   }).index("by_character_week_item", ["characterId", "weekKey", "shopItemId"]),
+
+  factionCampaigns: defineTable({
+    weekKey: v.string(),
+    factionId: v.union(v.literal("lumina"), v.literal("umbra"), v.literal("neutre")),
+    campaignId: v.string(),
+    name: v.string(),
+    description: v.string(),
+    target: v.number(),
+    progress: v.number(),
+    status: v.union(v.literal("active"), v.literal("completed")),
+    updatedAt: v.number(),
+  })
+    .index("by_week", ["weekKey"])
+    .index("by_week_and_faction", ["weekKey", "factionId"]),
+
+  factionCampaignContributions: defineTable({
+    weekKey: v.string(),
+    factionId: v.union(v.literal("lumina"), v.literal("umbra"), v.literal("neutre")),
+    characterId: v.id("characters"),
+    points: v.number(),
+    rewardClaimed: v.boolean(),
+    updatedAt: v.number(),
+  })
+    .index("by_week_faction_character", ["weekKey", "factionId", "characterId"])
+    .index("by_character_and_week", ["characterId", "weekKey"]),
 
   pvpDailyChallenges: defineTable({
     characterId: v.id("characters"),
