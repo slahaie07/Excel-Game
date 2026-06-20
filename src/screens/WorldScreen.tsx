@@ -76,6 +76,7 @@ export default function WorldScreen() {
     gridX: 3 + i,
     gridY: 2 + i,
     icon: getClassIconFromData(p.classId),
+    classId: p.classId,
     label: p.name,
     isPlayer: true,
   }));
@@ -129,6 +130,7 @@ export default function WorldScreen() {
       gridH: 8,
       zoneId,
       playerIcon: getClassIcon(classId),
+      playerClassId: classId,
       entities: worldEntities,
       onMove: () => {},
       onEncounter: handleEncounter,

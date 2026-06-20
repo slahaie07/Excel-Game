@@ -88,6 +88,7 @@ export default function CloudCombatScreen() {
       icon: e.team === "player"
         ? getClassIcon(e.classId ?? classId)
         : getMonsterIcon(e.monsterId ?? "graine_ombre"),
+      classId: e.team === "player" ? (e.classId ?? classId) : undefined,
       hp: e.hp,
       maxHp: e.maxHp,
       team: e.team,

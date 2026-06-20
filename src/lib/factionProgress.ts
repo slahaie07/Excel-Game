@@ -6,6 +6,7 @@ import {
   type FactionId,
 } from "../game/data/factionContent";
 import { getFactionRankCosmeticIds } from "../game/data/factionRewards";
+import { getCampaignRankCosmeticIds } from "../game/data/factionCampaignRewards";
 import {
   CAMPAIGN_POINT_VALUES,
   FACTION_CAMPAIGN_TEMPLATES,
@@ -18,7 +19,7 @@ interface LocalFactionState {
   weekKey: string;
   quests: Record<string, { progress: number; completed: boolean; claimed: boolean }>;
   purchases: Record<string, number>;
-  campaigns: Record<FactionId, { progress: number; status: "active" | "completed" }>;
+  campaigns: Record<FactionId, { progress: number; status: "active" | "completed"; rewardsDistributed?: boolean }>;
   campaignContrib: Record<FactionId, { points: number; rewardClaimed: boolean }>;
 }
 
@@ -181,6 +182,37 @@ function incrementQuests(
   saveState(characterId, state);
 }
 
+function grantLocalCosmeticIds(characterId: string, cosmeticIds: string[]) {
+  if (cosmeticIds.length === 0) return;
+  const char = JSON.parse(localStorage.getItem(charKey(characterId)) ?? "{}");
+  const cosmetics: LocalCosmetics = char.cosmetics ?? { titles: [], frames: [] };
+  const titles = new Set(cosmetics.titles);
+  const frames = new Set(cosmetics.frames);
+  for (const id of cosmeticIds) {
+    if (id.startsWith("title_")) titles.add(id);
+    else if (id.startsWith("frame_")) frames.add(id);
+  }
+  char.cosmetics = {
+    ...cosmetics,
+    titles: [...titles],
+    frames: [...frames],
+  };
+  localStorage.setItem(charKey(characterId), JSON.stringify(char));
+}
+
+function maybeDistributeLocalCampaignRewards(characterId: string, factionId: FactionId) {
+  const state = loadState(characterId);
+  const campaign = state.campaigns[factionId];
+  if (!campaign || campaign.status !== "completed" || campaign.rewardsDistributed) return;
+
+  const contrib = state.campaignContrib[factionId];
+  if (!contrib || contrib.points <= 0) return;
+
+  grantLocalCosmeticIds(characterId, getCampaignRankCosmeticIds(1));
+  state.campaigns[factionId] = { ...campaign, rewardsDistributed: true };
+  saveState(characterId, state);
+}
+
 function recordPledgedCampaignPoints(characterId: string, event: CampaignPointEvent, amount = 1) {
   const state = loadState(characterId);
   if (!state.pledgedFactionId) return;
@@ -194,6 +226,7 @@ function recordPledgedCampaignPoints(characterId: string, event: CampaignPointEv
   const campaign = state.campaigns[factionId] ?? { progress: 0, status: "active" as const };
   const contrib = state.campaignContrib[factionId] ?? { points: 0, rewardClaimed: false };
 
+  const wasActive = campaign.status === "active";
   campaign.progress += points;
   if (campaign.progress >= template.target) {
     campaign.status = "completed";
@@ -203,6 +236,10 @@ function recordPledgedCampaignPoints(characterId: string, event: CampaignPointEv
   state.campaigns[factionId] = campaign;
   state.campaignContrib[factionId] = contrib;
   saveState(characterId, state);
+
+  if (wasActive && campaign.status === "completed") {
+    maybeDistributeLocalCampaignRewards(characterId, factionId);
+  }
 }
 
 export function recordLocalWorldVictory(characterId: string, zoneId: string) {

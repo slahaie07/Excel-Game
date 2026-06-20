@@ -12,7 +12,9 @@ const FRAME_STYLES: Record<string, Omit<FrameStyle, "icon" | "name">> = {
   frame_silver: { borderClass: "border-2 border-gray-300", glowClass: "shadow-[0_0_6px_rgba(192,192,192,0.4)]" },
   frame_lumina: { borderClass: "border-2 border-crystal-cyan", glowClass: "shadow-[0_0_8px_rgba(0,229,255,0.45)]" },
   frame_umbra: { borderClass: "border-2 border-purple-900", glowClass: "shadow-[0_0_8px_rgba(75,0,130,0.55)]" },
-  frame_neutre: { borderClass: "border-2 border-blue-400", glowClass: "shadow-[0_0_6px_rgba(96,165,250,0.4)]" },
+  frame_campaign_gold: { borderClass: "border-2 border-yellow-400", glowClass: "shadow-[0_0_10px_rgba(250,204,21,0.55)]" },
+  frame_campaign_silver: { borderClass: "border-2 border-gray-300", glowClass: "shadow-[0_0_8px_rgba(192,192,192,0.45)]" },
+  frame_campaign_bronze: { borderClass: "border-2 border-amber-700", glowClass: "shadow-[0_0_6px_rgba(180,83,9,0.4)]" },
 };
 
 export function getEquippedTitleLabel(titleId: string | null | undefined): {

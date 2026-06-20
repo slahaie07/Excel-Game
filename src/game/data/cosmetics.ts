@@ -143,6 +143,34 @@ export const COSMETICS: CosmeticDefinition[] = [
     icon: "💠",
     description: "Cadre du Port de Nébula.",
   },
+  {
+    id: "title_campaign_hero",
+    name: "Héros de Campagne",
+    type: "title",
+    icon: "🏆",
+    description: "1er contributeur de la campagne faction hebdomadaire.",
+  },
+  {
+    id: "frame_campaign_gold",
+    name: "Cadre Campagne Or",
+    type: "frame",
+    icon: "🥇",
+    description: "Récompense du 1er contributeur de campagne.",
+  },
+  {
+    id: "frame_campaign_silver",
+    name: "Cadre Campagne Argent",
+    type: "frame",
+    icon: "🥈",
+    description: "Récompense du 2e contributeur de campagne.",
+  },
+  {
+    id: "frame_campaign_bronze",
+    name: "Cadre Campagne Bronze",
+    type: "frame",
+    icon: "🥉",
+    description: "Récompense du 3e contributeur de campagne.",
+  },
 ];
 
 export const GUILD_HALL_EMOTES = [

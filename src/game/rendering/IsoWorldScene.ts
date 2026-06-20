@@ -3,12 +3,14 @@ import {
   gridToIso, isoDepth, drawIsoTile, drawIsoShadow,
   getClassIcon, getMonsterIcon, ZONE_THEMES, type ZoneTileTheme,
 } from "./isometric";
+import { addEntityVisual, preloadClassPortraits } from "./spriteLoader";
 
 export interface IsoEntity {
   id: string;
   gridX: number;
   gridY: number;
   icon: string;
+  classId?: string;
   label?: string;
   isPlayer?: boolean;
   onClick?: () => void;
@@ -19,6 +21,7 @@ export interface IsoWorldConfig {
   gridH: number;
   zoneId: string;
   playerIcon: string;
+  playerClassId: string;
   entities: IsoEntity[];
   obstacles?: { x: number; y: number }[];
   onMove: (x: number, y: number) => void;
@@ -35,7 +38,7 @@ export class IsoWorldScene extends Phaser.Scene {
   private offsetY = 40;
   private theme!: ZoneTileTheme;
   private tileGraphics!: Phaser.GameObjects.Graphics;
-  private entitySprites: Phaser.GameObjects.Text[] = [];
+  private entitySprites: Phaser.GameObjects.GameObject[] = [];
   private highlightGfx!: Phaser.GameObjects.Graphics;
 
   constructor() {
@@ -46,6 +49,10 @@ export class IsoWorldScene extends Phaser.Scene {
     this.config = data;
     this.playerX = 5;
     this.playerY = 5;
+  }
+
+  preload() {
+    preloadClassPortraits(this);
   }
 
   create() {
@@ -59,8 +66,6 @@ export class IsoWorldScene extends Phaser.Scene {
 
     this.drawGrid();
     this.renderEntities();
-
-    // Particules ambiantes selon la zone
     this.createAmbientParticles();
   }
 
@@ -96,7 +101,14 @@ export class IsoWorldScene extends Phaser.Scene {
     this.entitySprites = [];
 
     const allEntities: IsoEntity[] = [
-      { id: "player", gridX: this.playerX, gridY: this.playerY, icon: this.config.playerIcon, isPlayer: true },
+      {
+        id: "player",
+        gridX: this.playerX,
+        gridY: this.playerY,
+        icon: this.config.playerIcon,
+        classId: this.config.playerClassId,
+        isPlayer: true,
+      },
       ...this.config.entities,
     ];
 
@@ -107,10 +119,15 @@ export class IsoWorldScene extends Phaser.Scene {
       const pos = gridToIso(entity.gridX, entity.gridY, this.tileW, this.tileH, this.offsetX, this.offsetY);
       drawIsoShadow(shadowGfx, pos.x, pos.y, entity.isPlayer ? 14 : 10);
 
-      const sprite = this.add.text(pos.x, pos.y - 8, entity.icon, {
+      const depth = isoDepth(entity.gridX, entity.gridY);
+      const displaySize = entity.isPlayer ? 52 : 40;
+      const sprite = addEntityVisual(this, pos.x, pos.y - 8, {
+        icon: entity.icon,
+        classId: entity.classId,
+        displaySize,
+        depth,
         fontSize: entity.isPlayer ? "28px" : "22px",
-      }).setOrigin(0.5);
-      sprite.setDepth(isoDepth(entity.gridX, entity.gridY));
+      });
 
       if (entity.isPlayer) {
         this.tweens.add({

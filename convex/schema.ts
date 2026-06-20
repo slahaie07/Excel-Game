@@ -682,6 +682,7 @@ export default defineSchema({
     target: v.number(),
     progress: v.number(),
     status: v.union(v.literal("active"), v.literal("completed")),
+    rewardsDistributed: v.optional(v.boolean()),
     updatedAt: v.number(),
   })
     .index("by_week", ["weekKey"])

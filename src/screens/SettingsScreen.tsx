@@ -116,7 +116,7 @@ export default function SettingsScreen() {
           Déconnexion
         </button>
 
-        <p className="text-aether-600 text-xs text-center">Aetheris v1.18 — Visuels & Classement Campagnes</p>
+        <p className="text-aether-600 text-xs text-center">Aetheris v1.19 — Sprites & Récompenses Campagne</p>
       </div>
     </div>
   );

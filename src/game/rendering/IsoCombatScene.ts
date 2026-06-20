@@ -4,12 +4,15 @@ import {
   ZONE_THEMES, type ZoneTileTheme,
 } from "./isometric";
 
+import { addEntityVisual, preloadClassPortraits } from "./spriteLoader";
+
 export interface CombatEntityVisual {
   entityId: string;
   name: string;
   gridX: number;
   gridY: number;
   icon: string;
+  classId?: string;
   hp: number;
   maxHp: number;
   team: "player" | "enemy";
@@ -49,6 +52,10 @@ export class IsoCombatScene extends Phaser.Scene {
       : data.combatType === "event" ? "event"
       : "combat";
     this.theme = ZONE_THEMES[typeTheme] ?? ZONE_THEMES.combat!;
+  }
+
+  preload() {
+    preloadClassPortraits(this);
   }
 
   create() {
@@ -137,9 +144,13 @@ export class IsoCombatScene extends Phaser.Scene {
         this.entitySprites.push(ring);
       }
 
-      const sprite = this.add.text(pos.x, pos.y - 10, entity.icon, {
+      const sprite = addEntityVisual(this, pos.x, pos.y - 10, {
+        icon: entity.icon,
+        classId: entity.team === "player" ? entity.classId : undefined,
+        displaySize: entity.team === "player" ? 44 : 36,
+        depth: depth + 0.1,
         fontSize: entity.team === "player" ? "26px" : "20px",
-      }).setOrigin(0.5).setDepth(depth + 0.1);
+      });
       this.entitySprites.push(sprite);
 
       const hpPct = entity.hp / entity.maxHp;

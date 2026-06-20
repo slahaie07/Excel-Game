@@ -3,6 +3,7 @@ import { useGameStore } from "../stores/gameStore";
 import { FACTION_META, FACTION_RANKS, type FactionId } from "../game/data/factionContent";
 import { FACTION_RANK_COSMETICS } from "../game/data/factionRewards";
 import { CLASSES, getCosmeticById, getItemById } from "../game/data";
+import { CAMPAIGN_RANK_REWARDS } from "../game/data/factionCampaignRewards";
 
 export type FactionTab = "reputation" | "quests" | "shop";
 
@@ -273,6 +274,10 @@ export function FactionsUI({
             {campaignLeaderboard && (
               <div className="card border border-aether-600/30">
                 <h3 className="text-aether-300 text-sm font-semibold mb-2">Classement contributeurs</h3>
+                <p className="text-aether-500 text-[10px] mb-2">
+                  🥇 {getCosmeticById(CAMPAIGN_RANK_REWARDS[1]?.title ?? "")?.name ?? "Héros"} + cadre or •
+                  🥈 cadre argent • 🥉 cadre bronze
+                </p>
                 {campaignLeaderboard.entries.length === 0 ? (
                   <p className="text-aether-500 text-xs">Aucun contributeur cette semaine.</p>
                 ) : (

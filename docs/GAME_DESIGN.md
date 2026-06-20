@@ -226,6 +226,14 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Contenu | `lib/factionContent.ts`, `lib/factionQuests.ts` | Quêtes, articles, progression |
 | Combat/PvP | `combat.ts`, `pvp.ts` | Progression quêtes cloud |
 
+## v1.19 — Sprites isométriques & récompenses campagne
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Assets | `assets.ts`, `public/assets/` | 10 portraits, 6 fonds zones |
+| Sprites | `spriteLoader.ts`, `IsoWorldScene`, `IsoCombatScene` | Portraits sur grille Phaser |
+| Récompenses | `lib/factionCampaignRewards.ts` | Top 3 : titre + cadres or/argent/bronze |
+
 ## v1.18 — Visuels & classement campagnes
 
 | Module | Fichier | Rôle |

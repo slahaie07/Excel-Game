@@ -30,6 +30,7 @@ import type * as lib_achievementUnlock from "../lib/achievementUnlock.js";
 import type * as lib_classProgression from "../lib/classProgression.js";
 import type * as lib_combatEffects from "../lib/combatEffects.js";
 import type * as lib_factionCampaignProgress from "../lib/factionCampaignProgress.js";
+import type * as lib_factionCampaignRewards from "../lib/factionCampaignRewards.js";
 import type * as lib_factionCampaigns from "../lib/factionCampaigns.js";
 import type * as lib_factionContent from "../lib/factionContent.js";
 import type * as lib_factionQuests from "../lib/factionQuests.js";
@@ -89,6 +90,7 @@ declare const fullApi: ApiFromModules<{
   "lib/classProgression": typeof lib_classProgression;
   "lib/combatEffects": typeof lib_combatEffects;
   "lib/factionCampaignProgress": typeof lib_factionCampaignProgress;
+  "lib/factionCampaignRewards": typeof lib_factionCampaignRewards;
   "lib/factionCampaigns": typeof lib_factionCampaigns;
   "lib/factionContent": typeof lib_factionContent;
   "lib/factionQuests": typeof lib_factionQuests;

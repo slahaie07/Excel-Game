@@ -47,6 +47,7 @@ function toVisualEntities(entities: CombatEntity[], currentEntityId: string, cla
     gridX: e.x,
     gridY: e.y,
     icon: e.isPlayer ? getClassIcon(classId) : getMonsterIcon(e.monsterId ?? "graine_ombre"),
+    classId: e.isPlayer ? classId : undefined,
     hp: e.hp,
     maxHp: e.maxHp,
     team: e.team,

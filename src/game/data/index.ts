@@ -59,6 +59,10 @@ export {
   getClassPortrait,
 } from "./assets";
 export {
+  CAMPAIGN_RANK_REWARDS,
+  getCampaignRankCosmeticIds,
+} from "./factionCampaignRewards";
+export {
   SEASONAL_EVENTS,
   getActiveEvent,
   getEventById,

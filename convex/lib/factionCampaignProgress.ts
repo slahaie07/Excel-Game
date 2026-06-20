@@ -8,6 +8,7 @@ import {
   getWeekKey,
   type CampaignPointEvent,
 } from "./factionCampaigns";
+import { distributeCampaignRankRewards } from "./factionCampaignRewards";
 
 export async function ensureFactionCampaigns(ctx: MutationCtx, weekKey = getWeekKey()) {
   const now = Date.now();
@@ -29,6 +30,7 @@ export async function ensureFactionCampaigns(ctx: MutationCtx, weekKey = getWeek
         target: template.target,
         progress: 0,
         status: "active",
+        rewardsDistributed: false,
         updatedAt: now,
       });
     }
@@ -86,6 +88,10 @@ export async function recordFactionCampaignPoints(
     status: completed ? "completed" : "active",
     updatedAt: now,
   });
+
+  if (completed) {
+    await distributeCampaignRankRewards(ctx, weekKey, factionId);
+  }
 }
 
 export async function recordPledgedCampaignEvent(
