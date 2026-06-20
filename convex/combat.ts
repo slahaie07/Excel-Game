@@ -465,6 +465,13 @@ export const castSpell = mutation({
     if (!caster || !caster.isAlive) throw new Error("Lanceur invalide");
     if (caster.ap < spell.apCost) throw new Error("Pas assez de PA");
 
+    if (caster.ownerCharacterId) {
+      const owner = await ctx.db.get("characters", caster.ownerCharacterId);
+      if (!owner?.spells.includes(args.spellId)) {
+        throw new Error("Sort non appris");
+      }
+    }
+
     const distance = Math.abs(args.targetX - caster.x) + Math.abs(args.targetY - caster.y);
     if (distance < spell.minRange || distance > spell.maxRange) {
       throw new Error("Hors de portée");

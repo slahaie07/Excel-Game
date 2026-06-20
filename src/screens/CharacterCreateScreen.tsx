@@ -3,7 +3,7 @@ import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useGameStore } from "../stores/gameStore";
-import { CLASSES, ARCHETYPE_LABELS } from "../game/data";
+import { CLASSES, ARCHETYPE_LABELS, getStartingSpellIds } from "../game/data";
 import { isCloudAccount } from "../lib/convexUtils";
 
 function CharacterCreateForm({
@@ -112,7 +112,9 @@ function LocalCreate() {
       id: charId, name, classId, level: 1, xp: 0, xpToNext: 100,
       hp: 100, maxHp: 100, ap: 6, maxAp: 6, mp: 3, maxMp: 3,
       eclats: 100, zoneId: "vallee_eveils",
-      spells: selectedClassData.startingSpells,
+      spells: getStartingSpellIds(classId),
+      talents: [],
+      spellPoints: 0,
       inventory: [{ itemId: "pain_eveil", quantity: 10 }, { itemId: "potion_vie", quantity: 3 }],
       equipment: {}, activeQuests: [], completedQuests: [],
       stats: selectedClassData.baseStats,

@@ -1,5 +1,6 @@
+import { useEffect, useRef } from "react";
 import { useGameStore } from "../stores/gameStore";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { CLASSES } from "../game/data";
@@ -96,6 +97,16 @@ export function CloudCharacterSync({ characterId }: { characterId: string }) {
   const doc = useQuery(api.characters.getCharacter, {
     characterId: characterId as Id<"characters">,
   });
+  const syncProgression = useMutation(api.characters.syncCharacterProgression);
+  const syncedRef = useRef(false);
+
+  useEffect(() => {
+    if (doc && !syncedRef.current) {
+      syncedRef.current = true;
+      void syncProgression({ characterId: characterId as Id<"characters"> });
+    }
+  }, [characterId, doc, syncProgression]);
+
   if (doc) cacheConvexCharacter(doc as Record<string, unknown>);
   return null;
 }

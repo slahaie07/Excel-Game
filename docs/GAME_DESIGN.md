@@ -218,4 +218,13 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Boss invasion | `worldInvasions.ts` | Avatar des Ombres à 100 % progression |
 | Combat | `combat.ts` | Réputation zone sur victoire PvE |
 
+## v1.13 — Progression de classe
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Déblocage sorts | `classProgression.ts`, `convex/lib/classProgression.ts` | Sorts débloqués par niveau |
+| Talents | `talents.ts`, `convex/lib/talents.ts` | 2 paliers par archétype, points au level-up |
+| Fiche classe | `ClassScreen.tsx` | Grimoire, stats, sélection talents |
+| Migration | `syncCharacterProgression` | Chronomancien → Cryomancien |
+
 Voir `docs/DEPLOYMENT.md`.

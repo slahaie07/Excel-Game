@@ -169,11 +169,17 @@ export default function WorldScreen() {
       )}
       <div className="flex items-center justify-between p-3 bg-aether-900/80 border-b border-aether-700/40">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">{classData?.icon}</span>
-          <div>
-            <p className="font-bold text-white text-sm">{characterName}</p>
-            <p className="text-aether-400 text-xs">Niv. {charData?.level ?? 1} • {zone.name}</p>
-          </div>
+          <button
+            onClick={() => setScreen("class")}
+            className="flex items-center gap-2 hover:opacity-80"
+            title="Fiche de classe"
+          >
+            <span className="text-2xl">{classData?.icon}</span>
+            <div className="text-left">
+              <p className="font-bold text-white text-sm">{characterName}</p>
+              <p className="text-aether-400 text-xs">Niv. {charData?.level ?? 1} • {zone.name}</p>
+            </div>
+          </button>
         </div>
         <div className="flex items-center gap-3 text-sm">
           <span className="text-red-400">❤️ {charData?.hp ?? 100}/{charData?.maxHp ?? 100}</span>

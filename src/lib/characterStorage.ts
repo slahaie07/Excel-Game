@@ -1,3 +1,5 @@
+import { mergeUnlockedSpells } from "../game/data/classProgression";
+
 export interface CharacterData {
   id?: string;
   name: string;
@@ -14,11 +16,14 @@ export interface CharacterData {
   eclats: number;
   zoneId: string;
   spells: string[];
+  talents?: string[];
   inventory: { itemId: string; quantity: number }[];
   equipment: Record<string, string | undefined>;
   activeQuests: unknown[];
   completedQuests: string[];
   stats: Record<string, number>;
+  statPoints?: number;
+  spellPoints?: number;
   professions?: { professionId: string; level: number; xp: number }[];
   petId?: string;
   guildId?: string;
@@ -96,15 +101,18 @@ export function addXp(characterId: string, xp: number): { leveledUp: boolean; le
   let newXp = char.xp + xp;
   let level = char.level;
   let leveledUp = false;
+  let levelsGained = 0;
 
   while (newXp >= char.xpToNext && level < 60) {
     newXp -= char.xpToNext;
     level++;
     leveledUp = true;
+    levelsGained++;
   }
 
   const xpToNext = level * 100 + (level - 1) * 50;
   const maxHp = 50 + (char.stats.vitality ?? 10) * 5 + level * 10;
+  const syncedSpells = mergeUnlockedSpells(char.classId, level, char.spells);
 
   saveCharacter(characterId, {
     ...char,
@@ -113,8 +121,10 @@ export function addXp(characterId: string, xp: number): { leveledUp: boolean; le
     xpToNext,
     maxHp,
     hp: leveledUp ? maxHp : char.hp,
-    statPoints: leveledUp ? ((char as { statPoints?: number }).statPoints ?? 0) + 5 : undefined,
-  } as CharacterData);
+    spells: syncedSpells,
+    statPoints: leveledUp ? (char.statPoints ?? 0) + levelsGained * 5 : char.statPoints,
+    spellPoints: leveledUp ? (char.spellPoints ?? 0) + levelsGained : char.spellPoints,
+  });
 
   return { leveledUp, level };
 }

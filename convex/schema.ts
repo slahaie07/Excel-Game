@@ -84,6 +84,7 @@ export default defineSchema({
     x: v.number(),
     y: v.number(),
     spells: v.array(v.string()),
+    talents: v.optional(v.array(v.string())),
     equipment: v.object({
       weapon: v.optional(v.string()),
       armor: v.optional(v.string()),

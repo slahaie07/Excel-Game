@@ -1,5 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { getUnlockedSpellIds, mergeUnlockedSpells, migrateLegacyClass } from "./lib/classProgression";
+import { canSelectTalent } from "./lib/talents";
 
 const BASE_STATS: Record<string, Record<string, number>> = {
   alchimiste: { vitality: 12, wisdom: 16, strength: 4, intelligence: 12, agility: 8, chance: 8 },
@@ -12,19 +14,6 @@ const BASE_STATS: Record<string, Record<string, number>> = {
   eclaireur: { vitality: 10, wisdom: 8, strength: 12, intelligence: 6, agility: 16, chance: 8 },
   archer: { vitality: 10, wisdom: 8, strength: 10, intelligence: 8, agility: 16, chance: 8 },
   invocateur: { vitality: 10, wisdom: 14, strength: 4, intelligence: 14, agility: 8, chance: 10 },
-};
-
-const STARTING_SPELLS: Record<string, string[]> = {
-  alchimiste: ["soin_rune", "potion_regen", "barriere_alchimique"],
-  luminaire: ["lumiere_sacree", "benediction", "aura_protectrice"],
-  pyromancien: ["flamme_cristalline", "explosion_ether", "bouclier_flamme"],
-  cryomancien: ["eclat_glace", "blizzard_ether", "prison_glace"],
-  gardien: ["mur_cristal", "provocation", "fracas_tellurique"],
-  bastion: ["egide_fer", "defi_bastion", "charge_bouclier"],
-  berserker: ["coup_tellurique", "rage_cristal", "entaille_sismique"],
-  eclaireur: ["coup_brume", "invisibilite", "piege_ether"],
-  archer: ["fleche_lune", "pluie_fleches", "marque_cible"],
-  invocateur: ["invocation_wisp", "lien_ether", "tempete_esprits"],
 };
 
 function calculateMaxHp(stats: Record<string, number>, level: number): number {
@@ -70,7 +59,7 @@ export const createCharacter = mutation({
       throw new Error("Classe invalide");
     }
 
-    const spells = STARTING_SPELLS[args.classId] ?? [];
+    const spells = getUnlockedSpellIds(args.classId, 1);
     const maxHp = calculateMaxHp(stats, 1);
     const now = Date.now();
 
@@ -102,6 +91,7 @@ export const createCharacter = mutation({
       x: 5,
       y: 5,
       spells,
+      talents: [],
       equipment: {},
       inventory: [
         { itemId: "pain_eveil", quantity: 10 },
@@ -199,6 +189,7 @@ export const addXp = mutation({
 
     const xpToNext = newLevel * 100 + (newLevel - 1) * 50;
     const maxHp = calculateMaxHp(character.stats, newLevel);
+    const syncedSpells = mergeUnlockedSpells(character.classId, newLevel, character.spells);
 
     await ctx.db.patch("characters", args.characterId, {
       xp: newXp,
@@ -210,8 +201,83 @@ export const addXp = mutation({
       maxMp: calculateMaxMp(character.stats, newLevel),
       statPoints: leveledUp ? character.statPoints + 5 : character.statPoints,
       spellPoints: leveledUp ? character.spellPoints + 1 : character.spellPoints,
+      spells: syncedSpells,
     });
 
     return { leveledUp, newLevel };
+  },
+});
+
+export const syncCharacterProgression = mutation({
+  args: { characterId: v.id("characters") },
+  returns: v.object({
+    migrated: v.boolean(),
+    spellsAdded: v.number(),
+  }),
+  handler: async (ctx, args) => {
+    const character = await ctx.db.get("characters", args.characterId);
+    if (!character) throw new Error("Personnage introuvable");
+
+    const migrated = migrateLegacyClass(character.classId, character.spells);
+    const syncedSpells = mergeUnlockedSpells(
+      migrated.classId,
+      character.level,
+      migrated.spells
+    );
+    const spellsAdded = syncedSpells.length - character.spells.length;
+    const didMigrate = migrated.classId !== character.classId;
+    const needsTalentsInit = character.talents === undefined;
+    const needsSpellSync =
+      didMigrate ||
+      spellsAdded > 0 ||
+      syncedSpells.some((id) => !character.spells.includes(id));
+
+    if (!needsSpellSync && !needsTalentsInit && !didMigrate) {
+      return { migrated: false, spellsAdded: 0 };
+    }
+
+    const patch: Record<string, unknown> = {
+      spells: syncedSpells,
+    };
+    if (didMigrate) {
+      patch.classId = migrated.classId;
+      const stats = BASE_STATS[migrated.classId];
+      if (stats) patch.stats = stats;
+    }
+    if (character.talents === undefined) {
+      patch.talents = [];
+    }
+
+    await ctx.db.patch("characters", args.characterId, patch);
+    return { migrated: didMigrate, spellsAdded: Math.max(0, spellsAdded) };
+  },
+});
+
+export const selectTalent = mutation({
+  args: {
+    characterId: v.id("characters"),
+    talentId: v.string(),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const character = await ctx.db.get("characters", args.characterId);
+    if (!character) throw new Error("Personnage introuvable");
+
+    const owned = character.talents ?? [];
+    const error = canSelectTalent(
+      character.classId,
+      character.level,
+      owned,
+      args.talentId,
+      character.spellPoints
+    );
+    if (error) throw new Error(error);
+
+    await ctx.db.patch("characters", args.characterId, {
+      talents: [...owned, args.talentId],
+      spellPoints: character.spellPoints - 1,
+      lastPlayedAt: Date.now(),
+    });
+    return null;
   },
 });

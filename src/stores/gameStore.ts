@@ -27,7 +27,8 @@ export type GameScreen =
   | "friends"
   | "trade"
   | "settings"
-  | "hall-of-fame";
+  | "hall-of-fame"
+  | "class";
 
 interface GameState {
   screen: GameScreen;

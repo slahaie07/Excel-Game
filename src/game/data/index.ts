@@ -1,5 +1,13 @@
 export { UNIVERSE } from "./universe";
 export { CLASSES, getClassById, getClassesByArchetype, ARCHETYPE_LABELS, type ClassArchetype } from "./classes";
+export {
+  getUnlockedSpellIds,
+  getStartingSpellIds,
+  getSpellUnlockSchedule,
+  mergeUnlockedSpells,
+  migrateLegacyClass,
+} from "./classProgression";
+export { TALENTS, getTalentById, getTalentsForArchetype, getAvailableTalents } from "./talents";
 export { SPELLS, getSpellById, getSpellsForClass } from "./spells";
 export { MONSTERS, getMonstersByZone, getMonsterById } from "./monsters";
 export { ZONES, getZoneById } from "./zones";

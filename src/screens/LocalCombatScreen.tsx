@@ -5,7 +5,7 @@ import { getSpellById, getSpellsForClass, getMonsterById } from "../game/data";
 import { applyPvpResult } from "./PvPScreen";
 import { advanceDungeonRoom, createNextRoomCombat } from "./DungeonsScreen";
 import { recordEventKill } from "./EventsScreen";
-import { addXp } from "../lib/characterStorage";
+import { addXp, loadCharacter } from "../lib/characterStorage";
 import { applySpellEffects, tickBuffs, formatBuffs } from "../game/combat/effects";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
@@ -154,7 +154,9 @@ export default function LocalCombatScreen() {
   const [dungeonRewards, setDungeonRewards] = useState<{ xp: number; eclats: number } | null>(null);
 
   const player = combat.entities.find((e) => e.isPlayer)!;
-  const spells = getSpellsForClass(classId);
+  const charData = loadCharacter(characterId);
+  const knownSpells = charData?.spells ?? [];
+  const spells = getSpellsForClass(classId).filter((s) => knownSpells.includes(s.id));
   const isPlayerTurn = combat.currentEntityId === "player" && combat.status === "active";
 
   const handleCellClick = useCallback((x: number, y: number) => {

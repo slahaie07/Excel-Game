@@ -8,6 +8,12 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 
 ## Fonctionnalités
 
+### Progression de classe (v1.13)
+- Déblocage automatique des sorts par niveau (client + Convex)
+- Talents par archétype (2 paliers : niv. 10 et 20)
+- Écran fiche de classe (grimoire, stats, talents)
+- Migration Chronomancien → Cryomancien
+
 ### Combat tactique (v1.1)
 - Grille isométrique au tour par tour (PA/PM)
 - 10 classes équilibrées (2 soins, 2 magie, 2 bouclier, 2 gros dégâts, 2 à distance) avec sorts synchronisés client/serveur
@@ -181,7 +187,8 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Campagnes guerre de guildes, raid Nexus endgame, succès cloud sync (v1.8)
 - [x] Tournois PvP hebdo, Panthéon cross-serveur, cosmétiques de guilde (v1.9)
 - [x] Ligues PvP, mentorat joueurs, invasions monde dynamiques (v1.10)
-- [x] Réputation factions, défis PvP quotidiens, boss invasion (v1.11)
+- [x] 10 classes équilibrées synchronisées (v1.12)
+- [x] Progression sorts + talents par archétype (v1.13)
 
 ## Licence
 

@@ -39,6 +39,7 @@ export default function CloudCombatScreen() {
   const setCombat = useGameStore((s) => s.setCombat);
 
   const combatDoc = useQuery(api.combat.getCombat, { combatId: convexCombatId });
+  const charDoc = useQuery(api.characters.getCharacter, { characterId });
   const moveEntityMut = useMutation(api.combat.moveEntity);
   const castSpellMut = useMutation(api.combat.castSpell);
   const endTurnMut = useMutation(api.combat.endTurn);
@@ -69,7 +70,8 @@ export default function CloudCombatScreen() {
     (e) => e.ownerCharacterId === characterId || (e.isPlayer && !entities.some((x) => x.ownerCharacterId))
   );
   const playerEntityId = myEntity?.entityId ?? "";
-  const spells = getSpellsForClass(classId);
+  const knownSpellIds = charDoc?.spells ?? [];
+  const spells = getSpellsForClass(classId).filter((s) => knownSpellIds.includes(s.id));
   const isPlayerTurn = combatDoc?.currentEntityId === playerEntityId && combatDoc?.status === "active";
   const player = myEntity;
   const coopAllies = entities.filter((e) => e.team === "player" && e.isAlive).length;
