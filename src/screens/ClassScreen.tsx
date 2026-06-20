@@ -106,10 +106,11 @@ function ClassSheet({
                 return (
                   <div key={id} className="flex items-center gap-2 text-sm text-green-300">
                     <span>{t?.icon}</span>
-                    <span>{t?.name}</span>
+                    <span>{t?.name} — <span className="text-aether-400 text-xs">{t?.description}</span></span>
                   </div>
                 );
               })}
+              <p className="text-aether-500 text-[10px] mt-1">Bonus actifs en combat</p>
             </div>
           )}
           {availableTalents.length > 0 ? (

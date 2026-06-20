@@ -6,7 +6,7 @@ import { applyPvpResult } from "./PvPScreen";
 import { advanceDungeonRoom, createNextRoomCombat } from "./DungeonsScreen";
 import { recordEventKill } from "./EventsScreen";
 import { addXp, loadCharacter } from "../lib/characterStorage";
-import { applySpellEffects, tickBuffs, formatBuffs } from "../game/combat/effects";
+import { applySpellEffects, tickBuffs, formatBuffs, applyCombatStartTalents, getEffectiveMaxRange, computeTalentModifiers } from "../game/combat/effects";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
 
@@ -26,6 +26,7 @@ interface CombatEntity {
   isAlive: boolean;
   monsterId?: string;
   buffs: { stat: string; value: number; duration: number }[];
+  talentIds?: string[];
 }
 
 interface CombatState {
@@ -55,23 +56,32 @@ function toVisualEntities(entities: CombatEntity[], currentEntityId: string, cla
 function initCombat(
   monsterIds: string[],
   playerName = "Éveilleur",
-  pvpOpponent?: { name: string; classId: string; level: number }
+  pvpOpponent?: { name: string; classId: string; level: number },
+  charData?: ReturnType<typeof loadCharacter>
 ): CombatState {
+  const talentIds = charData?.talents ?? [];
+  const scaled = applyCombatStartTalents(
+    charData?.hp ?? 100,
+    charData?.maxHp ?? 100,
+    charData?.maxMp ?? 3,
+    talentIds
+  );
   const playerEntity: CombatEntity = {
     entityId: "player",
     name: playerName,
     isPlayer: true,
-    hp: 100,
-    maxHp: 100,
-    ap: 6,
-    maxAp: 6,
-    mp: 3,
-    maxMp: 3,
+    hp: scaled.hp,
+    maxHp: scaled.maxHp,
+    ap: charData?.maxAp ?? 6,
+    maxAp: charData?.maxAp ?? 6,
+    mp: scaled.maxMp,
+    maxMp: scaled.maxMp,
     x: 2,
     y: 4,
     team: "player",
     isAlive: true,
     buffs: [],
+    talentIds,
   };
 
   const enemies = pvpOpponent
@@ -135,13 +145,15 @@ export default function LocalCombatScreen() {
 
   const combatData = JSON.parse(localStorage.getItem(`aetheris-combat-${combatId}`) ?? "{}");
   const combatType = combatData.type ?? "world";
-  const [combat, setCombatState] = useState<CombatState>(() =>
-    initCombat(
+  const [combat, setCombatState] = useState<CombatState>(() => {
+    const char = loadCharacter(characterId);
+    return initCombat(
       combatData.monsterIds ?? ["graine_ombre"],
       characterName,
-      combatData.pvpOpponent
-    )
-  );
+      combatData.pvpOpponent,
+      char
+    );
+  });
   const [selectedSpell, setSelectedSpell] = useState<string | null>(null);
   const [log, setLog] = useState<string[]>([
     combatType === "pvp" ? `⚔️ Duel PvP contre ${combatData.pvpOpponent?.name ?? "adversaire"} !` :
@@ -168,12 +180,24 @@ export default function LocalCombatScreen() {
 
       const target = combat.entities.find((e) => e.x === x && e.y === y && e.isAlive);
       const distance = Math.abs(x - player.x) + Math.abs(y - player.y);
-      if (distance < spell.minRange || distance > spell.maxRange) return;
+      const casterMods = computeTalentModifiers(player.talentIds ?? []);
+      if (distance < spell.minRange || distance > getEffectiveMaxRange(spell.maxRange, casterMods)) return;
 
+      const damageEffect = spell.effects.find((e) => e.type === "damage");
       const caster = { ...player, buffs: player.buffs ?? [] };
       const tgt = target ? { ...target, buffs: target.buffs ?? [] } : undefined;
       const { caster: updatedCaster, target: updatedTarget, log: effectLog } = applySpellEffects(
-        caster, tgt, spell.effects
+        caster,
+        tgt,
+        spell.effects,
+        {
+          spellMeta: {
+            element: damageEffect?.type === "damage" ? damageEffect.element : undefined,
+            minRange: spell.minRange,
+            maxRange: spell.maxRange,
+            area: spell.area,
+          },
+        }
       );
 
       effectLog.forEach((msg) => setLog((prev) => [...prev, `${spell.name} : ${msg}`]));

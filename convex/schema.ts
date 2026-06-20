@@ -50,6 +50,7 @@ const combatEntity = v.object({
     value: v.number(),
     duration: v.number(),
   })),
+  talentIds: v.optional(v.array(v.string())),
   isAlive: v.boolean(),
 });
 

@@ -8,6 +8,11 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 
 ## Fonctionnalités
 
+### Talents actifs en combat (v1.14)
+- Bonus de talents appliqués aux dégâts, soins, buffs et défense
+- PV max et PM bonus au début du combat
+- Portée étendue (Œil d'Aigle) validée serveur
+
 ### Progression de classe (v1.13)
 - Déblocage automatique des sorts par niveau (client + Convex)
 - Talents par archétype (2 paliers : niv. 10 et 20)
@@ -189,6 +194,7 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Ligues PvP, mentorat joueurs, invasions monde dynamiques (v1.10)
 - [x] 10 classes équilibrées synchronisées (v1.12)
 - [x] Progression sorts + talents par archétype (v1.13)
+- [x] Bonus de talents actifs en combat (v1.14)
 
 ## Licence
 

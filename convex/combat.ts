@@ -8,6 +8,12 @@ import { recordInvasionKill } from "./worldInvasions";
 import { recordMenteePveWin } from "./mentorship";
 import { addZoneFactionReputation } from "./factions";
 import { applySpellEffects, tickBuffs } from "./lib/combatEffects";
+import {
+  applyCombatStartTalents,
+  computeTalentModifiers,
+  getEffectiveMaxRange,
+  SPELL_AREAS,
+} from "./lib/talentModifiers";
 
 const MONSTER_DATA: Record<string, { hp: number; ap: number; mp: number; damage: number; name: string }> = {
   graine_ombre: { hp: 30, ap: 4, mp: 3, damage: 5, name: "Graine d'Ombre" },
@@ -35,6 +41,7 @@ type Entity = {
   y: number;
   team: "player" | "enemy";
   buffs: { stat: string; value: number; duration: number }[];
+  talentIds?: string[];
   isAlive: boolean;
 };
 
@@ -51,26 +58,30 @@ function buildPlayerEntity(
     maxHp: number;
     maxAp: number;
     maxMp: number;
+    talents?: string[];
   },
   x: number,
   y: number
 ): Entity {
+  const talentIds = character.talents ?? [];
+  const scaled = applyCombatStartTalents(character.hp, character.maxHp, character.maxMp, talentIds);
   return {
     entityId: generateId(),
     name: character.name,
     isPlayer: true,
     classId: character.classId,
     ownerCharacterId: character._id,
-    hp: character.hp,
-    maxHp: character.maxHp,
+    hp: scaled.hp,
+    maxHp: scaled.maxHp,
     ap: character.maxAp,
     maxAp: character.maxAp,
-    mp: character.maxMp,
-    maxMp: character.maxMp,
+    mp: scaled.maxMp,
+    maxMp: scaled.maxMp,
     x,
     y,
     team: "player",
     buffs: [],
+    talentIds,
     isAlive: true,
   };
 }
@@ -117,9 +128,15 @@ function runEnemyTurn(entities: Entity[]): Entity[] {
   if (!enemy || !player) return entities;
 
   const dmg = Math.floor(Math.random() * 8) + 5;
+  const playerTalents = player.talentIds ?? [];
+  const playerMods = computeTalentModifiers(playerTalents);
+  const finalDmg =
+    playerMods.defensePassivePct > 0
+      ? Math.max(1, Math.floor(dmg * (1 - playerMods.defensePassivePct / 100)))
+      : dmg;
   return entities.map((e) => {
     if (e.entityId === player.entityId) {
-      const newHp = Math.max(0, e.hp - dmg);
+      const newHp = Math.max(0, e.hp - finalDmg);
       return { ...e, hp: newHp, isAlive: newHp > 0 };
     }
     return e;
@@ -472,10 +489,21 @@ export const castSpell = mutation({
       }
     }
 
+    const casterMods = computeTalentModifiers(caster.talentIds ?? []);
+    const effectiveMaxRange = getEffectiveMaxRange(spell.maxRange, casterMods);
+
     const distance = Math.abs(args.targetX - caster.x) + Math.abs(args.targetY - caster.y);
-    if (distance < spell.minRange || distance > spell.maxRange) {
+    if (distance < spell.minRange || distance > effectiveMaxRange) {
       throw new Error("Hors de portée");
     }
+
+    const damageEffect = spell.effects.find((e) => e.type === "damage");
+    const spellMeta = {
+      element: damageEffect?.type === "damage" ? damageEffect.element : undefined,
+      minRange: spell.minRange,
+      maxRange: spell.maxRange,
+      area: SPELL_AREAS[args.spellId] ?? 0,
+    };
 
     const targetIdx = combat.entities.findIndex(
       (e) => e.x === args.targetX && e.y === args.targetY && e.isAlive
@@ -493,6 +521,7 @@ export const castSpell = mutation({
       buffs: caster.buffs,
       isAlive: caster.isAlive,
       team: caster.team,
+      talentIds: caster.talentIds,
     };
     const targetState = target
       ? {
@@ -506,10 +535,15 @@ export const castSpell = mutation({
           buffs: target.buffs,
           isAlive: target.isAlive,
           team: target.team,
+          talentIds: target.talentIds,
         }
       : undefined;
 
-    const result = applySpellEffects(casterState, targetState, spell.effects);
+    const result = applySpellEffects(casterState, targetState, spell.effects, {
+      spellMeta,
+      casterTalents: caster.talentIds,
+      targetTalents: target?.talentIds,
+    });
     const killed: string[] = [];
 
     let updatedEntities = combat.entities.map((e, i) => {

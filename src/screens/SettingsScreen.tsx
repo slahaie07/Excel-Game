@@ -170,7 +170,7 @@ export default function SettingsScreen() {
           Déconnexion
         </button>
 
-        <p className="text-aether-600 text-xs text-center">Aetheris v1.13 — L'Éveil des Classes</p>
+        <p className="text-aether-600 text-xs text-center">Aetheris v1.14 — Talents en Combat</p>
       </div>
     </div>
   );

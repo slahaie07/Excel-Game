@@ -36,6 +36,7 @@ import type * as lib_pvpLeagues from "../lib/pvpLeagues.js";
 import type * as lib_seasonRewards from "../lib/seasonRewards.js";
 import type * as lib_seasonThemes from "../lib/seasonThemes.js";
 import type * as lib_spells from "../lib/spells.js";
+import type * as lib_talentModifiers from "../lib/talentModifiers.js";
 import type * as lib_talents from "../lib/talents.js";
 import type * as liveEvents from "../liveEvents.js";
 import type * as mentorship from "../mentorship.js";
@@ -88,6 +89,7 @@ declare const fullApi: ApiFromModules<{
   "lib/seasonRewards": typeof lib_seasonRewards;
   "lib/seasonThemes": typeof lib_seasonThemes;
   "lib/spells": typeof lib_spells;
+  "lib/talentModifiers": typeof lib_talentModifiers;
   "lib/talents": typeof lib_talents;
   liveEvents: typeof liveEvents;
   mentorship: typeof mentorship;

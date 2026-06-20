@@ -218,6 +218,16 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Boss invasion | `worldInvasions.ts` | Avatar des Ombres à 100 % progression |
 | Combat | `combat.ts` | Réputation zone sur victoire PvE |
 
+## v1.14 — Talents actifs en combat
+
+| Effet talent | Application |
+|--------------|-------------|
+| Soins / regen / bouclier | Multiplicateur sur les sorts et buffs |
+| Dégâts magiques / mêlée / distance | Bonus selon élément et portée du sort |
+| Défense passive | Réduction des dégâts ennemis reçus |
+| PV max / PM | Appliqués au début de chaque combat |
+| Portée | +1 case max (Œil d'Aigle) |
+
 ## v1.13 — Progression de classe
 
 | Module | Fichier | Rôle |
