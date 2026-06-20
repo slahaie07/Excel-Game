@@ -45,6 +45,13 @@ export const createGuild = mutation({
     });
 
     await ctx.db.patch("characters", args.leaderId, { guildId });
+    await ctx.db.insert("guildHalls", {
+      guildId,
+      level: 1,
+      furniture: [],
+      visitors: 0,
+      updatedAt: Date.now(),
+    });
     return guildId;
   },
 });

@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { recordSeasonMatch } from "./seasons";
 
 export const joinQueue = mutation({
   args: {
@@ -118,6 +119,8 @@ export const completeMatch = mutation({
       winnerTeam: args.winnerTeam,
       ratingChange: ratingGain,
     });
+
+    await recordSeasonMatch(ctx, args.winnerCharacterId, args.loserCharacterId, ratingGain, ratingLoss);
 
     return { ratingGain, ratingLoss };
   },

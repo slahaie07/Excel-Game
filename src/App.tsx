@@ -9,6 +9,7 @@ import CombatScreen from "./screens/CombatScreen";
 import InventoryScreen from "./screens/InventoryScreen";
 import QuestsScreen from "./screens/QuestsScreen";
 import GuildScreen from "./screens/GuildScreen";
+import GuildHallScreen from "./screens/GuildHallScreen";
 import MarketplaceScreen from "./screens/MarketplaceScreen";
 import ProfessionsScreen from "./screens/ProfessionsScreen";
 import PvPScreen from "./screens/PvPScreen";
@@ -34,6 +35,7 @@ const SCREENS = {
   inventory: InventoryScreen,
   quests: QuestsScreen,
   guild: GuildScreen,
+  "guild-hall": GuildHallScreen,
   marketplace: MarketplaceScreen,
   professions: ProfessionsScreen,
   pvp: PvPScreen,
@@ -51,7 +53,7 @@ const SCREENS = {
 } as const;
 
 const IN_GAME_SCREENS = new Set([
-  "world", "combat", "inventory", "quests", "guild", "marketplace",
+  "world", "combat", "inventory", "quests", "guild", "guild-hall", "marketplace",
   "professions", "pvp", "dungeons", "raids", "pets", "haven", "events",
   "daily", "achievements", "friends", "trade", "settings",
 ]);

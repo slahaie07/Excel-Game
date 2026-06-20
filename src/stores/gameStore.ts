@@ -11,6 +11,7 @@ export type GameScreen =
   | "inventory"
   | "quests"
   | "guild"
+  | "guild-hall"
   | "marketplace"
   | "professions"
   | "pvp"

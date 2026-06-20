@@ -12,6 +12,7 @@ function CloudGuild() {
   const characterName = useGameStore((s) => s.characterName)!;
   const guildId = useGameStore((s) => s.guildId);
   const setGuildId = useGameStore((s) => s.setGuildId);
+  const setScreen = useGameStore((s) => s.setScreen);
   const cloudGuilds = useQuery(api.social.listGuilds, {});
   const activeWars = useQuery(api.guildWars.listActiveWars, {});
   const myWar = useQuery(
@@ -71,6 +72,12 @@ function CloudGuild() {
       </div>
       {guildId && (
         <div className="p-4 border-t border-aether-700/40 space-y-3">
+          <button
+            onClick={() => setScreen("guild-hall")}
+            className="btn-secondary w-full text-sm"
+          >
+            🏰 Guild Hall partagé
+          </button>
           <h2 className="font-display font-bold text-white text-sm">⚔️ Guerres de guildes</h2>
           {myWar ? (
             <div className="card">

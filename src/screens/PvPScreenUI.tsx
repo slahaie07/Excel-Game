@@ -1,10 +1,26 @@
+import { useState } from "react";
 import { CLASSES } from "../game/data";
+import { formatCountdown } from "../lib/formatTime";
 
 export interface PvpLeaderboardEntry {
   name: string;
   rating: number;
   wins: number;
   classId: string;
+}
+
+export interface SeasonInfo {
+  name: string;
+  seasonNumber: number;
+  endsAt: number;
+  daysLeft: number;
+}
+
+export interface SeasonRating {
+  rating: number;
+  wins: number;
+  losses: number;
+  rank: number;
 }
 
 interface PvPScreenUIProps {
@@ -19,6 +35,10 @@ interface PvPScreenUIProps {
   searching: boolean;
   error: string;
   leaderboard: PvpLeaderboardEntry[];
+  seasonLeaderboard?: PvpLeaderboardEntry[];
+  season?: SeasonInfo | null;
+  seasonRating?: SeasonRating | null;
+  now?: number;
   loading?: boolean;
   onMatchmake: () => void;
   onBack: () => void;
@@ -36,11 +56,17 @@ export function PvPScreenUI({
   searching,
   error,
   leaderboard,
+  seasonLeaderboard,
+  season,
+  seasonRating,
+  now = Date.now(),
   loading,
   onMatchmake,
   onBack,
 }: PvPScreenUIProps) {
   const classData = CLASSES.find((c) => c.id === classId);
+  const [boardTab, setBoardTab] = useState<"global" | "season">("season");
+  const activeBoard = boardTab === "season" && season ? (seasonLeaderboard ?? []) : leaderboard;
 
   return (
     <div className="flex-1 flex flex-col bg-gradient-to-b from-aether-950 to-red-950/20">
@@ -51,11 +77,36 @@ export function PvPScreenUI({
       </div>
 
       <div className="p-4 space-y-4 flex-1 overflow-y-auto">
+        {season && (
+          <div className="card bg-gradient-to-r from-crystal-gold/10 to-red-900/20 border-crystal-gold/30">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-crystal-gold text-xs font-bold uppercase tracking-wide">Saison ranked</p>
+                <p className="font-display font-bold text-white">{season.name}</p>
+                <p className="text-aether-400 text-xs mt-1">
+                  {season.daysLeft} jour{season.daysLeft > 1 ? "s" : ""} restant{season.daysLeft > 1 ? "s" : ""}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-orange-400 text-xs">⏱ {formatCountdown(season.endsAt, now)}</p>
+                {seasonRating ? (
+                  <p className="text-crystal-gold font-bold text-sm mt-1">#{seasonRating.rank} • {seasonRating.rating}</p>
+                ) : (
+                  <p className="text-aether-500 text-xs mt-1">Pas encore classé</p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="card flex items-center gap-4">
           <span className="text-3xl">{classData?.icon}</span>
           <div className="flex-1">
             <p className="font-bold text-white">{characterName}</p>
-            <p className="text-aether-400 text-sm">Rating : {rating}</p>
+            <p className="text-aether-400 text-sm">Rating global : {rating}</p>
+            {seasonRating && (
+              <p className="text-crystal-gold text-xs">Saison : {seasonRating.rating} ({seasonRating.wins}V / {seasonRating.losses}D)</p>
+            )}
           </div>
           <div className="text-right text-sm">
             <p className="text-green-400">{wins}V</p>
@@ -93,11 +144,26 @@ export function PvPScreenUI({
         </button>
 
         <div>
-          <h2 className="text-aether-400 text-sm mb-2">Classement</h2>
-          {leaderboard.length === 0 ? (
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-aether-400 text-sm">Classement</h2>
+            {season && (
+              <div className="flex gap-1">
+                {(["season", "global"] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setBoardTab(tab)}
+                    className={`text-xs px-2 py-1 rounded ${boardTab === tab ? "bg-aether-700 text-white" : "text-aether-500"}`}
+                  >
+                    {tab === "season" ? "Saison" : "Global"}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          {activeBoard.length === 0 ? (
             <p className="text-aether-500 text-sm text-center py-4">Aucun joueur classé</p>
           ) : (
-            leaderboard
+            activeBoard
               .sort((a, b) => b.rating - a.rating)
               .slice(0, 10)
               .map((entry, i) => {

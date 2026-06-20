@@ -18,15 +18,37 @@ export default function CloudPvPScreen() {
   const [mode, setMode] = useState<"1v1" | "2v2" | "3v3">("1v1");
   const [searching, setSearching] = useState(false);
   const [error, setError] = useState("");
+  const [now, setNow] = useState(Date.now());
   const matchStarted = useRef(false);
 
   const char = loadCharacter(characterId);
   const cloudChar = useQuery(api.characters.getCharacter, { characterId });
   const leaderboard = useQuery(api.pvp.getLeaderboard, { limit: 10 });
+  const activeSeason = useQuery(api.seasons.getActiveSeason, {});
+  const seasonLeaderboard = useQuery(
+    api.seasons.getSeasonLeaderboard,
+    activeSeason ? { seasonId: activeSeason._id, limit: 10 } : "skip"
+  );
+  const mySeasonRating = useQuery(
+    api.seasons.getMySeasonRating,
+    activeSeason ? { seasonId: activeSeason._id, characterId } : "skip"
+  );
   const pendingMatch = useQuery(api.pvp.getPendingMatch, { characterId });
   const joinQueue = useMutation(api.pvp.joinQueue);
   const leaveQueue = useMutation(api.pvp.leaveQueue);
   const startPvpCombat = useMutation(api.combat.startPvpCombat);
+  const initSeason = useMutation(api.seasons.initSeason);
+
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
+
+  useEffect(() => {
+    if (activeSeason === null) {
+      void initSeason({});
+    }
+  }, [activeSeason, initSeason]);
 
   const rating = cloudChar?.pvpRating ?? char?.pvpRating ?? 1000;
   const wins = cloudChar?.pvpWins ?? char?.pvpWins ?? 0;
@@ -127,6 +149,20 @@ export default function CloudPvPScreen() {
         wins: e.pvpWins,
         classId: e.classId,
       }))}
+      season={activeSeason ? {
+        name: activeSeason.name,
+        seasonNumber: activeSeason.seasonNumber,
+        endsAt: activeSeason.endsAt,
+        daysLeft: activeSeason.daysLeft,
+      } : null}
+      seasonLeaderboard={(seasonLeaderboard ?? []).map((e) => ({
+        name: e.characterName,
+        rating: e.rating,
+        wins: e.wins,
+        classId: e.classId,
+      }))}
+      seasonRating={mySeasonRating ?? null}
+      now={now}
       onMatchmake={() => void startMatchmaking()}
       onBack={() => {
         void leaveQueue({ characterId });

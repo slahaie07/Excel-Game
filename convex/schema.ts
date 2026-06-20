@@ -379,4 +379,39 @@ export default defineSchema({
     damage: v.number(),
     createdAt: v.number(),
   }).index("by_boss", ["bossId", "createdAt"]),
+
+  pvpSeasons: defineTable({
+    name: v.string(),
+    seasonNumber: v.number(),
+    status: v.union(v.literal("active"), v.literal("ended")),
+    startsAt: v.number(),
+    endsAt: v.number(),
+  }).index("by_status", ["status"]),
+
+  seasonRatings: defineTable({
+    seasonId: v.id("pvpSeasons"),
+    characterId: v.id("characters"),
+    characterName: v.string(),
+    classId: v.string(),
+    rating: v.number(),
+    wins: v.number(),
+    losses: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_season_and_character", ["seasonId", "characterId"])
+    .index("by_season", ["seasonId"]),
+
+  guildHalls: defineTable({
+    guildId: v.id("guilds"),
+    level: v.number(),
+    furniture: v.array(v.object({
+      itemId: v.string(),
+      x: v.number(),
+      y: v.number(),
+      placedBy: v.id("characters"),
+      placedByName: v.string(),
+    })),
+    visitors: v.number(),
+    updatedAt: v.number(),
+  }).index("by_guild", ["guildId"]),
 });
