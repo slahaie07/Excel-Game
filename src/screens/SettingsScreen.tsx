@@ -151,6 +151,9 @@ export default function SettingsScreen() {
           <button onClick={() => setScreen("achievements")} className="w-full text-left text-aether-300 text-sm py-1">
             🏆 Succès
           </button>
+          <button onClick={() => setScreen("m7-studio")} className="w-full text-left text-crystal-gold text-sm py-1">
+            ✦ M7 Studio premium
+          </button>
           {isCloudCharacter(characterId) && (
             <>
               <button onClick={() => setScreen("friends")} className="w-full text-left text-aether-300 text-sm py-1">

@@ -136,6 +136,7 @@ export default function WorldScreen() {
     { id: "events", icon: activeEvent?.icon ?? "🎉", label: "Évent" },
     { id: "daily", icon: "🎁", label: "Daily" },
     { id: "guild", icon: "🏰", label: "Guilde" },
+    { id: "m7-studio", icon: "✦", label: "M7" },
   ] as const;
 
   return (

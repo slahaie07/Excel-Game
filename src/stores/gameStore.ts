@@ -27,6 +27,7 @@ export type GameScreen =
   | "friends"
   | "trade"
   | "settings"
+  | "m7-studio"
   | "hall-of-fame";
 
 interface GameState {

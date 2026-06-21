@@ -117,6 +117,7 @@ function LocalLogin() {
 
 export default function LoginScreen() {
   const isOnline = useGameStore((s) => s.isOnline);
+  const setScreen = useGameStore((s) => s.setScreen);
 
   return (
     <div className="flex-1 flex flex-col bg-gradient-to-b from-aether-950 to-aether-900 p-6">
@@ -124,6 +125,13 @@ export default function LoginScreen() {
         <div className="text-5xl mb-4">💎</div>
         <h1 className="font-display text-3xl font-bold text-aether-200 mb-1">Aetheris</h1>
         <p className="text-aether-400 text-sm mb-8">{UNIVERSE.subtitle}</p>
+        <button
+          onClick={() => setScreen("m7-studio")}
+          className="mb-5 w-full rounded-2xl border border-yellow-400/30 bg-black/35 px-4 py-3 text-left shadow-lg shadow-black/20 active:scale-[0.98]"
+        >
+          <span className="block text-xs font-bold uppercase tracking-[0.22em] text-yellow-300">M7 Studio</span>
+          <span className="mt-1 block text-sm font-semibold text-yellow-50">Studio complet noir & or premium</span>
+        </button>
         {isConvexEnabled() ? <CloudLogin /> : <LocalLogin />}
         {isOnline ? (
           <p className="text-green-400/80 text-xs mt-6 text-center">☁️ Mode multijoueur Convex actif</p>
