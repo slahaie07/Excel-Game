@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme {
+  --color-m7-black: #0a0a0a;
+  --color-m7-charcoal: #111111;
+  --color-m7-surface: #161616;
+  --color-m7-border: #2a2a2a;
+  --color-m7-gold: #c9a962;
+  --color-m7-gold-light: #e8d5a3;
+  --color-m7-gold-dark: #9a7b3c;
+  --color-m7-muted: #8a8a8a;
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-body: "DM Sans", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--color-m7-black);
+  color: #f5f5f5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-m7-gold) 35%, transparent);
+  color: #fff;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #e8d5a3 0%, #c9a962 45%, #9a7b3c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gold-line {
+  background: linear-gradient(90deg, transparent, var(--color-m7-gold), transparent);
+  height: 1px;
+}
+
+.gold-border {
+  border: 1px solid color-mix(in srgb, var(--color-m7-gold) 30%, transparent);
+}
+
+.glass-card {
+  background: color-mix(in srgb, var(--color-m7-surface) 80%, transparent);
+  backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, var(--color-m7-gold) 12%, var(--color-m7-border));
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.shimmer-gold {
+  background: linear-gradient(
+    90deg,
+    var(--color-m7-gold-dark) 0%,
+    var(--color-m7-gold-light) 50%,
+    var(--color-m7-gold-dark) 100%
+  );
+  background-size: 200% auto;
+  animation: shimmer 4s linear infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes pulse-gold {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+.glow-orb {
+  animation: pulse-gold 4s ease-in-out infinite;
+}

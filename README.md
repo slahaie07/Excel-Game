@@ -181,3 +181,13 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 ## Licence
 
 Projet original — Univers Aetheris © 2026
+
+---
+
+## M7 Studio (site vitrine)
+
+Projet séparé dans [`m7-studio/`](m7-studio/) — studio créatif premium or & noir.
+
+```bash
+cd m7-studio && npm install && npm run dev
+```

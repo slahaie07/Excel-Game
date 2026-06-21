@@ -1,0 +1,9 @@
+[build]
+  base = "m7-studio/"
+  command = "npm install && npm run build"
+  publish = "m7-studio/dist"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
