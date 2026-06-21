@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useGameStore } from "../stores/gameStore";
 
 const studioServices = [
@@ -28,6 +29,7 @@ export default function M7StudioScreen() {
   const setScreen = useGameStore((s) => s.setScreen);
   const accountId = useGameStore((s) => s.accountId);
   const characterId = useGameStore((s) => s.characterId);
+  const [isVaultHighlighted, setIsVaultHighlighted] = useState(false);
   const backScreen = characterId ? "world" : accountId ? "character-select" : "login";
 
   return (
@@ -78,7 +80,10 @@ export default function M7StudioScreen() {
               <div className="flex flex-wrap gap-3">
                 <button
                   type="button"
-                  onClick={() => document.getElementById("m7-gold-vault")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+                  onClick={() => {
+                    setIsVaultHighlighted(true);
+                    document.getElementById("m7-gold-vault")?.scrollIntoView({ behavior: "smooth", block: "center" });
+                  }}
                   className="rounded-2xl bg-gradient-to-r from-yellow-200 via-yellow-400 to-amber-600 px-6 py-3 font-black text-black shadow-2xl shadow-yellow-500/25 active:scale-95"
                 >
                   Ouvrir les fichiers M7
@@ -93,7 +98,12 @@ export default function M7StudioScreen() {
               </div>
             </div>
 
-            <div id="m7-gold-vault" className="rounded-[2rem] border border-yellow-400/25 bg-black/60 p-4 shadow-2xl shadow-yellow-950/40 backdrop-blur">
+            <div
+              id="m7-gold-vault"
+              className={`rounded-[2rem] border border-yellow-400/25 bg-black/60 p-4 shadow-2xl shadow-yellow-950/40 backdrop-blur transition-all duration-500 ${
+                isVaultHighlighted ? "ring-2 ring-yellow-200 shadow-yellow-500/30" : ""
+              }`}
+            >
               <div className="rounded-[1.5rem] border border-yellow-500/20 bg-gradient-to-br from-zinc-950 via-black to-yellow-950/40 p-5">
                 <div className="mb-5 flex items-center justify-between">
                   <div>
