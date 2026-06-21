@@ -36,7 +36,7 @@ describe("userPreferences", () => {
   });
 
   it("exposes version constants", () => {
-    expect(APP_VERSION).toBe("3.2.0");
-    expect(VERSION_LABEL).toBe("Artisanat");
+    expect(APP_VERSION).toBe("4.0.0");
+    expect(VERSION_LABEL).toBe("Terreval");
   });
 });

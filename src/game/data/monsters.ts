@@ -3,6 +3,7 @@
  */
 
 import { EXPANSION_BOSSES_V30 } from "./expansionV30";
+import { EXPANSION_MONSTERS_V40 } from "./expansionMonstersV40";
 
 export interface MonsterDefinition {
   id: string;
@@ -88,6 +89,7 @@ export const MONSTERS: MonsterDefinition[] = [
   { id: "gardien_faille", name: "Gardien de la Faille", description: "Boss — Sentinelle des profondeurs extrêmes.", level: 65, zoneId: "profondeurs_nereides", stats: { hp: 1800, ap: 13, mp: 6, damage: 55, defense: 40 }, spells: ["faille_dimensionnelle", "cris_abyssal"], drops: [{ itemId: "fragment_faille", chance: 0.15 }], xpReward: 3500, eclatsReward: { min: 600, max: 1200 }, icon: "🌀", isBoss: true },
 
   ...EXPANSION_BOSSES_V30,
+  ...EXPANSION_MONSTERS_V40,
 ];
 
 export function getMonstersByZone(zoneId: string): MonsterDefinition[] {

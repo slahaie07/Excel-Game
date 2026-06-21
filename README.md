@@ -23,6 +23,10 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Cadres de profil visibles en chat et présence
 - Classement contributeurs campagne + bannière campagne dans le monde
 
+### v4.0.0 — Terreval (carte mondiale)
+- **24 zones**, 6 régions, 40+ POI, carte interactive agrandie
+- Givre, Marais, Cendres, Îles Stellaires + passages inter-régions
+
 ### v3.2.0 — Artisanat (22 métiers)
 - **22 métiers** (+16), recettes endgame, 5 slots par personnage
 - Nouveaux : Pêcheur, Tailleur, Cuisine, Orfèvre, Forgeur de Runes…

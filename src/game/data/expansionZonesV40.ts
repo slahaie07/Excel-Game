@@ -1,0 +1,261 @@
+/**
+ * v4.0 — 12 zones Terreval (4 régions continentales)
+ */
+
+import type { ZoneDefinition } from "./zones";
+
+export type MapRegionId = "coeur" | "archipel" | "givre" | "marais" | "cendres" | "stellaire";
+
+export interface MapRegionDefinition {
+  id: MapRegionId;
+  name: string;
+  description: string;
+  color: string;
+  zoneIds: string[];
+}
+
+export const MAP_REGIONS: MapRegionDefinition[] = [
+  {
+    id: "coeur",
+    name: "Cœur de Terreval",
+    description: "Vallée, forêt, désert et citadelle — le cœur historique du monde.",
+    color: "#6366f1",
+    zoneIds: ["vallee_eveils", "port_nebula", "foret_lumina", "desert_umbra", "citadelle_stellaire", "arene_pvp"],
+  },
+  {
+    id: "archipel",
+    name: "Archipel de Brume",
+    description: "Côtes, grottes et abysses marins.",
+    color: "#0ea5e9",
+    zoneIds: ["cotes_brume", "grottes_maree", "recif_abyssal", "ile_tempete", "sanctuaire_marins", "profondeurs_nereides"],
+  },
+  {
+    id: "givre",
+    name: "Hautes Terres de Givre",
+    description: "Plateaux gelés au nord de la Citadelle Stellaire.",
+    color: "#38bdf8",
+    zoneIds: ["plateau_givre", "monts_cristallins", "glaise_nord"],
+  },
+  {
+    id: "marais",
+    name: "Marais d'Éther",
+    description: "Tourbières mystiques à l'est de la Forêt de Lumina.",
+    color: "#22c55e",
+    zoneIds: ["marais_ether", "cite_flottante", "catacombes_humides"],
+  },
+  {
+    id: "cendres",
+    name: "Cordillère des Cendres",
+    description: "Volcans actifs au sud du désert d'Umbra.",
+    color: "#f97316",
+    zoneIds: ["vallee_cendres", "forge_volcanique", "chambre_magma"],
+  },
+  {
+    id: "stellaire",
+    name: "Îles Stellaires",
+    description: "Archipel céleste à l'ouest du Port de Nébula.",
+    color: "#a78bfa",
+    zoneIds: ["iles_stellaires", "atoll_nebula", "observatoire_lune"],
+  },
+];
+
+export const EXPANSION_ZONES_V40: ZoneDefinition[] = [
+  // ——— Hautes Terres de Givre ———
+  {
+    id: "plateau_givre",
+    name: "Plateau de Givre",
+    description: "Plateau venteux où les cristaux gèlent l'air. Passage nord depuis la Citadelle.",
+    levelRange: [55, 75],
+    x: 9,
+    y: 0,
+    connections: ["citadelle_stellaire", "monts_cristallins"],
+    npcs: ["guide_givre", "forgeron_givre"],
+    monsters: ["yeti_cristal", "loup_givre", "elemental_glace"],
+    dungeons: ["caverne_givre", "autel_froid"],
+    resources: ["flocon_stellaire", "cristal_givre"],
+    isPvP: false,
+    icon: "❄️",
+  },
+  {
+    id: "monts_cristallins",
+    name: "Monts Cristallins",
+    description: "Chaîne de pics translucides. Les Éveilleurs y cherchent des fragments stellaires.",
+    levelRange: [70, 95],
+    x: 7,
+    y: 0,
+    connections: ["plateau_givre", "glaise_nord"],
+    npcs: ["alpiniste_ether", "ermite_cristal"],
+    monsters: ["golem_givre", "harpy_glace", "wisp_polar"],
+    dungeons: ["pic_translucide", "mine_cristalline"],
+    resources: ["fragment_cristal", "minerai_stellaire"],
+    isPvP: true,
+    icon: "🏔️",
+  },
+  {
+    id: "glaise_nord",
+    name: "Glaise du Nord",
+    description: "Toundra éternelle. Le souffle du dragon de givre y hante les ruines.",
+    levelRange: [90, 150],
+    x: 5,
+    y: 0,
+    connections: ["monts_cristallins", "chambre_magma"],
+    npcs: ["gardien_glaise", "chroniqueur_nord"],
+    monsters: ["mammouth_ether", "spectre_givre", "dragon_givre"],
+    dungeons: ["temple_givre", "antre_dragon_givre"],
+    resources: ["ecaille_givre", "essence_boreale"],
+    isPvP: true,
+    icon: "🧊",
+  },
+  // ——— Marais d'Éther ———
+  {
+    id: "marais_ether",
+    name: "Marais d'Éther",
+    description: "Marais luminescent à la lisière est de Lumina. Brumes toxiques et reliques englouties.",
+    levelRange: [28, 42],
+    x: 11,
+    y: 6,
+    connections: ["foret_lumina", "cite_flottante"],
+    npcs: ["herboriste_marais", "guide_marais"],
+    monsters: ["boue_vivante", "grenouille_ether", "will_o_wisp"],
+    dungeons: ["tourbiere_maudite", "hangar_englouti"],
+    resources: ["mousse_ether", "racine_marais"],
+    isPvP: false,
+    icon: "🌫️",
+  },
+  {
+    id: "cite_flottante",
+    name: "Cité Flottante",
+    description: "Ruines suspendues par la magie des anciens. Marchands et érudits y transitent.",
+    levelRange: [42, 58],
+    x: 12,
+    y: 5,
+    connections: ["marais_ether", "catacombes_humides", "citadelle_stellaire"],
+    npcs: ["marchand_flottant", "sage_flottant"],
+    monsters: ["golem_rune", "sentinelle_flottante", "wisp_architecte"],
+    dungeons: ["nexus_flottant", "bibliotheque_suspendue"],
+    resources: ["pierre_levitation", "parchemin_flottant"],
+    isPvP: false,
+    icon: "🏛️",
+  },
+  {
+    id: "catacombes_humides",
+    name: "Catacombes Humides",
+    description: "Sous-sol du marais. Nécromanciens et cultistes d'Umbra y ont établi des rituels.",
+    levelRange: [52, 72],
+    x: 12,
+    y: 7,
+    connections: ["cite_flottante", "vallee_cendres"],
+    npcs: ["exorciste_marais"],
+    monsters: ["squelette_marais", "necro_marais", "esprit_tourbiere"],
+    dungeons: ["crypte_humide", "puits_ombres"],
+    resources: ["os_fossile", "essence_marais"],
+    isPvP: true,
+    icon: "💀",
+  },
+  // ——— Cordillère des Cendres ———
+  {
+    id: "vallee_cendres",
+    name: "Vallée des Cendres",
+    description: "Vallée volcanique au sud d'Umbra. Cendres stellaires et laves refroidies.",
+    levelRange: [38, 55],
+    x: 9,
+    y: 10,
+    connections: ["desert_umbra", "forge_volcanique", "catacombes_humides"],
+    npcs: ["prospecteur_cendres", "refugie_volcan"],
+    monsters: ["salamandre_cendre", "golem_lave", "chauve_souris_magma"],
+    dungeons: ["grotte_cendres", "passage_lave"],
+    resources: ["cendre_stellaire", "obsidienne_ether"],
+    isPvP: false,
+    icon: "🌋",
+  },
+  {
+    id: "forge_volcanique",
+    name: "Forge Volcanique",
+    description: "Forge naturelle alimentée par le magma. Les forgerons légendaires y travaillent.",
+    levelRange: [58, 80],
+    x: 10,
+    y: 11,
+    connections: ["vallee_cendres", "chambre_magma"],
+    npcs: ["maitre_forge_volcan", "apprenti_lave"],
+    monsters: ["elemental_magma", "golem_fournaise", "drake_cendre"],
+    dungeons: ["fournaise_ancienne", "atelier_magma"],
+    resources: ["lingot_volcan", "coeur_magma"],
+    isPvP: true,
+    icon: "🔥",
+  },
+  {
+    id: "chambre_magma",
+    name: "Chambre du Magma",
+    description: "Cœur de la cordillère. Le Titan de Cendre garde le flux stellaire brut.",
+    levelRange: [85, 160],
+    x: 11,
+    y: 10,
+    connections: ["forge_volcanique", "glaise_nord", "profondeurs_nereides"],
+    npcs: ["oracle_cendres"],
+    monsters: ["titan_cendre", "phoenix_ether", "colosse_magma"],
+    dungeons: ["creuset_primordial", "trone_magma"],
+    resources: ["fragment_primordial", "larme_phoenix"],
+    isPvP: true,
+    icon: "🌋",
+  },
+  // ——— Îles Stellaires ———
+  {
+    id: "iles_stellaires",
+    name: "Îles Stellaires",
+    description: "Archipel céleste accessible depuis Nébula. Îlots flottants et ruines astrales.",
+    levelRange: [18, 32],
+    x: 0,
+    y: 9,
+    connections: ["port_nebula", "atoll_nebula", "cotes_brume"],
+    npcs: ["navigateur_stellaire", "cartographe_iles"],
+    monsters: ["sprite_stellaire", "golem_astral", "raie_ciel"],
+    dungeons: ["ruines_astrales", "temple_ile"],
+    resources: ["poussiere_stellaire", "fragment_astral"],
+    isPvP: false,
+    icon: "🏝️",
+  },
+  {
+    id: "atoll_nebula",
+    name: "Atoll de Nébula",
+    description: "Réserve marine céleste. Coraux stellaires et poissons-lanternes géants.",
+    levelRange: [32, 48],
+    x: 0,
+    y: 10,
+    connections: ["iles_stellaires", "observatoire_lune"],
+    npcs: ["plongeur_stellaire"],
+    monsters: ["meduse_stellaire", "crabe_astral", "anguille_ciel"],
+    dungeons: ["lagoon_stellaire", "grotte_atoll"],
+    resources: ["corail_astral", "perle_stellaire"],
+    isPvP: false,
+    icon: "🐚",
+  },
+  {
+    id: "observatoire_lune",
+    name: "Observatoire de la Lune",
+    description: "Observatoire abandonné sur l'île la plus haute. Portail vers les constellations mortes.",
+    levelRange: [62, 120],
+    x: 0,
+    y: 11,
+    connections: ["atoll_nebula", "citadelle_stellaire"],
+    npcs: ["astronome_lune", "gardien_observatoire"],
+    monsters: ["constellation_vivante", "sentinelle_lunaire", "archimage_astral"],
+    dungeons: ["dome_lunaire", "passage_constellation"],
+    resources: ["lentille_lunaire", "essence_constellation"],
+    isPvP: true,
+    icon: "🔭",
+  },
+];
+
+/** Connexions à ajouter aux zones existantes */
+export const EXPANSION_ZONE_CONNECTION_PATCHES: Record<string, string[]> = {
+  citadelle_stellaire: ["plateau_givre", "cite_flottante", "observatoire_lune"],
+  desert_umbra: ["vallee_cendres"],
+  foret_lumina: ["marais_ether"],
+  port_nebula: ["iles_stellaires"],
+  cotes_brume: ["iles_stellaires"],
+  profondeurs_nereides: ["chambre_magma"],
+};
+
+export function getRegionForZone(zoneId: string): MapRegionDefinition | undefined {
+  return MAP_REGIONS.find((r) => r.zoneIds.includes(zoneId));
+}

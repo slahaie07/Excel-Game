@@ -136,6 +136,29 @@ export const ITEMS: ItemDefinition[] = [
   { id: "elixir_vie_majeure", name: "Élixir de Vie Majeure", description: "Restaure 300 PV.", type: "consumable", level: 80, rarity: "legendary", stackable: true, maxStack: 10, sellPrice: 150, icon: "🧪" },
   { id: "potion_tempete", name: "Potion de Tempête", description: "Restaure 5 PA.", type: "consumable", level: 40, rarity: "rare", stackable: true, maxStack: 10, sellPrice: 60, icon: "⛈️" },
   { id: "rune_faille", name: "Rune de Faille", description: "Rune dimensionnelle de pouvoir.", type: "resource", level: 65, rarity: "legendary", stackable: true, maxStack: 10, sellPrice: 500, icon: "🔮" },
+
+  // Carte v4.0 — ressources des nouvelles régions
+  { id: "cristal_givre", name: "Cristal de Givre", description: "Cristal des hautes terres gelées.", type: "resource", level: 65, rarity: "rare", stackable: true, maxStack: 40, sellPrice: 85, icon: "❄️" },
+  { id: "fragment_cristal", name: "Fragment Cristallin", description: "Éclat des monts translucides.", type: "resource", level: 78, rarity: "epic", stackable: true, maxStack: 30, sellPrice: 120, icon: "💎" },
+  { id: "ecaille_givre", name: "Écaille de Givre", description: "Écaille du dragon du nord.", type: "resource", level: 110, rarity: "legendary", stackable: true, maxStack: 10, sellPrice: 600, icon: "🐉" },
+  { id: "essence_boreale", name: "Essence Boréale", description: "Énergie pure de la glaise.", type: "resource", level: 100, rarity: "epic", stackable: true, maxStack: 20, sellPrice: 200, icon: "🌌" },
+  { id: "mousse_ether", name: "Mousse d'Éther", description: "Mousse luminescente du marais.", type: "resource", level: 30, rarity: "common", stackable: true, maxStack: 99, sellPrice: 8, icon: "🟢" },
+  { id: "racine_marais", name: "Racine de Marais", description: "Racine médicinale des tourbières.", type: "resource", level: 32, rarity: "common", stackable: true, maxStack: 99, sellPrice: 10, icon: "🌿" },
+  { id: "parchemin_flottant", name: "Parchemin Flottant", description: "Texte des architectes stellaires.", type: "resource", level: 50, rarity: "rare", stackable: true, maxStack: 20, sellPrice: 90, icon: "📜" },
+  { id: "pierre_levitation", name: "Pierre de Lévitation", description: "Pierre qui défie la gravité.", type: "resource", level: 52, rarity: "rare", stackable: true, maxStack: 25, sellPrice: 100, icon: "🪨" },
+  { id: "os_fossile", name: "Os Fossile", description: "Reste des catacombes humides.", type: "resource", level: 58, rarity: "uncommon", stackable: true, maxStack: 50, sellPrice: 35, icon: "🦴" },
+  { id: "essence_marais", name: "Essence de Marais", description: "Vapeur toxique condensée.", type: "resource", level: 40, rarity: "uncommon", stackable: true, maxStack: 40, sellPrice: 45, icon: "🌫️" },
+  { id: "cendre_stellaire", name: "Cendre Stellaire", description: "Cendre imprégnée d'éther volcanique.", type: "resource", level: 42, rarity: "common", stackable: true, maxStack: 99, sellPrice: 12, icon: "🌋" },
+  { id: "obsidienne_ether", name: "Obsidienne d'Éther", description: "Verre volcanique stellaire.", type: "resource", level: 48, rarity: "uncommon", stackable: true, maxStack: 50, sellPrice: 55, icon: "⬛" },
+  { id: "lingot_volcan", name: "Lingot Volcanique", description: "Métal forgé dans le magma.", type: "resource", level: 70, rarity: "epic", stackable: true, maxStack: 20, sellPrice: 180, icon: "🔶" },
+  { id: "coeur_magma", name: "Cœur de Magma", description: "Noyau de lave solidifiée.", type: "resource", level: 75, rarity: "epic", stackable: true, maxStack: 15, sellPrice: 220, icon: "❤️‍🔥" },
+  { id: "fragment_primordial", name: "Fragment Primordial", description: "Éclat du Titan de Cendre.", type: "resource", level: 100, rarity: "legendary", stackable: true, maxStack: 8, sellPrice: 700, icon: "🔥" },
+  { id: "larme_phoenix", name: "Larme de Phénix", description: "Larme cristallisée de feu.", type: "resource", level: 90, rarity: "legendary", stackable: true, maxStack: 10, sellPrice: 450, icon: "💧" },
+  { id: "fragment_astral", name: "Fragment Astral", description: "Éclat des îles stellaires.", type: "resource", level: 25, rarity: "uncommon", stackable: true, maxStack: 50, sellPrice: 30, icon: "✨" },
+  { id: "corail_astral", name: "Corail Astral", description: "Corail des eaux célestes.", type: "resource", level: 38, rarity: "rare", stackable: true, maxStack: 40, sellPrice: 65, icon: "🪸" },
+  { id: "perle_stellaire", name: "Perle Stellaire", description: "Perle de l'atoll de Nébula.", type: "resource", level: 42, rarity: "rare", stackable: true, maxStack: 30, sellPrice: 80, icon: "⚪" },
+  { id: "lentille_lunaire", name: "Lentille Lunaire", description: "Lentille de l'observatoire.", type: "resource", level: 80, rarity: "epic", stackable: true, maxStack: 10, sellPrice: 320, icon: "🔭" },
+  { id: "essence_constellation", name: "Essence de Constellation", description: "Poussière d'étoiles vivantes.", type: "resource", level: 75, rarity: "epic", stackable: true, maxStack: 15, sellPrice: 250, icon: "⭐" },
 ];
 
 export const EQUIPMENT_SLOTS = ["weapon", "armor", "helmet", "boots", "amulet", "ring"] as const;

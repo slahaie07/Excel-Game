@@ -1,5 +1,13 @@
 # Changelog
 
+## v4.0.0 — Terreval (carte mondiale ×2)
+
+- **24 zones** (+12) réparties en **6 régions** jouables
+- **4 régions** : Hautes Terres de Givre, Marais d'Éther, Cordillère des Cendres, Îles Stellaires
+- **40+ POI** : téléporteurs, landmarks, trésors, lore, entrées donjon
+- **+24 donjons**, **+50 monstres**, **20 ressources** sur les nouveaux continents
+- Carte agrandie, légende régions, liste POI en zone, voyage groupé par région
+
 ## v3.2.0 — Artisanat (22 métiers)
 
 - **22 métiers** (+16) : Pêcheur, Paysan, Tailleur, Cuisine, Orfèvre, Runesmith…

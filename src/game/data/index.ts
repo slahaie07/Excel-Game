@@ -11,6 +11,16 @@ export { TALENTS, getTalentById, getTalentsForArchetype, getAvailableTalents } f
 export { SPELLS, getSpellById, getSpellsForClass } from "./spells";
 export { MONSTERS, getMonstersByZone, getMonsterById } from "./monsters";
 export { ZONES, getZoneById } from "./zones";
+export {
+  MAP_REGIONS,
+  getZonesByRegion,
+  getRegionColor,
+  canTravelBetween,
+  getZoneConnections,
+  zoneToMapPosition,
+  TERRITORY_NODE_COLORS,
+} from "./worldMap";
+export { MAP_POIS, getPOIsForZone, getPOIById } from "./mapPOIs";
 export { ITEMS, EQUIPMENT_SLOTS, getItemById } from "./items";
 export { QUESTS, getQuestById, getQuestsForZone } from "./quests";
 export { PROFESSIONS, MAX_PROFESSION_SLOTS, getProfessionById } from "./professions";
@@ -70,7 +80,6 @@ export {
   type ZoneTerritory,
   type CampaignProgressInput,
 } from "./factionTerritories";
-export { getZoneConnections, zoneToMapPosition, TERRITORY_NODE_COLORS } from "./worldMap";
 export {
   CAMPAIGN_RANK_REWARDS,
   getCampaignRankCosmeticIds,

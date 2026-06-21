@@ -3,7 +3,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import Phaser from "phaser";
 import { useGameStore } from "../stores/gameStore";
-import { ZONES, getZoneById, getMonstersByZone, CLASSES } from "../game/data";
+import { getZoneById, getMonstersByZone, CLASSES } from "../game/data";
 import { getActiveEvent } from "../game/data/events";
 import { useOnlinePresence, getOnlinePlayersInZone, OnlinePresenceSync, CloudZonePlayers } from "../lib/useOnlinePresence";
 import { CloudCharacterSync } from "./CharacterSelectScreen";
@@ -26,9 +26,11 @@ import { WorldTerritoryBanner } from "../components/WorldTerritoryBanner";
 import { ZoneTerritoryBadge } from "../components/ZoneTerritoryBadge";
 import { WorldMapPanel } from "../components/WorldMapPanel";
 import { WorldMinimap } from "../components/WorldMinimap";
+import { ZonePOIList } from "../components/ZonePOIList";
 import { PlayerNameLine } from "../components/PlayerNameLine";
 import { WhatsNewModal } from "../components/WhatsNewModal";
 import { APP_VERSION, loadUserPreferences } from "../lib/userPreferences";
+import { getZonesByRegion } from "../game/data/worldMap";
 
 export default function WorldScreen() {
   const characterId = useGameStore((s) => s.characterId)!;
@@ -280,6 +282,8 @@ export default function WorldScreen() {
 
       <WorldCampaignBanner pledgedFactionId={pledgedFactionId} campaigns={campaigns} />
 
+      <ZonePOIList zoneId={zoneId} />
+
       {isConvexEnabled() && isCloudCharacter(characterId) && (
         <CloudWorldInvasion
           characterId={characterId as Id<"characters">}
@@ -377,20 +381,32 @@ export default function WorldScreen() {
             >
               Vue détaillée des territoires →
             </button>
-            <div className="space-y-2 mt-3">
-              {ZONES.map((z) => (
-                <button
-                  key={z.id}
-                  onClick={() => { useGameStore.getState().setZone(z.id); setShowMenu(false); }}
-                  className={`card w-full flex items-center gap-3 ${z.id === zoneId ? "border-aether-500" : ""}`}
-                >
-                  <span className="text-2xl">{z.icon}</span>
-                  <div className="text-left flex-1 min-w-0">
-                    <p className="font-bold text-white text-sm">{z.name}</p>
-                    <p className="text-aether-500 text-xs">Niv. {z.levelRange[0]}-{z.levelRange[1]}</p>
-                    <ZoneTerritoryBadge zoneId={z.id} campaigns={campaigns} compact />
+            <div className="space-y-4 mt-3 max-h-[40vh] overflow-y-auto">
+              {getZonesByRegion().map(({ region, zones }) => (
+                <div key={region.id}>
+                  <p
+                    className="text-[10px] font-semibold uppercase mb-2 px-1"
+                    style={{ color: region.color }}
+                  >
+                    {region.name}
+                  </p>
+                  <div className="space-y-2">
+                    {zones.map((z) => (
+                      <button
+                        key={z.id}
+                        onClick={() => { useGameStore.getState().setZone(z.id); setShowMenu(false); }}
+                        className={`card w-full flex items-center gap-3 ${z.id === zoneId ? "border-aether-500" : ""}`}
+                      >
+                        <span className="text-2xl">{z.icon}</span>
+                        <div className="text-left flex-1 min-w-0">
+                          <p className="font-bold text-white text-sm">{z.name}</p>
+                          <p className="text-aether-500 text-xs">Niv. {z.levelRange[0]}-{z.levelRange[1]}</p>
+                          <ZoneTerritoryBadge zoneId={z.id} campaigns={campaigns} compact />
+                        </div>
+                      </button>
+                    ))}
                   </div>
-                </button>
+                </div>
               ))}
             </div>
           </div>

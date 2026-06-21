@@ -15,6 +15,19 @@ export const ZONE_FACTION_MAP: Record<string, FactionId> = {
   desert_umbra: "umbra",
   arene_pvp: "umbra",
   port_nebula: "neutre",
+  // v4.0
+  plateau_givre: "lumina",
+  monts_cristallins: "lumina",
+  glaise_nord: "neutre",
+  marais_ether: "lumina",
+  cite_flottante: "neutre",
+  catacombes_humides: "umbra",
+  vallee_cendres: "umbra",
+  forge_volcanique: "umbra",
+  chambre_magma: "umbra",
+  iles_stellaires: "neutre",
+  atoll_nebula: "neutre",
+  observatoire_lune: "lumina",
 };
 
 export interface FactionQuestTemplate {

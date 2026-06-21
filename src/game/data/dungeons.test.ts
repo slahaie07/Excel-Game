@@ -2,9 +2,9 @@ import { describe, it, expect } from "vitest";
 import { DUNGEONS } from "./dungeons";
 import { MONSTERS } from "./monsters";
 
-describe("dungeons v2.4", () => {
-  it("has 70 dungeons total", () => {
-    expect(DUNGEONS).toHaveLength(70);
+describe("dungeons", () => {
+  it("has 94 dungeons total (70 + 24 v4.0)", () => {
+    expect(DUNGEONS).toHaveLength(94);
   });
 
   it("every dungeon boss exists as a monster", () => {

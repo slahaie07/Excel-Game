@@ -3,6 +3,8 @@
  */
 
 import { EXPANSION_DUNGEON_IDS_BY_ZONE } from "./expansionV30";
+import { EXPANSION_ZONES_V40, EXPANSION_ZONE_CONNECTION_PATCHES } from "./expansionZonesV40";
+import { EXPANSION_DUNGEON_IDS_BY_ZONE_V40 } from "./expansionDungeonsV40";
 
 export interface ZoneDefinition {
   id: string;
@@ -83,7 +85,7 @@ export const ZONES: ZoneDefinition[] = [
     description: "Ancienne forteresse flottante. Terre des boss et du contenu endgame.",
     levelRange: [40, 200],
     x: 8, y: 2,
-    connections: ["desert_umbra", "citadelle_stellaire", "sanctuaire_marins"],
+    connections: ["desert_umbra", "sanctuaire_marins"],
     npcs: ["archimage_stellaire", "forgeron_maitre"],
     monsters: ["golem_stellaire"],
     dungeons: ["nexus_aether", "tour_infinie", "cite_fractale", "observatoire_stellaire", "forge_eternelle"],
@@ -190,11 +192,23 @@ export const ZONES: ZoneDefinition[] = [
     isPvP: true,
     icon: "🧜",
   },
+  // v4.0 — 4 régions continentales (+12 zones)
+  ...EXPANSION_ZONES_V40,
 ];
 
 for (const zone of ZONES) {
   const extra = EXPANSION_DUNGEON_IDS_BY_ZONE[zone.id];
   if (extra?.length) zone.dungeons.push(...extra);
+  const extraV40 = EXPANSION_DUNGEON_IDS_BY_ZONE_V40[zone.id];
+  if (extraV40?.length) zone.dungeons.push(...extraV40);
+}
+
+for (const [zoneId, connections] of Object.entries(EXPANSION_ZONE_CONNECTION_PATCHES)) {
+  const zone = ZONES.find((z) => z.id === zoneId);
+  if (!zone) continue;
+  for (const conn of connections) {
+    if (!zone.connections.includes(conn)) zone.connections.push(conn);
+  }
 }
 
 export function getZoneById(id: string): ZoneDefinition | undefined {

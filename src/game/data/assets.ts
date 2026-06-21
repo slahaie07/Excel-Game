@@ -15,6 +15,18 @@ export const ZONE_BACKGROUNDS: Record<string, string> = {
   ile_tempete: "/assets/zones/zone-citadelle-stellaire.png",
   sanctuaire_marins: "/assets/zones/zone-port-nebula.png",
   profondeurs_nereides: "/assets/zones/zone-citadelle-stellaire.png",
+  plateau_givre: "/assets/zones/zone-citadelle-stellaire.png",
+  monts_cristallins: "/assets/zones/zone-vallee-eveils.png",
+  glaise_nord: "/assets/zones/zone-citadelle-stellaire.png",
+  marais_ether: "/assets/zones/zone-foret-lumina.png",
+  cite_flottante: "/assets/zones/zone-citadelle-stellaire.png",
+  catacombes_humides: "/assets/zones/zone-desert-umbra.png",
+  vallee_cendres: "/assets/zones/zone-desert-umbra.png",
+  forge_volcanique: "/assets/zones/zone-desert-umbra.png",
+  chambre_magma: "/assets/zones/zone-citadelle-stellaire.png",
+  iles_stellaires: "/assets/zones/zone-port-nebula.png",
+  atoll_nebula: "/assets/zones/zone-port-nebula.png",
+  observatoire_lune: "/assets/zones/zone-citadelle-stellaire.png",
 };
 
 export const COMBAT_BACKGROUNDS: Partial<Record<string, string>> = {
