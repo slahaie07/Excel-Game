@@ -260,6 +260,7 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Animations attaque, carte territoires, sprites monstres complets, XP cloud (v1.21)
 - [x] Sprites monstres, territoires faction, portraits roster (v1.20)
 - [x] Sprites portrait 10 classes, 6 fonds zones, récompenses top 3 campagne (v1.19)
+- [x] Version finale — guide, crédits, progression endgame, toasts, accessibilité (v2.0 vfinal)
 
 ## Licence
 
