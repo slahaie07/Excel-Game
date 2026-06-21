@@ -32,6 +32,18 @@ export const ENDGAME_GOALS: EndgameGoal[] = [
   },
   {
     id: "level_100",
+    label: "Atteindre le niveau 100",
+    icon: "💠",
+    check: (c) => c.level >= 100,
+  },
+  {
+    id: "level_150",
+    label: "Atteindre le niveau 150",
+    icon: "🔮",
+    check: (c) => c.level >= 150,
+  },
+  {
+    id: "level_max",
     label: `Atteindre le niveau ${MAX_CHARACTER_LEVEL} (max)`,
     icon: "💎",
     check: (c) => c.level >= MAX_CHARACTER_LEVEL,

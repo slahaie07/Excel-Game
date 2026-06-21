@@ -36,7 +36,7 @@ describe("userPreferences", () => {
   });
 
   it("exposes version constants", () => {
-    expect(APP_VERSION).toBe("2.5.0");
-    expect(VERSION_LABEL).toBe("Légions");
+    expect(APP_VERSION).toBe("3.0.0");
+    expect(VERSION_LABEL).toBe("Ascension");
   });
 });

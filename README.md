@@ -23,6 +23,9 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Cadres de profil visibles en chat et présence
 - Classement contributeurs campagne + bannière campagne dans le monde
 
+### v3.0.0 — Ascension (niveau 200 + 70 donjons)
+- **Niveau max 200**, **70 donjons**, 11 objectifs endgame
+
 ### v2.5.0 — Légions & Donjons
 - **30 donjons**, **15 classes**, **75 sorts**
 - Nouvelles classes : Druide, Fulgurancien, Paladin, Faucheur, Artilleur

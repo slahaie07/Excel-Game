@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.0.0 — Ascension (niveau 200 + 70 donjons)
+
+- **Niveau max 200** — objectif progression Dofus Touch
+- **70 donjons** (+40) : Nexus Profond, Couronne d'Éther, Fosse des Champions…
+- **40 boss** générés avec loot et répartition sur 12 zones
+- **11 objectifs endgame** (paliers 100, 150, 200)
+
 ## v2.5.0 — Légions (15 classes Dofus Touch)
 
 - **15 classes** — 5 archétypes × 3 : Druide, Fulgurancien, Paladin, Faucheur, Artilleur

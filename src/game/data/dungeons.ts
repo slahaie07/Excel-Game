@@ -1,3 +1,5 @@
+import { EXPANSION_DUNGEONS_V30 } from "./expansionV30";
+
 export interface DungeonDefinition {
   id: string;
   name: string;
@@ -383,6 +385,7 @@ export const DUNGEONS: DungeonDefinition[] = [
     ],
     rewards: { xp: 4000, eclats: 2000, items: [{ itemId: "fragment_faille", chance: 0.1, quantity: 1 }] },
   },
+  ...EXPANSION_DUNGEONS_V30,
 ];
 
 export function getDungeonById(id: string): DungeonDefinition | undefined {

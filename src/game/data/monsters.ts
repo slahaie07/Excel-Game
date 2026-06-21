@@ -2,6 +2,8 @@
  * Monstres et créatures d'Aetheris
  */
 
+import { EXPANSION_BOSSES_V30 } from "./expansionV30";
+
 export interface MonsterDefinition {
   id: string;
   name: string;
@@ -84,6 +86,8 @@ export const MONSTERS: MonsterDefinition[] = [
   { id: "colosse_tempete", name: "Colosse de Tempête", description: "Boss — Géant du pic des vents.", level: 38, zoneId: "ile_tempete", stats: { hp: 750, ap: 12, mp: 5, damage: 38, defense: 30 }, spells: ["poing_vent", "ouragan"], drops: [{ itemId: "noyau_tempete", chance: 0.2 }], xpReward: 850, eclatsReward: { min: 190, max: 380 }, icon: "🗿", isBoss: true },
   { id: "prophete_marin", name: "Prophète Marin", description: "Boss — Oracle des sanctuaires engloutis.", level: 46, zoneId: "sanctuaire_marins", stats: { hp: 920, ap: 12, mp: 6, damage: 42, defense: 30 }, spells: ["vision_abyssale", "vague_prophetique"], drops: [{ itemId: "parchemin_prophetie", chance: 0.15 }], xpReward: 1050, eclatsReward: { min: 240, max: 480 }, icon: "📜", isBoss: true },
   { id: "gardien_faille", name: "Gardien de la Faille", description: "Boss — Sentinelle des profondeurs extrêmes.", level: 65, zoneId: "profondeurs_nereides", stats: { hp: 1800, ap: 13, mp: 6, damage: 55, defense: 40 }, spells: ["faille_dimensionnelle", "cris_abyssal"], drops: [{ itemId: "fragment_faille", chance: 0.15 }], xpReward: 3500, eclatsReward: { min: 600, max: 1200 }, icon: "🌀", isBoss: true },
+
+  ...EXPANSION_BOSSES_V30,
 ];
 
 export function getMonstersByZone(zoneId: string): MonsterDefinition[] {

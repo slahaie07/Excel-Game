@@ -2,6 +2,8 @@
  * Zones du monde de Terreval
  */
 
+import { EXPANSION_DUNGEON_IDS_BY_ZONE } from "./expansionV30";
+
 export interface ZoneDefinition {
   id: string;
   name: string;
@@ -37,7 +39,7 @@ export const ZONES: ZoneDefinition[] = [
     id: "port_nebula",
     name: "Port de Nébula",
     description: "Hub commercial animé. Marché, guilde, banque et téléporteurs.",
-    levelRange: [1, 60],
+    levelRange: [1, 200],
     x: 3, y: 8,
     connections: ["vallee_eveils", "foret_lumina", "arene_pvp", "cotes_brume"],
     npcs: ["banquier", "chef_guilde", "teleporteur", "marchand_general"],
@@ -79,7 +81,7 @@ export const ZONES: ZoneDefinition[] = [
     id: "citadelle_stellaire",
     name: "Citadelle Stellaire",
     description: "Ancienne forteresse flottante. Terre des boss et du contenu endgame.",
-    levelRange: [40, 100],
+    levelRange: [40, 200],
     x: 8, y: 2,
     connections: ["desert_umbra", "citadelle_stellaire", "sanctuaire_marins"],
     npcs: ["archimage_stellaire", "forgeron_maitre"],
@@ -93,7 +95,7 @@ export const ZONES: ZoneDefinition[] = [
     id: "arene_pvp",
     name: "Arène des Éveilleurs",
     description: "Combattez d'autres joueurs en 1v1, 2v2 ou 3v3.",
-    levelRange: [10, 60],
+    levelRange: [10, 200],
     x: 3, y: 6,
     connections: ["port_nebula"],
     npcs: ["maitre_arene"],
@@ -178,7 +180,7 @@ export const ZONES: ZoneDefinition[] = [
     id: "profondeurs_nereides",
     name: "Profondeurs des Néréides",
     description: "Abîmes où les Néréides gardent les secrets de l'océan stellaire.",
-    levelRange: [50, 100],
+    levelRange: [50, 200],
     x: 3, y: 1,
     connections: ["sanctuaire_marins"],
     npcs: ["nereide_heralde"],
@@ -189,6 +191,11 @@ export const ZONES: ZoneDefinition[] = [
     icon: "🧜",
   },
 ];
+
+for (const zone of ZONES) {
+  const extra = EXPANSION_DUNGEON_IDS_BY_ZONE[zone.id];
+  if (extra?.length) zone.dungeons.push(...extra);
+}
 
 export function getZoneById(id: string): ZoneDefinition | undefined {
   return ZONES.find((z) => z.id === id);
