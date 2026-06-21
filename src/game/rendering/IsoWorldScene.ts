@@ -3,6 +3,8 @@ import {
   gridToIso, isoDepth, drawIsoTile, drawIsoShadow,
   getClassIcon, getMonsterIcon, ZONE_THEMES, type ZoneTileTheme,
 } from "./isometric";
+import { getMonsterById } from "../data/monsters";
+import { getRegionForZone } from "../data/worldMap";
 import { addEntityVisual, preloadEntitySprites } from "./spriteLoader";
 
 export interface IsoEntity {
@@ -169,27 +171,108 @@ export class IsoWorldScene extends Phaser.Scene {
   private createAmbientParticles() {
     const accent = this.theme.accent;
     const zoneId = this.config.zoneId;
-    const isPvPZone = zoneId === "arene_pvp";
-    const isLumina = zoneId === "foret_lumina" || zoneId === "vallee_eveils" || zoneId === "citadelle_stellaire";
-    const isUmbra = zoneId === "desert_umbra";
-    const frequency = isPvPZone ? 250 : isLumina ? 350 : isUmbra ? 500 : 400;
-    const particleCount = isPvPZone ? 3 : isUmbra ? 1 : 2;
+    const regionId = getRegionForZone(zoneId)?.id;
+
+    type ParticlePreset = {
+      tint: number;
+      speed: { min: number; max: number };
+      angle: { min: number; max: number };
+      scale: { start: number; end: number };
+      alpha: { start: number; end: number };
+      lifespan: number;
+      frequency: number;
+      yMaxRatio?: number;
+    };
+
+    let preset: ParticlePreset;
+
+    switch (regionId) {
+      case "givre":
+        preset = {
+          tint: 0xe8f4ff,
+          speed: { min: 4, max: 14 },
+          angle: { min: 250, max: 290 },
+          scale: { start: 0.35, end: 0 },
+          alpha: { start: 0.75, end: 0 },
+          lifespan: 5500,
+          frequency: 180,
+        };
+        break;
+      case "marais":
+        preset = {
+          tint: 0x7cfc00,
+          speed: { min: 3, max: 10 },
+          angle: { min: 0, max: 360 },
+          scale: { start: 0.5, end: 0.1 },
+          alpha: { start: 0.35, end: 0 },
+          lifespan: 4500,
+          frequency: 550,
+        };
+        break;
+      case "cendres":
+        preset = {
+          tint: 0xff6347,
+          speed: { min: 18, max: 35 },
+          angle: { min: 250, max: 290 },
+          scale: { start: 0.3, end: 0 },
+          alpha: { start: 0.85, end: 0 },
+          lifespan: 2500,
+          frequency: 280,
+        };
+        break;
+      case "stellaire":
+        preset = {
+          tint: 0xdda0dd,
+          speed: { min: 2, max: 12 },
+          angle: { min: 0, max: 360 },
+          scale: { start: 0.25, end: 0 },
+          alpha: { start: 0.7, end: 0 },
+          lifespan: 5000,
+          frequency: 420,
+        };
+        break;
+      case "archipel":
+        preset = {
+          tint: 0x87ceeb,
+          speed: { min: 8, max: 22 },
+          angle: { min: 255, max: 285 },
+          scale: { start: 0.3, end: 0 },
+          alpha: { start: 0.55, end: 0 },
+          lifespan: 3500,
+          frequency: 320,
+        };
+        break;
+      default: {
+        const isPvPZone = zoneId === "arene_pvp";
+        const isLumina = zoneId === "foret_lumina" || zoneId === "vallee_eveils" || zoneId === "citadelle_stellaire";
+        const isUmbra = zoneId === "desert_umbra";
+        preset = {
+          tint: accent,
+          speed: { min: isUmbra ? 8 : 5, max: isLumina ? 25 : 20 },
+          angle: { min: isUmbra ? 180 : 200, max: isUmbra ? 220 : 340 },
+          scale: { start: (isPvPZone ? 3 : isUmbra ? 1 : 2) * 0.2, end: 0 },
+          alpha: { start: isPvPZone ? 0.8 : 0.6, end: 0 },
+          lifespan: isLumina ? 4000 : 3000,
+          frequency: isPvPZone ? 250 : isLumina ? 350 : isUmbra ? 500 : 400,
+        };
+      }
+    }
 
     const gfx = this.add.graphics();
-    gfx.fillStyle(accent, 1);
+    gfx.fillStyle(preset.tint, 1);
     gfx.fillCircle(4, 4, 4);
     gfx.generateTexture("particle", 8, 8);
 
     this.add.particles(0, 0, "particle", {
       x: { min: 0, max: this.scale.width },
-      y: { min: 0, max: this.scale.height * 0.6 },
-      speed: { min: isUmbra ? 8 : 5, max: isLumina ? 25 : 20 },
-      angle: { min: isUmbra ? 180 : 200, max: isUmbra ? 220 : 340 },
-      scale: { start: particleCount * 0.2, end: 0 },
-      alpha: { start: isPvPZone ? 0.8 : 0.6, end: 0 },
-      lifespan: isLumina ? 4000 : 3000,
-      frequency,
-      tint: accent,
+      y: { min: 0, max: this.scale.height * (preset.yMaxRatio ?? 0.6) },
+      speed: preset.speed,
+      angle: preset.angle,
+      scale: preset.scale,
+      alpha: preset.alpha,
+      lifespan: preset.lifespan,
+      frequency: preset.frequency,
+      tint: preset.tint,
       blendMode: "ADD",
     });
   }
@@ -206,7 +289,7 @@ export function createMonsterEntities(monsterIds: string[]): IsoEntity[] {
     monsterId: id,
     gridX: 3 + (i % 4) * 2,
     gridY: 2 + Math.floor(i / 4) * 2,
-    icon: getMonsterIcon(id),
+    icon: getMonsterById(id)?.icon ?? getMonsterIcon(id),
   }));
 }
 

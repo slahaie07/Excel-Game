@@ -1,4 +1,5 @@
 import { ZONES, getMonstersByZone } from "../game/data";
+import { APP_VERSION, VERSION_LABEL } from "../lib/userPreferences";
 import { getActiveEvent } from "../game/data/events";
 import {
   getZoneTerritory,
@@ -147,7 +148,7 @@ export function WorldMapPanel({
 
       {!compact && (
         <p className="text-aether-500 text-[10px] text-center">
-          {ZONES.length} zones • {MAP_REGIONS.length} régions • Terreval v4.0
+          {ZONES.length} zones • {MAP_REGIONS.length} régions • {VERSION_LABEL} v{APP_VERSION}
         </p>
       )}
     </div>

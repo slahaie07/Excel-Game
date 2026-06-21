@@ -3,6 +3,8 @@
  * Conversion grille → coordonnées écran en losange 2:1
  */
 
+import { getMonsterById } from "../data/monsters";
+
 export interface IsoPoint {
   x: number;
   y: number;
@@ -99,18 +101,24 @@ export function getClassIcon(classId: string): string {
     gardien: "🛡️", bastion: "🏰",
     berserker: "⚔️", eclaireur: "🗡️",
     archer: "🏹", invocateur: "✨",
+    druide: "🌿", fulgurancien: "⚡", paladin: "✝️",
+    faucheur: "💀", artilleur: "💣",
   };
   return icons[classId] ?? "🧙";
 }
 
-export function getMonsterIcon(monsterId: string): string {
-  const icons: Record<string, string> = {
-    graine_ombre: "🌑", wisp_sauvage: "✨", loup_cristal: "🐺",
-    gardien_ruines: "👹", treant_corrompu: "🌳", fee_brume: "🧚",
-    champion_lumina: "⚔️", scorpion_ether: "🦂", sphinx_ombres: "🦁",
-    golem_stellaire: "🗿", dragon_aether: "🐉",
-    event_ombre_majeur: "👿", event_cristal_ancien: "💠",
-    event_esprit_eclipse: "🌘", event_gardien_floral: "🌸",
-  };
-  return icons[monsterId] ?? "👾";
+const MONSTER_ICON_OVERRIDES: Record<string, string> = {
+  graine_ombre: "🌑", wisp_sauvage: "✨", loup_cristal: "🐺",
+  gardien_ruines: "👹", treant_corrompu: "🌳", fee_brume: "🧚",
+  champion_lumina: "⚔️", scorpion_ether: "🦂", sphinx_ombres: "🦁",
+  golem_stellaire: "🗿", dragon_aether: "🐉",
+  event_ombre_majeur: "👿", event_cristal_ancien: "💠",
+  event_esprit_eclipse: "🌘", event_gardien_floral: "🌸",
+};
+
+export function getMonsterIcon(monsterId?: string): string {
+  if (!monsterId) return "👾";
+  const override = MONSTER_ICON_OVERRIDES[monsterId];
+  if (override) return override;
+  return getMonsterById(monsterId)?.icon ?? "👾";
 }

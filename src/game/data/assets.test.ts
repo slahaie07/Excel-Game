@@ -41,10 +41,13 @@ describe("game assets", () => {
   });
 
   it("maps monsters to sprite art", () => {
-    expect(Object.keys(MONSTER_SPRITES)).toHaveLength(15);
+    expect(Object.keys(MONSTER_SPRITES).length).toBeGreaterThanOrEqual(28);
     expect(hasMonsterSprite("dragon_aether")).toBe(true);
     expect(hasMonsterSprite("fee_brume")).toBe(true);
     expect(hasMonsterSprite("event_cristal_ancien")).toBe(true);
+    expect(hasMonsterSprite("dragon_givre")).toBe(true);
+    expect(hasMonsterSprite("titan_cendre")).toBe(true);
+    expect(hasMonsterSprite("boss_dome_lunaire")).toBe(true);
     expect(getMonsterPortrait("loup_cristal")).toContain("loup-cristal");
     expect(getMonsterTextureKey("graine_ombre")).toBe("monster_graine_ombre");
   });

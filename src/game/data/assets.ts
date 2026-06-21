@@ -59,22 +59,45 @@ export const CLASS_PORTRAITS: Record<string, string> = {
 
 export const ROSTER_ART = "/assets/characters/characters-roster.png";
 
+const MONSTER_SPRITE_GOLEM = "/assets/monsters/monster-golem-stellaire.png";
+const MONSTER_SPRITE_DRAGON = "/assets/monsters/monster-dragon-aether.png";
+const MONSTER_SPRITE_GARDIEN = "/assets/monsters/monster-gardien-ruines.png";
+const MONSTER_SPRITE_FEE = "/assets/monsters/monster-fee-brume.png";
+const MONSTER_SPRITE_SPHINX = "/assets/monsters/monster-sphinx-ombres.png";
+const MONSTER_SPRITE_SCORPION = "/assets/monsters/monster-scorpion-ether.png";
+const MONSTER_SPRITE_CHAMPION = "/assets/monsters/monster-champion-lumina.png";
+const MONSTER_SPRITE_ESPRIT = "/assets/monsters/monster-event-esprit-eclipse.png";
+
 export const MONSTER_SPRITES: Record<string, string> = {
   graine_ombre: "/assets/monsters/monster-graine-ombre.png",
   wisp_sauvage: "/assets/monsters/monster-wisp-sauvage.png",
   loup_cristal: "/assets/monsters/monster-loup-cristal.png",
-  gardien_ruines: "/assets/monsters/monster-gardien-ruines.png",
+  gardien_ruines: MONSTER_SPRITE_GARDIEN,
   treant_corrompu: "/assets/monsters/monster-treant-corrompu.png",
-  fee_brume: "/assets/monsters/monster-fee-brume.png",
-  champion_lumina: "/assets/monsters/monster-champion-lumina.png",
-  scorpion_ether: "/assets/monsters/monster-scorpion-ether.png",
-  sphinx_ombres: "/assets/monsters/monster-sphinx-ombres.png",
-  golem_stellaire: "/assets/monsters/monster-golem-stellaire.png",
-  dragon_aether: "/assets/monsters/monster-dragon-aether.png",
+  fee_brume: MONSTER_SPRITE_FEE,
+  champion_lumina: MONSTER_SPRITE_CHAMPION,
+  scorpion_ether: MONSTER_SPRITE_SCORPION,
+  sphinx_ombres: MONSTER_SPRITE_SPHINX,
+  golem_stellaire: MONSTER_SPRITE_GOLEM,
+  dragon_aether: MONSTER_SPRITE_DRAGON,
   event_gardien_floral: "/assets/monsters/monster-event-gardien-floral.png",
-  event_esprit_eclipse: "/assets/monsters/monster-event-esprit-eclipse.png",
+  event_esprit_eclipse: MONSTER_SPRITE_ESPRIT,
   event_ombre_majeur: "/assets/monsters/monster-event-ombre-majeur.png",
   event_cristal_ancien: "/assets/monsters/monster-event-cristal-ancien.png",
+  // v4.0 bosses — fallback sprites
+  boss_caverne_givre: MONSTER_SPRITE_GOLEM,
+  boss_pic_translucide: MONSTER_SPRITE_GOLEM,
+  dragon_givre: MONSTER_SPRITE_DRAGON,
+  boss_tourbiere: MONSTER_SPRITE_FEE,
+  boss_nexus_flottant: MONSTER_SPRITE_GARDIEN,
+  boss_crypte_humide: MONSTER_SPRITE_ESPRIT,
+  boss_grotte_cendres: MONSTER_SPRITE_SCORPION,
+  boss_fournaise: MONSTER_SPRITE_GOLEM,
+  titan_cendre: MONSTER_SPRITE_GOLEM,
+  boss_trone_magma: MONSTER_SPRITE_CHAMPION,
+  boss_ruines_astrales: MONSTER_SPRITE_GARDIEN,
+  boss_lagoon: MONSTER_SPRITE_SPHINX,
+  boss_dome_lunaire: MONSTER_SPRITE_GOLEM,
 };
 
 export function getMonsterPortrait(monsterId: string): string | undefined {

@@ -1,7 +1,14 @@
 import { getPOIsForZone } from "../game/data/mapPOIs";
 import { getRegionForZone } from "../game/data/worldMap";
+import { advanceQuestOnPOIVisit } from "../lib/questProgress";
 
-export function ZonePOIList({ zoneId }: { zoneId: string }) {
+export function ZonePOIList({
+  zoneId,
+  characterId,
+}: {
+  zoneId: string;
+  characterId: string;
+}) {
   const pois = getPOIsForZone(zoneId);
   const region = getRegionForZone(zoneId);
 
@@ -16,19 +23,21 @@ export function ZonePOIList({ zoneId }: { zoneId: string }) {
       )}
       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
         {pois.map((poi) => (
-          <div
+          <button
             key={poi.id}
-            className="flex-shrink-0 flex items-center gap-1.5 bg-aether-900/60 rounded-lg px-2 py-1 border border-aether-700/40"
+            type="button"
+            onClick={() => advanceQuestOnPOIVisit(characterId, poi.id)}
+            className="flex-shrink-0 flex items-center gap-1.5 bg-aether-900/60 rounded-lg px-2 py-1 border border-aether-700/40 hover:border-aether-500/60 active:scale-95 transition-colors"
             title={poi.description}
           >
             <span className="text-sm">{poi.icon}</span>
-            <div className="min-w-0">
+            <div className="min-w-0 text-left">
               <p className="text-aether-200 text-[10px] font-medium truncate max-w-[100px]">
                 {poi.name}
               </p>
               <p className="text-aether-500 text-[8px] capitalize">{poi.type}</p>
             </div>
-          </div>
+          </button>
         ))}
       </div>
     </div>
