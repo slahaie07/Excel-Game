@@ -82,7 +82,7 @@ const REGION_MASTER_QUESTS: QuestDefinition[] = [
       { type: "kill", targetId: "dragon_givre", count: 1, description: "Vaincre le Dragon de Givre" },
     ],
     rewards: { xp: 8000, eclats: 3500, items: [{ itemId: "essence_boreale", quantity: 1 }] },
-    prerequisiteQuests: ["decouverte_glaise_nord"],
+    prerequisiteQuests: ["decouverte_plateau_givre", "decouverte_monts_cristallins", "decouverte_glaise_nord"],
   },
   {
     id: "maitre_region_marais",
@@ -99,7 +99,7 @@ const REGION_MASTER_QUESTS: QuestDefinition[] = [
       { type: "kill", targetId: "boss_crypte_humide", count: 1, description: "Vaincre le Gardien de la Crypte Humide" },
     ],
     rewards: { xp: 5000, eclats: 2200, items: [{ itemId: "essence_marais", quantity: 1 }] },
-    prerequisiteQuests: ["decouverte_catacombes_humides"],
+    prerequisiteQuests: ["decouverte_marais_ether", "decouverte_cite_flottante", "decouverte_catacombes_humides"],
   },
   {
     id: "maitre_region_cendres",
@@ -116,7 +116,7 @@ const REGION_MASTER_QUESTS: QuestDefinition[] = [
       { type: "kill", targetId: "titan_cendre", count: 1, description: "Vaincre le Titan de Cendre" },
     ],
     rewards: { xp: 9000, eclats: 4000, items: [{ itemId: "fragment_primordial", quantity: 1 }] },
-    prerequisiteQuests: ["decouverte_chambre_magma"],
+    prerequisiteQuests: ["decouverte_vallee_cendres", "decouverte_forge_volcanique", "decouverte_chambre_magma"],
   },
   {
     id: "maitre_region_stellaire",
@@ -133,7 +133,7 @@ const REGION_MASTER_QUESTS: QuestDefinition[] = [
       { type: "kill", targetId: "boss_dome_lunaire", count: 1, description: "Vaincre le Gardien du Dôme Lunaire" },
     ],
     rewards: { xp: 6500, eclats: 2800, items: [{ itemId: "essence_constellation", quantity: 1 }] },
-    prerequisiteQuests: ["decouverte_observatoire_lune"],
+    prerequisiteQuests: ["decouverte_iles_stellaires", "decouverte_atoll_nebula", "decouverte_observatoire_lune"],
   },
 ];
 
