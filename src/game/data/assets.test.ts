@@ -20,7 +20,7 @@ describe("game assets", () => {
   });
 
   it("maps all classes to portraits", () => {
-    expect(Object.keys(CLASS_PORTRAITS)).toHaveLength(10);
+    expect(Object.keys(CLASS_PORTRAITS)).toHaveLength(15);
     expect(getClassPortrait("invocateur")).toContain("invocateur");
   });
 

@@ -31,11 +31,11 @@ export const SERVER_TALENTS: ServerTalent[] = [
 ];
 
 const CLASS_ARCHETYPE: Record<string, string> = {
-  alchimiste: "healer", luminaire: "healer",
-  pyromancien: "magic", cryomancien: "magic",
-  gardien: "shield", bastion: "shield",
-  berserker: "burst", eclaireur: "burst",
-  archer: "ranged", invocateur: "ranged",
+  alchimiste: "healer", luminaire: "healer", druide: "healer",
+  pyromancien: "magic", cryomancien: "magic", fulgurancien: "magic",
+  gardien: "shield", bastion: "shield", paladin: "shield",
+  berserker: "burst", eclaireur: "burst", faucheur: "burst",
+  archer: "ranged", invocateur: "ranged", artilleur: "ranged",
 };
 
 export function getArchetypeForClass(classId: string): string | undefined {

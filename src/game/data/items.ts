@@ -101,6 +101,25 @@ export const ITEMS: ItemDefinition[] = [
   { id: "ecaille_leviathan", name: "Écaille de Léviathan", description: "Écaille du seigneur des abysses.", type: "resource", level: 85, rarity: "legendary", stackable: true, maxStack: 5, sellPrice: 2000, icon: "🐋" },
   { id: "couronne_marine", name: "Couronne Marine", description: "Couronne du Léviathan de Brume.", type: "helmet", level: 85, rarity: "legendary", stats: { defense: 50, wisdom: 25, vitality: 20 }, stackable: false, maxStack: 1, sellPrice: 8000, icon: "👑" },
   { id: "potion_abysse", name: "Potion des Abysses", description: "Restaure 150 PV.", type: "consumable", level: 30, rarity: "rare", stackable: true, maxStack: 15, sellPrice: 50, icon: "🧪" },
+
+  // Loot donjons v2.4
+  { id: "cristal_caverne", name: "Cristal de Caverne", description: "Cristal des grottes de la vallée.", type: "resource", level: 8, rarity: "uncommon", stackable: true, maxStack: 50, sellPrice: 30, icon: "💎" },
+  { id: "minerai_ombre", name: "Minerai d'Ombre", description: "Minerai corrompu des mines abandonnées.", type: "resource", level: 11, rarity: "uncommon", stackable: true, maxStack: 50, sellPrice: 35, icon: "⛏️" },
+  { id: "coeur_treant", name: "Cœur de Tréant", description: "Noyau vivant d'un tréant maudit.", type: "resource", level: 14, rarity: "rare", stackable: true, maxStack: 20, sellPrice: 80, icon: "🌳" },
+  { id: "couronne_brume", name: "Couronne de Brume", description: "Couronne de la reine des fées.", type: "helmet", level: 18, rarity: "epic", stats: { defense: 14, wisdom: 10 }, stackable: false, maxStack: 1, sellPrice: 450, icon: "👑" },
+  { id: "essence_wisp", name: "Essence de Wisp", description: "Essence d'un esprit ancien.", type: "resource", level: 12, rarity: "rare", stackable: true, maxStack: 30, sellPrice: 55, icon: "✨" },
+  { id: "relique_mirage", name: "Relique du Mirage", description: "Artefact de l'oasis illusoire.", type: "amulet", level: 30, rarity: "epic", stats: { intelligence: 14, chance: 10 }, stackable: false, maxStack: 1, sellPrice: 700, icon: "🏜️" },
+  { id: "phylactere_umbra", name: "Phylactère d'Umbra", description: "Réceptacle d'âme du lich.", type: "resource", level: 34, rarity: "legendary", stackable: true, maxStack: 5, sellPrice: 400, icon: "💀" },
+  { id: "lentille_void", name: "Lentille du Vide", description: "Lentille de l'observatoire stellaire.", type: "resource", level: 48, rarity: "epic", stackable: true, maxStack: 10, sellPrice: 280, icon: "🔭" },
+  { id: "lame_forge_eternelle", name: "Lame de la Forge Éternelle", description: "Arme forgée par le golem forgeard.", type: "weapon", level: 54, rarity: "legendary", stats: { damage: 50, strength: 18 }, stackable: false, maxStack: 1, sellPrice: 2500, icon: "⚔️" },
+  { id: "lentille_phare", name: "Lentille du Phare", description: "Cristal du gardien du phare.", type: "resource", level: 15, rarity: "uncommon", stackable: true, maxStack: 30, sellPrice: 40, icon: "🗼" },
+  { id: "sabre_corsaire", name: "Sabre du Corsaire", description: "Lame du spectre corsaire.", type: "weapon", level: 20, rarity: "rare", stats: { damage: 22, agility: 10 }, stackable: false, maxStack: 1, sellPrice: 320, icon: "🏴‍☠️" },
+  { id: "nacre_matriarche", name: "Nacre de Matriarche", description: "Nacre de la reine des marées.", type: "resource", level: 22, rarity: "rare", stackable: true, maxStack: 25, sellPrice: 65, icon: "🐚" },
+  { id: "tentacule_kraken", name: "Tentacule de Kraken", description: "Trophée du kraken juvénile.", type: "resource", level: 28, rarity: "rare", stackable: true, maxStack: 20, sellPrice: 90, icon: "🦑" },
+  { id: "dent_alpha", name: "Dent d'Alpha", description: "Dent du requin dominant.", type: "resource", level: 32, rarity: "epic", stackable: true, maxStack: 15, sellPrice: 120, icon: "🦈" },
+  { id: "noyau_tempete", name: "Noyau de Tempête", description: "Cœur du colosse des vents.", type: "resource", level: 38, rarity: "epic", stackable: true, maxStack: 15, sellPrice: 150, icon: "⛈️" },
+  { id: "parchemin_prophetie", name: "Parchemin de Prophétie", description: "Vision du prophète marin.", type: "resource", level: 46, rarity: "legendary", stackable: true, maxStack: 5, sellPrice: 350, icon: "📜" },
+  { id: "fragment_faille", name: "Fragment de Faille", description: "Éclat dimensionnel des abysses.", type: "resource", level: 65, rarity: "legendary", stackable: true, maxStack: 5, sellPrice: 800, icon: "🌀" },
 ];
 
 export const EQUIPMENT_SLOTS = ["weapon", "armor", "helmet", "boots", "amulet", "ring"] as const;

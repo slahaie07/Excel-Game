@@ -1,5 +1,17 @@
 # Changelog
 
+## v2.5.0 — Légions (15 classes Dofus Touch)
+
+- **15 classes** — 5 archétypes × 3 : Druide, Fulgurancien, Paladin, Faucheur, Artilleur
+- **75 sorts** (5 par classe), talents et progression serveur synchronisés
+- Portraits placeholder pour les 5 nouvelles classes
+
+## v2.4.0 — Donjons (30 total)
+
+- **+18 donjons** répartis sur les 12 zones (30 au total, cible 70+)
+- **18 boss** additionnels avec loot dédié (17 nouveaux items)
+- Tests d'intégrité donjons ↔ monstres
+
 ## v2.2.0 — Archipel de Brume (expansion Dofus Touch)
 
 Première expansion majeure post-vfinal, vers l'échelle Dofus Touch.

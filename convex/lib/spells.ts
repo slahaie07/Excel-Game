@@ -74,6 +74,36 @@ const SPELLS: SpellDefinition[] = [
   { id: "eclipse_lunaire", apCost: 7, minRange: 3, maxRange: 7, effects: [{ type: "damage", element: "light", min: 16, max: 26 }] },
   { id: "pacte_ether", apCost: 3, minRange: 0, maxRange: 3, effects: [{ type: "buff", stat: "damage", value: 20, duration: 3 }] },
   { id: "armee_esprits", apCost: 7, minRange: 1, maxRange: 6, effects: [{ type: "damage", element: "ether", min: 14, max: 24 }] },
+  // Druide
+  { id: "soin_nature", apCost: 3, minRange: 1, maxRange: 5, effects: [{ type: "heal", min: 15, max: 25 }] },
+  { id: "epines_vivantes", apCost: 4, minRange: 1, maxRange: 4, effects: [{ type: "damage", element: "nature", min: 10, max: 16 }] },
+  { id: "rugissement_sylvestre", apCost: 4, minRange: 0, maxRange: 3, effects: [{ type: "buff", stat: "regen", value: 12, duration: 3 }] },
+  { id: "symbiose", apCost: 5, minRange: 0, maxRange: 3, effects: [{ type: "heal", min: 20, max: 30 }] },
+  { id: "tempete_verte", apCost: 6, minRange: 1, maxRange: 5, effects: [{ type: "damage", element: "nature", min: 14, max: 22 }] },
+  // Fulgurancien
+  { id: "eclair_stellaire", apCost: 3, minRange: 1, maxRange: 6, effects: [{ type: "damage", element: "lightning", min: 9, max: 15 }] },
+  { id: "chaine_foudre", apCost: 4, minRange: 1, maxRange: 5, effects: [{ type: "damage", element: "lightning", min: 11, max: 17 }] },
+  { id: "paratonnerre", apCost: 4, minRange: 0, maxRange: 0, effects: [{ type: "buff", stat: "shield", value: 22, duration: 3 }] },
+  { id: "surcharge", apCost: 3, minRange: 0, maxRange: 0, effects: [{ type: "buff", stat: "damage", value: 25, duration: 3 }] },
+  { id: "foudre_jugement", apCost: 7, minRange: 1, maxRange: 6, effects: [{ type: "damage", element: "lightning", min: 18, max: 28 }] },
+  // Paladin
+  { id: "frappe_sacree", apCost: 4, minRange: 1, maxRange: 1, effects: [{ type: "damage", element: "light", min: 12, max: 18 }] },
+  { id: "armure_lumiere", apCost: 4, minRange: 0, maxRange: 2, effects: [{ type: "buff", stat: "defense", value: 40, duration: 2 }] },
+  { id: "jugement_divin", apCost: 2, minRange: 1, maxRange: 4, effects: [{ type: "buff", stat: "taunt", value: 1, duration: 2 }] },
+  { id: "aura_benediction", apCost: 4, minRange: 0, maxRange: 2, effects: [{ type: "heal", min: 18, max: 28 }] },
+  { id: "martyre_stellaire", apCost: 6, minRange: 1, maxRange: 2, effects: [{ type: "damage", element: "light", min: 16, max: 24 }] },
+  // Faucheur
+  { id: "lame_spectrale", apCost: 3, minRange: 1, maxRange: 1, effects: [{ type: "damage", element: "shadow", min: 9, max: 15 }] },
+  { id: "drain_vie", apCost: 4, minRange: 1, maxRange: 3, effects: [{ type: "damage", element: "shadow", min: 10, max: 16 }] },
+  { id: "marque_mort", apCost: 3, minRange: 1, maxRange: 4, effects: [{ type: "debuff", stat: "defense", value: -25, duration: 3 }] },
+  { id: "danse_faucheuse", apCost: 5, minRange: 1, maxRange: 1, effects: [{ type: "damage", element: "shadow", min: 14, max: 20 }] },
+  { id: "reaper_ultime", apCost: 7, minRange: 1, maxRange: 2, effects: [{ type: "damage", element: "shadow", min: 18, max: 28 }] },
+  // Artilleur
+  { id: "tir_canon", apCost: 4, minRange: 3, maxRange: 8, effects: [{ type: "damage", element: "ether", min: 10, max: 16 }] },
+  { id: "obus_ether", apCost: 5, minRange: 3, maxRange: 7, effects: [{ type: "damage", element: "ether", min: 11, max: 19 }] },
+  { id: "mitraille", apCost: 3, minRange: 2, maxRange: 6, effects: [{ type: "damage", element: "ether", min: 9, max: 15 }] },
+  { id: "barricade", apCost: 4, minRange: 0, maxRange: 2, effects: [{ type: "buff", stat: "defense", value: 30, duration: 2 }] },
+  { id: "barrage_stellaire", apCost: 7, minRange: 3, maxRange: 8, effects: [{ type: "damage", element: "ether", min: 16, max: 26 }] },
 ];
 
 export function getSpellById(id: string): SpellDefinition | undefined {

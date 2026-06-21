@@ -36,6 +36,11 @@ export const CLASS_PORTRAITS: Record<string, string> = {
   eclaireur: "/assets/characters/class-eclaireur.png",
   archer: "/assets/characters/class-archer.png",
   invocateur: "/assets/characters/class-invocateur.png",
+  druide: "/assets/characters/class-alchimiste.png",
+  fulgurancien: "/assets/characters/class-pyromancien.png",
+  paladin: "/assets/characters/class-gardien.png",
+  faucheur: "/assets/characters/class-eclaireur.png",
+  artilleur: "/assets/characters/class-archer.png",
 };
 
 export const ROSTER_ART = "/assets/characters/characters-roster.png";

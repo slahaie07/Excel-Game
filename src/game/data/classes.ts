@@ -1,6 +1,6 @@
 /**
- * Classes jouables — 10 archétypes équilibrés à Aetheris
- * 2 soins · 2 magie · 2 bouclier · 2 gros dégâts · 2 à distance
+ * Classes jouables — 15 archétypes équilibrés à Aetheris (style Dofus Touch)
+ * 3 soins · 3 magie · 3 bouclier · 3 gros dégâts · 3 à distance
  * Chaque classe totalise 60 points de stats de base.
  */
 
@@ -42,6 +42,11 @@ const BALANCED_STATS = {
   burstHybrid: { vitality: 10, wisdom: 8, strength: 12, intelligence: 6, agility: 16, chance: 8 },
   rangedPhys: { vitality: 10, wisdom: 8, strength: 10, intelligence: 8, agility: 16, chance: 8 },
   rangedSummon: { vitality: 10, wisdom: 14, strength: 4, intelligence: 14, agility: 8, chance: 10 },
+  healerDruid: { vitality: 11, wisdom: 17, strength: 5, intelligence: 12, agility: 9, chance: 6 },
+  magicLightning: { vitality: 10, wisdom: 11, strength: 4, intelligence: 17, agility: 10, chance: 8 },
+  tankPaladin: { vitality: 17, wisdom: 8, strength: 14, intelligence: 6, agility: 5, chance: 10 },
+  burstReaper: { vitality: 12, wisdom: 6, strength: 16, intelligence: 6, agility: 14, chance: 6 },
+  rangedArtillery: { vitality: 11, wisdom: 8, strength: 12, intelligence: 10, agility: 14, chance: 5 },
 } as const satisfies Record<string, Record<StatKey, number>>;
 
 export const CLASSES: ClassDefinition[] = [
@@ -72,6 +77,19 @@ export const CLASSES: ClassDefinition[] = [
     color: "#f1c40f",
     icon: "☀️",
   },
+  {
+    id: "druide",
+    name: "Druide Sylvestre",
+    title: "Gardien de la Forêt",
+    description: "Canalise la vie des arbres pour soigner et contrôler le champ de bataille.",
+    archetype: "healer",
+    role: "support",
+    range: "hybrid",
+    baseStats: BALANCED_STATS.healerDruid,
+    startingSpells: ["soin_nature", "epines_vivantes", "rugissement_sylvestre"],
+    color: "#27ae60",
+    icon: "🌿",
+  },
 
   // — Magie —
   {
@@ -99,6 +117,19 @@ export const CLASSES: ClassDefinition[] = [
     startingSpells: ["eclat_glace", "blizzard_ether", "prison_glace"],
     color: "#74b9ff",
     icon: "❄️",
+  },
+  {
+    id: "fulgurancien",
+    name: "Fulgurancien",
+    title: "Maître des Éclairs",
+    description: "Invoque la foudre stellaire pour des dégâts en chaîne dévastateurs.",
+    archetype: "magic",
+    role: "dps",
+    range: "ranged",
+    baseStats: BALANCED_STATS.magicLightning,
+    startingSpells: ["eclair_stellaire", "chaine_foudre", "paratonnerre"],
+    color: "#f39c12",
+    icon: "⚡",
   },
 
   // — Bouclier —
@@ -128,6 +159,19 @@ export const CLASSES: ClassDefinition[] = [
     color: "#636e72",
     icon: "🏰",
   },
+  {
+    id: "paladin",
+    name: "Paladin Stellaire",
+    title: "Chevalier de Lumière",
+    description: "Combine protection divine et frappes sacrées. Tank hybride soin-défense.",
+    archetype: "shield",
+    role: "tank",
+    range: "melee",
+    baseStats: BALANCED_STATS.tankPaladin,
+    startingSpells: ["frappe_sacree", "armure_lumiere", "jugement_divin"],
+    color: "#dfe6e9",
+    icon: "✝️",
+  },
 
   // — Gros dégâts —
   {
@@ -156,6 +200,19 @@ export const CLASSES: ClassDefinition[] = [
     color: "#7b68ee",
     icon: "🗡️",
   },
+  {
+    id: "faucheur",
+    name: "Faucheur d'Ombres",
+    title: "Messager de la Mort",
+    description: "Draine la vie de ses ennemis et frappe sans pitié au corps à corps.",
+    archetype: "burst",
+    role: "dps",
+    range: "melee",
+    baseStats: BALANCED_STATS.burstReaper,
+    startingSpells: ["lame_spectrale", "drain_vie", "marque_mort"],
+    color: "#2d3436",
+    icon: "💀",
+  },
 
   // — À distance —
   {
@@ -183,6 +240,19 @@ export const CLASSES: ClassDefinition[] = [
     startingSpells: ["invocation_wisp", "lien_ether", "tempete_esprits"],
     color: "#9b59b6",
     icon: "✨",
+  },
+  {
+    id: "artilleur",
+    name: "Artilleur d'Éther",
+    title: "Canonnier Stellaire",
+    description: "Bombardements à distance et contrôle de zone par la poudre d'éther.",
+    archetype: "ranged",
+    role: "dps",
+    range: "ranged",
+    baseStats: BALANCED_STATS.rangedArtillery,
+    startingSpells: ["tir_canon", "obus_ether", "mitraille"],
+    color: "#e17055",
+    icon: "💣",
   },
 ];
 

@@ -6,13 +6,13 @@ import { TALENTS, getAvailableTalents } from "./talents";
 
 const STAT_KEYS = ["vitality", "wisdom", "strength", "intelligence", "agility", "chance"] as const;
 
-describe("10 classes balance", () => {
-  it("has exactly 10 classes in 5 archetypes × 2", () => {
-    expect(CLASSES).toHaveLength(10);
+describe("15 classes balance (Dofus Touch)", () => {
+  it("has exactly 15 classes in 5 archetypes × 3", () => {
+    expect(CLASSES).toHaveLength(15);
     const archetypes = new Set(CLASSES.map((c) => c.archetype));
     expect(archetypes.size).toBe(5);
     for (const archetype of archetypes) {
-      expect(CLASSES.filter((c) => c.archetype === archetype)).toHaveLength(2);
+      expect(CLASSES.filter((c) => c.archetype === archetype)).toHaveLength(3);
     }
   });
 

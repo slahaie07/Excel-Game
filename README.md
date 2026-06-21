@@ -23,6 +23,10 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Cadres de profil visibles en chat et présence
 - Classement contributeurs campagne + bannière campagne dans le monde
 
+### v2.5.0 — Légions & Donjons
+- **30 donjons**, **15 classes**, **75 sorts**
+- Nouvelles classes : Druide, Fulgurancien, Paladin, Faucheur, Artilleur
+
 ### v2.2.0 — Archipel de Brume (expansion Dofus Touch)
 - **12 zones** (6 originales + Archipel de Brume)
 - **Niveau max 100**, 5 sorts/classe, 12 donjons, 22 quêtes

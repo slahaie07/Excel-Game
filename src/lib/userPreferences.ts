@@ -26,5 +26,5 @@ export function saveUserPreferences(patch: Partial<UserPreferences>): UserPrefer
   return next;
 }
 
-export const APP_VERSION = "2.2.0";
-export const VERSION_LABEL = "Archipel";
+export const APP_VERSION = "2.5.0";
+export const VERSION_LABEL = "Légions";

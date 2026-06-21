@@ -103,6 +103,41 @@ export const SPELLS: SpellDefinition[] = [
   { id: "eclipse_lunaire", name: "Éclipse Lunaire", description: "Pluie de flèches sacrées.", apCost: 7, minRange: 3, maxRange: 7, area: 2, cooldown: 5, levelRequired: 18, classId: "archer", effects: [{ type: "damage", element: "light", min: 16, max: 26 }], icon: "🌑" },
   { id: "pacte_ether", name: "Pacte d'Éther", description: "Renforce les invocations.", apCost: 3, minRange: 0, maxRange: 3, area: 0, cooldown: 3, levelRequired: 10, classId: "invocateur", effects: [{ type: "buff", stat: "damage", value: 20, duration: 3 }], icon: "📜" },
   { id: "armee_esprits", name: "Armée d'Esprits", description: "Tempête d'esprits en zone.", apCost: 7, minRange: 1, maxRange: 6, area: 2, cooldown: 5, levelRequired: 18, classId: "invocateur", effects: [{ type: "damage", element: "ether", min: 14, max: 24 }], icon: "👻" },
+
+  // Druide (soins v2.5)
+  { id: "soin_nature", name: "Soin de Nature", description: "Soin par les racines vivantes.", apCost: 3, minRange: 1, maxRange: 5, area: 0, cooldown: 0, levelRequired: 1, classId: "druide", effects: [{ type: "heal", min: 15, max: 25 }], icon: "🌿" },
+  { id: "epines_vivantes", name: "Épines Vivantes", description: "Dégâts naturels et entrave.", apCost: 4, minRange: 1, maxRange: 4, area: 0, cooldown: 2, levelRequired: 3, classId: "druide", effects: [{ type: "damage", element: "nature", min: 10, max: 16 }], icon: "🌵" },
+  { id: "rugissement_sylvestre", name: "Rugissement Sylvestre", description: "Buff de régénération.", apCost: 4, minRange: 0, maxRange: 3, area: 1, cooldown: 3, levelRequired: 6, classId: "druide", effects: [{ type: "buff", stat: "regen", value: 12, duration: 3 }], icon: "🦁" },
+  { id: "symbiose", name: "Symbiose", description: "Soin de groupe.", apCost: 5, minRange: 0, maxRange: 3, area: 1, cooldown: 4, levelRequired: 10, classId: "druide", effects: [{ type: "heal", min: 20, max: 30 }], icon: "🍃" },
+  { id: "tempete_verte", name: "Tempête Verte", description: "Dégâts nature en zone.", apCost: 6, minRange: 1, maxRange: 5, area: 2, cooldown: 5, levelRequired: 18, classId: "druide", effects: [{ type: "damage", element: "nature", min: 14, max: 22 }], icon: "🌪️" },
+
+  // Fulgurancien (magie v2.5)
+  { id: "eclair_stellaire", name: "Éclair Stellaire", description: "Foudre directe.", apCost: 3, minRange: 1, maxRange: 6, area: 0, cooldown: 0, levelRequired: 1, classId: "fulgurancien", effects: [{ type: "damage", element: "lightning", min: 9, max: 15 }], icon: "⚡" },
+  { id: "chaine_foudre", name: "Chaîne de Foudre", description: "Éclair rebondissant.", apCost: 4, minRange: 1, maxRange: 5, area: 0, cooldown: 2, levelRequired: 3, classId: "fulgurancien", effects: [{ type: "damage", element: "lightning", min: 11, max: 17 }], icon: "🔗" },
+  { id: "paratonnerre", name: "Paratonnerre", description: "Bouclier électrique.", apCost: 4, minRange: 0, maxRange: 0, area: 0, cooldown: 3, levelRequired: 6, classId: "fulgurancien", effects: [{ type: "buff", stat: "shield", value: 22, duration: 3 }], icon: "🛡️" },
+  { id: "surcharge", name: "Surcharge", description: "Amplifie les dégâts électriques.", apCost: 3, minRange: 0, maxRange: 0, area: 0, cooldown: 3, levelRequired: 10, classId: "fulgurancien", effects: [{ type: "buff", stat: "damage", value: 25, duration: 3 }], icon: "💥" },
+  { id: "foudre_jugement", name: "Foudre du Jugement", description: "Frappe divine en zone.", apCost: 7, minRange: 1, maxRange: 6, area: 2, cooldown: 5, levelRequired: 18, classId: "fulgurancien", effects: [{ type: "damage", element: "lightning", min: 18, max: 28 }], icon: "🌩️" },
+
+  // Paladin (bouclier v2.5)
+  { id: "frappe_sacree", name: "Frappe Sacrée", description: "Coup béni au corps à corps.", apCost: 4, minRange: 1, maxRange: 1, area: 0, cooldown: 0, levelRequired: 1, classId: "paladin", effects: [{ type: "damage", element: "light", min: 12, max: 18 }], icon: "✝️" },
+  { id: "armure_lumiere", name: "Armure de Lumière", description: "Renforce la défense.", apCost: 4, minRange: 0, maxRange: 2, area: 1, cooldown: 2, levelRequired: 1, classId: "paladin", effects: [{ type: "buff", stat: "defense", value: 40, duration: 2 }], icon: "🛡️" },
+  { id: "jugement_divin", name: "Jugement Divin", description: "Provocation sacrée.", apCost: 2, minRange: 1, maxRange: 4, area: 0, cooldown: 1, levelRequired: 4, classId: "paladin", effects: [{ type: "taunt", duration: 2 }], icon: "⚖️" },
+  { id: "aura_benediction", name: "Aura de Bénédiction", description: "Soin léger de groupe.", apCost: 4, minRange: 0, maxRange: 2, area: 1, cooldown: 3, levelRequired: 10, classId: "paladin", effects: [{ type: "heal", min: 18, max: 28 }], icon: "✨" },
+  { id: "martyre_stellaire", name: "Martyre Stellaire", description: "Sacrifice offensif.", apCost: 6, minRange: 1, maxRange: 2, area: 1, cooldown: 5, levelRequired: 18, classId: "paladin", effects: [{ type: "damage", element: "light", min: 16, max: 24 }], icon: "🔥" },
+
+  // Faucheur (burst v2.5)
+  { id: "lame_spectrale", name: "Lame Spectrale", description: "Frappe d'ombre au corps à corps.", apCost: 3, minRange: 1, maxRange: 1, area: 0, cooldown: 0, levelRequired: 1, classId: "faucheur", effects: [{ type: "damage", element: "shadow", min: 9, max: 15 }], icon: "👻" },
+  { id: "drain_vie", name: "Drain de Vie", description: "Vole des PV à la cible.", apCost: 4, minRange: 1, maxRange: 3, area: 0, cooldown: 2, levelRequired: 3, classId: "faucheur", effects: [{ type: "damage", element: "shadow", min: 10, max: 16 }, { type: "heal", min: 8, max: 12 }], icon: "🩸" },
+  { id: "marque_mort", name: "Marque de Mort", description: "Affaiblit la cible.", apCost: 3, minRange: 1, maxRange: 4, area: 0, cooldown: 2, levelRequired: 6, classId: "faucheur", effects: [{ type: "debuff", stat: "defense", value: -25, duration: 3 }], icon: "💀" },
+  { id: "danse_faucheuse", name: "Danse Faucheuse", description: "Enchaînement mortel.", apCost: 5, minRange: 1, maxRange: 1, area: 0, cooldown: 3, levelRequired: 10, classId: "faucheur", effects: [{ type: "damage", element: "shadow", min: 14, max: 20 }], icon: "🗡️" },
+  { id: "reaper_ultime", name: "Faucheuse Ultime", description: "Coup de grâce en zone.", apCost: 7, minRange: 1, maxRange: 2, area: 1, cooldown: 5, levelRequired: 18, classId: "faucheur", effects: [{ type: "damage", element: "shadow", min: 18, max: 28 }], icon: "⚰️" },
+
+  // Artilleur (distance v2.5)
+  { id: "tir_canon", name: "Tir de Canon", description: "Obus à longue portée.", apCost: 4, minRange: 3, maxRange: 8, area: 0, cooldown: 0, levelRequired: 1, classId: "artilleur", effects: [{ type: "damage", element: "ether", min: 10, max: 16 }], icon: "💣" },
+  { id: "obus_ether", name: "Obus d'Éther", description: "Explosion en zone.", apCost: 5, minRange: 3, maxRange: 7, area: 2, cooldown: 2, levelRequired: 6, classId: "artilleur", effects: [{ type: "damage", element: "ether", min: 11, max: 19 }], icon: "💥" },
+  { id: "mitraille", name: "Mitraille", description: "Tir rapide.", apCost: 3, minRange: 2, maxRange: 6, area: 0, cooldown: 1, levelRequired: 3, classId: "artilleur", effects: [{ type: "damage", element: "ether", min: 9, max: 15 }], icon: "🔫" },
+  { id: "barricade", name: "Barricade", description: "Couvert défensif.", apCost: 4, minRange: 0, maxRange: 2, area: 1, cooldown: 3, levelRequired: 10, classId: "artilleur", effects: [{ type: "buff", stat: "defense", value: 30, duration: 2 }], icon: "🧱" },
+  { id: "barrage_stellaire", name: "Barrage Stellaire", description: "Bombardement massif.", apCost: 7, minRange: 3, maxRange: 8, area: 2, cooldown: 5, levelRequired: 18, classId: "artilleur", effects: [{ type: "damage", element: "ether", min: 16, max: 26 }], icon: "🎆" },
 ];
 
 export function getSpellById(id: string): SpellDefinition | undefined {
