@@ -2,6 +2,8 @@
  * Système de quêtes
  */
 
+import { EXPANSION_QUESTS_V31 } from "./expansionQuests";
+
 export type QuestType = "main" | "side" | "daily" | "guild" | "dungeon";
 export type QuestObjectiveType = "kill" | "collect" | "talk" | "explore" | "craft" | "deliver";
 
@@ -342,6 +344,8 @@ export const QUESTS: QuestDefinition[] = [
     ],
     rewards: { xp: 400, eclats: 160, items: [{ itemId: "encre_ombre", quantity: 2 }] },
   },
+  // v3.1 — +86 quêtes (donjons, citadelle, endgame, side, daily, guilde)
+  ...EXPANSION_QUESTS_V31,
 ];
 
 export function getQuestById(id: string): QuestDefinition | undefined {

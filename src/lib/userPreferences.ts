@@ -26,5 +26,5 @@ export function saveUserPreferences(patch: Partial<UserPreferences>): UserPrefer
   return next;
 }
 
-export const APP_VERSION = "3.0.0";
-export const VERSION_LABEL = "Ascension";
+export const APP_VERSION = "3.1.0";
+export const VERSION_LABEL = "Chroniques";

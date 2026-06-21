@@ -23,6 +23,11 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Cadres de profil visibles en chat et présence
 - Classement contributeurs campagne + bannière campagne dans le monde
 
+### v3.1.0 — Chroniques (100+ quêtes)
+- **100+ quêtes** (+86) : donjons, citadelle, endgame, guilde
+- **40 quêtes donjon** liées aux boss expansion
+- Chaîne principale désert → citadelle → ascension 200
+
 ### v3.0.0 — Ascension (niveau 200 + 70 donjons)
 - **Niveau max 200**, **70 donjons**, 11 objectifs endgame
 

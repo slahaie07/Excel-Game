@@ -1,10 +1,10 @@
 import { APP_VERSION, VERSION_LABEL, saveUserPreferences } from "../lib/userPreferences";
 
 const RELEASE_HIGHLIGHTS = [
-  "Niveau max 200 — objectif Dofus Touch atteint",
-  "70 donjons sur les 12 zones de Terreval (+40 nouveaux)",
-  "40 boss expansion avec loot et paliers 95+",
-  "11 objectifs endgame (niv. 100, 150, 200)",
+  "100+ quêtes — donjons, citadelle, endgame et guilde",
+  "40 quêtes donjon liées aux boss expansion v3.0",
+  "Chaîne principale désert → citadelle → couronne d'éther",
+  "Quêtes journalières sur 10 zones + 3 paliers endgame",
 ];
 
 export function WhatsNewModal({ onClose }: { onClose: () => void }) {
@@ -19,9 +19,9 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
         <p className="text-crystal-cyan text-xs font-semibold uppercase mb-1">
           {VERSION_LABEL} — v{APP_VERSION}
         </p>
-        <h2 className="font-display text-xl font-bold text-white mb-3">Ascension — Niveau 200</h2>
+        <h2 className="font-display text-xl font-bold text-white mb-3">Chroniques — 100 Quêtes</h2>
         <p className="text-aether-400 text-sm mb-4">
-          v3.0 : la progression endgame style Dofus Touch est complète.
+          v3.1 : l'aventure narrative rejoint l'échelle Dofus Touch.
         </p>
         <ul className="space-y-2 mb-6">
           {RELEASE_HIGHLIGHTS.map((item) => (
@@ -32,7 +32,7 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
           ))}
         </ul>
         <button type="button" onClick={dismiss} className="btn-primary w-full">
-          Viser le niveau 200
+          Commencer les chroniques
         </button>
       </div>
     </div>

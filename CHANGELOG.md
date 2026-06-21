@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.1.0 — Chroniques (100+ quêtes)
+
+- **100+ quêtes** (+86) : donjons, citadelle, endgame, guilde
+- **40 quêtes donjon** liées aux boss expansion v3.0
+- **Chaîne principale** désert d'Umbra → Citadelle → Couronne d'Éther → Ascension 200
+- **10 quêtes journalières** par zone + 3 paliers endgame (100, 150, 200)
+- **3 quêtes guilde** et quêtes craft/collecte
+
 ## v3.0.0 — Ascension (niveau 200 + 70 donjons)
 
 - **Niveau max 200** — objectif progression Dofus Touch
