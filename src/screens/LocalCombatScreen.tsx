@@ -5,10 +5,15 @@ import { getSpellById, getSpellsForClass, getMonsterById } from "../game/data";
 import { applyPvpResult } from "./PvPScreen";
 import { advanceDungeonRoom, createNextRoomCombat } from "./DungeonsScreen";
 import { recordEventKill } from "./EventsScreen";
-import { addXp } from "../lib/characterStorage";
-import { applySpellEffects, tickBuffs, formatBuffs } from "../game/combat/effects";
+import { addXp, loadCharacter } from "../lib/characterStorage";
+import { recordLocalWorldVictory, recordLocalPvpVictory, getLocalTerritoryXpMultiplier } from "../lib/factionProgress";
+import { useToastStore } from "../stores/toastStore";
+import { unlockLocalAchievement } from "./AchievementsScreen";
+import { applySpellEffects, tickBuffs, formatBuffs, applyCombatStartTalents, getEffectiveMaxRange, computeTalentModifiers } from "../game/combat/effects";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
+import { getCombatBackground } from "../game/data/assets";
+import { VictoryRewardBreakdown } from "../components/VictoryRewardBreakdown";
 
 interface CombatEntity {
   entityId: string;
@@ -26,6 +31,7 @@ interface CombatEntity {
   isAlive: boolean;
   monsterId?: string;
   buffs: { stat: string; value: number; duration: number }[];
+  talentIds?: string[];
 }
 
 interface CombatState {
@@ -44,6 +50,8 @@ function toVisualEntities(entities: CombatEntity[], currentEntityId: string, cla
     gridX: e.x,
     gridY: e.y,
     icon: e.isPlayer ? getClassIcon(classId) : getMonsterIcon(e.monsterId ?? "graine_ombre"),
+    classId: e.isPlayer ? classId : undefined,
+    monsterId: e.isPlayer ? undefined : (e.monsterId ?? "graine_ombre"),
     hp: e.hp,
     maxHp: e.maxHp,
     team: e.team,
@@ -55,23 +63,32 @@ function toVisualEntities(entities: CombatEntity[], currentEntityId: string, cla
 function initCombat(
   monsterIds: string[],
   playerName = "Éveilleur",
-  pvpOpponent?: { name: string; classId: string; level: number }
+  pvpOpponent?: { name: string; classId: string; level: number },
+  charData?: ReturnType<typeof loadCharacter>
 ): CombatState {
+  const talentIds = charData?.talents ?? [];
+  const scaled = applyCombatStartTalents(
+    charData?.hp ?? 100,
+    charData?.maxHp ?? 100,
+    charData?.maxMp ?? 3,
+    talentIds
+  );
   const playerEntity: CombatEntity = {
     entityId: "player",
     name: playerName,
     isPlayer: true,
-    hp: 100,
-    maxHp: 100,
-    ap: 6,
-    maxAp: 6,
-    mp: 3,
-    maxMp: 3,
+    hp: scaled.hp,
+    maxHp: scaled.maxHp,
+    ap: charData?.maxAp ?? 6,
+    maxAp: charData?.maxAp ?? 6,
+    mp: scaled.maxMp,
+    maxMp: scaled.maxMp,
     x: 2,
     y: 4,
     team: "player",
     isAlive: true,
     buffs: [],
+    talentIds,
   };
 
   const enemies = pvpOpponent
@@ -135,13 +152,15 @@ export default function LocalCombatScreen() {
 
   const combatData = JSON.parse(localStorage.getItem(`aetheris-combat-${combatId}`) ?? "{}");
   const combatType = combatData.type ?? "world";
-  const [combat, setCombatState] = useState<CombatState>(() =>
-    initCombat(
+  const [combat, setCombatState] = useState<CombatState>(() => {
+    const char = loadCharacter(characterId);
+    return initCombat(
       combatData.monsterIds ?? ["graine_ombre"],
       characterName,
-      combatData.pvpOpponent
-    )
-  );
+      combatData.pvpOpponent,
+      char
+    );
+  });
   const [selectedSpell, setSelectedSpell] = useState<string | null>(null);
   const [log, setLog] = useState<string[]>([
     combatType === "pvp" ? `⚔️ Duel PvP contre ${combatData.pvpOpponent?.name ?? "adversaire"} !` :
@@ -150,11 +169,26 @@ export default function LocalCombatScreen() {
     "Le combat commence !",
   ]);
   const [result, setResult] = useState<"victory" | "defeat" | null>(null);
+  const [victoryRewards, setVictoryRewards] = useState<{
+    xp: number;
+    eclats: number;
+    territoryMultiplier: number;
+    eventMultiplier: number;
+    baseXp: number;
+  } | null>(null);
   const [dungeonComplete, setDungeonComplete] = useState(false);
   const [dungeonRewards, setDungeonRewards] = useState<{ xp: number; eclats: number } | null>(null);
+  const showLevelUp = useToastStore((s) => s.showLevelUp);
+
+  const applyXpWithToast = (amount: number) => {
+    const { leveledUp, level } = addXp(characterId, amount);
+    if (leveledUp) showLevelUp(level);
+  };
 
   const player = combat.entities.find((e) => e.isPlayer)!;
-  const spells = getSpellsForClass(classId);
+  const charData = loadCharacter(characterId);
+  const knownSpells = charData?.spells ?? [];
+  const spells = getSpellsForClass(classId).filter((s) => knownSpells.includes(s.id));
   const isPlayerTurn = combat.currentEntityId === "player" && combat.status === "active";
 
   const handleCellClick = useCallback((x: number, y: number) => {
@@ -166,16 +200,31 @@ export default function LocalCombatScreen() {
 
       const target = combat.entities.find((e) => e.x === x && e.y === y && e.isAlive);
       const distance = Math.abs(x - player.x) + Math.abs(y - player.y);
-      if (distance < spell.minRange || distance > spell.maxRange) return;
+      const casterMods = computeTalentModifiers(player.talentIds ?? []);
+      if (distance < spell.minRange || distance > getEffectiveMaxRange(spell.maxRange, casterMods)) return;
 
+      const damageEffect = spell.effects.find((e) => e.type === "damage");
       const caster = { ...player, buffs: player.buffs ?? [] };
       const tgt = target ? { ...target, buffs: target.buffs ?? [] } : undefined;
       const { caster: updatedCaster, target: updatedTarget, log: effectLog } = applySpellEffects(
-        caster, tgt, spell.effects
+        caster,
+        tgt,
+        spell.effects,
+        {
+          spellMeta: {
+            element: damageEffect?.type === "damage" ? damageEffect.element : undefined,
+            minRange: spell.minRange,
+            maxRange: spell.maxRange,
+            area: spell.area,
+          },
+        }
       );
 
       effectLog.forEach((msg) => setLog((prev) => [...prev, `${spell.name} : ${msg}`]));
       sceneRef.current?.playSpellEffect(player.x, player.y, x, y, spell.apCost > 3 ? 0xff6600 : 0x44aaff);
+      if (spell.effects.some((e) => e.type === "damage")) {
+        sceneRef.current?.playAttackEffect(player.x, player.y, x, y);
+      }
 
       const newEntities = combat.entities.map((ent) => {
         if (ent.entityId === "player") {
@@ -243,6 +292,7 @@ export default function LocalCombatScreen() {
   const awardRewards = () => {
     if (combatType === "pvp") {
       applyPvpResult(characterId, true, combatData.convexMatchId);
+      recordLocalPvpVictory(characterId);
       return;
     }
     if (combatType === "dungeon") {
@@ -251,35 +301,58 @@ export default function LocalCombatScreen() {
         setDungeonComplete(true);
         setDungeonRewards(rewards ?? null);
       }
-      addXp(characterId, 30);
+      applyXpWithToast(30);
       return;
     }
     if (combatType === "event") {
       const xpMult = combatData.xpMultiplier ?? 1;
       const eclatsMult = combatData.eclatsMultiplier ?? 1;
+      const zoneId = useGameStore.getState().zoneId;
+      const territoryMult = getLocalTerritoryXpMultiplier(zoneId, characterId);
       const monsterId = combatData.monsterIds?.[0] as string | undefined;
       const monster = monsterId ? getMonsterById(monsterId) : null;
       const baseXp = monster?.xpReward ?? 80;
       const baseEclats = monster
         ? Math.floor((monster.eclatsReward.min + monster.eclatsReward.max) / 2)
         : 40;
-      const xpGain = Math.floor(baseXp * xpMult);
+      const xpGain = Math.floor(baseXp * xpMult * territoryMult);
       const eclatsGain = Math.floor(baseEclats * eclatsMult);
-      addXp(characterId, xpGain);
+      applyXpWithToast(xpGain);
       const charKey = `aetheris-char-${characterId}`;
       const data = JSON.parse(localStorage.getItem(charKey) ?? "{}");
       data.eclats = (data.eclats ?? 0) + eclatsGain;
       localStorage.setItem(charKey, JSON.stringify(data));
+      setVictoryRewards({
+        xp: xpGain,
+        eclats: eclatsGain,
+        territoryMultiplier: territoryMult,
+        eventMultiplier: xpMult,
+        baseXp,
+      });
       if (monsterId && combatData.eventId) {
         recordEventKill(characterId, monsterId, combatData.eventId);
       }
+      recordLocalWorldVictory(characterId, useGameStore.getState().zoneId);
+      unlockLocalAchievement(characterId, "first_victory");
       return;
     }
-    addXp(characterId, 50);
+    const zoneId = useGameStore.getState().zoneId;
+    const territoryMult = getLocalTerritoryXpMultiplier(zoneId, characterId);
+    const xpGain = Math.floor(50 * territoryMult);
+    applyXpWithToast(xpGain);
     const charKey = `aetheris-char-${characterId}`;
     const data = JSON.parse(localStorage.getItem(charKey) ?? "{}");
     data.eclats = (data.eclats ?? 0) + 25;
     localStorage.setItem(charKey, JSON.stringify(data));
+    setVictoryRewards({
+      xp: xpGain,
+      eclats: 25,
+      territoryMultiplier: territoryMult,
+      eventMultiplier: 1,
+      baseXp: 50,
+    });
+    recordLocalWorldVictory(characterId, zoneId);
+    unlockLocalAchievement(characterId, "first_victory");
   };
 
   const endTurn = () => {
@@ -294,6 +367,10 @@ export default function LocalCombatScreen() {
     });
 
     const enemy = enemies[0]!;
+    const playerEntity = combat.entities.find((e) => e.isPlayer);
+    if (playerEntity) {
+      sceneRef.current?.playAttackEffect(enemy.x, enemy.y, playerEntity.x, playerEntity.y);
+    }
     const dmg = Math.floor(Math.random() * 8) + 5;
     newEntities = newEntities.map((e) => {
       if (e.isPlayer) {
@@ -356,7 +433,14 @@ export default function LocalCombatScreen() {
         <button onClick={() => setCombat(null)} className="text-aether-400 text-sm">Fuir</button>
       </div>
 
-      <div ref={gameRef} className="flex-shrink-0" style={{ height: 380 }} />
+      <div className="relative flex-shrink-0" style={{ height: 380 }}>
+        <img
+          src={getCombatBackground(combatType)}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"
+        />
+        <div ref={gameRef} className="relative z-10 w-full h-full" />
+      </div>
 
       {/* Player status */}
       <div className="px-4 py-2 flex flex-wrap gap-4 text-sm">
@@ -417,10 +501,19 @@ export default function LocalCombatScreen() {
             {result === "victory" && combatType === "pvp" && (
               <p className="text-aether-300 text-sm mb-4">Victoire PvP ! Rating augmenté</p>
             )}
-            {result === "victory" && combatType === "world" && (
+            {result === "victory" && victoryRewards && (combatType === "world" || combatType === "event") && (
+              <VictoryRewardBreakdown
+                xp={victoryRewards.xp}
+                eclats={victoryRewards.eclats}
+                territoryMultiplier={victoryRewards.territoryMultiplier}
+                eventMultiplier={victoryRewards.eventMultiplier}
+                baseXp={victoryRewards.baseXp}
+              />
+            )}
+            {result === "victory" && !victoryRewards && combatType === "world" && (
               <p className="text-aether-300 text-sm mb-4">+50 XP • +25 ✦ Éclats</p>
             )}
-            {result === "victory" && combatType === "event" && (
+            {result === "victory" && !victoryRewards && combatType === "event" && (
               <p className="text-aether-300 text-sm mb-4">
                 Récompenses d'événement ! Bonus XP et Éclats appliqués
               </p>

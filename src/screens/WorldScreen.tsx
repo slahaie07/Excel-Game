@@ -17,7 +17,18 @@ import { NotificationBell } from "../components/NotificationBell";
 import { CloudPushSync } from "../components/CloudPushSync";
 import { CloudAchievementSync } from "../components/CloudAchievementSync";
 import type { Id } from "../../convex/_generated/dataModel";
+import { loadLocalFactionBadge, getLocalFactionCampaigns } from "../lib/factionProgress";
+import { FACTION_META } from "../game/data/factionContent";
 import { getClassIcon as getClassIconFromData } from "../game/rendering/isometric";
+import { getZoneBackground, getClassPortrait } from "../game/data/assets";
+import { WorldCampaignBanner } from "../components/WorldCampaignBanner";
+import { WorldTerritoryBanner } from "../components/WorldTerritoryBanner";
+import { ZoneTerritoryBadge } from "../components/ZoneTerritoryBadge";
+import { WorldMapPanel } from "../components/WorldMapPanel";
+import { WorldMinimap } from "../components/WorldMinimap";
+import { PlayerNameLine } from "../components/PlayerNameLine";
+import { WhatsNewModal } from "../components/WhatsNewModal";
+import { APP_VERSION, loadUserPreferences } from "../lib/userPreferences";
 
 export default function WorldScreen() {
   const characterId = useGameStore((s) => s.characterId)!;
@@ -36,8 +47,22 @@ export default function WorldScreen() {
       ? { characterId: characterId as Id<"characters"> }
       : "skip"
   );
+  const myFactions = useQuery(
+    api.factions.getMyFactions,
+    isConvexEnabled() && isCloudCharacter(characterId)
+      ? { characterId: characterId as Id<"characters"> }
+      : "skip"
+  );
+  const localFactionBadge = !isCloudCharacter(characterId)
+    ? loadLocalFactionBadge(characterId)
+    : null;
   const [showMenu, setShowMenu] = useState(false);
   const [showPlayers, setShowPlayers] = useState(false);
+  const [showWhatsNew, setShowWhatsNew] = useState(() => {
+    const prefs = loadUserPreferences();
+    return prefs.lastSeenVersion !== APP_VERSION;
+  });
+  const reducedMotion = loadUserPreferences().reducedMotion;
   const [onlinePlayers, setOnlinePlayers] = useState(() =>
     getOnlinePlayersInZone(zoneId).filter((p) => p.name !== characterName)
   );
@@ -62,6 +87,7 @@ export default function WorldScreen() {
     gridX: 3 + i,
     gridY: 2 + i,
     icon: getClassIconFromData(p.classId),
+    classId: p.classId,
     label: p.name,
     isPlayer: true,
   }));
@@ -115,16 +141,43 @@ export default function WorldScreen() {
       gridH: 8,
       zoneId,
       playerIcon: getClassIcon(classId),
+      playerClassId: classId,
       entities: worldEntities,
       onMove: () => {},
       onEncounter: handleEncounter,
+      reducedMotion,
     });
 
     return () => {
       phaserRef.current?.destroy(true);
       phaserRef.current = null;
     };
-  }, [zoneId, classId, allMonsterIds.join(","), onlinePlayers.length, handleEncounter]);
+  }, [zoneId, classId, allMonsterIds.join(","), onlinePlayers.length, handleEncounter, reducedMotion]);
+
+  const localCampaigns = !isCloudCharacter(characterId)
+    ? getLocalFactionCampaigns(characterId)
+    : [];
+  const cloudCampaigns = useQuery(
+    api.factionCampaigns.getFactionCampaigns,
+    isConvexEnabled() && isCloudCharacter(characterId)
+      ? { characterId: characterId as Id<"characters"> }
+      : "skip"
+  );
+  const campaigns = isCloudCharacter(characterId)
+    ? (cloudCampaigns?.campaigns ?? [])
+    : localCampaigns;
+  const pledgedFactionId = myFactions?.pledgedFactionId ?? localFactionBadge?.pledgedFactionId ?? null;
+  const zoneBackground = getZoneBackground(zoneId);
+  const classPortrait = getClassPortrait(classId);
+  const pledgedFaction = myFactions?.pledgedFactionId
+    ? myFactions.factions.find((f) => f.isPledged)
+    : localFactionBadge?.pledgedFactionId
+      ? {
+          icon: FACTION_META[localFactionBadge.pledgedFactionId].icon,
+          rankIcon: localFactionBadge.rankIcon,
+          rankLabel: localFactionBadge.rankLabel,
+        }
+      : null;
 
   const navItems = [
     { id: "inventory", icon: "🎒", label: "Sac" },
@@ -169,11 +222,31 @@ export default function WorldScreen() {
       )}
       <div className="flex items-center justify-between p-3 bg-aether-900/80 border-b border-aether-700/40">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">{classData?.icon}</span>
-          <div>
-            <p className="font-bold text-white text-sm">{characterName}</p>
-            <p className="text-aether-400 text-xs">Niv. {charData?.level ?? 1} • {zone.name}</p>
-          </div>
+          <button
+            onClick={() => setScreen("class")}
+            className="flex items-center gap-2 hover:opacity-80"
+            title="Fiche de classe"
+          >
+            <span className="text-2xl">{classData?.icon}</span>
+            {classPortrait && (
+              <img
+                src={classPortrait}
+                alt={classData?.name ?? "Personnage"}
+                className="w-10 h-10 rounded-lg object-cover border border-aether-600/50"
+              />
+            )}
+            <div className="text-left">
+              <p className="font-bold text-white text-sm">{characterName}</p>
+              <p className="text-aether-400 text-xs">
+                Niv. {charData?.level ?? 1} • {zone.name}
+                {pledgedFaction && (
+                  <span className="text-crystal-gold ml-1">
+                    • {pledgedFaction.icon}{pledgedFaction.rankIcon}
+                  </span>
+                )}
+              </p>
+            </div>
+          </button>
         </div>
         <div className="flex items-center gap-3 text-sm">
           <span className="text-red-400">❤️ {charData?.hp ?? 100}/{charData?.maxHp ?? 100}</span>
@@ -199,6 +272,14 @@ export default function WorldScreen() {
         </button>
       )}
 
+      <WorldTerritoryBanner
+        zoneId={zoneId}
+        pledgedFactionId={pledgedFactionId}
+        campaigns={campaigns}
+      />
+
+      <WorldCampaignBanner pledgedFactionId={pledgedFactionId} campaigns={campaigns} />
+
       {isConvexEnabled() && isCloudCharacter(characterId) && (
         <CloudWorldInvasion
           characterId={characterId as Id<"characters">}
@@ -218,7 +299,22 @@ export default function WorldScreen() {
         />
       </div>
 
-      <div ref={gameRef} className="flex-1 min-h-[280px]" />
+      <div className="relative flex-1 min-h-[280px]">
+        {zoneBackground && (
+          <img
+            src={zoneBackground}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-35 pointer-events-none"
+          />
+        )}
+        <div ref={gameRef} className="relative z-10 w-full h-full" />
+        <WorldMinimap
+          zoneId={zoneId}
+          campaigns={campaigns}
+          onOpenMap={() => setScreen("territory-overview")}
+          onSelectZone={(id) => useGameStore.getState().setZone(id)}
+        />
+      </div>
 
       <div className="px-4 py-1 text-center">
         <button onClick={() => setShowPlayers(!showPlayers)} className="text-aether-400 text-xs underline">
@@ -226,12 +322,16 @@ export default function WorldScreen() {
         </button>
         {showPlayers && onlinePlayers.length > 0 && (
           <div className="mt-1 space-y-0.5">
-            {onlinePlayers.map((p) => {
-              const cls = CLASSES.find((c) => c.id === p.classId);
-              return (
-                <p key={p.name} className="text-aether-500 text-xs">{cls?.icon} {p.name} (Niv. {p.level})</p>
-              );
-            })}
+            {onlinePlayers.map((p) => (
+              <div key={p.name} className="flex justify-center">
+                <PlayerNameLine
+                  name={`${p.name} (Niv. ${p.level})`}
+                  titleId={p.equippedTitleId}
+                  frameId={p.equippedFrameId}
+                  className="text-aether-400 text-xs"
+                />
+              </div>
+            ))}
           </div>
         )}
       </div>
@@ -252,6 +352,7 @@ export default function WorldScreen() {
         <div className="flex gap-2 mt-1">
           <button onClick={() => setScreen("professions")} className="flex-1 text-aether-500 text-[10px] py-1 hover:text-aether-400">⚒️ Métiers</button>
           <button onClick={() => setScreen("marketplace")} className="flex-1 text-aether-500 text-[10px] py-1 hover:text-aether-400">🏪 Marché</button>
+          <button onClick={() => setScreen("factions")} className="flex-1 text-aether-500 text-[10px] py-1 hover:text-aether-400">🏛️ Factions</button>
           <button onClick={() => setScreen("raids")} className="flex-1 text-aether-500 text-[10px] py-1 hover:text-aether-400">🐉 Raids</button>
           <button onClick={() => setScreen("friends")} className="flex-1 text-aether-500 text-[10px] py-1 hover:text-aether-400">👥 Amis</button>
         </div>
@@ -260,8 +361,23 @@ export default function WorldScreen() {
       {showMenu && (
         <div className="absolute inset-0 bg-black/60 z-50 flex items-end" onClick={() => setShowMenu(false)}>
           <div className="w-full game-panel p-4 rounded-t-3xl max-h-[60vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <h3 className="font-display font-bold text-lg mb-4">Voyager</h3>
-            <div className="space-y-2">
+            <h3 className="font-display font-bold text-lg mb-2">Voyager</h3>
+            <WorldMapPanel
+              currentZoneId={zoneId}
+              campaigns={campaigns}
+              onSelectZone={(id) => {
+                useGameStore.getState().setZone(id);
+                setShowMenu(false);
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => { setShowMenu(false); setScreen("territory-overview"); }}
+              className="w-full text-center text-aether-400 text-xs py-2 mb-2 hover:text-aether-200"
+            >
+              Vue détaillée des territoires →
+            </button>
+            <div className="space-y-2 mt-3">
               {ZONES.map((z) => (
                 <button
                   key={z.id}
@@ -269,9 +385,10 @@ export default function WorldScreen() {
                   className={`card w-full flex items-center gap-3 ${z.id === zoneId ? "border-aether-500" : ""}`}
                 >
                   <span className="text-2xl">{z.icon}</span>
-                  <div className="text-left">
+                  <div className="text-left flex-1 min-w-0">
                     <p className="font-bold text-white text-sm">{z.name}</p>
                     <p className="text-aether-500 text-xs">Niv. {z.levelRange[0]}-{z.levelRange[1]}</p>
+                    <ZoneTerritoryBadge zoneId={z.id} campaigns={campaigns} compact />
                   </div>
                 </button>
               ))}
@@ -279,6 +396,8 @@ export default function WorldScreen() {
           </div>
         </div>
       )}
+
+      {showWhatsNew && <WhatsNewModal onClose={() => setShowWhatsNew(false)} />}
     </div>
   );
 }

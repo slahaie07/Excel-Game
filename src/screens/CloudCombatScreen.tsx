@@ -7,6 +7,8 @@ import { useGameStore } from "../stores/gameStore";
 import { getSpellById, getSpellsForClass } from "../game/data";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
+import { getCombatBackground } from "../game/data/assets";
+import { VictoryRewardBreakdown } from "../components/VictoryRewardBreakdown";
 import { formatBuffs } from "../game/combat/effects";
 import { getDungeonById, getRoomMonsters, getRaidById, getPhaseMonsters } from "../game/data";
 import { cacheCloudCombat, buildCloudCombatLocalId } from "../lib/cloudCombat";
@@ -39,6 +41,12 @@ export default function CloudCombatScreen() {
   const setCombat = useGameStore((s) => s.setCombat);
 
   const combatDoc = useQuery(api.combat.getCombat, { combatId: convexCombatId });
+  const charDoc = useQuery(api.characters.getCharacter, { characterId });
+  const zoneId = useGameStore((s) => s.zoneId);
+  const territoryInfo = useQuery(api.factionCampaigns.getFactionTerritory, {
+    zoneId,
+    characterId,
+  });
   const moveEntityMut = useMutation(api.combat.moveEntity);
   const castSpellMut = useMutation(api.combat.castSpell);
   const endTurnMut = useMutation(api.combat.endTurn);
@@ -56,6 +64,7 @@ export default function CloudCombatScreen() {
   const gameRef = useRef<HTMLDivElement>(null);
   const phaserRef = useRef<Phaser.Game | null>(null);
   const sceneRef = useRef<IsoCombatScene | null>(null);
+  const prevEntitiesRef = useRef<CloudEntity[]>([]);
 
   const [selectedSpell, setSelectedSpell] = useState<string | null>(null);
   const [log, setLog] = useState<string[]>(["Combat cloud synchronisé !"]);
@@ -69,7 +78,8 @@ export default function CloudCombatScreen() {
     (e) => e.ownerCharacterId === characterId || (e.isPlayer && !entities.some((x) => x.ownerCharacterId))
   );
   const playerEntityId = myEntity?.entityId ?? "";
-  const spells = getSpellsForClass(classId);
+  const knownSpellIds = charDoc?.spells ?? [];
+  const spells = getSpellsForClass(classId).filter((s) => knownSpellIds.includes(s.id));
   const isPlayerTurn = combatDoc?.currentEntityId === playerEntityId && combatDoc?.status === "active";
   const player = myEntity;
   const coopAllies = entities.filter((e) => e.team === "player" && e.isAlive).length;
@@ -85,6 +95,8 @@ export default function CloudCombatScreen() {
       icon: e.team === "player"
         ? getClassIcon(e.classId ?? classId)
         : getMonsterIcon(e.monsterId ?? "graine_ombre"),
+      classId: e.team === "player" ? (e.classId ?? classId) : undefined,
+      monsterId: e.team === "enemy" ? (e.monsterId ?? "graine_ombre") : undefined,
       hp: e.hp,
       maxHp: e.maxHp,
       team: e.team,
@@ -107,7 +119,11 @@ export default function CloudCombatScreen() {
           targetY: y,
         });
         setSelectedSpell(null);
-        if (res.damage) setLog((p) => [...p, `${spell.name} : ${res.damage} dégâts`]);
+        sceneRef.current?.playSpellEffect(player.x, player.y, x, y, spell.apCost > 3 ? 0xff6600 : 0x44aaff);
+        if (res.damage) {
+          sceneRef.current?.playAttackEffect(player.x, player.y, x, y);
+          setLog((p) => [...p, `${spell.name} : ${res.damage} dégâts`]);
+        }
         if (res.heal) setLog((p) => [...p, `Soin : +${res.heal} PV`]);
       } else {
         const distance = Math.abs(x - player.x) + Math.abs(y - player.y);
@@ -206,7 +222,33 @@ export default function CloudCombatScreen() {
       toVisual(entities, combatDoc.currentEntityId),
       combatDoc.currentEntityId
     );
-  }, [entities, combatDoc?.currentEntityId, combatDoc, toVisual]);
+
+    const prev = prevEntitiesRef.current;
+    const cur = combatDoc.entities;
+    if (prev.length > 0 && cur.length > 0) {
+      const prevPlayer = prev.find(
+        (e) => e.ownerCharacterId === characterId || (e.isPlayer && e.team === "player")
+      );
+      const curPlayer = cur.find(
+        (e) => e.ownerCharacterId === characterId || (e.isPlayer && e.team === "player")
+      );
+      if (prevPlayer && curPlayer && curPlayer.hp < prevPlayer.hp) {
+        const enemy = prev.find((e) => e.team === "enemy" && e.isAlive);
+        if (enemy) {
+          sceneRef.current?.playAttackEffect(enemy.x, enemy.y, curPlayer.x, curPlayer.y);
+        }
+      }
+      for (const ent of prev) {
+        if (ent.team === "enemy" && ent.isAlive) {
+          const now = cur.find((e) => e.entityId === ent.entityId);
+          if (now && !now.isAlive) {
+            sceneRef.current?.playDeathEffect(ent.x, ent.y);
+          }
+        }
+      }
+    }
+    prevEntitiesRef.current = cur;
+  }, [entities, combatDoc?.currentEntityId, combatDoc, toVisual, characterId]);
 
   if (!combatDoc) {
     return (
@@ -230,7 +272,14 @@ export default function CloudCombatScreen() {
         </button>
       </div>
 
-      <div ref={gameRef} className="flex-shrink-0" style={{ height: 380 }} />
+      <div className="relative flex-shrink-0" style={{ height: 380 }}>
+        <img
+          src={getCombatBackground(combatType)}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"
+        />
+        <div ref={gameRef} className="relative z-10 w-full h-full" />
+      </div>
 
       {player && (
         <div className="px-4 py-2 flex flex-wrap gap-4 text-sm">
@@ -278,7 +327,20 @@ export default function CloudCombatScreen() {
             <h2 className="font-display text-2xl font-bold mb-2">
               {result === "victory" ? "Victoire !" : "Défaite"}
             </h2>
-            {result === "victory" && combatDoc.rewards && (
+            {result === "victory" && combatDoc.rewards && (combatType === "world" || combatType === "event") && (
+              <VictoryRewardBreakdown
+                xp={combatDoc.rewards.xp}
+                eclats={combatDoc.rewards.eclats}
+                territoryMultiplier={territoryInfo?.xpMultiplier ?? 1}
+                eventMultiplier={combatType === "event" ? (combatData.xpMultiplier ?? 1) : 1}
+                baseXp={
+                  territoryInfo && territoryInfo.xpMultiplier > 1
+                    ? Math.round(combatDoc.rewards.xp / territoryInfo.xpMultiplier)
+                    : combatDoc.rewards.xp
+                }
+              />
+            )}
+            {result === "victory" && combatDoc.rewards && combatType !== "world" && combatType !== "event" && (
               <p className="text-aether-300 text-sm mb-4">
                 +{combatDoc.rewards.xp} XP • +{combatDoc.rewards.eclats} ✦
               </p>

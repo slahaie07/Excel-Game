@@ -229,8 +229,14 @@ export const sendMessage = mutation({
   },
   returns: v.id("chatMessages"),
   handler: async (ctx, args) => {
+    const character = await ctx.db.get("characters", args.senderId);
+    const senderTitleId = character?.cosmetics?.equippedTitle;
+    const senderFrameId = character?.cosmetics?.equippedFrame;
+
     return await ctx.db.insert("chatMessages", {
       ...args,
+      senderTitleId,
+      senderFrameId,
       createdAt: Date.now(),
     });
   },

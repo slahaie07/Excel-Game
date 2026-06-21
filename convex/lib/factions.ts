@@ -24,6 +24,12 @@ export const ZONE_FACTION_MAP: Record<string, FactionId> = {
   port_nebula: "neutre",
 };
 
+export const FACTION_META: Record<FactionId, { name: string; icon: string }> = {
+  lumina: { name: "Ordre de Lumina", icon: "✨" },
+  umbra: { name: "Conclave d'Umbra", icon: "🌑" },
+  neutre: { name: "Marchands Libres", icon: "⚖️" },
+};
+
 export function getFactionRank(reputation: number): FactionRank {
   let rank = FACTION_RANKS[0]!;
   for (const r of FACTION_RANKS) {

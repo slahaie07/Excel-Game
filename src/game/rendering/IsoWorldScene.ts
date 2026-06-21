@@ -3,12 +3,15 @@ import {
   gridToIso, isoDepth, drawIsoTile, drawIsoShadow,
   getClassIcon, getMonsterIcon, ZONE_THEMES, type ZoneTileTheme,
 } from "./isometric";
+import { addEntityVisual, preloadEntitySprites } from "./spriteLoader";
 
 export interface IsoEntity {
   id: string;
   gridX: number;
   gridY: number;
   icon: string;
+  classId?: string;
+  monsterId?: string;
   label?: string;
   isPlayer?: boolean;
   onClick?: () => void;
@@ -19,10 +22,12 @@ export interface IsoWorldConfig {
   gridH: number;
   zoneId: string;
   playerIcon: string;
+  playerClassId: string;
   entities: IsoEntity[];
   obstacles?: { x: number; y: number }[];
   onMove: (x: number, y: number) => void;
   onEncounter?: (entityId: string) => void;
+  reducedMotion?: boolean;
 }
 
 export class IsoWorldScene extends Phaser.Scene {
@@ -35,7 +40,7 @@ export class IsoWorldScene extends Phaser.Scene {
   private offsetY = 40;
   private theme!: ZoneTileTheme;
   private tileGraphics!: Phaser.GameObjects.Graphics;
-  private entitySprites: Phaser.GameObjects.Text[] = [];
+  private entitySprites: Phaser.GameObjects.GameObject[] = [];
   private highlightGfx!: Phaser.GameObjects.Graphics;
 
   constructor() {
@@ -46,6 +51,10 @@ export class IsoWorldScene extends Phaser.Scene {
     this.config = data;
     this.playerX = 5;
     this.playerY = 5;
+  }
+
+  preload() {
+    preloadEntitySprites(this);
   }
 
   create() {
@@ -59,9 +68,9 @@ export class IsoWorldScene extends Phaser.Scene {
 
     this.drawGrid();
     this.renderEntities();
-
-    // Particules ambiantes selon la zone
-    this.createAmbientParticles();
+    if (!this.config.reducedMotion) {
+      this.createAmbientParticles();
+    }
   }
 
   private drawGrid() {
@@ -96,7 +105,14 @@ export class IsoWorldScene extends Phaser.Scene {
     this.entitySprites = [];
 
     const allEntities: IsoEntity[] = [
-      { id: "player", gridX: this.playerX, gridY: this.playerY, icon: this.config.playerIcon, isPlayer: true },
+      {
+        id: "player",
+        gridX: this.playerX,
+        gridY: this.playerY,
+        icon: this.config.playerIcon,
+        classId: this.config.playerClassId,
+        isPlayer: true,
+      },
       ...this.config.entities,
     ];
 
@@ -107,12 +123,20 @@ export class IsoWorldScene extends Phaser.Scene {
       const pos = gridToIso(entity.gridX, entity.gridY, this.tileW, this.tileH, this.offsetX, this.offsetY);
       drawIsoShadow(shadowGfx, pos.x, pos.y, entity.isPlayer ? 14 : 10);
 
-      const sprite = this.add.text(pos.x, pos.y - 8, entity.icon, {
+      const depth = isoDepth(entity.gridX, entity.gridY);
+      const displaySize = entity.isPlayer ? 52 : 40;
+      const sprite = addEntityVisual(this, pos.x, pos.y - 8, {
+        icon: entity.icon,
+        classId: entity.classId,
+        monsterId: entity.monsterId,
+        displaySize,
+        depth,
         fontSize: entity.isPlayer ? "28px" : "22px",
-      }).setOrigin(0.5);
-      sprite.setDepth(isoDepth(entity.gridX, entity.gridY));
+        animate: true,
+      });
 
       if (entity.isPlayer) {
+        this.tweens.killTweensOf(sprite);
         this.tweens.add({
           targets: sprite,
           y: pos.y - 12,
@@ -144,6 +168,12 @@ export class IsoWorldScene extends Phaser.Scene {
 
   private createAmbientParticles() {
     const accent = this.theme.accent;
+    const zoneId = this.config.zoneId;
+    const isPvPZone = zoneId === "arene_pvp";
+    const isLumina = zoneId === "foret_lumina" || zoneId === "vallee_eveils" || zoneId === "citadelle_stellaire";
+    const isUmbra = zoneId === "desert_umbra";
+    const frequency = isPvPZone ? 250 : isLumina ? 350 : isUmbra ? 500 : 400;
+    const particleCount = isPvPZone ? 3 : isUmbra ? 1 : 2;
 
     const gfx = this.add.graphics();
     gfx.fillStyle(accent, 1);
@@ -153,12 +183,12 @@ export class IsoWorldScene extends Phaser.Scene {
     this.add.particles(0, 0, "particle", {
       x: { min: 0, max: this.scale.width },
       y: { min: 0, max: this.scale.height * 0.6 },
-      speed: { min: 5, max: 20 },
-      angle: { min: 200, max: 340 },
-      scale: { start: 0.4, end: 0 },
-      alpha: { start: 0.6, end: 0 },
-      lifespan: 3000,
-      frequency: 400,
+      speed: { min: isUmbra ? 8 : 5, max: isLumina ? 25 : 20 },
+      angle: { min: isUmbra ? 180 : 200, max: isUmbra ? 220 : 340 },
+      scale: { start: particleCount * 0.2, end: 0 },
+      alpha: { start: isPvPZone ? 0.8 : 0.6, end: 0 },
+      lifespan: isLumina ? 4000 : 3000,
+      frequency,
       tint: accent,
       blendMode: "ADD",
     });
@@ -173,6 +203,7 @@ export class IsoWorldScene extends Phaser.Scene {
 export function createMonsterEntities(monsterIds: string[]): IsoEntity[] {
   return monsterIds.map((id, i) => ({
     id,
+    monsterId: id,
     gridX: 3 + (i % 4) * 2,
     gridY: 2 + Math.floor(i / 4) * 2,
     icon: getMonsterIcon(id),

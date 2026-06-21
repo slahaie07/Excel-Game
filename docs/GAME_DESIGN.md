@@ -4,12 +4,12 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v1.11)
+## Systèmes implémentés (v1.12)
 
 | Système | Statut | Description |
 |---------|--------|-------------|
 | Création de compte | ✅ | Local + Convex |
-| Création de personnage | ✅ | 8 classes, 5 slots |
+| Création de personnage | ✅ | 10 classes équilibrées (5 archétypes × 2), 5 slots |
 | Combat tactique | ✅ | Grille isométrique, PA/PM, sorts serveur, buffs cloud |
 | Donjons coop | ✅ | Jusqu'à 4 joueurs, combat partagé Convex |
 | Guerres de guildes | ✅ | Déclaration, scores 24h, contribution membres |
@@ -36,6 +36,20 @@ Créer un MMORPG tactique mobile aussi complet que les références du genre, av
 ## Systèmes v0.2 (précédent)
 
 Voir historique : PvP, donjons, pets, havre, chat, présence, Capacitor.
+
+## Classes (v1.12)
+
+10 classes équilibrées — 60 points de stats chacune, 3 sorts de départ, synchronisation client (`src/game/data/`) et serveur (`convex/characters.ts`, `convex/lib/spells.ts`).
+
+| Archétype | Classes |
+|-----------|---------|
+| Soins | Alchimiste des Runes, Luminaire |
+| Magie | Pyromancien, Cryomancien |
+| Bouclier | Gardien Cristallin, Bastion de Fer |
+| Gros dégâts | Berserker Tellurique, Éclaireur des Brumes |
+| À distance | Archer Lunaire, Invocateur d'Aether |
+
+Équilibrage sorts : sort de base (3 PA) ≈ 9–15 dégâts ou 15–25 soins ; sort de zone (5–6 PA) ≈ 11–19 dégâts.
 
 ## Économie
 
@@ -204,4 +218,111 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Boss invasion | `worldInvasions.ts` | Avatar des Ombres à 100 % progression |
 | Combat | `combat.ts` | Réputation zone sur victoire PvE |
 
-Voir `docs/DEPLOYMENT.md`.
+## v1.15 — Écran Factions
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Hub factions | `factions.ts`, `FactionsScreen.tsx` | Réputation, quêtes hebdo, boutique |
+| Contenu | `lib/factionContent.ts`, `lib/factionQuests.ts` | Quêtes, articles, progression |
+| Combat/PvP | `combat.ts`, `pvp.ts` | Progression quêtes cloud |
+
+## v1.30 — Carte monde & polish territorial (v1.22→v1.30)
+
+| Version | Module | Rôle |
+|---------|--------|------|
+| v1.22 | `WorldMapPanel`, `VictoryRewardBreakdown` | Carte visuelle + détail XP victoire |
+| v1.23 | `IsoCombatScene.playDeathEffect`, cloud sync | Animations mort + attaque ennemie |
+| v1.24 | `TerritoryOverviewScreen` | Écran contrôle territorial |
+| v1.25 | `WorldMinimap` | Mini-carte dans le monde |
+| v1.26 | `IsoWorldScene` particules | Ambiance par biome |
+| v1.27 | `getTerritoryHistory` | Historique campagnes hebdo |
+| v1.28 | `WorldMapPanel` + événements | Marqueurs ★ sur zones actives |
+| v1.29 | `VictoryRewardBreakdown` | Décomposition récompenses |
+| v1.30 | Intégration | Navigation monde/factions/carte |
+
+## v1.21 — Animations combat & carte territoriale
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Sprites | `assets.ts`, `public/assets/monsters/` | 15 monstres (boss + événements) |
+| Animations | `spriteLoader.ts`, `IsoCombatScene` | Frappe, secousse, effets sorts |
+| Carte | `ZoneTerritoryBadge.tsx`, `WorldScreen` | Statut territorial par zone au voyage |
+| Cloud | `combat.ts`, `factionTerritories.ts` | Multiplicateur XP territoire en victoire |
+
+## v1.20 — Sprites monstres & territoires faction
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Monstres | `assets.ts`, `spriteLoader.ts`, `public/assets/monsters/` | 6 sprites isométriques + idle |
+| Territoires | `factionTerritories.ts`, `lib/factionTerritories.ts` | Statut zone selon campagnes |
+| Monde | `WorldTerritoryBanner.tsx`, `WorldScreen.tsx` | Bannière contrôle territorial |
+| Combat | `LocalCombatScreen.tsx`, `factionProgress.ts` | Bonus XP zone fortifiée |
+| Roster | `ClassScreen`, `CharacterCreateScreen`, `CharacterSelectScreen` | Portraits illustrés |
+| API | `getFactionTerritory` | Query Convex territoire + multiplicateur XP |
+
+## v1.19 — Sprites isométriques & récompenses campagne
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Assets | `assets.ts`, `public/assets/` | 10 portraits, 6 fonds zones |
+| Sprites | `spriteLoader.ts`, `IsoWorldScene`, `IsoCombatScene` | Portraits sur grille Phaser |
+| Récompenses | `lib/factionCampaignRewards.ts` | Top 3 : titre + cadres or/argent/bronze |
+
+## v1.18 — Visuels & classement campagnes
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Assets | `public/assets/`, `game/data/assets.ts` | Fonds zones, combat, portraits classes |
+| Rendu | `WorldScreen`, `*CombatScreen` | Overlays illustrés derrière Phaser |
+| Social | `playerDisplay.ts`, `presence.ts`, `social.ts` | Cadres visibles chat + présence |
+| Campagnes | `getCampaignLeaderboard`, `FactionsUI` | Top contributeurs par faction |
+| Monde | `WorldCampaignBanner.tsx` | Bannière progression campagne alliée |
+
+## v1.17 — Campagnes faction & titres sociaux
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Campagnes | `factionCampaigns.ts`, `lib/factionCampaignProgress.ts` | Objectifs hebdo coop, contributions, récompenses |
+| Social | `social.ts`, `presence.ts`, `ChatSenderLine.tsx` | Titres visibles chat + présence zone |
+| Local | `factionProgress.ts` | Campagnes et titres hors-ligne |
+
+## v1.16 — Récompenses faction & local
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Cosmétiques rang | `lib/factionRewards.ts`, `cosmetics.ts` | Titres/cadres Champion & Exalté |
+| Progression locale | `lib/factionProgress.ts` | Réputation + quêtes hors-ligne |
+| Monde | `WorldScreen.tsx` | Badge faction alliée |
+
+## v1.14 — Talents actifs en combat
+
+| Effet talent | Application |
+|--------------|-------------|
+| Soins / regen / bouclier | Multiplicateur sur les sorts et buffs |
+| Dégâts magiques / mêlée / distance | Bonus selon élément et portée du sort |
+| Défense passive | Réduction des dégâts ennemis reçus |
+| PV max / PM | Appliqués au début de chaque combat |
+| Portée | +1 case max (Œil d'Aigle) |
+
+## v1.13 — Progression de classe
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Déblocage sorts | `classProgression.ts`, `convex/lib/classProgression.ts` | Sorts débloqués par niveau |
+| Talents | `talents.ts`, `convex/lib/talents.ts` | 2 paliers par archétype, points au level-up |
+| Fiche classe | `ClassScreen.tsx` | Grimoire, stats, sélection talents |
+| Migration | `syncCharacterProgression` | Chronomancien → Cryomancien |
+
+## v2.0 — Version Finale
+
+| Système | Statut | Description |
+|---------|--------|-------------|
+| Progression endgame | ✅ | 7 objectifs trackés (`endgameGoals.ts`, `ProgressScreen`) |
+| Guide joueur | ✅ | Tutoriel intégré (`GuideScreen`) |
+| Crédits | ✅ | Écran de clôture (`CreditsScreen`) |
+| Toasts UX | ✅ | Level-up + succès (`toastStore`, `App.tsx`) |
+| Nouveautés v2 | ✅ | Modal premier lancement (`WhatsNewModal`) |
+| Accessibilité | ✅ | Préférence `reducedMotion` (particules monde) |
+| Polish carte | ✅ | Marqueurs boss sur `WorldMapPanel` |
+
+Voir `CHANGELOG.md` et `docs/DEPLOYMENT.md`.

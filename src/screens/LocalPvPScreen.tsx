@@ -12,7 +12,10 @@ const OPPONENT_NAMES = [
   "NebulaWolf", "StarBane", "VoidWalker", "AetherKnight",
 ];
 
-const OPPONENT_CLASSES = ["pyromancien", "gardien", "eclaireur", "archer", "berserker", "alchimiste"];
+const OPPONENT_CLASSES = [
+  "alchimiste", "luminaire", "pyromancien", "cryomancien",
+  "gardien", "bastion", "berserker", "eclaireur", "archer", "invocateur",
+];
 
 export default function LocalPvPScreen() {
   const characterId = useGameStore((s) => s.characterId)!;

@@ -11,6 +11,10 @@ export const heartbeat = mutation({
   },
   returns: v.null(),
   handler: async (ctx, args) => {
+    const character = await ctx.db.get("characters", args.characterId);
+    const equippedTitleId = character?.cosmetics?.equippedTitle;
+    const equippedFrameId = character?.cosmetics?.equippedFrame;
+
     const existing = await ctx.db
       .query("presence")
       .withIndex("by_character", (q) => q.eq("characterId", args.characterId))
@@ -22,6 +26,8 @@ export const heartbeat = mutation({
       classId: args.classId,
       level: args.level,
       zoneId: args.zoneId,
+      equippedTitleId,
+      equippedFrameId,
       lastSeenAt: Date.now(),
     };
 
@@ -40,6 +46,8 @@ export const getPlayersInZone = query({
     characterName: v.string(),
     classId: v.string(),
     level: v.number(),
+    equippedTitleId: v.union(v.string(), v.null()),
+    equippedFrameId: v.union(v.string(), v.null()),
   })),
   handler: async (ctx, args) => {
     const fiveMinAgo = Date.now() - 5 * 60 * 1000;
@@ -55,6 +63,8 @@ export const getPlayersInZone = query({
         characterName: p.characterName,
         classId: p.classId,
         level: p.level,
+        equippedTitleId: p.equippedTitleId ?? null,
+        equippedFrameId: p.equippedFrameId ?? null,
       }));
   },
 });

@@ -3,7 +3,8 @@ import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useGameStore } from "../stores/gameStore";
-import { CLASSES } from "../game/data";
+import { CLASSES, ARCHETYPE_LABELS, getStartingSpellIds } from "../game/data";
+import { getClassPortrait, ROSTER_ART } from "../game/data/assets";
 import { isCloudAccount } from "../lib/convexUtils";
 
 function CharacterCreateForm({
@@ -32,6 +33,11 @@ function CharacterCreateForm({
         <h1 className="font-display text-xl font-bold text-aether-200">Créer un Éveilleur</h1>
       </div>
       <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-4">
+        <img
+          src={ROSTER_ART}
+          alt="Les Éveilleurs d'Aetheris"
+          className="w-full h-28 object-cover rounded-xl border border-aether-700/50"
+        />
         <div>
           <label className="text-aether-300 text-sm mb-2 block">Nom du personnage</label>
           <input
@@ -48,19 +54,34 @@ function CharacterCreateForm({
         <div>
           <label className="text-aether-300 text-sm mb-3 block">Choisissez votre classe</label>
           <div className="grid grid-cols-2 gap-2">
-            {CLASSES.map((cls) => (
+            {CLASSES.map((cls) => {
+              const portrait = getClassPortrait(cls.id);
+              return (
               <button
                 key={cls.id}
                 onClick={() => setSelectedClass(cls.id)}
                 className={`card p-3 text-left ${selectedClass === cls.id ? "border-aether-500 ring-2 ring-aether-500/30" : ""}`}
               >
-                <div className="text-2xl mb-1">{cls.icon}</div>
+                {portrait ? (
+                  <img src={portrait} alt={cls.name} className="w-full h-16 object-cover rounded-lg mb-1" />
+                ) : (
+                  <div className="text-2xl mb-1">{cls.icon}</div>
+                )}
                 <p className="font-bold text-sm text-white">{cls.name}</p>
+                <p className="text-xs text-aether-500">{ARCHETYPE_LABELS[cls.archetype]}</p>
               </button>
-            ))}
+            );
+            })}
           </div>
         </div>
-        <div className="card">
+        <div className="card flex items-center gap-3">
+          {getClassPortrait(selectedClass) && (
+            <img
+              src={getClassPortrait(selectedClass)}
+              alt={selectedClassData.name}
+              className="w-16 h-16 rounded-lg object-cover border border-aether-600/50 shrink-0"
+            />
+          )}
           <p className="text-aether-300 text-sm">{selectedClassData.description}</p>
         </div>
         <button onClick={handleCreate} className="btn-primary w-full" disabled={loading}>
@@ -111,7 +132,9 @@ function LocalCreate() {
       id: charId, name, classId, level: 1, xp: 0, xpToNext: 100,
       hp: 100, maxHp: 100, ap: 6, maxAp: 6, mp: 3, maxMp: 3,
       eclats: 100, zoneId: "vallee_eveils",
-      spells: selectedClassData.startingSpells,
+      spells: getStartingSpellIds(classId),
+      talents: [],
+      spellPoints: 0,
       inventory: [{ itemId: "pain_eveil", quantity: 10 }, { itemId: "potion_vie", quantity: 3 }],
       equipment: {}, activeQuests: [], completedQuests: [],
       stats: selectedClassData.baseStats,

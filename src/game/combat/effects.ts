@@ -1,4 +1,12 @@
 import type { SpellEffect } from "../data/spells";
+import {
+  computeTalentModifiers,
+  scaleHealAmount,
+  scaleBuffValue,
+  scaleDebuffDuration,
+  computeSpellDamage,
+  type SpellCombatMeta,
+} from "./talentModifiers";
 
 export interface CombatBuff {
   stat: string;
@@ -16,12 +24,20 @@ export interface CombatEntityWithBuffs {
   maxMp: number;
   buffs: CombatBuff[];
   isAlive: boolean;
+  talentIds?: string[];
+}
+
+export interface CombatEffectContext {
+  casterTalents?: string[];
+  targetTalents?: string[];
+  spellMeta?: SpellCombatMeta;
 }
 
 export function applySpellEffects(
   caster: CombatEntityWithBuffs,
   target: CombatEntityWithBuffs | undefined,
-  effects: SpellEffect[]
+  effects: SpellEffect[],
+  context: CombatEffectContext = {}
 ): { caster: CombatEntityWithBuffs; target?: CombatEntityWithBuffs; damage?: number; heal?: number; log: string[] } {
   let updatedCaster = { ...caster, buffs: [...caster.buffs] };
   let updatedTarget = target ? { ...target, buffs: [...target.buffs] } : undefined;
@@ -29,13 +45,24 @@ export function applySpellEffects(
   let damage: number | undefined;
   let heal: number | undefined;
 
+  const casterTalents = context.casterTalents ?? caster.talentIds ?? [];
+  const targetTalents = context.targetTalents ?? updatedTarget?.talentIds ?? [];
+  const casterMods = computeTalentModifiers(casterTalents);
+  const targetMods = computeTalentModifiers(targetTalents);
+  const spellMeta: SpellCombatMeta = context.spellMeta ?? {
+    minRange: 1,
+    maxRange: 1,
+    area: 0,
+  };
+
   for (const effect of effects) {
     switch (effect.type) {
       case "damage": {
         if (!updatedTarget) break;
-        const dmg = Math.floor(Math.random() * (effect.max - effect.min + 1)) + effect.min;
-        const bonus = getDamageBonus(updatedCaster);
-        const finalDmg = Math.max(1, dmg + bonus);
+        const baseDmg = Math.floor(Math.random() * (effect.max - effect.min + 1)) + effect.min;
+        const meta = { ...spellMeta, element: effect.element };
+        const buffBonus = getDamageBonus(updatedCaster);
+        const finalDmg = computeSpellDamage(baseDmg + buffBonus, casterMods, targetMods, meta);
         damage = (damage ?? 0) + finalDmg;
         const newHp = Math.max(0, updatedTarget.hp - finalDmg);
         updatedTarget = { ...updatedTarget, hp: newHp, isAlive: newHp > 0 };
@@ -43,7 +70,8 @@ export function applySpellEffects(
         break;
       }
       case "heal": {
-        const amount = Math.floor(Math.random() * (effect.max - effect.min + 1)) + effect.min;
+        const raw = Math.floor(Math.random() * (effect.max - effect.min + 1)) + effect.min;
+        const amount = scaleHealAmount(raw, casterMods);
         heal = (heal ?? 0) + amount;
         const newHp = Math.min(updatedCaster.maxHp, updatedCaster.hp + amount);
         updatedCaster = { ...updatedCaster, hp: newHp };
@@ -51,8 +79,11 @@ export function applySpellEffects(
         break;
       }
       case "buff": {
-        const entity = effect.stat === "shield" || effect.stat === "regen" ? updatedCaster : updatedTarget ?? updatedCaster;
-        const buffed = addBuff(entity, effect.stat, effect.value, effect.duration);
+        const entity = effect.stat === "shield" || effect.stat === "regen" || effect.stat === "damage" || effect.stat === "invisibility"
+          ? updatedCaster
+          : updatedTarget ?? updatedCaster;
+        const scaledValue = scaleBuffValue(effect.stat, effect.value, casterMods);
+        const buffed = addBuff(entity, effect.stat, scaledValue, effect.duration);
         if (entity === updatedCaster) updatedCaster = buffed;
         else if (updatedTarget) updatedTarget = buffed;
         log.push(`Buff ${effect.stat} (${effect.duration} tours)`);
@@ -60,8 +91,9 @@ export function applySpellEffects(
       }
       case "debuff": {
         if (!updatedTarget) break;
-        updatedTarget = addBuff(updatedTarget, effect.stat, effect.value, effect.duration);
-        log.push(`Debuff ${effect.stat} (${effect.duration} tours)`);
+        const duration = scaleDebuffDuration(effect.duration, casterMods);
+        updatedTarget = addBuff(updatedTarget, effect.stat, effect.value, duration);
+        log.push(`Debuff ${effect.stat} (${duration} tours)`);
         break;
       }
       default:
@@ -87,10 +119,9 @@ export function tickBuffs(entity: CombatEntityWithBuffs): CombatEntityWithBuffs 
     .map((b) => ({ ...b, duration: b.duration - 1 }))
     .filter((b) => b.duration > 0);
 
-  let { maxMp, maxAp } = entity;
+  let { maxMp } = entity;
   for (const expired of entity.buffs.filter((b) => b.duration <= 1)) {
     if (expired.stat === "mp") maxMp -= expired.value;
-    if (expired.stat === "damage") maxAp -= 0;
   }
 
   let hp = entity.hp;
@@ -124,3 +155,5 @@ export function formatBuffs(buffs: CombatBuff[]): string {
   if (buffs.length === 0) return "";
   return buffs.map((b) => `${b.stat}${b.value > 0 ? "+" : ""}${b.value}(${b.duration})`).join(" ");
 }
+
+export { applyCombatStartTalents, computeTalentModifiers, getEffectiveMaxRange } from "./talentModifiers";

@@ -76,9 +76,11 @@ export function drawIsoShadow(
 
 export function getClassIcon(classId: string): string {
   const icons: Record<string, string> = {
-    pyromancien: "🔥", gardien: "🛡️", eclaireur: "🗡️",
-    invocateur: "✨", alchimiste: "⚗️", archer: "🏹",
-    berserker: "⚔️", chronomancien: "⏳",
+    alchimiste: "⚗️", luminaire: "☀️",
+    pyromancien: "🔥", cryomancien: "❄️",
+    gardien: "🛡️", bastion: "🏰",
+    berserker: "⚔️", eclaireur: "🗡️",
+    archer: "🏹", invocateur: "✨",
   };
   return icons[classId] ?? "🧙";
 }

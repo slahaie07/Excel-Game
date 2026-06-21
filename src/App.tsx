@@ -25,7 +25,16 @@ import FriendsScreen from "./screens/FriendsScreen";
 import TradeScreen from "./screens/TradeScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import HallOfFameScreen from "./screens/HallOfFameScreen";
+import ClassScreen from "./screens/ClassScreen";
+import FactionsScreen from "./screens/FactionsScreen";
+import TerritoryOverviewRouter from "./screens/TerritoryOverviewRouter";
+import GuideScreen from "./screens/GuideScreen";
+import CreditsScreen from "./screens/CreditsScreen";
+import ProgressScreen from "./screens/ProgressScreen";
 import ChatOverlay from "./components/ChatOverlay";
+import { LevelUpToast } from "./components/LevelUpToast";
+import { AchievementToast } from "./components/AchievementToast";
+import { useToastStore } from "./stores/toastStore";
 
 const SCREENS = {
   splash: SplashScreen,
@@ -54,12 +63,19 @@ const SCREENS = {
   trade: TradeScreen,
   settings: SettingsScreen,
   "hall-of-fame": HallOfFameScreen,
+  class: ClassScreen,
+  factions: FactionsScreen,
+  "territory-overview": TerritoryOverviewRouter,
+  guide: GuideScreen,
+  credits: CreditsScreen,
+  progress: ProgressScreen,
 } as const;
 
 const IN_GAME_SCREENS = new Set([
   "world", "combat", "inventory", "quests", "guild", "guild-hall", "marketplace",
   "professions", "pvp", "dungeons", "raids", "pets", "haven", "events", "live-events",
-  "daily", "achievements", "friends", "trade", "settings", "hall-of-fame",
+  "daily", "achievements", "friends", "trade", "settings", "hall-of-fame", "class", "factions",
+  "territory-overview", "guide", "credits", "progress",
 ]);
 
 export default function App() {
@@ -67,6 +83,10 @@ export default function App() {
   const characterId = useGameStore((s) => s.characterId);
   const Screen = SCREENS[screen] ?? SplashScreen;
   const showChat = characterId && IN_GAME_SCREENS.has(screen);
+  const levelUp = useToastStore((s) => s.levelUp);
+  const achievement = useToastStore((s) => s.achievement);
+  const dismissLevelUp = useToastStore((s) => s.dismissLevelUp);
+  const dismissAchievement = useToastStore((s) => s.dismissAchievement);
 
   return (
     <div className="h-dvh w-full flex flex-col overflow-hidden">
@@ -74,6 +94,16 @@ export default function App() {
         <Route path="*" element={<Screen />} />
       </Routes>
       {showChat && <ChatOverlay />}
+      {levelUp !== null && (
+        <LevelUpToast level={levelUp} onDismiss={dismissLevelUp} />
+      )}
+      {achievement && (
+        <AchievementToast
+          name={achievement.name}
+          icon={achievement.icon}
+          onDismiss={dismissAchievement}
+        />
+      )}
     </div>
   );
 }

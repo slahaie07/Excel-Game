@@ -6,8 +6,16 @@ import { getSpellById } from "./lib/spells";
 import { tryUnlockAchievement, syncCharacterAchievements } from "./lib/achievementUnlock";
 import { recordInvasionKill } from "./worldInvasions";
 import { recordMenteePveWin } from "./mentorship";
-import { addZoneFactionReputation } from "./factions";
+import { addZoneFactionReputation, recordFactionQuestProgress } from "./factions";
+import { recordPledgedCampaignEvent } from "./factionCampaigns";
 import { applySpellEffects, tickBuffs } from "./lib/combatEffects";
+import {
+  applyCombatStartTalents,
+  computeTalentModifiers,
+  getEffectiveMaxRange,
+  SPELL_AREAS,
+} from "./lib/talentModifiers";
+import { getTerritoryXpMultiplierForCharacter } from "./lib/factionTerritories";
 
 const MONSTER_DATA: Record<string, { hp: number; ap: number; mp: number; damage: number; name: string }> = {
   graine_ombre: { hp: 30, ap: 4, mp: 3, damage: 5, name: "Graine d'Ombre" },
@@ -16,6 +24,15 @@ const MONSTER_DATA: Record<string, { hp: number; ap: number; mp: number; damage:
   gardien_ruines: { hp: 300, ap: 8, mp: 3, damage: 20, name: "Gardien des Ruines" },
   treant_corrompu: { hp: 120, ap: 5, mp: 2, damage: 15, name: "Tréant Corrompu" },
   fee_brume: { hp: 80, ap: 7, mp: 6, damage: 18, name: "Fée de Brume" },
+  champion_lumina: { hp: 500, ap: 10, mp: 4, damage: 30, name: "Champion de Lumina" },
+  scorpion_ether: { hp: 150, ap: 6, mp: 5, damage: 25, name: "Scorpion d'Éther" },
+  sphinx_ombres: { hp: 800, ap: 12, mp: 5, damage: 40, name: "Sphinx des Ombres" },
+  golem_stellaire: { hp: 250, ap: 6, mp: 2, damage: 35, name: "Golem Stellaire" },
+  dragon_aether: { hp: 2000, ap: 14, mp: 6, damage: 60, name: "Dragon d'Aether" },
+  event_gardien_floral: { hp: 100, ap: 6, mp: 4, damage: 14, name: "Gardien Floral" },
+  event_esprit_eclipse: { hp: 140, ap: 7, mp: 5, damage: 22, name: "Esprit d'Éclipse" },
+  event_ombre_majeur: { hp: 200, ap: 8, mp: 4, damage: 28, name: "Ombre Majeure" },
+  event_cristal_ancien: { hp: 280, ap: 9, mp: 3, damage: 35, name: "Gardien de Cristal Ancien" },
 };
 
 type Entity = {
@@ -35,6 +52,7 @@ type Entity = {
   y: number;
   team: "player" | "enemy";
   buffs: { stat: string; value: number; duration: number }[];
+  talentIds?: string[];
   isAlive: boolean;
 };
 
@@ -51,26 +69,30 @@ function buildPlayerEntity(
     maxHp: number;
     maxAp: number;
     maxMp: number;
+    talents?: string[];
   },
   x: number,
   y: number
 ): Entity {
+  const talentIds = character.talents ?? [];
+  const scaled = applyCombatStartTalents(character.hp, character.maxHp, character.maxMp, talentIds);
   return {
     entityId: generateId(),
     name: character.name,
     isPlayer: true,
     classId: character.classId,
     ownerCharacterId: character._id,
-    hp: character.hp,
-    maxHp: character.maxHp,
+    hp: scaled.hp,
+    maxHp: scaled.maxHp,
     ap: character.maxAp,
     maxAp: character.maxAp,
-    mp: character.maxMp,
-    maxMp: character.maxMp,
+    mp: scaled.maxMp,
+    maxMp: scaled.maxMp,
     x,
     y,
     team: "player",
     buffs: [],
+    talentIds,
     isAlive: true,
   };
 }
@@ -111,15 +133,55 @@ function resolveCombatStatus(entities: Entity[]): {
   return { status: "active" };
 }
 
+async function resolveCombatWithTerritory(
+  ctx: MutationCtx,
+  entities: Entity[],
+  combat: {
+    zoneId: string;
+    characterId: Id<"characters">;
+    combatType?: "world" | "dungeon" | "pvp" | "event";
+    rewards?: { xp: number; eclats: number; items: { itemId: string; quantity: number }[] };
+  }
+): Promise<{
+  status: "active" | "victory" | "defeat";
+  rewards?: { xp: number; eclats: number; items: { itemId: string; quantity: number }[] };
+}> {
+  const base = resolveCombatStatus(entities);
+  if (base.status !== "victory") return base;
+
+  const rewards = combat.rewards ?? base.rewards;
+  if (!rewards) return base;
+
+  const type = combat.combatType ?? "world";
+  if (type !== "world" && type !== "event") {
+    return { status: "victory", rewards };
+  }
+
+  const mult = await getTerritoryXpMultiplierForCharacter(ctx, combat.zoneId, combat.characterId);
+  return {
+    status: "victory",
+    rewards: {
+      ...rewards,
+      xp: Math.floor(rewards.xp * mult),
+    },
+  };
+}
+
 function runEnemyTurn(entities: Entity[]): Entity[] {
   const enemy = entities.find((e) => e.team === "enemy" && e.isAlive);
   const player = entities.find((e) => e.team === "player" && e.isAlive);
   if (!enemy || !player) return entities;
 
   const dmg = Math.floor(Math.random() * 8) + 5;
+  const playerTalents = player.talentIds ?? [];
+  const playerMods = computeTalentModifiers(playerTalents);
+  const finalDmg =
+    playerMods.defensePassivePct > 0
+      ? Math.max(1, Math.floor(dmg * (1 - playerMods.defensePassivePct / 100)))
+      : dmg;
   return entities.map((e) => {
     if (e.entityId === player.entityId) {
-      const newHp = Math.max(0, e.hp - dmg);
+      const newHp = Math.max(0, e.hp - finalDmg);
       return { ...e, hp: newHp, isAlive: newHp > 0 };
     }
     return e;
@@ -465,10 +527,28 @@ export const castSpell = mutation({
     if (!caster || !caster.isAlive) throw new Error("Lanceur invalide");
     if (caster.ap < spell.apCost) throw new Error("Pas assez de PA");
 
+    if (caster.ownerCharacterId) {
+      const owner = await ctx.db.get("characters", caster.ownerCharacterId);
+      if (!owner?.spells.includes(args.spellId)) {
+        throw new Error("Sort non appris");
+      }
+    }
+
+    const casterMods = computeTalentModifiers(caster.talentIds ?? []);
+    const effectiveMaxRange = getEffectiveMaxRange(spell.maxRange, casterMods);
+
     const distance = Math.abs(args.targetX - caster.x) + Math.abs(args.targetY - caster.y);
-    if (distance < spell.minRange || distance > spell.maxRange) {
+    if (distance < spell.minRange || distance > effectiveMaxRange) {
       throw new Error("Hors de portée");
     }
+
+    const damageEffect = spell.effects.find((e) => e.type === "damage");
+    const spellMeta = {
+      element: damageEffect?.type === "damage" ? damageEffect.element : undefined,
+      minRange: spell.minRange,
+      maxRange: spell.maxRange,
+      area: SPELL_AREAS[args.spellId] ?? 0,
+    };
 
     const targetIdx = combat.entities.findIndex(
       (e) => e.x === args.targetX && e.y === args.targetY && e.isAlive
@@ -486,6 +566,7 @@ export const castSpell = mutation({
       buffs: caster.buffs,
       isAlive: caster.isAlive,
       team: caster.team,
+      talentIds: caster.talentIds,
     };
     const targetState = target
       ? {
@@ -499,10 +580,15 @@ export const castSpell = mutation({
           buffs: target.buffs,
           isAlive: target.isAlive,
           team: target.team,
+          talentIds: target.talentIds,
         }
       : undefined;
 
-    const result = applySpellEffects(casterState, targetState, spell.effects);
+    const result = applySpellEffects(casterState, targetState, spell.effects, {
+      spellMeta,
+      casterTalents: caster.talentIds,
+      targetTalents: target?.talentIds,
+    });
     const killed: string[] = [];
 
     let updatedEntities = combat.entities.map((e, i) => {
@@ -529,7 +615,12 @@ export const castSpell = mutation({
       return e;
     });
 
-    const resolved = resolveCombatStatus(updatedEntities);
+    const resolved = await resolveCombatWithTerritory(ctx, updatedEntities, {
+      zoneId: combat.zoneId,
+      characterId: combat.characterId,
+      combatType: combat.combatType,
+      rewards: combat.rewards,
+    });
     await ctx.db.patch("combats", args.combatId, {
       entities: updatedEntities,
       status: resolved.status,
@@ -582,7 +673,12 @@ export const endTurn = mutation({
     // IA ennemie automatique
     if (nextEntity?.team === "enemy") {
       entities = runEnemyTurn(entities);
-      const resolved = resolveCombatStatus(entities);
+      const resolved = await resolveCombatWithTerritory(ctx, entities, {
+        zoneId: combat.zoneId,
+        characterId: combat.characterId,
+        combatType: combat.combatType,
+        rewards: combat.rewards,
+      });
       if (resolved.status !== "active") {
         await ctx.db.patch("combats", args.combatId, {
           entities,
@@ -654,6 +750,9 @@ export const applyVictoryRewards = mutation({
         await recordInvasionKill(ctx, charId, character.name, combat.zoneId);
         await recordMenteePveWin(ctx, charId);
         await addZoneFactionReputation(ctx, charId, combat.zoneId, 2);
+        await recordFactionQuestProgress(ctx, charId, { type: "world_kills" });
+        await recordFactionQuestProgress(ctx, charId, { type: "zone_kills", zoneId: combat.zoneId });
+        await recordPledgedCampaignEvent(ctx, charId, "world_kill");
       }
     }
     return null;

@@ -8,9 +8,77 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 
 ## Fonctionnalités
 
+### Écran Factions (v1.15)
+- Hub dédié : réputation, quêtes hebdomadaires, boutique par rang
+- Allégeance, progression auto combat/PvP, mode local + cloud
+
+### Récompenses de rang faction (v1.16)
+- Titres et cadres débloqués à Champion / Exalté par faction
+- Progression quêtes faction en combat local
+- Badge faction alliée dans le monde
+
+### Visuels & classement campagnes (v1.18)
+- Art généré : zones (Vallée, Désert), combat tactique, portraits classes, roster héros
+- Fonds illustrés en monde et en combat (Phaser + overlay)
+- Cadres de profil visibles en chat et présence
+- Classement contributeurs campagne + bannière campagne dans le monde
+
+### v2.0.0 — Version Finale (vfinal)
+- **Progression endgame** : 7 objectifs (niveau 30/60, citadelle, PvP, guilde, faction, succès)
+- **Guide du joueur** + écran crédits
+- **Toasts** montée de niveau et succès débloqués
+- **Modal nouveautés** au premier lancement v2.0
+- **Accessibilité** : réduire les animations
+- **Splash** art roster + badge version finale
+- **Carte** : marqueurs boss (👹)
+
+### v1.30 — Release carte monde & polish (v1.22→v1.30)
+- **v1.22** : Carte visuelle Terreval + détail bonus XP victoire
+- **v1.23** : Animations mort + attaque ennemie cloud
+- **v1.24** : Écran contrôle territorial complet
+- **v1.25** : Mini-carte persistante dans le monde
+- **v1.26** : Particules ambiantes par biome (Lumina/Umbra/PvP)
+- **v1.27** : Historique hebdo des campagnes (cloud)
+- **v1.28** : Marqueurs événements saisonniers sur la carte
+- **v1.29** : Décomposition des récompenses (base, territoire, événement)
+- **v1.30** : Intégration complète + navigation factions/monde
+
+### Animations combat & carte territoriale (v1.21)
+- 9 sprites monstres additionnels (boss, événements, zone)
+- Animations d'attaque Phaser (frappe + effets sorts)
+- Menu voyage avec statut territorial par zone
+- Bonus XP territoire appliqué au combat cloud
+
+### Sprites monstres & territoires faction (v1.20)
+- 6 sprites monstres isométriques avec animation idle (monde + combat)
+- Contrôle territorial des zones selon campagnes hebdo (fortifié / stable / contesté)
+- Bonus XP +15% en zone fortifiée alliée
+- Bannière territoire dans le monde, portraits sur écrans classe/création/sélection
+
+### Sprites isométriques & récompenses top 3 (v1.19)
+- Portraits des 10 classes + fonds des 6 zones
+- Sprites portrait sur la grille monde/combat (remplace emojis joueurs)
+- Cosmétiques auto : Héros de Campagne + cadres or/argent/bronze (top 3)
+
+### Campagnes faction & titres sociaux (v1.17)
+- Campagnes hebdomadaires coopératives par faction (contribution alliée)
+- Titres équipés visibles dans le chat et la présence en zone
+- Récompenses de campagne : réputation + éclats
+
+### Talents actifs en combat (v1.14)
+- Bonus de talents appliqués aux dégâts, soins, buffs et défense
+- PV max et PM bonus au début du combat
+- Portée étendue (Œil d'Aigle) validée serveur
+
+### Progression de classe (v1.13)
+- Déblocage automatique des sorts par niveau (client + Convex)
+- Talents par archétype (2 paliers : niv. 10 et 20)
+- Écran fiche de classe (grimoire, stats, talents)
+- Migration Chronomancien → Cryomancien
+
 ### Combat tactique (v1.1)
 - Grille isométrique au tour par tour (PA/PM)
-- 8 classes avec sorts à effets (dégâts, soins, buffs, debuffs)
+- 10 classes équilibrées (2 soins, 2 magie, 2 bouclier, 2 gros dégâts, 2 à distance) avec sorts synchronisés client/serveur
 - Combat cloud synchronisé via Convex avec sorts serveur (`convex/lib/spells.ts`)
 - Buffs/debuffs côté serveur (`convex/lib/combatEffects.ts`) + IA ennemie automatique
 - Donjons coop jusqu'à 4 joueurs, PvP avec `startPvpCombat`
@@ -22,7 +90,12 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Niveaux 1 à 60
 
 ### Progression
-- 8 classes : Pyromancien, Gardien Cristallin, Éclaireur des Brumes, Invocateur d'Aether, Alchimiste des Runes, Archer Lunaire, Berserker Tellurique, Chronomancien
+- 10 classes équilibrées :
+  - **Soins** : Alchimiste des Runes, Luminaire
+  - **Magie** : Pyromancien, Cryomancien
+  - **Bouclier** : Gardien Cristallin, Bastion de Fer
+  - **Gros dégâts** : Berserker Tellurique, Éclaireur des Brumes
+  - **À distance** : Archer Lunaire, Invocateur d'Aether
 - XP, montée de niveau, stats, sorts
 - Équipement (6 slots) et inventaire
 
@@ -176,7 +249,18 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Campagnes guerre de guildes, raid Nexus endgame, succès cloud sync (v1.8)
 - [x] Tournois PvP hebdo, Panthéon cross-serveur, cosmétiques de guilde (v1.9)
 - [x] Ligues PvP, mentorat joueurs, invasions monde dynamiques (v1.10)
-- [x] Réputation factions, défis PvP quotidiens, boss invasion (v1.11)
+- [x] 10 classes équilibrées synchronisées (v1.12)
+- [x] Progression sorts + talents par archétype (v1.13)
+- [x] Bonus de talents actifs en combat (v1.14)
+- [x] Écran Factions — quêtes et boutique (v1.15)
+- [x] Récompenses de rang faction + progression locale (v1.16)
+- [x] Campagnes faction hebdo + titres visibles en social (v1.17)
+- [x] Visuels zones/combat/personnages + cadres sociaux + classement campagne (v1.18)
+- [x] Carte monde, minimap, territoires, animations mort, historique (v1.22–v1.30)
+- [x] Animations attaque, carte territoires, sprites monstres complets, XP cloud (v1.21)
+- [x] Sprites monstres, territoires faction, portraits roster (v1.20)
+- [x] Sprites portrait 10 classes, 6 fonds zones, récompenses top 3 campagne (v1.19)
+- [x] Version finale — guide, crédits, progression endgame, toasts, accessibilité (v2.0 vfinal)
 
 ## Licence
 

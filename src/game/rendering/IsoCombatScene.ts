@@ -4,12 +4,16 @@ import {
   ZONE_THEMES, type ZoneTileTheme,
 } from "./isometric";
 
+import { addEntityVisual, preloadEntitySprites } from "./spriteLoader";
+
 export interface CombatEntityVisual {
   entityId: string;
   name: string;
   gridX: number;
   gridY: number;
   icon: string;
+  classId?: string;
+  monsterId?: string;
   hp: number;
   maxHp: number;
   team: "player" | "enemy";
@@ -49,6 +53,10 @@ export class IsoCombatScene extends Phaser.Scene {
       : data.combatType === "event" ? "event"
       : "combat";
     this.theme = ZONE_THEMES[typeTheme] ?? ZONE_THEMES.combat!;
+  }
+
+  preload() {
+    preloadEntitySprites(this);
   }
 
   create() {
@@ -114,6 +122,47 @@ export class IsoCombatScene extends Phaser.Scene {
     });
   }
 
+  playAttackEffect(fromX: number, fromY: number, toX: number, toY: number) {
+    const from = gridToIso(fromX, fromY, this.tileW, this.tileH, this.offsetX, this.offsetY);
+    const to = gridToIso(toX, toY, this.tileW, this.tileH, this.offsetX, this.offsetY);
+
+    const slash = this.add.graphics();
+    slash.lineStyle(3, 0xff5544, 0.95);
+    slash.lineBetween(from.x, from.y - 12, to.x, to.y - 12);
+    slash.setDepth(900);
+    this.tweens.add({
+      targets: slash,
+      alpha: 0,
+      duration: 180,
+      onComplete: () => slash.destroy(),
+    });
+
+    const impact = this.add.circle(to.x, to.y - 12, 6, 0xff3333, 0.7);
+    impact.setDepth(901);
+    this.tweens.add({
+      targets: impact,
+      scale: 2.2,
+      alpha: 0,
+      duration: 220,
+      onComplete: () => impact.destroy(),
+    });
+  }
+
+  playDeathEffect(gridX: number, gridY: number) {
+    const pos = gridToIso(gridX, gridY, this.tileW, this.tileH, this.offsetX, this.offsetY);
+    const puff = this.add.circle(pos.x, pos.y - 12, 14, 0x888888, 0.6);
+    puff.setDepth(902);
+    this.tweens.add({
+      targets: puff,
+      scale: 2.5,
+      alpha: 0,
+      y: pos.y - 28,
+      duration: 450,
+      ease: "Power2",
+      onComplete: () => puff.destroy(),
+    });
+  }
+
   private renderEntities() {
     this.entitySprites.forEach((s) => s.destroy());
     this.entitySprites = [];
@@ -137,9 +186,15 @@ export class IsoCombatScene extends Phaser.Scene {
         this.entitySprites.push(ring);
       }
 
-      const sprite = this.add.text(pos.x, pos.y - 10, entity.icon, {
+      const sprite = addEntityVisual(this, pos.x, pos.y - 10, {
+        icon: entity.icon,
+        classId: entity.team === "player" ? entity.classId : undefined,
+        monsterId: entity.team === "enemy" ? entity.monsterId : undefined,
+        displaySize: entity.team === "player" ? 44 : 36,
+        depth: depth + 0.1,
         fontSize: entity.team === "player" ? "26px" : "20px",
-      }).setOrigin(0.5).setDepth(depth + 0.1);
+        animate: entity.isCurrent,
+      });
       this.entitySprites.push(sprite);
 
       const hpPct = entity.hp / entity.maxHp;
