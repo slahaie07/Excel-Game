@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>M7 Studio — Réservation en Ligne</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold:        #C9A84C;
+      --gold-light:  #E8C96A;
+      --gold-bright: #FFD700;
+      --gold-deep:   #A07830;
+      --gold-pale:   #F5E6B8;
+      --black:       #000000;
+      --black-rich:  #0A0A0A;
+      --black-soft:  #111111;
+      --black-mid:   #1A1A1A;
+      --black-card:  #141414;
+      --black-border:#222222;
+      --white:       #FFFFFF;
+      --white-dim:   #F0ECE0;
+      --grey-light:  #888888;
+      --grey-mid:    #555555;
+      --gradient-gold: linear-gradient(135deg, #C9A84C 0%, #FFD700 40%, #E8C96A 60%, #A07830 100%);
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-sans:  'Inter', -apple-system, sans-serif;
+      --font-elegant: 'Cormorant Garamond', Georgia, serif;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black-rich);
+      color: var(--white-dim);
+      font-family: var(--font-sans);
+      font-weight: 300;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--black-rich); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-deep); border-radius: 3px; }
+    ::selection { background: rgba(201,168,76,0.3); color: var(--gold-bright); }
+
+    /* ─── HEADER ─── */
+    header {
+      height: 72px;
+      background: rgba(0,0,0,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .logo-badge {
+      width: 40px; height: 40px;
+      background: var(--gradient-gold);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-serif);
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--black);
+    }
+    .logo-text {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 700;
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 2px;
+    }
+    .header-back {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(240,236,224,0.5);
+      transition: color 0.3s ease;
+    }
+    .header-back:hover { color: var(--gold); }
+
+    /* ─── HERO MINI ─── */
+    .booking-hero {
+      text-align: center;
+      padding: 80px 24px 60px;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,168,76,0.06) 0%, transparent 70%),
+        var(--black-rich);
+      border-bottom: 1px solid rgba(201,168,76,0.08);
+    }
+    .booking-hero-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .booking-hero-label::before, .booking-hero-label::after {
+      content: '';
+      width: 28px; height: 1px;
+      background: var(--gradient-gold);
+    }
+    .booking-hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .booking-hero h1 span {
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .booking-hero p {
+      font-family: var(--font-elegant);
+      font-size: 18px;
+      font-style: italic;
+      color: rgba(240,236,224,0.5);
+    }
+
+    /* ─── PROGRESS ─── */
+    .booking-progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      padding: 40px 24px 0;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      position: relative;
+      cursor: pointer;
+    }
+    .progress-step::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: calc(50% + 20px);
+      right: calc(-50% + 20px);
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+    }
+    .progress-step:last-child::before { display: none; }
+    .progress-step.active::before,
+    .progress-step.done::before { background: rgba(201,168,76,0.3); }
+    .step-circle {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--black-card);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--grey-mid);
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+    .progress-step.active .step-circle {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.1);
+      color: var(--gold);
+      box-shadow: 0 0 20px rgba(201,168,76,0.2);
+    }
+    .progress-step.done .step-circle {
+      background: var(--gradient-gold);
+      border-color: transparent;
+      color: var(--black);
+    }
+    .step-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--grey-mid);
+      transition: color 0.3s ease;
+      white-space: nowrap;
+    }
+    .progress-step.active .step-label { color: var(--gold); }
+    .progress-step.done .step-label { color: rgba(201,168,76,0.6); }
+
+    /* ─── LAYOUT ─── */
+    .booking-layout {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 40px 100px;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 40px;
+      align-items: start;
+    }
+
+    /* ─── MAIN FORM AREA ─── */
+    .booking-main {}
+    .booking-step {
+      display: none;
+    }
+    .booking-step.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .step-title {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+    .step-subtitle {
+      font-size: 14px;
+      color: rgba(240,236,224,0.45);
+      margin-bottom: 40px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* ─── SERVICE PICKER ─── */
+    .service-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .service-option {
+      border: 1px solid var(--black-border);
+      background: var(--black-card);
+      padding: 24px 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      border-radius: 2px;
+    }
+    .service-option:hover { border-color: rgba(201,168,76,0.3); }
+    .service-option.selected {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.06);
+    }
+    .service-option.selected::before {
+      content: '✓';
+      position: absolute;
+      top: 12px; right: 14px;
+      width: 20px; height: 20px;
+      background: var(--gradient-gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--black);
+      text-align: center;
+      line-height: 20px;
+    }
+    .service-option-icon { font-size: 28px; margin-bottom: 10px; }
+    .service-option-name {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .service-option-desc {
+      font-size: 12px;
+      color: rgba(240,236,224,0.4);
+      line-height: 1.5;
+    }
+    .service-option-price {
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+    }
+
+    /* ─── STUDIO PICKER ─── */
+    .studio-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .studio-option {
+      border: 1px solid var(--black-border);
+      background: var(--black-card);
+      padding: 20px 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      border-radius: 2px;
+    }
+    .studio-option:hover { border-color: rgba(201,168,76,0.3); }
+    .studio-option.selected {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.04);
+    }
+    .studio-badge {
+      width: 50px; height: 50px;
+      border-radius: 8px;
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .studio-info { flex: 1; }
+    .studio-name {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 3px;
+    }
+    .studio-specs {
+      font-size: 12px;
+      color: rgba(240,236,224,0.45);
+    }
+    .studio-price {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+    .studio-price span { font-size: 12px; font-weight: 300; color: var(--grey-light); }
+
+    /* ─── CALENDAR ─── */
+    .calendar-container {
+      margin-bottom: 32px;
+    }
+    .calendar-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .cal-month {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--white);
+    }
+    .cal-arrow {
+      width: 36px; height: 36px;
+      background: var(--black-card);
+      border: 1px solid var(--black-border);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gold);
+      font-size: 16px;
+      transition: all 0.2s ease;
+    }
+    .cal-arrow:hover { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+    .cal-day-header {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--gold-deep);
+      padding: 8px 0;
+    }
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      color: rgba(240,236,224,0.5);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+    .cal-day:hover:not(.empty):not(.past) {
+      background: rgba(201,168,76,0.08);
+      border-color: rgba(201,168,76,0.2);
+      color: var(--gold-light);
+    }
+    .cal-day.selected {
+      background: var(--gradient-gold);
+      color: var(--black);
+      font-weight: 700;
+      border-color: transparent;
+    }
+    .cal-day.today {
+      border-color: rgba(201,168,76,0.4);
+      color: var(--gold);
+    }
+    .cal-day.past { opacity: 0.25; cursor: not-allowed; }
+    .cal-day.empty { cursor: default; }
+    .cal-day.booked { opacity: 0.3; cursor: not-allowed; text-decoration: line-through; }
+
+    /* ─── TIME SLOTS ─── */
+    .time-section { margin-top: 28px; }
+    .time-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold-deep);
+      margin-bottom: 14px;
+    }
+    .time-slots {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .time-slot {
+      padding: 12px 8px;
+      text-align: center;
+      background: var(--black-card);
+      border: 1px solid var(--black-border);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      color: rgba(240,236,224,0.6);
+      transition: all 0.2s ease;
+    }
+    .time-slot:hover:not(.taken) {
+      border-color: rgba(201,168,76,0.3);
+      color: var(--gold-light);
+    }
+    .time-slot.selected {
+      background: rgba(201,168,76,0.1);
+      border-color: var(--gold);
+      color: var(--gold);
+      font-weight: 600;
+    }
+    .time-slot.taken {
+      opacity: 0.25;
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+
+    /* ─── DURATION ─── */
+    .duration-options {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .duration-btn {
+      padding: 10px 22px;
+      background: var(--black-card);
+      border: 1px solid var(--black-border);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      color: rgba(240,236,224,0.6);
+      transition: all 0.2s ease;
+    }
+    .duration-btn:hover { border-color: rgba(201,168,76,0.3); color: var(--gold-light); }
+    .duration-btn.selected {
+      background: rgba(201,168,76,0.1);
+      border-color: var(--gold);
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    /* ─── CONTACT FORM ─── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 18px;
+    }
+    .form-group.full { grid-column: span 2; }
+    .form-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold-deep);
+    }
+    .form-input {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 13px 16px;
+      color: var(--white-dim);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 300;
+      border-radius: 3px;
+      outline: none;
+      transition: border-color 0.3s ease;
+      width: 100%;
+    }
+    .form-input:focus { border-color: rgba(201,168,76,0.4); }
+    .form-input::placeholder { color: rgba(240,236,224,0.18); }
+    textarea.form-input { resize: none; min-height: 110px; }
+    .extras-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .extra-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--black-card);
+      border: 1px solid var(--black-border);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .extra-item:hover { border-color: rgba(201,168,76,0.2); }
+    .extra-item.checked { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.04); }
+    .extra-checkbox {
+      width: 18px; height: 18px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 10px;
+      transition: all 0.2s ease;
+    }
+    .extra-item.checked .extra-checkbox {
+      background: var(--gradient-gold);
+      border-color: transparent;
+      color: var(--black);
+    }
+    .extra-label {
+      font-size: 13px;
+      color: rgba(240,236,224,0.7);
+      flex: 1;
+    }
+    .extra-price { font-size: 12px; color: var(--gold); }
+
+    /* ─── NAV BUTTONS ─── */
+    .step-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(240,236,224,0.5);
+      padding: 13px 28px;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .btn-back:hover { border-color: rgba(255,255,255,0.25); color: var(--white-dim); }
+    .btn-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gradient-gold);
+      border: none;
+      color: var(--black);
+      padding: 14px 36px;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .btn-next:hover {
+      box-shadow: 0 8px 30px rgba(201,168,76,0.35);
+      transform: translateY(-2px);
+    }
+    .btn-next:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* ─── SUMMARY SIDEBAR ─── */
+    .booking-summary {
+      background: var(--black-card);
+      border: 1px solid var(--black-border);
+      padding: 36px 28px;
+      position: sticky;
+      top: 100px;
+    }
+    .summary-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(201,168,76,0.1);
+    }
+    .summary-title {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .summary-badge {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.3);
+      padding: 3px 10px;
+    }
+    .summary-item {
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .summary-item:last-of-type { border-bottom: none; }
+    .summary-item-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold-deep);
+      margin-bottom: 4px;
+    }
+    .summary-item-value {
+      font-size: 14px;
+      color: var(--white-dim);
+    }
+    .summary-item-value.empty {
+      color: rgba(240,236,224,0.2);
+      font-style: italic;
+    }
+    .summary-total {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(201,168,76,0.2);
+    }
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .total-label { font-size: 12px; color: rgba(240,236,224,0.5); }
+    .total-value { font-size: 14px; color: rgba(240,236,224,0.8); }
+    .total-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .total-main-label {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--white);
+    }
+    .total-main-value {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 700;
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .summary-note {
+      margin-top: 20px;
+      padding: 14px;
+      background: rgba(201,168,76,0.05);
+      border: 1px solid rgba(201,168,76,0.1);
+      border-radius: 3px;
+    }
+    .summary-note p {
+      font-size: 12px;
+      color: rgba(240,236,224,0.45);
+      line-height: 1.6;
+    }
+    .summary-note p span { color: var(--gold); }
+
+    /* ─── SUCCESS ─── */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 60px 40px;
+    }
+    .success-screen.show { display: block; animation: fadeIn 0.5s ease; }
+    .success-icon {
+      width: 100px; height: 100px;
+      background: var(--gradient-gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 44px;
+      margin: 0 auto 32px;
+      box-shadow: 0 0 60px rgba(201,168,76,0.35);
+    }
+    .success-title {
+      font-family: var(--font-serif);
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+    .success-title span {
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .success-text {
+      font-family: var(--font-elegant);
+      font-size: 18px;
+      font-style: italic;
+      color: rgba(240,236,224,0.55);
+      max-width: 500px;
+      margin: 0 auto 40px;
+      line-height: 1.8;
+    }
+    .success-ref {
+      display: inline-block;
+      padding: 14px 32px;
+      background: rgba(201,168,76,0.06);
+      border: 1px solid rgba(201,168,76,0.2);
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--gold);
+      letter-spacing: 4px;
+      margin-bottom: 40px;
+    }
+    .success-actions { display: flex; gap: 16px; justify-content: center; }
+    .btn-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: var(--gradient-gold);
+      color: var(--black);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .btn-home:hover { box-shadow: 0 8px 30px rgba(201,168,76,0.35); transform: translateY(-2px); }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: transparent;
+      color: var(--gold);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .btn-outline:hover { border-color: var(--gold); background: rgba(201,168,76,0.06); }
+
+    /* ─── FOOTER ─── */
+    .booking-footer {
+      text-align: center;
+      padding: 24px;
+      border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    .booking-footer p {
+      font-size: 11px;
+      color: rgba(240,236,224,0.2);
+      letter-spacing: 1px;
+    }
+    .booking-footer span { color: var(--gold-deep); }
+
+    @media (max-width: 900px) {
+      header { padding: 0 24px; }
+      .booking-layout { grid-template-columns: 1fr; padding: 40px 24px 80px; }
+      .booking-summary { position: static; }
+      .service-options { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: span 1; }
+      .extras-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header>
+  <a href="M7-Studio.html" class="header-logo">
+    <div class="logo-badge">M7</div>
+    <span class="logo-text">M7 STUDIO</span>
+  </a>
+  <a href="M7-Studio.html" class="header-back">← Retour au site</a>
+</header>
+
+<!-- ─── HERO ─── -->
+<div class="booking-hero">
+  <div class="booking-hero-label">Réservation en Ligne</div>
+  <h1>Réservez Votre<br/><span>Session Studio</span></h1>
+  <p>En 4 étapes simples — confirmation immédiate</p>
+</div>
+
+<!-- ─── PROGRESS ─── -->
+<div class="booking-progress" id="progressBar">
+  <div class="progress-step active" data-step="1">
+    <div class="step-circle">1</div>
+    <div class="step-label">Service</div>
+  </div>
+  <div class="progress-step" data-step="2">
+    <div class="step-circle">2</div>
+    <div class="step-label">Studio</div>
+  </div>
+  <div class="progress-step" data-step="3">
+    <div class="step-circle">3</div>
+    <div class="step-label">Date & Heure</div>
+  </div>
+  <div class="progress-step" data-step="4">
+    <div class="step-circle">4</div>
+    <div class="step-label">Vos Infos</div>
+  </div>
+</div>
+
+<!-- ─── MAIN LAYOUT ─── -->
+<div class="booking-layout">
+
+  <!-- FORM AREA -->
+  <div class="booking-main">
+
+    <!-- STEP 1: Service -->
+    <div class="booking-step active" id="step1">
+      <h2 class="step-title">Choisissez votre service</h2>
+      <p class="step-subtitle">Sélectionnez le type de prestation pour lequel vous souhaitez réserver une session.</p>
+      <div class="service-options">
+        <div class="service-option" onclick="selectService(this,'Enregistrement','120€/h')">
+          <div class="service-option-icon">🎙️</div>
+          <div class="service-option-name">Enregistrement</div>
+          <div class="service-option-desc">Vocal, instruments, live recording haute définition</div>
+          <div class="service-option-price">À partir de 120€/h</div>
+        </div>
+        <div class="service-option" onclick="selectService(this,'Mixage','90€/h')">
+          <div class="service-option-icon">🎚️</div>
+          <div class="service-option-name">Mixage</div>
+          <div class="service-option-desc">Mix professionnel multi-pistes avec ingénieur dédié</div>
+          <div class="service-option-price">À partir de 90€/h</div>
+        </div>
+        <div class="service-option" onclick="selectService(this,'Mastering','80€/titre')">
+          <div class="service-option-icon">💿</div>
+          <div class="service-option-name">Mastering</div>
+          <div class="service-option-desc">Mastering final pour distribution digitale et physique</div>
+          <div class="service-option-price">À partir de 80€/titre</div>
+        </div>
+        <div class="service-option" onclick="selectService(this,'Production Complète','480€/demi-j')">
+          <div class="service-option-icon">🎹</div>
+          <div class="service-option-name">Production Complète</div>
+          <div class="service-option-desc">Session tout-inclus : enregistrement + mix + master</div>
+          <div class="service-option-price">À partir de 480€/demi-journée</div>
+        </div>
+        <div class="service-option" onclick="selectService(this,'Post-Production','100€/h')">
+          <div class="service-option-icon">🎬</div>
+          <div class="service-option-name">Post-Production</div>
+          <div class="service-option-desc">Sound design, scoring, voice-over, musique à l'image</div>
+          <div class="service-option-price">À partir de 100€/h</div>
+        </div>
+        <div class="service-option" onclick="selectService(this,'Podcast','70€/h')">
+          <div class="service-option-icon">🎧</div>
+          <div class="service-option-name">Podcast & Content</div>
+          <div class="service-option-desc">Enregistrement et édition de podcasts et contenus créatifs</div>
+          <div class="service-option-price">À partir de 70€/h</div>
+        </div>
+      </div>
+      <div class="step-nav">
+        <div></div>
+        <button class="btn-next" id="next1" disabled onclick="goStep(2)">Choisir un Studio →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Studio -->
+    <div class="booking-step" id="step2">
+      <h2 class="step-title">Choisissez votre studio</h2>
+      <p class="step-subtitle">Chaque studio est unique. Sélectionnez celui qui correspond à votre projet.</p>
+      <div class="studio-options">
+        <div class="studio-option" onclick="selectStudio(this,'Studio A — Main Room','SSL 9000K · Live Room 80m² · 5.1 Surround · Monitoring Augspurger','+200€/h')">
+          <div class="studio-badge">🏆</div>
+          <div class="studio-info">
+            <div class="studio-name">Studio A — Main Room</div>
+            <div class="studio-specs">SSL 9000K · Live Room 80m² · 5.1 Surround · Monitoring Augspurger</div>
+          </div>
+          <div class="studio-price">+200€<span>/h</span></div>
+        </div>
+        <div class="studio-option" onclick="selectStudio(this,'Studio B — Vocal Booth','Neve 8078 · Booth isolé · Neumann U87 · Monitoring Genelec','+120€/h')">
+          <div class="studio-badge">🎙️</div>
+          <div class="studio-info">
+            <div class="studio-name">Studio B — Vocal Booth</div>
+            <div class="studio-specs">Neve 8078 · Booth isolé · Neumann U87 · Monitoring Genelec</div>
+          </div>
+          <div class="studio-price">+120€<span>/h</span></div>
+        </div>
+        <div class="studio-option" onclick="selectStudio(this,'Studio C — Live Room','API 1608 · Batterie Yamaha Custom · Instruments disponibles','+150€/h')">
+          <div class="studio-badge">🥁</div>
+          <div class="studio-info">
+            <div class="studio-name">Studio C — Live Room</div>
+            <div class="studio-specs">API 1608 · Batterie Yamaha Custom · Instruments disponibles</div>
+          </div>
+          <div class="studio-price">+150€<span>/h</span></div>
+        </div>
+        <div class="studio-option" onclick="selectStudio(this,'Studio D — Mix Suite','Console Neve · Monitoring Augspurger Duo8 · Outboard complet','+130€/h')">
+          <div class="studio-badge">🎚️</div>
+          <div class="studio-info">
+            <div class="studio-name">Studio D — Mix Suite</div>
+            <div class="studio-specs">Console Neve · Monitoring Augspurger Duo8 · Outboard complet</div>
+          </div>
+          <div class="studio-price">+130€<span>/h</span></div>
+        </div>
+        <div class="studio-option" onclick="selectStudio(this,'Studio E — Podcast','Équipement podcast professionnel · 8 micros · Streaming live','+70€/h')">
+          <div class="studio-badge">🎧</div>
+          <div class="studio-info">
+            <div class="studio-name">Studio E — Podcast</div>
+            <div class="studio-specs">Équipement podcast professionnel · 8 micros · Streaming live</div>
+          </div>
+          <div class="studio-price">+70€<span>/h</span></div>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="btn-back" onclick="goStep(1)">← Retour</button>
+        <button class="btn-next" id="next2" disabled onclick="goStep(3)">Choisir une Date →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Date & Time -->
+    <div class="booking-step" id="step3">
+      <h2 class="step-title">Date et heure de session</h2>
+      <p class="step-subtitle">Choisissez votre créneau. Les disponibilités sont mises à jour en temps réel.</p>
+
+      <div class="calendar-container">
+        <div class="calendar-nav">
+          <button class="cal-arrow" onclick="changeMonth(-1)">‹</button>
+          <div class="cal-month" id="calMonthTitle"></div>
+          <button class="cal-arrow" onclick="changeMonth(1)">›</button>
+        </div>
+        <div class="calendar-grid" id="calGrid"></div>
+      </div>
+
+      <div class="time-section">
+        <div class="time-section-title">Créneau Horaire</div>
+        <div class="time-slots">
+          <div class="time-slot" onclick="selectTime(this,'09:00')">09:00</div>
+          <div class="time-slot" onclick="selectTime(this,'10:00')">10:00</div>
+          <div class="time-slot taken" onclick="selectTime(this,'11:00')">11:00</div>
+          <div class="time-slot" onclick="selectTime(this,'12:00')">12:00</div>
+          <div class="time-slot taken" onclick="selectTime(this,'13:00')">13:00</div>
+          <div class="time-slot" onclick="selectTime(this,'14:00')">14:00</div>
+          <div class="time-slot" onclick="selectTime(this,'15:00')">15:00</div>
+          <div class="time-slot" onclick="selectTime(this,'16:00')">16:00</div>
+          <div class="time-slot taken" onclick="selectTime(this,'17:00')">17:00</div>
+          <div class="time-slot" onclick="selectTime(this,'18:00')">18:00</div>
+          <div class="time-slot" onclick="selectTime(this,'19:00')">19:00</div>
+          <div class="time-slot" onclick="selectTime(this,'20:00')">20:00</div>
+        </div>
+      </div>
+
+      <div class="time-section" style="margin-top: 28px;">
+        <div class="time-section-title">Durée de Session</div>
+        <div class="duration-options">
+          <button class="duration-btn" onclick="selectDuration(this,'1h','1h')">1 heure</button>
+          <button class="duration-btn" onclick="selectDuration(this,'2h','2h')">2 heures</button>
+          <button class="duration-btn" onclick="selectDuration(this,'3h','3h')">3 heures</button>
+          <button class="duration-btn" onclick="selectDuration(this,'Demi-journée (4h)','4h')">Demi-journée</button>
+          <button class="duration-btn" onclick="selectDuration(this,'Journée complète (8h)','8h')">Journée complète</button>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-back" onclick="goStep(2)">← Retour</button>
+        <button class="btn-next" id="next3" disabled onclick="goStep(4)">Vos Informations →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Details -->
+    <div class="booking-step" id="step4">
+      <h2 class="step-title">Vos Informations</h2>
+      <p class="step-subtitle">Finalisez votre réservation. Toutes vos données sont sécurisées et confidentielles.</p>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Prénom *</label>
+          <input type="text" class="form-input" id="fPrenom" placeholder="Votre prénom" oninput="updateSummaryName()" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nom *</label>
+          <input type="text" class="form-input" id="fNom" placeholder="Votre nom" oninput="updateSummaryName()" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email *</label>
+          <input type="email" class="form-input" id="fEmail" placeholder="votre@email.com" oninput="checkStep4()" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Téléphone</label>
+          <input type="tel" class="form-input" placeholder="+33 6 00 00 00 00" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nom d'artiste</label>
+          <input type="text" class="form-input" placeholder="Votre nom de scène" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Genre musical</label>
+          <input type="text" class="form-input" placeholder="Ex: R&B, Rap, Pop..." />
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Description du projet</label>
+          <textarea class="form-input" placeholder="Décrivez votre projet : nombre de titres, référence musicale, objectifs..."></textarea>
+        </div>
+      </div>
+
+      <div class="time-section-title" style="margin-bottom:14px;">Options & Extras</div>
+      <div class="extras-grid">
+        <div class="extra-item" onclick="toggleExtra(this,'Ingénieur Senior','+50€/h')">
+          <div class="extra-checkbox"></div>
+          <div class="extra-label">Ingénieur Senior dédié</div>
+          <div class="extra-price">+50€/h</div>
+        </div>
+        <div class="extra-item" onclick="toggleExtra(this,'Direction Artistique','+80€/h')">
+          <div class="extra-checkbox"></div>
+          <div class="extra-label">Direction artistique</div>
+          <div class="extra-price">+80€/h</div>
+        </div>
+        <div class="extra-item" onclick="toggleExtra(this,'Accès Lounge VIP','Gratuit')">
+          <div class="extra-checkbox"></div>
+          <div class="extra-label">Accès Lounge VIP</div>
+          <div class="extra-price">Gratuit</div>
+        </div>
+        <div class="extra-item" onclick="toggleExtra(this,'Catering Premium','+30€')">
+          <div class="extra-checkbox"></div>
+          <div class="extra-label">Catering premium</div>
+          <div class="extra-price">+30€</div>
+        </div>
+        <div class="extra-item" onclick="toggleExtra(this,'Enregistrement Vidéo','+120€')">
+          <div class="extra-checkbox"></div>
+          <div class="extra-label">Enregistrement vidéo BTS</div>
+          <div class="extra-price">+120€</div>
+        </div>
+        <div class="extra-item" onclick="toggleExtra(this,'Livraison Express 24h','+60€')">
+          <div class="extra-checkbox"></div>
+          <div class="extra-label">Livraison express 24h</div>
+          <div class="extra-price">+60€</div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-back" onclick="goStep(3)">← Retour</button>
+        <button class="btn-next" id="next4" disabled onclick="submitBooking()">Confirmer la Réservation →</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">✓</div>
+      <h2 class="success-title">Réservation<br/><span>Confirmée !</span></h2>
+      <p class="success-text">Votre session M7 Studio est enregistrée. Notre équipe vous contactera sous 2h pour confirmer les détails.</p>
+      <div class="success-ref" id="bookingRef"></div>
+      <div class="success-actions">
+        <a href="M7-Studio.html" class="btn-home">Retour à l'accueil</a>
+        <a href="#" class="btn-outline" onclick="newBooking()">Nouvelle Réservation</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR SUMMARY -->
+  <div class="booking-summary">
+    <div class="summary-header">
+      <div class="summary-title">Récapitulatif</div>
+      <div class="summary-badge">M7 Premium</div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-item-label">Service</div>
+      <div class="summary-item-value" id="sum-service"><span class="empty">Non sélectionné</span></div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-item-label">Studio</div>
+      <div class="summary-item-value" id="sum-studio"><span class="empty">Non sélectionné</span></div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-item-label">Date & Heure</div>
+      <div class="summary-item-value" id="sum-datetime"><span class="empty">Non sélectionné</span></div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-item-label">Durée</div>
+      <div class="summary-item-value" id="sum-duration"><span class="empty">Non sélectionné</span></div>
+    </div>
+    <div class="summary-item">
+      <div class="summary-item-label">Client</div>
+      <div class="summary-item-value" id="sum-client"><span class="empty">Non renseigné</span></div>
+    </div>
+    <div class="summary-total">
+      <div class="total-row">
+        <span class="total-label">Base studio</span>
+        <span class="total-value" id="sum-base">—</span>
+      </div>
+      <div class="total-row">
+        <span class="total-label">Options</span>
+        <span class="total-value" id="sum-extras">—</span>
+      </div>
+      <div class="total-main">
+        <span class="total-main-label">Total estimé</span>
+        <span class="total-main-value" id="sum-total">—</span>
+      </div>
+    </div>
+    <div class="summary-note">
+      <p>Tarif <span>indicatif</span>. Le prix final est confirmé après validation par notre équipe. Acompte de <span>30%</span> à la réservation.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── FOOTER ─── -->
+<div class="booking-footer">
+  <p>© 2026 <span>M7 Studio</span> · Réservations sécurisées · booking@m7studio.fr · +33 1 23 45 67 89</p>
+</div>
+
+<script>
+  // ── STATE ──
+  const state = {
+    step: 1,
+    service: null, servicePrice: null,
+    studio: null, studioPrice: null,
+    date: null, time: null, duration: null, durationHours: 1,
+    client: null,
+    extras: [],
+    currentMonth: new Date().getMonth(),
+    currentYear: new Date().getFullYear(),
+  };
+
+  // ── STEP NAVIGATION ──
+  function goStep(n) {
+    document.getElementById('step' + state.step).classList.remove('active');
+    state.step = n;
+    document.getElementById('step' + n).classList.add('active');
+    // Update progress
+    document.querySelectorAll('.progress-step').forEach((el, i) => {
+      el.classList.remove('active', 'done');
+      if (i + 1 < n) el.classList.add('done');
+      if (i + 1 === n) el.classList.add('active');
+      // update circle for done
+      const circle = el.querySelector('.step-circle');
+      if (i + 1 < n) circle.textContent = '✓';
+      else circle.textContent = i + 1;
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (n === 3) renderCalendar();
+  }
+
+  // ── SERVICE SELECTION ──
+  function selectService(el, name, price) {
+    document.querySelectorAll('.service-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    state.service = name;
+    state.servicePrice = price;
+    document.getElementById('next1').disabled = false;
+    document.getElementById('sum-service').textContent = name + ' — ' + price;
+    updateTotal();
+  }
+
+  // ── STUDIO SELECTION ──
+  function selectStudio(el, name, specs, price) {
+    document.querySelectorAll('.studio-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    state.studio = name;
+    state.studioPrice = price;
+    document.getElementById('next2').disabled = false;
+    document.getElementById('sum-studio').textContent = name;
+    updateTotal();
+  }
+
+  // ── CALENDAR ──
+  const DAYS = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+  const MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const bookedDays = [3, 7, 14, 18, 22]; // demo
+
+  function renderCalendar() {
+    const m = state.currentMonth, y = state.currentYear;
+    document.getElementById('calMonthTitle').textContent = MONTHS[m] + ' ' + y;
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+    DAYS.forEach(d => {
+      const h = document.createElement('div');
+      h.className = 'cal-day-header'; h.textContent = d;
+      grid.appendChild(h);
+    });
+    const firstDay = new Date(y, m, 1).getDay();
+    const shift = firstDay === 0 ? 6 : firstDay - 1;
+    const daysInMonth = new Date(y, m + 1, 0).getDate();
+    const today = new Date();
+    for (let i = 0; i < shift; i++) {
+      const e = document.createElement('div'); e.className = 'cal-day empty';
+      grid.appendChild(e);
+    }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const el = document.createElement('div');
+      const isToday = d === today.getDate() && m === today.getMonth() && y === today.getFullYear();
+      const isPast = new Date(y, m, d) < new Date(today.setHours(0,0,0,0));
+      const isBooked = bookedDays.includes(d);
+      const isSelected = state.date === d + '/' + (m+1) + '/' + y;
+      el.className = 'cal-day' + (isToday ? ' today' : '') + (isPast ? ' past' : '') + (isBooked ? ' booked' : '') + (isSelected ? ' selected' : '');
+      el.textContent = d;
+      if (!isPast && !isBooked) {
+        el.onclick = () => selectDay(el, d, m, y);
+      }
+      grid.appendChild(el);
+    }
+  }
+
+  function selectDay(el, d, m, y) {
+    document.querySelectorAll('.cal-day').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.date = d + '/' + (m+1) + '/' + y;
+    updateDateSummary();
+    checkStep3();
+  }
+
+  function changeMonth(dir) {
+    state.currentMonth += dir;
+    if (state.currentMonth > 11) { state.currentMonth = 0; state.currentYear++; }
+    if (state.currentMonth < 0) { state.currentMonth = 11; state.currentYear--; }
+    renderCalendar();
+  }
+
+  function selectTime(el, t) {
+    if (el.classList.contains('taken')) return;
+    document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+    el.classList.add('selected');
+    state.time = t;
+    updateDateSummary();
+    checkStep3();
+  }
+
+  function selectDuration(el, label, hours) {
+    document.querySelectorAll('.duration-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    state.duration = label;
+    state.durationHours = parseInt(hours);
+    document.getElementById('sum-duration').textContent = label;
+    checkStep3();
+    updateTotal();
+  }
+
+  function updateDateSummary() {
+    const v = [];
+    if (state.date) v.push(state.date);
+    if (state.time) v.push('à ' + state.time);
+    document.getElementById('sum-datetime').textContent = v.length ? v.join(' ') : '';
+    if (!v.length) document.getElementById('sum-datetime').innerHTML = '<span class="empty">Non sélectionné</span>';
+  }
+
+  function checkStep3() {
+    document.getElementById('next3').disabled = !(state.date && state.time && state.duration);
+  }
+
+  // ── EXTRAS ──
+  function toggleExtra(el, name, price) {
+    el.classList.toggle('checked');
+    el.querySelector('.extra-checkbox').textContent = el.classList.contains('checked') ? '✓' : '';
+    if (el.classList.contains('checked')) {
+      state.extras.push({ name, price });
+    } else {
+      state.extras = state.extras.filter(e => e.name !== name);
+    }
+    updateTotal();
+  }
+
+  // ── CLIENT INFO ──
+  function updateSummaryName() {
+    const p = document.getElementById('fPrenom').value;
+    const n = document.getElementById('fNom').value;
+    const full = [p, n].filter(Boolean).join(' ');
+    document.getElementById('sum-client').textContent = full || '';
+    if (!full) document.getElementById('sum-client').innerHTML = '<span class="empty">Non renseigné</span>';
+    checkStep4();
+  }
+
+  function checkStep4() {
+    const p = document.getElementById('fPrenom').value.trim();
+    const n = document.getElementById('fNom').value.trim();
+    const e = document.getElementById('fEmail').value.trim();
+    document.getElementById('next4').disabled = !(p && n && e);
+  }
+
+  // ── TOTAL ──
+  function updateTotal() {
+    document.getElementById('sum-base').textContent = state.studioPrice && state.duration
+      ? state.studioPrice + ' × ' + state.durationHours + 'h'
+      : '—';
+    document.getElementById('sum-extras').textContent = state.extras.length
+      ? state.extras.map(e => e.name).join(', ')
+      : '—';
+    // Simple estimation display
+    document.getElementById('sum-total').textContent = state.studioPrice ? 'Sur devis' : '—';
+  }
+
+  // ── SUBMIT ──
+  function submitBooking() {
+    document.getElementById('step4').classList.remove('active');
+    const ref = 'M7-' + new Date().getFullYear() + '-' + Math.floor(Math.random() * 90000 + 10000);
+    document.getElementById('bookingRef').textContent = ref;
+    document.getElementById('successScreen').classList.add('show');
+    document.getElementById('progressBar').querySelectorAll('.progress-step').forEach(el => {
+      el.classList.remove('active');
+      el.classList.add('done');
+      el.querySelector('.step-circle').textContent = '✓';
+    });
+  }
+
+  function newBooking() {
+    location.reload();
+  }
+
+  // ── INIT ──
+  renderCalendar();
+</script>
+</body>
+</html>
