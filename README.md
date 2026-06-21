@@ -266,6 +266,26 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 
 ## Roadmap
 
+### Super-agents Cursor (construction multi-agent)
+
+10 agents spécialisés dans `.cursor/agents/` — voir **[AGENTS.md](./AGENTS.md)**.
+
+| Agent | Domaine |
+|-------|---------|
+| `aetheris-orchestrator` | Coordination parallèle |
+| `aetheris-world-agent` | Carte & zones |
+| `aetheris-quest-agent` | Quêtes |
+| `aetheris-combat-agent` | Combat |
+| `aetheris-dungeon-agent` | Donjons |
+| `aetheris-economy-agent` | Métiers |
+| `aetheris-social-agent` | Guildes & PvP |
+| `aetheris-visual-agent` | Assets |
+| `aetheris-progression-agent` | Endgame |
+| `aetheris-backend-agent` | Convex |
+| `aetheris-ship-agent` | Tests & release |
+
+Commande : `/build-aetheris` pour lancer le pipeline complet.
+
 - [x] PvP arène classée
 - [x] Donjons en groupe
 - [x] Compagnons (pets)
@@ -297,6 +317,9 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Sprites monstres, territoires faction, portraits roster (v1.20)
 - [x] Sprites portrait 10 classes, 6 fonds zones, récompenses top 3 campagne (v1.19)
 - [x] Version finale — guide, crédits, progression endgame, toasts, accessibilité (v2.0 vfinal)
+- [x] Terreval v4.0–v4.2 — 24 zones, 196 quêtes, progression jouable
+- [x] 10 super-agents Cursor — pipeline multi-agent (AGENTS.md)
+- [ ] v5.0 — assets dédiés, 250+ quêtes, raids régionaux, quest cloud sync
 
 ## Licence
 
