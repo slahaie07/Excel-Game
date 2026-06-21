@@ -32,7 +32,9 @@ import { ZonePOIList } from "../components/ZonePOIList";
 import { ZoneNPCList } from "../components/ZoneNPCList";
 import { PlayerNameLine } from "../components/PlayerNameLine";
 import { WhatsNewModal } from "../components/WhatsNewModal";
+import { TutorialZoneBanner } from "../components/TutorialZoneBanner";
 import { APP_VERSION, loadUserPreferences } from "../lib/userPreferences";
+import { canTravelToZone } from "../lib/tutorialProgress";
 import { getZonesByRegion } from "../game/data/worldMap";
 
 export default function WorldScreen() {
@@ -67,6 +69,7 @@ export default function WorldScreen() {
     const prefs = loadUserPreferences();
     return prefs.lastSeenVersion !== APP_VERSION;
   });
+  const [travelNotice, setTravelNotice] = useState<string | null>(null);
   const reducedMotion = loadUserPreferences().reducedMotion;
   const [onlinePlayers, setOnlinePlayers] = useState(() =>
     getOnlinePlayersInZone(zoneId).filter((p) => p.name !== characterName)
@@ -202,6 +205,19 @@ export default function WorldScreen() {
     { id: "guild", icon: "🏰", label: "Guilde" },
   ] as const;
 
+  const travelToZone = useCallback(
+    (targetZoneId: string) => {
+      const check = canTravelToZone(characterId, zoneId, targetZoneId);
+      if (!check.allowed) {
+        setTravelNotice(check.message ?? "Voyage impossible pour l'instant.");
+        return;
+      }
+      setTravelNotice(null);
+      useGameStore.getState().setZone(targetZoneId);
+    },
+    [characterId, zoneId]
+  );
+
   return (
     <div className="flex-1 flex flex-col bg-aether-950">
       <OnlinePresenceSync />
@@ -294,6 +310,12 @@ export default function WorldScreen() {
 
       <WorldCampaignBanner pledgedFactionId={pledgedFactionId} campaigns={campaigns} />
 
+      <TutorialZoneBanner characterId={characterId} zoneId={zoneId} />
+      {travelNotice && (
+        <p className="mx-4 mt-2 text-amber-400/90 text-xs text-center card border-amber-500/30 py-2 px-3">
+          {travelNotice}
+        </p>
+      )}
       <ZoneNPCList zoneId={zoneId} characterId={characterId} />
       <ZonePOIList zoneId={zoneId} characterId={characterId} />
 
@@ -335,7 +357,7 @@ export default function WorldScreen() {
           zoneId={zoneId}
           campaigns={campaigns}
           onOpenMap={() => setScreen("territory-overview")}
-          onSelectZone={(id) => useGameStore.getState().setZone(id)}
+          onSelectZone={travelToZone}
         />
       </div>
 
@@ -389,7 +411,7 @@ export default function WorldScreen() {
               currentZoneId={zoneId}
               campaigns={campaigns}
               onSelectZone={(id) => {
-                useGameStore.getState().setZone(id);
+                travelToZone(id);
                 setShowMenu(false);
               }}
             />
@@ -413,7 +435,7 @@ export default function WorldScreen() {
                     {zones.map((z) => (
                       <button
                         key={z.id}
-                        onClick={() => { useGameStore.getState().setZone(z.id); setShowMenu(false); }}
+                        onClick={() => { travelToZone(z.id); setShowMenu(false); }}
                         className={`card w-full flex items-center gap-3 ${z.id === zoneId ? "border-aether-500" : ""}`}
                       >
                         <span className="text-2xl">{z.icon}</span>

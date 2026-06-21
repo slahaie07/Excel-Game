@@ -4,6 +4,15 @@ import { FLUX, ELAN } from "../lib/gameTerms";
 
 const GUIDE_SECTIONS = [
   {
+    title: "Jardin de l'Initiation",
+    icon: "🌱",
+    tips: [
+      "Chaque nouvel Éveilleur commence dans le Jardin — zone tutoriel sans danger.",
+      "6 quêtes vous guident : PNJ, combat, inventaire, récolte, donjon, puis départ vers la Vallée.",
+      "Terminez l'initiation avant de voyager hors du jardin.",
+    ],
+  },
+  {
     title: "Exploration",
     icon: "🗺️",
     tips: [

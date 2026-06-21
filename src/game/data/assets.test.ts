@@ -16,7 +16,8 @@ import { getCampaignRankCosmeticIds } from "./factionCampaignRewards";
 
 describe("game assets", () => {
   it("maps all zones to background art", () => {
-    expect(Object.keys(ZONE_BACKGROUNDS)).toHaveLength(24);
+    expect(Object.keys(ZONE_BACKGROUNDS)).toHaveLength(25);
+    expect(getZoneBackground("jardin_initiation")).toBeDefined();
     expect(getZoneBackground("port_nebula")).toContain("port-nebula");
     expect(getZoneBackground("citadelle_stellaire")).toBeDefined();
     expect(getZoneBackground("plateau_givre")).toBeDefined();

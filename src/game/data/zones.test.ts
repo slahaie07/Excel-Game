@@ -4,12 +4,12 @@ import { EXPANSION_ZONES_V40, MAP_REGIONS } from "./expansionZonesV40";
 import { MAP_POIS } from "./mapPOIs";
 
 describe("zones v4.0", () => {
-  it("has 24 zones across 6 regions", () => {
-    expect(ZONES.length).toBe(24);
+  it("has 25 zones across 6 regions", () => {
+    expect(ZONES.length).toBe(25);
     expect(EXPANSION_ZONES_V40.length).toBe(12);
     expect(MAP_REGIONS.length).toBe(6);
     const covered = new Set(MAP_REGIONS.flatMap((r) => r.zoneIds));
-    expect(covered.size).toBe(24);
+    expect(covered.size).toBe(25);
     for (const zone of ZONES) {
       expect(covered.has(zone.id)).toBe(true);
     }

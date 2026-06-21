@@ -20,14 +20,15 @@ describe("worldMap", () => {
     expect(new Set(keys).size).toBe(keys.length);
   });
 
-  it("groups 24 zones into 6 regions", () => {
+  it("groups 25 zones into 6 regions", () => {
     const grouped = getZonesByRegion();
     expect(grouped).toHaveLength(6);
-    expect(grouped.reduce((n, g) => n + g.zones.length, 0)).toBe(24);
+    expect(grouped.reduce((n, g) => n + g.zones.length, 0)).toBe(25);
   });
 
   it("validates travel between connected zones", () => {
     expect(canTravelBetween("port_nebula", "iles_stellaires")).toBe(true);
+    expect(canTravelBetween("jardin_initiation", "vallee_eveils")).toBe(true);
     expect(canTravelBetween("vallee_eveils", "glaise_nord")).toBe(false);
   });
 });

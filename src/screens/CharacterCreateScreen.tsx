@@ -7,6 +7,8 @@ import { CLASSES, ARCHETYPE_LABELS, getStartingSpellIds } from "../game/data";
 import { getClassPortrait, ROSTER_ART } from "../game/data/assets";
 import { isCloudAccount } from "../lib/convexUtils";
 import { loadUserPreferences } from "../lib/userPreferences";
+import { buildStarterActiveQuest } from "../lib/tutorialProgress";
+import { cloudStartQuest } from "../lib/cloudQuestProgress";
 
 function screenAfterCharacterCreate(setScreen: (s: "world" | "guide") => void) {
   setScreen(loadUserPreferences().guideCompleted ? "world" : "guide");
@@ -100,6 +102,7 @@ function CharacterCreateForm({
 function CloudCreate() {
   const accountId = useGameStore((s) => s.accountId)!;
   const setCharacter = useGameStore((s) => s.setCharacter);
+  const setZone = useGameStore((s) => s.setZone);
   const setScreen = useGameStore((s) => s.setScreen);
   const [loading, setLoading] = useState(false);
   const createCloudCharacter = useMutation(api.characters.createCharacter);
@@ -113,6 +116,7 @@ function CloudCreate() {
         classId,
       });
       setCharacter(charId, name, classId);
+      setZone("jardin_initiation");
       screenAfterCharacterCreate(setScreen);
     } finally {
       setLoading(false);
@@ -125,26 +129,39 @@ function CloudCreate() {
 function LocalCreate() {
   const accountId = useGameStore((s) => s.accountId)!;
   const setCharacter = useGameStore((s) => s.setCharacter);
+  const setZone = useGameStore((s) => s.setZone);
   const setScreen = useGameStore((s) => s.setScreen);
+  const starterQuest = buildStarterActiveQuest();
 
   const onCreate = (name: string, classId: string) => {
     const selectedClassData = CLASSES.find((c) => c.id === classId)!;
     const charId = `char_${Date.now()}`;
     const key = `aetheris-chars-${accountId}`;
     const existing = JSON.parse(localStorage.getItem(key) ?? "[]");
-    localStorage.setItem(key, JSON.stringify([...existing, { id: charId, name, classId, level: 1 }]));
+    localStorage.setItem(key, JSON.stringify([...existing, { id: charId, name, classId, level: 1, zoneId: "jardin_initiation" }]));
     localStorage.setItem(`aetheris-char-${charId}`, JSON.stringify({
       id: charId, name, classId, level: 1, xp: 0, xpToNext: 100,
       hp: 100, maxHp: 100, ap: 6, maxAp: 6, mp: 3, maxMp: 3,
-      eclats: 100, zoneId: "vallee_eveils",
+      eclats: 100, zoneId: "jardin_initiation",
       spells: getStartingSpellIds(classId),
       talents: [],
       spellPoints: 0,
       inventory: [{ itemId: "pain_eveil", quantity: 10 }, { itemId: "potion_vie", quantity: 3 }],
-      equipment: {}, activeQuests: [], completedQuests: [],
+      equipment: {}, activeQuests: [starterQuest], completedQuests: [],
       stats: selectedClassData.baseStats,
     }));
+    cloudStartQuest(
+      charId,
+      starterQuest.questId,
+      starterQuest.objectives.map((o) => ({
+        type: o.type,
+        targetId: o.targetId,
+        current: o.current,
+        required: o.required,
+      }))
+    );
     setCharacter(charId, name, classId);
+    setZone("jardin_initiation");
     screenAfterCharacterCreate(setScreen);
   };
 

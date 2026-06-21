@@ -35,6 +35,10 @@ interface POISeed {
 }
 
 const POI_SEEDS: POISeed[] = [
+  // Jardin d'initiation
+  { zoneId: "jardin_initiation", type: "landmark", name: "Cristal d'Accueil", description: "Lieu où chaque Éveilleur canalise son premier Flux.", mapOffsetX: 50, mapOffsetY: 35 },
+  { zoneId: "jardin_initiation", type: "lore", name: "Stèle des Premiers Pas", description: "Inscriptions sur le combat tactique et l'Élan.", mapOffsetX: 35, mapOffsetY: 55 },
+  { zoneId: "jardin_initiation", type: "dungeon", name: "Entrée de l'Alcôve", description: "Donjon de démonstration — l'Écho d'Entraînement.", mapOffsetX: 65, mapOffsetY: 48 },
   // Cœur
   { zoneId: "vallee_eveils", type: "landmark", name: "Cristal Ancestral", description: "Lieu de l'Éveil originel.", mapOffsetX: 50, mapOffsetY: 40 },
   { zoneId: "vallee_eveils", type: "vendor", name: "Échoppe du Débutant", description: "Équipement de base.", mapOffsetX: 30, mapOffsetY: 60 },

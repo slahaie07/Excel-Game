@@ -3,8 +3,8 @@ import { DUNGEONS } from "./dungeons";
 import { MONSTERS } from "./monsters";
 
 describe("dungeons", () => {
-  it("has 120 dungeons total (70 + 24 v4.0 + 26 v5.0)", () => {
-    expect(DUNGEONS).toHaveLength(120);
+  it("has 121 dungeons total (70 + 24 v4.0 + 26 v5.0 + 1 tutorial)", () => {
+    expect(DUNGEONS).toHaveLength(121);
   });
 
   it("every dungeon boss exists as a monster", () => {

@@ -79,7 +79,7 @@ export const useGameStore = create<GameState>()(
       characterId: null,
       characterName: null,
       classId: null,
-      zoneId: "vallee_eveils",
+      zoneId: "jardin_initiation",
       combatId: null,
       convexCombatId: null,
       dungeonId: null,

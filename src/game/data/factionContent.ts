@@ -3,6 +3,7 @@ export type FactionId = "lumina" | "umbra" | "neutre";
 export type FactionQuestType = "world_kills" | "zone_kills" | "pvp_wins";
 
 export const ZONE_FACTION_MAP: Record<string, FactionId> = {
+  jardin_initiation: "lumina",
   vallee_eveils: "lumina",
   foret_lumina: "lumina",
   citadelle_stellaire: "lumina",

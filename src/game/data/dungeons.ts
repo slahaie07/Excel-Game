@@ -1,6 +1,7 @@
 import { EXPANSION_DUNGEONS_V30 } from "./expansionV30";
 import { EXPANSION_DUNGEONS_V40 } from "./expansionDungeonsV40";
 import { EXPANSION_DUNGEONS_V50 } from "./expansionDungeonsV50";
+import { TUTORIAL_DUNGEON } from "./tutorialContent";
 
 export interface DungeonDefinition {
   id: string;
@@ -21,6 +22,7 @@ export interface DungeonDefinition {
 }
 
 export const DUNGEONS: DungeonDefinition[] = [
+  TUTORIAL_DUNGEON,
   {
     id: "ruines_corrompues",
     name: "Ruines Corrompues",

@@ -3,6 +3,7 @@ import { mutation, query } from "./_generated/server";
 import { MAX_CHARACTER_LEVEL } from "./lib/constants";
 import { getUnlockedSpellIds, mergeUnlockedSpells, migrateLegacyClass } from "./lib/classProgression";
 import { canSelectTalent } from "./lib/talents";
+import { TUTORIAL_STARTER_QUEST } from "./lib/tutorial";
 
 const BASE_STATS: Record<string, Record<string, number>> = {
   alchimiste: { vitality: 12, wisdom: 16, strength: 4, intelligence: 12, agility: 8, chance: 8 },
@@ -88,7 +89,7 @@ export const createCharacter = mutation({
       mp: calculateMaxMp(stats, 1),
       maxMp: calculateMaxMp(stats, 1),
       eclats: 100,
-      zoneId: "vallee_eveils",
+      zoneId: "jardin_initiation",
       x: 5,
       y: 5,
       spells,
@@ -98,7 +99,7 @@ export const createCharacter = mutation({
         { itemId: "pain_eveil", quantity: 10 },
         { itemId: "potion_vie", quantity: 3 },
       ],
-      activeQuests: [],
+      activeQuests: [{ ...TUTORIAL_STARTER_QUEST, startedAt: now }],
       completedQuests: [],
       professions: [],
       pvpRating: 1000,

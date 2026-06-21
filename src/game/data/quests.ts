@@ -6,6 +6,7 @@ import { EXPANSION_QUESTS_V31 } from "./expansionQuests";
 import { EXPANSION_QUESTS_V41 } from "./expansionQuestsV41";
 import { EXPANSION_QUESTS_V42 } from "./expansionQuestsV42";
 import { EXPANSION_QUESTS_V50 } from "./expansionQuestsV50";
+import { TUTORIAL_QUESTS } from "./tutorialContent";
 
 export type QuestType = "main" | "side" | "daily" | "guild" | "dungeon";
 export type QuestObjectiveType = "kill" | "collect" | "talk" | "explore" | "craft" | "deliver";
@@ -36,6 +37,7 @@ export interface QuestDefinition {
 }
 
 export const QUESTS: QuestDefinition[] = [
+  ...TUTORIAL_QUESTS,
   {
     id: "eveil_initial",
     name: "L'Éveil",

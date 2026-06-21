@@ -5,8 +5,8 @@ import { EXPANSION_DUNGEONS_V50 } from "./expansionDungeonsV50";
 import { MAP_POIS } from "./mapPOIs";
 
 describe("expansionQuestsV50", () => {
-  it("exports 64 quests (32 POI + 26 dungeon + 6 endgame)", () => {
-    expect(EXPANSION_QUESTS_V50.length).toBe(64);
+  it("exports 66 quests (34 POI + 26 dungeon + 6 endgame)", () => {
+    expect(EXPANSION_QUESTS_V50.length).toBe(66);
     expect(EXPANSION_DUNGEONS_V50.length).toBe(26);
   });
 
@@ -16,7 +16,7 @@ describe("expansionQuestsV50", () => {
       (p) => p.type === "landmark" || p.type === "vendor" || p.type === "teleporter" || p.type === "dungeon"
     ).length;
     expect(poiQuests).toHaveLength(expectedCount);
-    expect(poiQuests.length).toBe(32);
+    expect(poiQuests.length).toBe(34);
   });
 
   it("has mythic dungeon quests linked to v5 bosses", () => {

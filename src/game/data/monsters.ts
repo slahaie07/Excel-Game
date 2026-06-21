@@ -5,6 +5,7 @@
 import { EXPANSION_BOSSES_V30 } from "./expansionV30";
 import { EXPANSION_MONSTERS_V40 } from "./expansionMonstersV40";
 import { EXPANSION_MONSTERS_V50 } from "./expansionMonstersV50";
+import { TUTORIAL_MONSTERS } from "./tutorialContent";
 
 export interface MonsterDefinition {
   id: string;
@@ -22,6 +23,7 @@ export interface MonsterDefinition {
 }
 
 export const MONSTERS: MonsterDefinition[] = [
+  ...TUTORIAL_MONSTERS,
   // Zone: Vallée des Éveils (niveau 1-10)
   { id: "graine_ombre", name: "Graine d'Ombre", description: "Petite créature née des Cristaux corrompus.", level: 1, zoneId: "vallee_eveils", stats: { hp: 30, ap: 4, mp: 3, damage: 5, defense: 2 }, spells: ["morsure"], drops: [{ itemId: "fragment_ombre", chance: 0.4 }], xpReward: 15, eclatsReward: { min: 2, max: 8 }, icon: "🌑" },
   { id: "wisp_sauvage", name: "Wisp Sauvage", description: "Esprit stellaire errant.", level: 3, zoneId: "vallee_eveils", stats: { hp: 45, ap: 5, mp: 4, damage: 8, defense: 3 }, spells: ["eclair_ether"], drops: [{ itemId: "poussiere_stellaire", chance: 0.3 }], xpReward: 25, eclatsReward: { min: 5, max: 12 }, icon: "✨" },

@@ -13,8 +13,8 @@ describe("quests", () => {
     expect(QUESTS.length).toBeGreaterThanOrEqual(250);
     expect(EXPANSION_QUESTS_V31.length).toBe(86);
     expect(EXPANSION_QUESTS_V41.length).toBe(41);
-    expect(EXPANSION_QUESTS_V42.length).toBe(47);
-    expect(EXPANSION_QUESTS_V50.length).toBe(64);
+    expect(EXPANSION_QUESTS_V42.length).toBe(48);
+    expect(EXPANSION_QUESTS_V50.length).toBe(66);
   });
 
   it("has 24+ daily quests including v4.2 zone dailies", () => {

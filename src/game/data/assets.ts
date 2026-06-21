@@ -5,6 +5,7 @@
 import { getRegionForZone, type MapRegionId } from "./expansionZonesV40";
 
 export const ZONE_BACKGROUNDS: Record<string, string> = {
+  jardin_initiation: "/assets/zones/zone-vallee-eveils.png",
   vallee_eveils: "/assets/zones/zone-vallee-eveils.png",
   port_nebula: "/assets/zones/zone-port-nebula.png",
   foret_lumina: "/assets/zones/zone-foret-lumina.png",

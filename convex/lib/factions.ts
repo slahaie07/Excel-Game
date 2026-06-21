@@ -16,6 +16,7 @@ export const FACTION_RANKS: FactionRank[] = [
 ];
 
 export const ZONE_FACTION_MAP: Record<string, FactionId> = {
+  jardin_initiation: "lumina",
   vallee_eveils: "lumina",
   foret_lumina: "lumina",
   citadelle_stellaire: "lumina",

@@ -5,6 +5,7 @@
 import { EXPANSION_DUNGEON_IDS_BY_ZONE } from "./expansionV30";
 import { EXPANSION_ZONES_V40, EXPANSION_ZONE_CONNECTION_PATCHES } from "./expansionZonesV40";
 import { EXPANSION_DUNGEON_IDS_BY_ZONE_V40 } from "./expansionDungeonsV40";
+import { TUTORIAL_ZONE } from "./tutorialContent";
 
 export interface ZoneDefinition {
   id: string;
@@ -23,13 +24,14 @@ export interface ZoneDefinition {
 }
 
 export const ZONES: ZoneDefinition[] = [
+  TUTORIAL_ZONE,
   {
     id: "vallee_eveils",
     name: "Vallée des Éveils",
     description: "Point de départ des Éveilleurs. Ruines anciennes baignées de lumière cristalline.",
     levelRange: [1, 10],
     x: 5, y: 8,
-    connections: ["foret_lumina", "port_nebula"],
+    connections: ["jardin_initiation", "foret_lumina", "port_nebula"],
     npcs: ["maitre_eveil", "marchand_debut", "forgeron_vallee"],
     monsters: ["graine_ombre", "wisp_sauvage", "loup_cristal"],
     dungeons: ["ruines_corrompues", "caverne_cristaux", "mine_abandonnee"],

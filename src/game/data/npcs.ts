@@ -11,6 +11,9 @@ export interface NpcDefinition {
 }
 
 export const NPCS: NpcDefinition[] = [
+  { id: "mentor_initiation", name: "Elena Lumeveil", title: "Mentore d'initiation", icon: "✨", dialogue: "Bienvenue, Éveilleur. Ici vous apprendrez le Flux, l'Élan et les bases du combat — sans risque." },
+  { id: "herboriste_jardin", name: "Théa Racineclaire", title: "Herbaliste du jardin", icon: "🌿", dialogue: "Les herbes d'éveil poussent partout ici. Récoltez-les pour vos potions et quêtes." },
+  { id: "gardien_passage", name: "Varen Porteciel", title: "Gardien du passage", icon: "🚪", dialogue: "La Vallée des Éveils vous attend — quand vous aurez prouvé votre maîtrise dans ce jardin." },
   { id: "maitre_eveil", name: "Orin Valcrest", title: "Maître de l'Éveil", icon: "🧙", dialogue: "Les Cristaux t'ont choisi. Prouve ta valeur dans la Vallée." },
   { id: "marchand_debut", name: "Lia Marchéclat", title: "Marchande", icon: "🛒", dialogue: "Éclats contre provisions — commerce équitable à Terreval." },
   { id: "forgeron_vallee", name: "Dorn Forgeveine", title: "Artificier", icon: "🔨", dialogue: "Une lame bien trempée vaut dix sortilèges mal lancés." },

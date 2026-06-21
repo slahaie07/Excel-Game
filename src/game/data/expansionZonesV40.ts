@@ -20,7 +20,7 @@ export const MAP_REGIONS: MapRegionDefinition[] = [
     name: "Cœur de Terreval",
     description: "Vallée, forêt, désert et citadelle — le cœur historique du monde.",
     color: "#6366f1",
-    zoneIds: ["vallee_eveils", "port_nebula", "foret_lumina", "desert_umbra", "citadelle_stellaire", "arene_pvp"],
+    zoneIds: ["jardin_initiation", "vallee_eveils", "port_nebula", "foret_lumina", "desert_umbra", "citadelle_stellaire", "arene_pvp"],
   },
   {
     id: "archipel",
