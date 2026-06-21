@@ -1,3 +1,5 @@
+import { MAX_CHARACTER_LEVEL } from "./constants";
+
 export interface EndgameGoal {
   id: string;
   label: string;
@@ -24,15 +26,27 @@ export const ENDGAME_GOALS: EndgameGoal[] = [
   },
   {
     id: "level_60",
-    label: "Atteindre le niveau 60 (max)",
+    label: "Atteindre le niveau 60",
     icon: "👑",
     check: (c) => c.level >= 60,
+  },
+  {
+    id: "level_100",
+    label: `Atteindre le niveau ${MAX_CHARACTER_LEVEL} (max)`,
+    icon: "💎",
+    check: (c) => c.level >= MAX_CHARACTER_LEVEL,
   },
   {
     id: "citadelle",
     label: "Explorer la Citadelle Stellaire",
     icon: "🏰",
     check: (c) => c.zoneId === "citadelle_stellaire",
+  },
+  {
+    id: "archipel",
+    label: "Explorer les Profondeurs des Néréides",
+    icon: "🧜",
+    check: (c) => c.zoneId === "profondeurs_nereides",
   },
   {
     id: "pvp_10",

@@ -6,7 +6,7 @@ export interface MapNodePosition {
   y: number;
 }
 
-const MAP_BOUNDS = { minX: 2, maxX: 9, minY: 1, maxY: 9 };
+const MAP_BOUNDS = { minX: 1, maxX: 9, minY: 1, maxY: 9 };
 
 export function zoneToMapPosition(zone: ZoneDefinition): MapNodePosition {
   const x =

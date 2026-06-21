@@ -53,6 +53,27 @@ const SPELLS: SpellDefinition[] = [
   { id: "invocation_wisp", apCost: 4, minRange: 1, maxRange: 3, effects: [{ type: "buff", stat: "summon", value: 1, duration: 3 }] },
   { id: "lien_ether", apCost: 3, minRange: 1, maxRange: 5, effects: [{ type: "debuff", stat: "mp", value: -2, duration: 2 }] },
   { id: "tempete_esprits", apCost: 6, minRange: 1, maxRange: 6, effects: [{ type: "damage", element: "ether", min: 11, max: 19 }] },
+  // v2.1
+  { id: "elixir_force", apCost: 3, minRange: 1, maxRange: 4, effects: [{ type: "buff", stat: "damage", value: 20, duration: 3 }] },
+  { id: "nova_alchimique", apCost: 6, minRange: 1, maxRange: 5, effects: [{ type: "damage", element: "ether", min: 14, max: 22 }] },
+  { id: "sort_bonus_lumina", apCost: 3, minRange: 1, maxRange: 5, effects: [{ type: "buff", stat: "damage", value: 15, duration: 3 }] },
+  { id: "resurrection", apCost: 6, minRange: 1, maxRange: 4, effects: [{ type: "heal", min: 40, max: 60 }] },
+  { id: "brasier", apCost: 4, minRange: 1, maxRange: 5, effects: [{ type: "damage", element: "fire", min: 12, max: 18 }] },
+  { id: "inferno", apCost: 7, minRange: 1, maxRange: 6, effects: [{ type: "damage", element: "fire", min: 18, max: 28 }] },
+  { id: "lance_glace", apCost: 4, minRange: 1, maxRange: 6, effects: [{ type: "damage", element: "ice", min: 12, max: 18 }] },
+  { id: "zero_absolu", apCost: 7, minRange: 1, maxRange: 5, effects: [{ type: "damage", element: "ice", min: 16, max: 26 }] },
+  { id: "retour_force", apCost: 3, minRange: 0, maxRange: 0, effects: [{ type: "buff", stat: "defense", value: 30, duration: 2 }] },
+  { id: "forteresse", apCost: 6, minRange: 0, maxRange: 2, effects: [{ type: "buff", stat: "shield", value: 40, duration: 3 }] },
+  { id: "riposte_fer", apCost: 3, minRange: 0, maxRange: 0, effects: [{ type: "buff", stat: "defense", value: 30, duration: 2 }] },
+  { id: "muraille", apCost: 6, minRange: 0, maxRange: 2, effects: [{ type: "buff", stat: "shield", value: 40, duration: 3 }] },
+  { id: "furie", apCost: 3, minRange: 0, maxRange: 0, effects: [{ type: "buff", stat: "damage", value: 35, duration: 2 }] },
+  { id: "seisme_furieux", apCost: 6, minRange: 1, maxRange: 2, effects: [{ type: "damage", element: "earth", min: 16, max: 24 }] },
+  { id: "coup_fatal", apCost: 4, minRange: 1, maxRange: 1, effects: [{ type: "damage", element: "shadow", min: 14, max: 20 }] },
+  { id: "tempete_brume", apCost: 6, minRange: 1, maxRange: 4, effects: [{ type: "damage", element: "shadow", min: 14, max: 22 }] },
+  { id: "tir_percant", apCost: 4, minRange: 2, maxRange: 8, effects: [{ type: "damage", element: "light", min: 12, max: 18 }] },
+  { id: "eclipse_lunaire", apCost: 7, minRange: 3, maxRange: 7, effects: [{ type: "damage", element: "light", min: 16, max: 26 }] },
+  { id: "pacte_ether", apCost: 3, minRange: 0, maxRange: 3, effects: [{ type: "buff", stat: "damage", value: 20, duration: 3 }] },
+  { id: "armee_esprits", apCost: 7, minRange: 1, maxRange: 6, effects: [{ type: "damage", element: "ether", min: 14, max: 24 }] },
 ];
 
 export function getSpellById(id: string): SpellDefinition | undefined {

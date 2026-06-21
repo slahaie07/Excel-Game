@@ -1,11 +1,11 @@
 import { APP_VERSION, VERSION_LABEL, saveUserPreferences } from "../lib/userPreferences";
 
 const RELEASE_HIGHLIGHTS = [
-  "Carte interactive de Terreval avec contrôle territorial",
-  "15 sprites monstres + animations de combat",
-  "Campagnes faction hebdo et récompenses top 3",
-  "10 classes, talents actifs, progression complète",
-  "Multijoueur Convex : donjons, raids, PvP, guildes",
+  "Archipel de Brume : 6 nouvelles zones côtières et sous-marines",
+  "Niveau max 100, 5 sorts par classe (50 au total)",
+  "12 donjons, 22 quêtes, ~60 items et recettes de métiers",
+  "18 nouveaux monstres dont le Léviathan de Brume (niv. 85)",
+  "9 objectifs endgame incluant les Profondeurs des Néréides",
 ];
 
 export function WhatsNewModal({ onClose }: { onClose: () => void }) {
@@ -20,9 +20,9 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
         <p className="text-crystal-cyan text-xs font-semibold uppercase mb-1">
           {VERSION_LABEL} — v{APP_VERSION}
         </p>
-        <h2 className="font-display text-xl font-bold text-white mb-3">Bienvenue sur Aetheris</h2>
+        <h2 className="font-display text-xl font-bold text-white mb-3">L&apos;Archipel de Brume</h2>
         <p className="text-aether-400 text-sm mb-4">
-          La version finale rassemble tout le contenu développé jusqu&apos;ici :
+          Première grande expansion post-vfinal, inspirée de l&apos;échelle Dofus Touch :
         </p>
         <ul className="space-y-2 mb-6">
           {RELEASE_HIGHLIGHTS.map((item) => (
@@ -33,7 +33,7 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
           ))}
         </ul>
         <button type="button" onClick={dismiss} className="btn-primary w-full">
-          Explorer Terreval
+          Explorer l&apos;Archipel
         </button>
       </div>
     </div>

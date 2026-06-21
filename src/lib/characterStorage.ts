@@ -1,4 +1,5 @@
 import { mergeUnlockedSpells } from "../game/data/classProgression";
+import { MAX_CHARACTER_LEVEL } from "../game/data/constants";
 
 export interface CharacterData {
   id?: string;
@@ -103,7 +104,7 @@ export function addXp(characterId: string, xp: number): { leveledUp: boolean; le
   let leveledUp = false;
   let levelsGained = 0;
 
-  while (newXp >= char.xpToNext && level < 60) {
+  while (newXp >= char.xpToNext && level < MAX_CHARACTER_LEVEL) {
     newXp -= char.xpToNext;
     level++;
     leveledUp = true;

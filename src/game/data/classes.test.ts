@@ -23,10 +23,10 @@ describe("10 classes balance", () => {
     }
   });
 
-  it("each class has exactly 3 spells", () => {
+  it("each class has exactly 5 spells", () => {
     for (const cls of CLASSES) {
       const classSpells = SPELLS.filter((s) => s.classId === cls.id);
-      expect(classSpells).toHaveLength(3);
+      expect(classSpells).toHaveLength(5);
     }
   });
 
@@ -58,10 +58,10 @@ describe("class progression", () => {
     expect(gardienStart).not.toContain("fracas_tellurique");
   });
 
-  it("unlocks all spells by level 8", () => {
+  it("unlocks all spells by level 18", () => {
     for (const cls of CLASSES) {
-      const unlocked = getUnlockedSpellIds(cls.id, 8);
-      expect(unlocked).toHaveLength(3);
+      const unlocked = getUnlockedSpellIds(cls.id, 18);
+      expect(unlocked).toHaveLength(5);
     }
   });
 

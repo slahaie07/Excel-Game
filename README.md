@@ -23,6 +23,12 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Cadres de profil visibles en chat et présence
 - Classement contributeurs campagne + bannière campagne dans le monde
 
+### v2.2.0 — Archipel de Brume (expansion Dofus Touch)
+- **12 zones** (6 originales + Archipel de Brume)
+- **Niveau max 100**, 5 sorts/classe, 12 donjons, 22 quêtes
+- **Métiers** : recettes de récolte et craft étendues
+- **9 objectifs endgame** incluant les Profondeurs des Néréides
+
 ### v2.0.0 — Version Finale (vfinal)
 - **Progression endgame** : 7 objectifs (niveau 30/60, citadelle, PvP, guilde, faction, succès)
 - **Guide du joueur** + écran crédits

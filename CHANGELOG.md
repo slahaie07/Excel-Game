@@ -1,5 +1,25 @@
 # Changelog
 
+## v2.2.0 — Archipel de Brume (expansion Dofus Touch)
+
+Première expansion majeure post-vfinal, vers l'échelle Dofus Touch.
+
+### v2.1 — Fondations
+
+- **Niveau max 100** (cible v3.0 : 200)
+- **5 sorts par classe** (50 au total) — déblocage niv. 10 et 18
+- **Items manquants** ajoutés pour le loot donjons (~60 items)
+- **7 donjons** supplémentaires (12 au total)
+- **Recettes métiers** : récolte (herboriste, mineur, bûcheron) + craft étendu
+
+### v2.2 — Archipel de Brume
+
+- **6 nouvelles zones** : Côtes de Brume, Grottes de Marée, Récif Abyssal, Île Tempête, Sanctuaire des Marins, Profondeurs des Néréides
+- **18 monstres** dont boss donjons et Léviathan de Brume (niv. 85)
+- **15 quêtes** (chaîne Archipel + side quests)
+- **9 objectifs endgame** (niv. 100, profondeurs)
+- Carte monde élargie, thèmes isométriques, factions étendues
+
 ## v2.0.0 — vfinal (Version Finale)
 
 Release finale d'Aetheris rassemblant l'ensemble du contenu développé (v1.0 → v1.30).

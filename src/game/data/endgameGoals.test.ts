@@ -12,8 +12,8 @@ describe("endgameGoals", () => {
     pledgedFaction: false,
   };
 
-  it("defines 7 endgame goals", () => {
-    expect(ENDGAME_GOALS).toHaveLength(7);
+  it("defines 9 endgame goals", () => {
+    expect(ENDGAME_GOALS).toHaveLength(9);
   });
 
   it("starts at 0% with fresh character", () => {
