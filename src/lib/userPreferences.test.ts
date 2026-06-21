@@ -36,7 +36,7 @@ describe("userPreferences", () => {
   });
 
   it("exposes version constants", () => {
-    expect(APP_VERSION).toBe("4.1.0");
+    expect(APP_VERSION).toBe("4.2.0");
     expect(VERSION_LABEL).toBe("Terreval");
   });
 });

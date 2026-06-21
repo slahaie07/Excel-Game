@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.2.0 — Terreval Complet
+
+- **196 quêtes** (+47) : dailies, ponts régionaux, guilde, chasses, POI
+- **Progression quêtes jouable** — zones, kills et POI avancent les objectifs
+- **26 quêtes journalières** — couverture complète des zones
+- **10 quêtes guilde** régionales + raid Terreval + service quotidien
+- **16 objectifs endgame** — exploration v4 + cartographe + maîtres de région
+- **Particules ambiantes** par région, icônes monstres v4, POI interactifs
+
 ## v4.1.0 — Chroniques Régionales
 
 - **149 quêtes** (+41) : découverte, maîtres de région, donjons v4.0

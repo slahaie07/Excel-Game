@@ -1,10 +1,10 @@
 import { APP_VERSION, VERSION_LABEL, saveUserPreferences } from "../lib/userPreferences";
 
 const RELEASE_HIGHLIGHTS = [
-  "149 quêtes — chroniques régionales sur les 4 nouveaux continents",
-  "12 quêtes découverte + 4 maîtres de région (Givre, Marais, Cendres, Stellaire)",
-  "+24 quêtes donjon pour les donjons v4.0",
-  "Teintes visuelles par région en exploration",
+  "196 quêtes — progression jouable (zones, kills, POI)",
+  "26 quêtes journalières — une par grande zone",
+  "10 quêtes guilde régionales + raid Terreval",
+  "Particules ambiantes par région et icônes monstres v4",
 ];
 
 export function WhatsNewModal({ onClose }: { onClose: () => void }) {
@@ -19,9 +19,9 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
         <p className="text-crystal-cyan text-xs font-semibold uppercase mb-1">
           {VERSION_LABEL} — v{APP_VERSION}
         </p>
-        <h2 className="font-display text-xl font-bold text-white mb-3">Chroniques Régionales</h2>
+        <h2 className="font-display text-xl font-bold text-white mb-3">Terreval Complet</h2>
         <p className="text-aether-400 text-sm mb-4">
-          v4.1 : explorez les nouveaux continents et complétez les quêtes régionales.
+          v4.2 : les quêtes avancent en jeu et Terreval est relié de bout en bout.
         </p>
         <ul className="space-y-2 mb-6">
           {RELEASE_HIGHLIGHTS.map((item) => (
@@ -32,7 +32,7 @@ export function WhatsNewModal({ onClose }: { onClose: () => void }) {
           ))}
         </ul>
         <button type="button" onClick={dismiss} className="btn-primary w-full">
-          Explorer Terreval
+          Continuer l'aventure
         </button>
       </div>
     </div>

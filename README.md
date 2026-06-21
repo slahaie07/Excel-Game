@@ -23,6 +23,11 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Cadres de profil visibles en chat et présence
 - Classement contributeurs campagne + bannière campagne dans le monde
 
+### v4.2.0 — Terreval Complet
+- **196 quêtes**, progression jouable (zones / kills / POI)
+- 26 dailies, 10 quêtes guilde régionales, 10 quêtes POI trésor/lore
+- 16 objectifs endgame, particules et polish visuel v4
+
 ### v4.1.0 — Chroniques Régionales
 - **149 quêtes** (+41) : découverte, maîtres de région, donjons v4.0
 - 4 maîtres de région + quête cartographe endgame

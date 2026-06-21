@@ -48,6 +48,21 @@ const DISCOVERY_SEEDS: DiscoverySeed[] = [
   { zoneId: "observatoire_lune", name: "Veille Lunaire", monsterId: "constellation_vivante", monsterLabel: "Constellations Vivantes", levelRequired: 62 },
 ];
 
+const BRIDGE_BY_ZONE: Record<string, string> = {
+  plateau_givre: "appel_givre",
+  monts_cristallins: "appel_givre",
+  glaise_nord: "appel_givre",
+  marais_ether: "appel_marais",
+  cite_flottante: "appel_marais",
+  catacombes_humides: "appel_marais",
+  vallee_cendres: "appel_cendres",
+  forge_volcanique: "appel_cendres",
+  chambre_magma: "appel_cendres",
+  iles_stellaires: "appel_iles",
+  atoll_nebula: "appel_iles",
+  observatoire_lune: "appel_iles",
+};
+
 const DISCOVERY_QUESTS: QuestDefinition[] = DISCOVERY_SEEDS.map((seed) => ({
   id: `decouverte_${seed.zoneId}`,
   name: seed.name,
@@ -64,6 +79,7 @@ const DISCOVERY_QUESTS: QuestDefinition[] = DISCOVERY_SEEDS.map((seed) => ({
     xp: seed.levelRequired * 12,
     eclats: seed.levelRequired * 5,
   },
+  prerequisiteQuests: BRIDGE_BY_ZONE[seed.zoneId] ? [BRIDGE_BY_ZONE[seed.zoneId]!] : undefined,
 }));
 
 const REGION_MASTER_QUESTS: QuestDefinition[] = [
