@@ -14,11 +14,13 @@ export default defineConfig({
       manifest: {
         name: "Aetheris — L'Éveil des Cristaux",
         short_name: "Aetheris",
-        description: "MMORPG tactique mobile dans l'univers des Cristaux d'Aether",
+        description: "Terreval Finale — MMORPG tactique : 260 quêtes, 120 donjons, 30 métiers",
         theme_color: "#1a0f2e",
         background_color: "#0d0618",
         display: "standalone",
         orientation: "portrait",
+        lang: "fr",
+        categories: ["games", "entertainment"],
         icons: [
           {
             src: "/icons/icon-192.png",

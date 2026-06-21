@@ -6,7 +6,7 @@ import { TALENTS, getAvailableTalents } from "./talents";
 
 const STAT_KEYS = ["vitality", "wisdom", "strength", "intelligence", "agility", "chance"] as const;
 
-describe("15 classes balance (Dofus Touch)", () => {
+describe("15 classes balance (Aetheris)", () => {
   it("has exactly 15 classes in 5 archetypes × 3", () => {
     expect(CLASSES).toHaveLength(15);
     const archetypes = new Set(CLASSES.map((c) => c.archetype));

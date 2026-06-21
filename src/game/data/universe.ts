@@ -18,7 +18,7 @@ export const UNIVERSE = {
     { id: "neutre", name: "Marchands Libres", alignment: "neutral", description: "Commerçants et artisans indépendants" },
   ],
   currencies: [
-    { id: "kamas", name: "Éclats", symbol: "✦", description: "Monnaie principale de Terreval" },
+    { id: "eclats", name: "Éclats", symbol: "✦", description: "Monnaie cristalline de Terreval" },
     { id: "stardust", name: "Poussière Stellaire", symbol: "✧", description: "Monnaie premium rare" },
   ],
 } as const;

@@ -181,7 +181,7 @@ export default function CloudGuildHallScreen() {
       <div className="flex items-center gap-3 p-4 border-b border-aether-700/40">
         <button onClick={back} className="text-aether-400 text-xl">←</button>
         <div>
-          <h1 className="font-display text-xl font-bold">{displayEmblem} Guild Hall</h1>
+          <h1 className="font-display text-xl font-bold">{displayEmblem} Sanctuaire de guilde</h1>
           {guildTag && (
             <p className="text-aether-500 text-xs">[{guildTag}] {guildName}</p>
           )}

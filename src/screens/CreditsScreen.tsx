@@ -5,8 +5,8 @@ const CREDITS = [
   { role: "Univers & design", name: "Aetheris — Terreval" },
   { role: "Moteur tactique", name: "Phaser 3 + React 19" },
   { role: "Backend multijoueur", name: "Convex" },
-  { role: "Classes & sorts", name: "10 archétypes équilibrés" },
-  { role: "Contenu monde", name: "6 zones, 15 monstres, 4 boss" },
+  { role: "Classes & sorts", name: "15 archétypes, 4 branches de talents" },
+  { role: "Contenu monde", name: "24 zones · 260 quêtes · 120 donjons · 30 métiers" },
   { role: "Version", name: `${VERSION_LABEL} — v${APP_VERSION}` },
 ];
 

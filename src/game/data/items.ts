@@ -37,7 +37,7 @@ export const ITEMS: ItemDefinition[] = [
 
   // Consommables
   { id: "potion_vie", name: "Potion de Vie", description: "Restaure 50 PV.", type: "consumable", level: 1, rarity: "common", stackable: true, maxStack: 20, sellPrice: 10, icon: "🧪" },
-  { id: "potion_energie", name: "Potion d'Énergie", description: "Restaure 3 PA.", type: "consumable", level: 5, rarity: "uncommon", stackable: true, maxStack: 10, sellPrice: 25, icon: "⚡" },
+  { id: "potion_energie", name: "Potion d'Énergie", description: "Restaure 3 Flux.", type: "consumable", level: 5, rarity: "uncommon", stackable: true, maxStack: 10, sellPrice: 25, icon: "⚡" },
   { id: "pain_eveil", name: "Pain d'Éveil", description: "Restaure 20 PV. Nourriture de base.", type: "consumable", level: 1, rarity: "common", stackable: true, maxStack: 50, sellPrice: 2, icon: "🍞" },
 
   // Quêtes
@@ -132,9 +132,9 @@ export const ITEMS: ItemDefinition[] = [
   { id: "bottes_umbra", name: "Bottes d'Umbra", description: "Bottes du désert d'ombre.", type: "boots", level: 38, rarity: "epic", stats: { defense: 14, agility: 12 }, stackable: false, maxStack: 1, sellPrice: 550, icon: "👢" },
   { id: "baguette_abysses", name: "Baguette des Abysses", description: "Baguette forgée dans les profondeurs.", type: "weapon", level: 60, rarity: "legendary", stats: { damage: 42, intelligence: 20 }, stackable: false, maxStack: 1, sellPrice: 2200, icon: "🪄" },
   { id: "ration_stellaire", name: "Ration Stellaire", description: "Restaure 80 PV.", type: "consumable", level: 20, rarity: "uncommon", stackable: true, maxStack: 20, sellPrice: 35, icon: "🥘" },
-  { id: "festin_champions", name: "Festin des Champions", description: "Restaure 200 PV et 2 PA.", type: "consumable", level: 70, rarity: "legendary", stackable: true, maxStack: 5, sellPrice: 200, icon: "🍖" },
+  { id: "festin_champions", name: "Festin des Champions", description: "Restaure 200 PV et 2 Flux.", type: "consumable", level: 70, rarity: "legendary", stackable: true, maxStack: 5, sellPrice: 200, icon: "🍖" },
   { id: "elixir_vie_majeure", name: "Élixir de Vie Majeure", description: "Restaure 300 PV.", type: "consumable", level: 80, rarity: "legendary", stackable: true, maxStack: 10, sellPrice: 150, icon: "🧪" },
-  { id: "potion_tempete", name: "Potion de Tempête", description: "Restaure 5 PA.", type: "consumable", level: 40, rarity: "rare", stackable: true, maxStack: 10, sellPrice: 60, icon: "⛈️" },
+  { id: "potion_tempete", name: "Potion de Tempête", description: "Restaure 5 Flux.", type: "consumable", level: 40, rarity: "rare", stackable: true, maxStack: 10, sellPrice: 60, icon: "⛈️" },
   { id: "rune_faille", name: "Rune de Faille", description: "Rune dimensionnelle de pouvoir.", type: "resource", level: 65, rarity: "legendary", stackable: true, maxStack: 10, sellPrice: 500, icon: "🔮" },
 
   // Carte v4.0 — ressources des nouvelles régions

@@ -105,7 +105,7 @@ function CloudGuild() {
             onClick={() => setScreen("guild-hall")}
             className="btn-secondary w-full text-sm"
           >
-            🏰 Guild Hall partagé
+            🏰 Sanctuaire de guilde
           </button>
           {(myMembership?.role === "leader" || myMembership?.role === "officer") && (
             <div className="card border-crystal-gold/30 space-y-2">

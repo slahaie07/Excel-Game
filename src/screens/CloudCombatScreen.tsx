@@ -12,6 +12,7 @@ import { VictoryRewardBreakdown } from "../components/VictoryRewardBreakdown";
 import { formatBuffs } from "../game/combat/effects";
 import { getDungeonById, getRoomMonsters, getRaidById, getPhaseMonsters } from "../game/data";
 import { cacheCloudCombat, buildCloudCombatLocalId } from "../lib/cloudCombat";
+import { FLUX, ELAN, formatElanMove } from "../lib/gameTerms";
 
 interface CloudEntity {
   entityId: string;
@@ -134,7 +135,7 @@ export default function CloudCombatScreen() {
           targetX: x,
           targetY: y,
         });
-        setLog((p) => [...p, `Déplacement (${distance} PM)`]);
+        setLog((p) => [...p, formatElanMove(distance)]);
       }
     } catch (e) {
       setLog((p) => [...p, e instanceof Error ? e.message : "Erreur"]);
@@ -284,8 +285,8 @@ export default function CloudCombatScreen() {
       {player && (
         <div className="px-4 py-2 flex flex-wrap gap-4 text-sm">
           <span className="text-red-400">❤️ {player.hp}/{player.maxHp}</span>
-          <span className="text-orange-400">⚡ {player.ap}/{player.maxAp} PA</span>
-          <span className="text-blue-400">👟 {player.mp}/{player.maxMp} PM</span>
+          <span className="text-orange-400">⚡ {player.ap}/{player.maxAp} {FLUX}</span>
+          <span className="text-blue-400">👟 {player.mp}/{player.maxMp} {ELAN}</span>
           {player.buffs && player.buffs.length > 0 && (
             <span className="text-purple-400 text-xs">✨ {formatBuffs(player.buffs)}</span>
           )}
@@ -306,7 +307,7 @@ export default function CloudCombatScreen() {
               >
                 <span className="text-xl">{spell.icon}</span>
                 <p className="text-[10px] text-aether-300 mt-1">{spell.name}</p>
-                <p className="text-[9px] text-orange-400">{spell.apCost} PA</p>
+                <p className="text-[9px] text-orange-400">{spell.apCost} {FLUX}</p>
               </button>
             ))}
           </div>

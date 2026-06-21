@@ -15,6 +15,7 @@ import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCo
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
 import { getCombatBackground } from "../game/data/assets";
 import { VictoryRewardBreakdown } from "../components/VictoryRewardBreakdown";
+import { FLUX, ELAN, formatElanMove } from "../lib/gameTerms";
 
 interface CombatEntity {
   entityId: string;
@@ -263,7 +264,7 @@ export default function LocalCombatScreen() {
           ? { ...e, x, y, mp: e.mp - distance }
           : e
       );
-      setLog((prev) => [...prev, `Déplacement (${distance} PM)`]);
+      setLog((prev) => [...prev, formatElanMove(distance)]);
       setCombatState({ ...combat, entities: newEntities });
     }
   }, [combat, player, selectedSpell, isPlayerTurn]);
@@ -457,8 +458,8 @@ export default function LocalCombatScreen() {
       {/* Player status */}
       <div className="px-4 py-2 flex flex-wrap gap-4 text-sm">
         <span className="text-red-400">❤️ {player.hp}/{player.maxHp}</span>
-        <span className="text-orange-400">⚡ {player.ap}/{player.maxAp} PA</span>
-        <span className="text-blue-400">👟 {player.mp}/{player.maxMp} PM</span>
+        <span className="text-orange-400">⚡ {player.ap}/{player.maxAp} {FLUX}</span>
+        <span className="text-blue-400">👟 {player.mp}/{player.maxMp} {ELAN}</span>
         {(player.buffs?.length ?? 0) > 0 && (
           <span className="text-purple-400 text-xs">✨ {formatBuffs(player.buffs)}</span>
         )}
@@ -479,7 +480,7 @@ export default function LocalCombatScreen() {
               >
                 <span className="text-xl">{spell.icon}</span>
                 <p className="text-[10px] text-aether-300 mt-1">{spell.name}</p>
-                <p className="text-[9px] text-orange-400">{spell.apCost} PA</p>
+                <p className="text-[9px] text-orange-400">{spell.apCost} {FLUX}</p>
               </button>
             ))}
           </div>

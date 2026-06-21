@@ -1,5 +1,6 @@
 import { useGameStore } from "../stores/gameStore";
-import { saveUserPreferences } from "../lib/userPreferences";
+import { saveUserPreferences, loadUserPreferences, APP_VERSION, VERSION_LABEL } from "../lib/userPreferences";
+import { FLUX, ELAN } from "../lib/gameTerms";
 
 const GUIDE_SECTIONS = [
   {
@@ -15,9 +16,9 @@ const GUIDE_SECTIONS = [
     title: "Combat tactique",
     icon: "⚔️",
     tips: [
-      "Chaque tour : déplacez-vous (PM) puis lancez des sorts (PA).",
+      `Chaque tour : déplacez-vous (${ELAN}) puis lancez des sorts (${FLUX}).`,
       "Les talents actifs modifient dégâts, soins et portée.",
-      "Victoire = XP, Éclats et progression faction.",
+      "Victoire = XP, Éclats ✦ et progression faction.",
     ],
   },
   {
@@ -30,17 +31,28 @@ const GUIDE_SECTIONS = [
     ],
   },
   {
+    title: "Terreval Finale (v5)",
+    icon: "💎",
+    tips: [
+      "260 quêtes — chroniques, échos régionaux et défis quotidiens.",
+      "120 donjons dont 26 raids mythiques aux quatre coins du monde.",
+      "30 métiers artisanaux et synchronisation cloud des quêtes en temps réel.",
+      "La Chronique Finale couronne l'endgame pour les Éveilleurs de niveau 180+.",
+    ],
+  },
+  {
     title: "Multijoueur",
     icon: "☁️",
     tips: [
-      "Avec Convex : donjons coop, raids 8j, PvP classé, guildes et chat.",
-      "Hors-ligne : tout le contenu solo reste jouable en local.",
+      "En ligne : donjons coop, raids 8 joueurs, PvP classé, guildes et chat.",
+      "Hors-ligne : tout le contenu solo reste jouable en mode sanctuaire.",
     ],
   },
 ];
 
 export default function GuideScreen() {
   const setScreen = useGameStore((s) => s.setScreen);
+  const onboarding = !loadUserPreferences().guideCompleted;
 
   const finish = () => {
     saveUserPreferences({ guideCompleted: true });
@@ -50,15 +62,24 @@ export default function GuideScreen() {
   return (
     <div className="flex-1 flex flex-col bg-aether-950">
       <div className="flex items-center gap-3 p-4 border-b border-aether-700/40">
-        <button type="button" onClick={() => setScreen("settings")} className="text-aether-400 text-xl">
-          ←
-        </button>
-        <h1 className="font-display text-xl font-bold">Guide du joueur</h1>
+        {!onboarding && (
+          <button type="button" onClick={() => setScreen("settings")} className="text-aether-400 text-xl">
+            ←
+          </button>
+        )}
+        <h1 className="font-display text-xl font-bold">
+          {onboarding ? "Bienvenue à Terreval" : "Guide du joueur"}
+        </h1>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {onboarding && (
+          <p className="text-aether-400 text-sm card border-crystal-cyan/30">
+            {VERSION_LABEL} v{APP_VERSION} — voici l&apos;essentiel avant votre première bataille.
+          </p>
+        )}
         {GUIDE_SECTIONS.map((section) => (
-          <section key={section.title} className="card space-y-2">
+          <section key={section.title} className="card-premium space-y-2">
             <h2 className="text-white text-sm font-semibold flex items-center gap-2">
               <span>{section.icon}</span>
               {section.title}
@@ -75,7 +96,7 @@ export default function GuideScreen() {
         ))}
 
         <button type="button" onClick={finish} className="btn-primary w-full">
-          Compris — retour au jeu
+          {onboarding ? "Commencer l'Éveil" : "Compris — retour au jeu"}
         </button>
       </div>
     </div>

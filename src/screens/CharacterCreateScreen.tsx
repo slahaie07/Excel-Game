@@ -6,6 +6,11 @@ import { useGameStore } from "../stores/gameStore";
 import { CLASSES, ARCHETYPE_LABELS, getStartingSpellIds } from "../game/data";
 import { getClassPortrait, ROSTER_ART } from "../game/data/assets";
 import { isCloudAccount } from "../lib/convexUtils";
+import { loadUserPreferences } from "../lib/userPreferences";
+
+function screenAfterCharacterCreate(setScreen: (s: "world" | "guide") => void) {
+  setScreen(loadUserPreferences().guideCompleted ? "world" : "guide");
+}
 
 function CharacterCreateForm({
   onCreate,
@@ -44,7 +49,7 @@ function CharacterCreateForm({
             type="text"
             value={name}
             onChange={(e) => { setName(e.target.value); setError(""); }}
-            placeholder="Ex: Kaelthas"
+            placeholder="Ex: Maëlys, Vorren"
             className="w-full bg-aether-900/80 border border-aether-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-aether-500"
             maxLength={16}
             disabled={loading}
@@ -108,7 +113,7 @@ function CloudCreate() {
         classId,
       });
       setCharacter(charId, name, classId);
-      setScreen("world");
+      screenAfterCharacterCreate(setScreen);
     } finally {
       setLoading(false);
     }
@@ -140,7 +145,7 @@ function LocalCreate() {
       stats: selectedClassData.baseStats,
     }));
     setCharacter(charId, name, classId);
-    setScreen("world");
+    screenAfterCharacterCreate(setScreen);
   };
 
   return <CharacterCreateForm onCreate={onCreate} loading={false} />;

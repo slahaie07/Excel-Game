@@ -1,6 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useGameStore } from "../stores/gameStore";
-import { ROSTER_ART } from "../game/data/assets";
 import { APP_VERSION, VERSION_LABEL } from "../lib/userPreferences";
 
 export default function SplashScreen() {
@@ -8,22 +7,25 @@ export default function SplashScreen() {
   const accountId = useGameStore((s) => s.accountId);
   const characterId = useGameStore((s) => s.characterId);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (characterId) setScreen("world");
-      else if (accountId) setScreen("character-select");
-      else setScreen("login");
-    }, 2500);
-    return () => clearTimeout(timer);
+  const goNext = useCallback(() => {
+    if (characterId) setScreen("world");
+    else if (accountId) setScreen("character-select");
+    else setScreen("login");
   }, [accountId, characterId, setScreen]);
 
+  useEffect(() => {
+    const timer = setTimeout(goNext, 2800);
+    return () => clearTimeout(timer);
+  }, [goNext]);
+
   return (
-    <div className="flex-1 flex flex-col items-center justify-center bg-gradient-to-b from-aether-950 via-aether-900 to-aether-950 px-6">
-      <img
-        src={ROSTER_ART}
-        alt="Héros d'Aetheris"
-        className="w-48 max-w-[70vw] rounded-xl border border-aether-700/50 shadow-lg shadow-crystal-cyan/10 mb-6 object-cover"
-      />
+    <button
+      type="button"
+      onClick={goNext}
+      className="flex-1 flex flex-col items-center justify-center bg-gradient-to-b from-aether-950 via-aether-900 to-aether-950 px-6 text-center"
+      aria-label="Entrer dans Aetheris"
+    >
+      <div className="text-6xl mb-4 animate-pulse-crystal">💎</div>
       <span className="text-[10px] font-semibold uppercase tracking-widest text-crystal-cyan border border-crystal-cyan/40 rounded-full px-3 py-0.5 mb-3">
         {VERSION_LABEL} — v{APP_VERSION}
       </span>
@@ -31,15 +33,10 @@ export default function SplashScreen() {
         AETHERIS
       </h1>
       <p className="text-aether-300 text-lg font-display">L&apos;Éveil des Cristaux</p>
-      <div className="mt-12 flex gap-2">
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            className="w-2 h-2 rounded-full bg-aether-500 animate-bounce"
-            style={{ animationDelay: `${i * 150}ms` }}
-          />
-        ))}
-      </div>
-    </div>
+      <p className="text-aether-500 text-xs mt-4 max-w-xs leading-relaxed">
+        Les fragments d&apos;Aether attendent ceux qui osent les canaliser.
+      </p>
+      <p className="text-aether-600 text-[10px] mt-10 uppercase tracking-wider">Toucher pour continuer</p>
+    </button>
   );
 }

@@ -42,7 +42,7 @@ export const TALENTS: TalentDefinition[] = [
   // Gros dégâts
   { id: "fureur_controlee", archetype: "burst", branch: "a", tier: 1, name: "Fureur Contrôlée", description: "+10 % sur les buffs de dégâts.", levelRequired: 10, icon: "😡", effect: { stat: "damage_buff_bonus", value: 10 } },
   { id: "lame_brutale", archetype: "burst", branch: "b", tier: 1, name: "Lame Brutale", description: "+8 % dégâts directs.", levelRequired: 10, icon: "🗡️", effect: { stat: "direct_damage_bonus", value: 8 } },
-  { id: "assaut_eclair", archetype: "burst", branch: "a", tier: 2, name: "Assaut Éclair", description: "+1 PM.", levelRequired: 20, icon: "⚡", effect: { stat: "bonus_mp", value: 1 } },
+  { id: "assaut_eclair", archetype: "burst", branch: "a", tier: 2, name: "Assaut Éclair", description: "+1 Élan.", levelRequired: 20, icon: "⚡", effect: { stat: "bonus_mp", value: 1 } },
   { id: "coup_fatal", archetype: "burst", branch: "b", tier: 2, name: "Coup Fatal", description: "+12 % dégâts au corps à corps.", levelRequired: 20, icon: "💢", effect: { stat: "melee_damage_bonus", value: 12 } },
 
   // À distance

@@ -35,4 +35,30 @@ body {
     @apply bg-gradient-to-b from-aether-950/95 to-aether-900/90 backdrop-blur-md
            border-t border-aether-600/30;
   }
+
+  .card-premium {
+    @apply bg-gradient-to-br from-aether-900/70 to-aether-950/80 backdrop-blur-sm
+           border border-aether-600/35 rounded-2xl p-4
+           shadow-lg shadow-aether-950/40;
+  }
+}
+
+@keyframes pulse-crystal {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.35)); }
+  50% { transform: scale(1.06); filter: drop-shadow(0 0 16px rgba(139, 61, 255, 0.5)); }
+}
+
+@keyframes level-up-rise {
+  0% { opacity: 0; transform: translateY(12px) scale(0.96); }
+  15% { opacity: 1; transform: translateY(0) scale(1); }
+  85% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(-4px); }
+}
+
+.animate-pulse-crystal {
+  animation: pulse-crystal 2.4s ease-in-out infinite;
+}
+
+.animate-level-up {
+  animation: level-up-rise 0.5s ease-out forwards;
 }

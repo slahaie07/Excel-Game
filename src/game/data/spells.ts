@@ -1,6 +1,6 @@
 /**
  * Système de sorts — combat tactique au tour par tour
- * PA = Points d'Action, PM = Points de Mouvement
+ * Flux (PA) et Élan (PM) — ressources de combat Aetheris
  * Équilibrage : sort de base (3 PA) ≈ 9–15 dégâts ou 15–25 soins
  */
 
@@ -82,7 +82,7 @@ export const SPELLS: SpellDefinition[] = [
   { id: "lien_ether", name: "Lien d'Éther", description: "Réduit la mobilité ennemie.", apCost: 3, minRange: 1, maxRange: 5, area: 0, cooldown: 2, levelRequired: 4, classId: "invocateur", effects: [{ type: "debuff", stat: "mp", value: -2, duration: 2 }], icon: "🔗" },
   { id: "tempete_esprits", name: "Tempête d'Esprits", description: "Dégâts de zone aux esprits.", apCost: 6, minRange: 1, maxRange: 6, area: 2, cooldown: 4, levelRequired: 8, classId: "invocateur", effects: [{ type: "damage", element: "ether", min: 11, max: 19 }], icon: "🌪️" },
 
-  // v2.1 — 2 sorts additionnels par classe (niv. 10 et 18, style Dofus Touch)
+  // v2.1 — 2 sorts additionnels par classe (niv. 10 et 18)
   { id: "elixir_force", name: "Élixir de Force", description: "Renforce un allié.", apCost: 3, minRange: 1, maxRange: 4, area: 0, cooldown: 2, levelRequired: 10, classId: "alchimiste", effects: [{ type: "buff", stat: "damage", value: 20, duration: 3 }], icon: "💪" },
   { id: "nova_alchimique", name: "Nova Alchimique", description: "Explosion de potions en zone.", apCost: 6, minRange: 1, maxRange: 5, area: 2, cooldown: 4, levelRequired: 18, classId: "alchimiste", effects: [{ type: "damage", element: "ether", min: 14, max: 22 }], icon: "💫" },
   { id: "sort_bonus_lumina", name: "Bénédiction de Lumina", description: "Bonus sacré de l'Ordre.", apCost: 3, minRange: 1, maxRange: 5, area: 0, cooldown: 2, levelRequired: 10, classId: "luminaire", effects: [{ type: "buff", stat: "damage", value: 15, duration: 3 }], icon: "☀️" },

@@ -193,10 +193,10 @@ export default function WorldScreen() {
     { id: "quests", icon: "📜", label: "Quêtes" },
     { id: "dungeons", icon: "🏚️", label: "Donjons" },
     { id: "pvp", icon: "⚔️", label: "Arène" },
-    { id: "pets", icon: "✨", label: "Pets" },
+    { id: "pets", icon: "✨", label: "Compagnons" },
     { id: "haven", icon: "🏠", label: "Havre" },
     { id: "events", icon: activeEvent?.icon ?? "🎉", label: "Évent" },
-    { id: "daily", icon: "🎁", label: "Daily" },
+    { id: "daily", icon: "🎁", label: "Quotidien" },
     { id: "guild", icon: "🏰", label: "Guilde" },
   ] as const;
 

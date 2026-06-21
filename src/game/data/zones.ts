@@ -107,7 +107,7 @@ export const ZONES: ZoneDefinition[] = [
     isPvP: true,
     icon: "⚔️",
   },
-  // Archipel de Brume — région v2.2 (style sous-zones Dofus Touch)
+  // Archipel de Brume — région v2.2
   {
     id: "cotes_brume",
     name: "Côtes de Brume",

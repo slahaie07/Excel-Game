@@ -1,5 +1,5 @@
 /**
- * Classes jouables — 15 archétypes équilibrés à Aetheris (style Dofus Touch)
+ * Classes jouables — 15 archétypes équilibrés à Aetheris
  * 3 soins · 3 magie · 3 bouclier · 3 gros dégâts · 3 à distance
  * Chaque classe totalise 60 points de stats de base.
  */

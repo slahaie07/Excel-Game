@@ -1,5 +1,5 @@
 /**
- * v3.2 — Expansion métiers (6 → 22) style Dofus Touch
+ * v3.2 — Expansion métiers (6 → 22)
  */
 
 import type { ProfessionDefinition } from "./professions";

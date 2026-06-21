@@ -192,7 +192,7 @@ const ENDGAME_MILESTONE_QUESTS: QuestDefinition[] = [
   {
     id: "ascension_200",
     name: "Ascension Ultime",
-    description: "Niveau 200 — le sommet de la progression Dofus Touch.",
+    description: "Niveau 200 — le sommet de l'Éveil à Terreval.",
     type: "main",
     levelRequired: 190,
     zoneId: "citadelle_stellaire",
