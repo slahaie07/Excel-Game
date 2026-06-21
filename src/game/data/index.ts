@@ -13,7 +13,7 @@ export { MONSTERS, getMonstersByZone, getMonsterById } from "./monsters";
 export { ZONES, getZoneById } from "./zones";
 export { ITEMS, EQUIPMENT_SLOTS, getItemById } from "./items";
 export { QUESTS, getQuestById, getQuestsForZone } from "./quests";
-export { PROFESSIONS, getProfessionById } from "./professions";
+export { PROFESSIONS, MAX_PROFESSION_SLOTS, getProfessionById } from "./professions";
 export { DUNGEONS, getDungeonById, getDungeonsForZone, getRoomMonsters } from "./dungeons";
 export { RAIDS, getRaidById, getPhaseMonsters } from "./raids";
 export { PETS, getPetById } from "./pets";

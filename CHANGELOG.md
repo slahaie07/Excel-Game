@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.2.0 — Artisanat (22 métiers)
+
+- **22 métiers** (+16) : Pêcheur, Paysan, Tailleur, Cuisine, Orfèvre, Runesmith…
+- **Recettes endgame** sur métiers existants (Lame Éternelle, Couronne Marine, Élixir Majeure)
+- **14 nouveaux items** ressources et consommables craftés
+- **5 emplacements** métiers par personnage (au lieu de 3)
+
 ## v3.1.0 — Chroniques (100+ quêtes)
 
 - **100+ quêtes** (+86) : donjons, citadelle, endgame, guilde

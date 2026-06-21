@@ -1,6 +1,6 @@
 {
   "name": "aetheris-mmorpg",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "private": true,
   "type": "module",
   "description": "Aetheris — MMORPG tactique mobile inspiré des grands RPG isométriques",

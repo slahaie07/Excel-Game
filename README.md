@@ -23,6 +23,10 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Cadres de profil visibles en chat et présence
 - Classement contributeurs campagne + bannière campagne dans le monde
 
+### v3.2.0 — Artisanat (22 métiers)
+- **22 métiers** (+16), recettes endgame, 5 slots par personnage
+- Nouveaux : Pêcheur, Tailleur, Cuisine, Orfèvre, Forgeur de Runes…
+
 ### v3.1.0 — Chroniques (100+ quêtes)
 - **100+ quêtes** (+86) : donjons, citadelle, endgame, guilde
 - **40 quêtes donjon** liées aux boss expansion

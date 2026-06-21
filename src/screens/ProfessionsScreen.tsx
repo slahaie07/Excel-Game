@@ -1,5 +1,5 @@
 import { useGameStore } from "../stores/gameStore";
-import { PROFESSIONS } from "../game/data";
+import { PROFESSIONS, MAX_PROFESSION_SLOTS } from "../game/data";
 
 export default function ProfessionsScreen() {
   const characterId = useGameStore((s) => s.characterId)!;
@@ -10,7 +10,7 @@ export default function ProfessionsScreen() {
     charData.professions ?? [];
 
   const learnProfession = (professionId: string) => {
-    if (learnedProfessions.length >= 3) return;
+    if (learnedProfessions.length >= MAX_PROFESSION_SLOTS) return;
     if (learnedProfessions.some((p) => p.professionId === professionId)) return;
 
     charData.professions = [...learnedProfessions, { professionId, level: 1, xp: 0 }];
@@ -55,7 +55,7 @@ export default function ProfessionsScreen() {
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         <section>
-          <h2 className="text-aether-400 text-sm mb-2">Mes métiers ({learnedProfessions.length}/3)</h2>
+          <h2 className="text-aether-400 text-sm mb-2">Mes métiers ({learnedProfessions.length}/{MAX_PROFESSION_SLOTS})</h2>
           {learnedProfessions.map((lp) => {
             const prof = PROFESSIONS.find((p) => p.id === lp.professionId);
             if (!prof) return null;
@@ -98,7 +98,7 @@ export default function ProfessionsScreen() {
               </div>
               <button
                 onClick={() => learnProfession(prof.id)}
-                disabled={learnedProfessions.length >= 3}
+                disabled={learnedProfessions.length >= MAX_PROFESSION_SLOTS}
                 className="btn-secondary text-xs py-1 px-3 disabled:opacity-40"
               >
                 Apprendre

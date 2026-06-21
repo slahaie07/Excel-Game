@@ -2,6 +2,11 @@
  * Métiers et professions — craft, récolte, forge
  */
 
+import {
+  EXISTING_PROFESSION_RECIPES,
+  EXPANSION_PROFESSIONS_V32,
+} from "./expansionProfessions";
+
 export interface ProfessionDefinition {
   id: string;
   name: string;
@@ -20,7 +25,7 @@ export interface RecipeDefinition {
   xpGain: number;
 }
 
-export const PROFESSIONS: ProfessionDefinition[] = [
+const BASE_PROFESSIONS: ProfessionDefinition[] = [
   {
     id: "herboriste",
     name: "Herboriste",
@@ -91,6 +96,21 @@ export const PROFESSIONS: ProfessionDefinition[] = [
     ],
   },
 ];
+
+function mergeProfessionRecipes(base: ProfessionDefinition[]): ProfessionDefinition[] {
+  return base.map((prof) => {
+    const extra = EXISTING_PROFESSION_RECIPES[prof.id];
+    if (!extra) return prof;
+    return { ...prof, recipes: [...prof.recipes, ...extra] };
+  });
+}
+
+export const PROFESSIONS: ProfessionDefinition[] = [
+  ...mergeProfessionRecipes(BASE_PROFESSIONS),
+  ...EXPANSION_PROFESSIONS_V32,
+];
+
+export const MAX_PROFESSION_SLOTS = 5;
 
 export function getProfessionById(id: string): ProfessionDefinition | undefined {
   return PROFESSIONS.find((p) => p.id === id);

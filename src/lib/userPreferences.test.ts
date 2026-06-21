@@ -36,7 +36,7 @@ describe("userPreferences", () => {
   });
 
   it("exposes version constants", () => {
-    expect(APP_VERSION).toBe("3.1.0");
-    expect(VERSION_LABEL).toBe("Chroniques");
+    expect(APP_VERSION).toBe("3.2.0");
+    expect(VERSION_LABEL).toBe("Artisanat");
   });
 });

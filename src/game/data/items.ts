@@ -120,6 +120,22 @@ export const ITEMS: ItemDefinition[] = [
   { id: "noyau_tempete", name: "Noyau de Tempête", description: "Cœur du colosse des vents.", type: "resource", level: 38, rarity: "epic", stackable: true, maxStack: 15, sellPrice: 150, icon: "⛈️" },
   { id: "parchemin_prophetie", name: "Parchemin de Prophétie", description: "Vision du prophète marin.", type: "resource", level: 46, rarity: "legendary", stackable: true, maxStack: 5, sellPrice: 350, icon: "📜" },
   { id: "fragment_faille", name: "Fragment de Faille", description: "Éclat dimensionnel des abysses.", type: "resource", level: 65, rarity: "legendary", stackable: true, maxStack: 5, sellPrice: 800, icon: "🌀" },
+
+  // Métiers v3.2 — ressources et craft
+  { id: "minerai_stellaire", name: "Minerai Stellaire", description: "Minerai rare de la citadelle.", type: "resource", level: 45, rarity: "rare", stackable: true, maxStack: 50, sellPrice: 95, icon: "⭐" },
+  { id: "champignon_abysse", name: "Champignon d'Abysses", description: "Champignon bioluminescent des profondeurs.", type: "resource", level: 55, rarity: "rare", stackable: true, maxStack: 40, sellPrice: 75, icon: "🍄" },
+  { id: "bois_fossile", name: "Bois Fossilisé", description: "Bois pétrifié du désert.", type: "resource", level: 35, rarity: "uncommon", stackable: true, maxStack: 50, sellPrice: 42, icon: "🪵" },
+  { id: "poisson_ether", name: "Poisson d'Éther", description: "Poisson imprégné d'énergie marine.", type: "resource", level: 1, rarity: "common", stackable: true, maxStack: 99, sellPrice: 5, icon: "🐟" },
+  { id: "ble_eveil", name: "Blé d'Éveil", description: "Céréale cultivée dans la vallée.", type: "resource", level: 1, rarity: "common", stackable: true, maxStack: 99, sellPrice: 2, icon: "🌾" },
+  { id: "fil_lumina", name: "Fil de Lumina", description: "Fil enchanté pour la couture.", type: "resource", level: 8, rarity: "common", stackable: true, maxStack: 99, sellPrice: 12, icon: "🧵" },
+  { id: "cuir_ombre", name: "Cuir d'Ombre", description: "Cuir tanné des bêtes corrompues.", type: "resource", level: 8, rarity: "common", stackable: true, maxStack: 99, sellPrice: 14, icon: "🟤" },
+  { id: "bottes_umbra", name: "Bottes d'Umbra", description: "Bottes du désert d'ombre.", type: "boots", level: 38, rarity: "epic", stats: { defense: 14, agility: 12 }, stackable: false, maxStack: 1, sellPrice: 550, icon: "👢" },
+  { id: "baguette_abysses", name: "Baguette des Abysses", description: "Baguette forgée dans les profondeurs.", type: "weapon", level: 60, rarity: "legendary", stats: { damage: 42, intelligence: 20 }, stackable: false, maxStack: 1, sellPrice: 2200, icon: "🪄" },
+  { id: "ration_stellaire", name: "Ration Stellaire", description: "Restaure 80 PV.", type: "consumable", level: 20, rarity: "uncommon", stackable: true, maxStack: 20, sellPrice: 35, icon: "🥘" },
+  { id: "festin_champions", name: "Festin des Champions", description: "Restaure 200 PV et 2 PA.", type: "consumable", level: 70, rarity: "legendary", stackable: true, maxStack: 5, sellPrice: 200, icon: "🍖" },
+  { id: "elixir_vie_majeure", name: "Élixir de Vie Majeure", description: "Restaure 300 PV.", type: "consumable", level: 80, rarity: "legendary", stackable: true, maxStack: 10, sellPrice: 150, icon: "🧪" },
+  { id: "potion_tempete", name: "Potion de Tempête", description: "Restaure 5 PA.", type: "consumable", level: 40, rarity: "rare", stackable: true, maxStack: 10, sellPrice: 60, icon: "⛈️" },
+  { id: "rune_faille", name: "Rune de Faille", description: "Rune dimensionnelle de pouvoir.", type: "resource", level: 65, rarity: "legendary", stackable: true, maxStack: 10, sellPrice: 500, icon: "🔮" },
 ];
 
 export const EQUIPMENT_SLOTS = ["weapon", "armor", "helmet", "boots", "amulet", "ring"] as const;
