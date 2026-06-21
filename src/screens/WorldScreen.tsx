@@ -9,6 +9,7 @@ import { useOnlinePresence, getOnlinePlayersInZone, OnlinePresenceSync, CloudZon
 import { CloudCharacterSync } from "./CharacterSelectScreen";
 import { IsoWorldScene, createMonsterEntities, getClassIcon } from "../game/rendering/IsoWorldScene";
 import { loadCharacter } from "../lib/characterStorage";
+import { advanceQuestOnZoneVisit } from "../lib/questProgress";
 import { isCloudCharacter, isConvexEnabled } from "../lib/convexUtils";
 import { CloudEncounterStarter } from "../components/CloudEncounterStarter";
 import { CloudWorldBoss } from "../components/CloudWorldBoss";
@@ -73,6 +74,10 @@ export default function WorldScreen() {
 
   useOnlinePresence();
   const activeEvent = getActiveEvent();
+
+  useEffect(() => {
+    advanceQuestOnZoneVisit(characterId, zoneId);
+  }, [characterId, zoneId]);
 
   const zone = getZoneById(zoneId)!;
   const classData = CLASSES.find((c) => c.id === classId);
@@ -283,7 +288,7 @@ export default function WorldScreen() {
 
       <WorldCampaignBanner pledgedFactionId={pledgedFactionId} campaigns={campaigns} />
 
-      <ZonePOIList zoneId={zoneId} />
+      <ZonePOIList zoneId={zoneId} characterId={characterId} />
 
       {isConvexEnabled() && isCloudCharacter(characterId) && (
         <CloudWorldInvasion

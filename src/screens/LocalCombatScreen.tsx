@@ -6,6 +6,7 @@ import { applyPvpResult } from "./PvPScreen";
 import { advanceDungeonRoom, createNextRoomCombat } from "./DungeonsScreen";
 import { recordEventKill } from "./EventsScreen";
 import { addXp, loadCharacter } from "../lib/characterStorage";
+import { advanceQuestOnKill } from "../lib/questProgress";
 import { recordLocalWorldVictory, recordLocalPvpVictory, getLocalTerritoryXpMultiplier } from "../lib/factionProgress";
 import { useToastStore } from "../stores/toastStore";
 import { unlockLocalAchievement } from "./AchievementsScreen";
@@ -289,6 +290,14 @@ export default function LocalCombatScreen() {
     setCombatState({ ...combat, entities });
   };
 
+  const recordQuestKills = () => {
+    const zoneId = combatData.zoneId ?? useGameStore.getState().zoneId;
+    const monsterIds: string[] = combatData.monsterIds ?? [];
+    for (const monsterId of monsterIds) {
+      advanceQuestOnKill(characterId, monsterId, zoneId);
+    }
+  };
+
   const awardRewards = () => {
     if (combatType === "pvp") {
       applyPvpResult(characterId, true, combatData.convexMatchId);
@@ -302,6 +311,7 @@ export default function LocalCombatScreen() {
         setDungeonRewards(rewards ?? null);
       }
       applyXpWithToast(30);
+      recordQuestKills();
       return;
     }
     if (combatType === "event") {
@@ -334,6 +344,7 @@ export default function LocalCombatScreen() {
       }
       recordLocalWorldVictory(characterId, useGameStore.getState().zoneId);
       unlockLocalAchievement(characterId, "first_victory");
+      recordQuestKills();
       return;
     }
     const zoneId = useGameStore.getState().zoneId;
@@ -353,6 +364,7 @@ export default function LocalCombatScreen() {
     });
     recordLocalWorldVictory(characterId, zoneId);
     unlockLocalAchievement(characterId, "first_victory");
+    recordQuestKills();
   };
 
   const endTurn = () => {

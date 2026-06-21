@@ -1,5 +1,8 @@
+import { useState } from "react";
 import { useGameStore } from "../stores/gameStore";
 import { QUESTS, getQuestById } from "../game/data";
+import { loadCharacter, saveCharacter } from "../lib/characterStorage";
+import { meetsQuestPrerequisites } from "../lib/questProgress";
 
 interface ActiveQuest {
   questId: string;
@@ -10,16 +13,17 @@ interface ActiveQuest {
 export default function QuestsScreen() {
   const characterId = useGameStore((s) => s.characterId)!;
   const setScreen = useGameStore((s) => s.setScreen);
+  const [, setRefreshKey] = useState(0);
 
-  const charData = JSON.parse(localStorage.getItem(`aetheris-char-${characterId}`) ?? "{}");
-  const activeQuests: ActiveQuest[] = charData.activeQuests ?? [];
-  const completedQuests: string[] = charData.completedQuests ?? [];
+  const charData = loadCharacter(characterId);
+  const activeQuests: ActiveQuest[] = (charData?.activeQuests as ActiveQuest[]) ?? [];
+  const completedQuests: string[] = charData?.completedQuests ?? [];
 
   const startQuest = (questId: string) => {
     const quest = getQuestById(questId);
-    if (!quest) return;
+    if (!quest || !charData) return;
 
-    const updated = {
+    saveCharacter(characterId, {
       ...charData,
       activeQuests: [
         ...activeQuests,
@@ -27,18 +31,23 @@ export default function QuestsScreen() {
           questId,
           status: "active",
           objectives: quest.objectives.map((o) => ({
-            ...o,
+            type: o.type,
+            targetId: o.targetId,
+            description: o.description,
             current: 0,
             required: o.count,
           })),
         },
       ],
-    };
-    localStorage.setItem(`aetheris-char-${characterId}`, JSON.stringify(updated));
+    });
+    setRefreshKey((k) => k + 1);
   };
 
   const availableQuests = QUESTS.filter(
-    (q) => !completedQuests.includes(q.id) && !activeQuests.some((aq) => aq.questId === q.id)
+    (q) =>
+      !completedQuests.includes(q.id) &&
+      !activeQuests.some((aq) => aq.questId === q.id) &&
+      meetsQuestPrerequisites(q, completedQuests)
   );
 
   return (
