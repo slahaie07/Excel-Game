@@ -10,6 +10,7 @@ type ButtonProps = {
   className?: string;
   onClick?: () => void;
   type?: "button" | "submit";
+  disabled?: boolean;
 };
 
 const variants = {
@@ -35,8 +36,9 @@ export function Button({
   className = "",
   onClick,
   type = "button",
+  disabled = false,
 }: ButtonProps) {
-  const classes = `inline-flex items-center justify-center font-medium transition-all duration-300 rounded-sm ${variants[variant]} ${sizes[size]} ${className}`;
+  const classes = `inline-flex items-center justify-center font-medium transition-all duration-300 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`;
 
   if (to) {
     return (
@@ -55,7 +57,7 @@ export function Button({
   }
 
   return (
-    <button type={type} className={classes} onClick={onClick}>
+    <button type={type} className={classes} onClick={onClick} disabled={disabled}>
       {children}
     </button>
   );

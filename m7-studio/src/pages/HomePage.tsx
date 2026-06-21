@@ -3,6 +3,7 @@ import { useScrollReveal } from "../hooks/useScrollReveal";
 import { Button } from "../components/ui/Button";
 import { Section, SectionHeader } from "../components/ui/Section";
 import { ServiceIcon } from "../components/ui/ServiceIcon";
+import { PortfolioCard } from "../components/ui/PortfolioCard";
 import { STATS } from "../lib/constants";
 import { SERVICES, PROCESS_STEPS } from "../data/services";
 import { PORTFOLIO } from "../data/portfolio";
@@ -119,18 +120,10 @@ export function HomePage() {
             <Link
               key={item.id}
               to="/portfolio"
-              className={`reveal group relative aspect-[4/5] rounded-sm overflow-hidden bg-gradient-to-br ${item.gradient}`}
+              className="reveal block"
               style={{ transitionDelay: `${i * 100}ms` }}
             >
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500" />
-              <div className="absolute inset-0 border border-m7-gold/0 group-hover:border-m7-gold/30 transition-colors duration-500 rounded-sm" />
-              <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                <p className="text-m7-gold text-xs tracking-widest uppercase mb-1">{item.category}</p>
-                <h3 className="font-display text-2xl text-white">{item.title}</h3>
-                <p className="text-m7-muted text-sm mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  {item.client} · {item.year}
-                </p>
-              </div>
+              <PortfolioCard item={item} />
             </Link>
           ))}
         </div>

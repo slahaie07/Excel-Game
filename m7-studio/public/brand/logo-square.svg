@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" rx="24" fill="#0A0A0A"/>
+  <rect x="24" y="24" width="464" height="464" rx="16" stroke="url(#gold)" stroke-width="2" opacity="0.4"/>
+  <text x="256" y="300" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="180" font-weight="bold" fill="url(#gold)">M7</text>
+  <text x="256" y="380" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" letter-spacing="12" fill="#F5F5F5" opacity="0.9">STUDIO</text>
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E8D5A3"/>
+      <stop offset="50%" stop-color="#C9A962"/>
+      <stop offset="100%" stop-color="#9A7B3C"/>
+    </linearGradient>
+  </defs>
+</svg>

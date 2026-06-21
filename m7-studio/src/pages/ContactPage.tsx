@@ -1,8 +1,10 @@
 import { useState, type FormEvent } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useScrollReveal } from "../hooks/useScrollReveal";
 import { Section, SectionHeader } from "../components/ui/Section";
 import { Button } from "../components/ui/Button";
 import { BRAND } from "../lib/constants";
+import { submitContactForm } from "../lib/contact";
 
 const BUDGETS = [
   "Moins de 5 000 €",
@@ -22,11 +24,36 @@ const PROJECT_TYPES = [
 
 export function ContactPage() {
   const ref = useScrollReveal<HTMLDivElement>();
-  const [sent, setSent] = useState(false);
+  const [searchParams] = useSearchParams();
+  const [sent, setSent] = useState(searchParams.get("success") === "true");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSent(true);
+    setLoading(true);
+    setError(null);
+
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+
+    try {
+      await submitContactForm({
+        firstName: String(fd.get("firstName")),
+        lastName: String(fd.get("lastName")),
+        email: String(fd.get("email")),
+        company: String(fd.get("company") || ""),
+        projectType: String(fd.get("projectType")),
+        budget: String(fd.get("budget") || ""),
+        message: String(fd.get("message")),
+      });
+      setSent(true);
+      form.reset();
+    } catch {
+      setError("L'envoi a échoué. Écrivez-nous directement à contact@m7studio.fr");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -90,7 +117,25 @@ export function ContactPage() {
                 <p className="text-m7-muted">Nous vous répondrons sous 24 heures.</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="glass-card rounded-sm p-8 md:p-10 space-y-6">
+              <form
+                name="contact"
+                method="POST"
+                data-netlify="true"
+                data-netlify-honeypot="bot-field"
+                onSubmit={handleSubmit}
+                className="glass-card rounded-sm p-8 md:p-10 space-y-6"
+              >
+                <input type="hidden" name="form-name" value="contact" />
+                <p className="hidden">
+                  <label>
+                    Ne pas remplir : <input name="bot-field" />
+                  </label>
+                </p>
+
+                {error && (
+                  <p className="text-red-400 text-sm border border-red-400/30 rounded-sm px-4 py-3">{error}</p>
+                )}
+
                 <div className="grid sm:grid-cols-2 gap-6">
                   <label className="block">
                     <span className="text-xs tracking-widest uppercase text-m7-muted">Prénom *</span>
@@ -170,8 +215,8 @@ export function ContactPage() {
                   />
                 </label>
 
-                <Button type="submit" size="lg" className="w-full sm:w-auto">
-                  Envoyer ma demande
+                <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={loading}>
+                  {loading ? "Envoi en cours..." : "Envoyer ma demande"}
                 </Button>
               </form>
             )}

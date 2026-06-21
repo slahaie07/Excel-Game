@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate:assets": "node scripts/generate-png.mjs"
   },
   "dependencies": {
     "react": "^19.1.0",
@@ -20,6 +21,7 @@
     "@vitejs/plugin-react": "^4.5.2",
     "tailwindcss": "^4.1.10",
     "typescript": "~5.8.3",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "sharp": "^0.34.2"
   }
 }
