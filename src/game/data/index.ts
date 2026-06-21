@@ -70,6 +70,7 @@ export {
   type ZoneTerritory,
   type CampaignProgressInput,
 } from "./factionTerritories";
+export { getZoneConnections, zoneToMapPosition, TERRITORY_NODE_COLORS } from "./worldMap";
 export {
   CAMPAIGN_RANK_REWARDS,
   getCampaignRankCosmeticIds,

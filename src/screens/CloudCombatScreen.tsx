@@ -8,6 +8,7 @@ import { getSpellById, getSpellsForClass } from "../game/data";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
 import { getCombatBackground } from "../game/data/assets";
+import { VictoryRewardBreakdown } from "../components/VictoryRewardBreakdown";
 import { formatBuffs } from "../game/combat/effects";
 import { getDungeonById, getRoomMonsters, getRaidById, getPhaseMonsters } from "../game/data";
 import { cacheCloudCombat, buildCloudCombatLocalId } from "../lib/cloudCombat";
@@ -41,6 +42,11 @@ export default function CloudCombatScreen() {
 
   const combatDoc = useQuery(api.combat.getCombat, { combatId: convexCombatId });
   const charDoc = useQuery(api.characters.getCharacter, { characterId });
+  const zoneId = useGameStore((s) => s.zoneId);
+  const territoryInfo = useQuery(api.factionCampaigns.getFactionTerritory, {
+    zoneId,
+    characterId,
+  });
   const moveEntityMut = useMutation(api.combat.moveEntity);
   const castSpellMut = useMutation(api.combat.castSpell);
   const endTurnMut = useMutation(api.combat.endTurn);
@@ -58,6 +64,7 @@ export default function CloudCombatScreen() {
   const gameRef = useRef<HTMLDivElement>(null);
   const phaserRef = useRef<Phaser.Game | null>(null);
   const sceneRef = useRef<IsoCombatScene | null>(null);
+  const prevEntitiesRef = useRef<CloudEntity[]>([]);
 
   const [selectedSpell, setSelectedSpell] = useState<string | null>(null);
   const [log, setLog] = useState<string[]>(["Combat cloud synchronisé !"]);
@@ -215,7 +222,33 @@ export default function CloudCombatScreen() {
       toVisual(entities, combatDoc.currentEntityId),
       combatDoc.currentEntityId
     );
-  }, [entities, combatDoc?.currentEntityId, combatDoc, toVisual]);
+
+    const prev = prevEntitiesRef.current;
+    const cur = combatDoc.entities;
+    if (prev.length > 0 && cur.length > 0) {
+      const prevPlayer = prev.find(
+        (e) => e.ownerCharacterId === characterId || (e.isPlayer && e.team === "player")
+      );
+      const curPlayer = cur.find(
+        (e) => e.ownerCharacterId === characterId || (e.isPlayer && e.team === "player")
+      );
+      if (prevPlayer && curPlayer && curPlayer.hp < prevPlayer.hp) {
+        const enemy = prev.find((e) => e.team === "enemy" && e.isAlive);
+        if (enemy) {
+          sceneRef.current?.playAttackEffect(enemy.x, enemy.y, curPlayer.x, curPlayer.y);
+        }
+      }
+      for (const ent of prev) {
+        if (ent.team === "enemy" && ent.isAlive) {
+          const now = cur.find((e) => e.entityId === ent.entityId);
+          if (now && !now.isAlive) {
+            sceneRef.current?.playDeathEffect(ent.x, ent.y);
+          }
+        }
+      }
+    }
+    prevEntitiesRef.current = cur;
+  }, [entities, combatDoc?.currentEntityId, combatDoc, toVisual, characterId]);
 
   if (!combatDoc) {
     return (
@@ -294,7 +327,20 @@ export default function CloudCombatScreen() {
             <h2 className="font-display text-2xl font-bold mb-2">
               {result === "victory" ? "Victoire !" : "Défaite"}
             </h2>
-            {result === "victory" && combatDoc.rewards && (
+            {result === "victory" && combatDoc.rewards && (combatType === "world" || combatType === "event") && (
+              <VictoryRewardBreakdown
+                xp={combatDoc.rewards.xp}
+                eclats={combatDoc.rewards.eclats}
+                territoryMultiplier={territoryInfo?.xpMultiplier ?? 1}
+                eventMultiplier={combatType === "event" ? (combatData.xpMultiplier ?? 1) : 1}
+                baseXp={
+                  territoryInfo && territoryInfo.xpMultiplier > 1
+                    ? Math.round(combatDoc.rewards.xp / territoryInfo.xpMultiplier)
+                    : combatDoc.rewards.xp
+                }
+              />
+            )}
+            {result === "victory" && combatDoc.rewards && combatType !== "world" && combatType !== "event" && (
               <p className="text-aether-300 text-sm mb-4">
                 +{combatDoc.rewards.xp} XP • +{combatDoc.rewards.eclats} ✦
               </p>

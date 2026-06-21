@@ -148,6 +148,21 @@ export class IsoCombatScene extends Phaser.Scene {
     });
   }
 
+  playDeathEffect(gridX: number, gridY: number) {
+    const pos = gridToIso(gridX, gridY, this.tileW, this.tileH, this.offsetX, this.offsetY);
+    const puff = this.add.circle(pos.x, pos.y - 12, 14, 0x888888, 0.6);
+    puff.setDepth(902);
+    this.tweens.add({
+      targets: puff,
+      scale: 2.5,
+      alpha: 0,
+      y: pos.y - 28,
+      duration: 450,
+      ease: "Power2",
+      onComplete: () => puff.destroy(),
+    });
+  }
+
   private renderEntities() {
     this.entitySprites.forEach((s) => s.destroy());
     this.entitySprites = [];

@@ -226,6 +226,20 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Contenu | `lib/factionContent.ts`, `lib/factionQuests.ts` | Quêtes, articles, progression |
 | Combat/PvP | `combat.ts`, `pvp.ts` | Progression quêtes cloud |
 
+## v1.30 — Carte monde & polish territorial (v1.22→v1.30)
+
+| Version | Module | Rôle |
+|---------|--------|------|
+| v1.22 | `WorldMapPanel`, `VictoryRewardBreakdown` | Carte visuelle + détail XP victoire |
+| v1.23 | `IsoCombatScene.playDeathEffect`, cloud sync | Animations mort + attaque ennemie |
+| v1.24 | `TerritoryOverviewScreen` | Écran contrôle territorial |
+| v1.25 | `WorldMinimap` | Mini-carte dans le monde |
+| v1.26 | `IsoWorldScene` particules | Ambiance par biome |
+| v1.27 | `getTerritoryHistory` | Historique campagnes hebdo |
+| v1.28 | `WorldMapPanel` + événements | Marqueurs ★ sur zones actives |
+| v1.29 | `VictoryRewardBreakdown` | Décomposition récompenses |
+| v1.30 | Intégration | Navigation monde/factions/carte |
+
 ## v1.21 — Animations combat & carte territoriale
 
 | Module | Fichier | Rôle |

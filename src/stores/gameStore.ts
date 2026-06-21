@@ -29,7 +29,8 @@ export type GameScreen =
   | "settings"
   | "hall-of-fame"
   | "class"
-  | "factions";
+  | "factions"
+  | "territory-overview";
 
 interface GameState {
   screen: GameScreen;

@@ -165,6 +165,12 @@ export class IsoWorldScene extends Phaser.Scene {
 
   private createAmbientParticles() {
     const accent = this.theme.accent;
+    const zoneId = this.config.zoneId;
+    const isPvPZone = zoneId === "arene_pvp";
+    const isLumina = zoneId === "foret_lumina" || zoneId === "vallee_eveils" || zoneId === "citadelle_stellaire";
+    const isUmbra = zoneId === "desert_umbra";
+    const frequency = isPvPZone ? 250 : isLumina ? 350 : isUmbra ? 500 : 400;
+    const particleCount = isPvPZone ? 3 : isUmbra ? 1 : 2;
 
     const gfx = this.add.graphics();
     gfx.fillStyle(accent, 1);
@@ -174,12 +180,12 @@ export class IsoWorldScene extends Phaser.Scene {
     this.add.particles(0, 0, "particle", {
       x: { min: 0, max: this.scale.width },
       y: { min: 0, max: this.scale.height * 0.6 },
-      speed: { min: 5, max: 20 },
-      angle: { min: 200, max: 340 },
-      scale: { start: 0.4, end: 0 },
-      alpha: { start: 0.6, end: 0 },
-      lifespan: 3000,
-      frequency: 400,
+      speed: { min: isUmbra ? 8 : 5, max: isLumina ? 25 : 20 },
+      angle: { min: isUmbra ? 180 : 200, max: isUmbra ? 220 : 340 },
+      scale: { start: particleCount * 0.2, end: 0 },
+      alpha: { start: isPvPZone ? 0.8 : 0.6, end: 0 },
+      lifespan: isLumina ? 4000 : 3000,
+      frequency,
       tint: accent,
       blendMode: "ADD",
     });

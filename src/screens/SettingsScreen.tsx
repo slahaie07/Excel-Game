@@ -116,7 +116,7 @@ export default function SettingsScreen() {
           Déconnexion
         </button>
 
-        <p className="text-aether-600 text-xs text-center">Aetheris v1.21 — Animations & Carte Territoriale</p>
+        <p className="text-aether-600 text-xs text-center">Aetheris v1.30 — Carte monde & polish territorial</p>
       </div>
     </div>
   );

@@ -223,6 +223,48 @@ export const getCampaignLeaderboard = query({
   },
 });
 
+const historyEntryValidator = v.object({
+  weekKey: v.string(),
+  lumina: v.number(),
+  umbra: v.number(),
+  neutre: v.number(),
+  dominantFaction: factionIdValidator,
+});
+
+export const getTerritoryHistory = query({
+  args: { limit: v.optional(v.number()) },
+  returns: v.array(historyEntryValidator),
+  handler: async (ctx, args) => {
+    const limit = args.limit ?? 4;
+    const all = await ctx.db.query("factionCampaigns").collect();
+    const byWeek = new Map<string, typeof all>();
+    for (const row of all) {
+      const list = byWeek.get(row.weekKey) ?? [];
+      list.push(row);
+      byWeek.set(row.weekKey, list);
+    }
+    const weeks = [...byWeek.keys()].sort().reverse().slice(0, limit);
+    return weeks.map((weekKey) => {
+      const rows = byWeek.get(weekKey)!;
+      const pct = (factionId: import("./lib/factions").FactionId) => {
+        const row = rows.find((r) => r.factionId === factionId);
+        if (!row || row.target <= 0) return 0;
+        return Math.min(100, Math.round((row.progress / row.target) * 100));
+      };
+      const lumina = pct("lumina");
+      const umbra = pct("umbra");
+      const neutre = pct("neutre");
+      const dominantFaction =
+        lumina >= umbra && lumina >= neutre
+          ? ("lumina" as const)
+          : umbra >= neutre
+            ? ("umbra" as const)
+            : ("neutre" as const);
+      return { weekKey, lumina, umbra, neutre, dominantFaction };
+    });
+  },
+});
+
 const territoryStatusValidator = v.union(
   v.literal("fortified"),
   v.literal("stable"),

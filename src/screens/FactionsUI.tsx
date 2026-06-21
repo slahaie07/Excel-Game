@@ -152,6 +152,13 @@ export function FactionsUI({
           <h1 className="font-display text-lg font-bold text-white">Factions</h1>
           <p className="text-aether-500 text-xs">Semaine {weekKey} • ✦ {eclats}</p>
         </div>
+        <button
+          type="button"
+          onClick={() => setScreen("territory-overview")}
+          className="text-aether-400 text-xs px-2 py-1 rounded-lg border border-aether-700 hover:border-aether-500"
+        >
+          🗺️ Carte
+        </button>
       </div>
 
       <div className="flex gap-1 p-2 border-b border-aether-800">

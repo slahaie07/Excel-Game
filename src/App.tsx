@@ -27,6 +27,7 @@ import SettingsScreen from "./screens/SettingsScreen";
 import HallOfFameScreen from "./screens/HallOfFameScreen";
 import ClassScreen from "./screens/ClassScreen";
 import FactionsScreen from "./screens/FactionsScreen";
+import TerritoryOverviewRouter from "./screens/TerritoryOverviewRouter";
 import ChatOverlay from "./components/ChatOverlay";
 
 const SCREENS = {
@@ -58,12 +59,14 @@ const SCREENS = {
   "hall-of-fame": HallOfFameScreen,
   class: ClassScreen,
   factions: FactionsScreen,
+  "territory-overview": TerritoryOverviewRouter,
 } as const;
 
 const IN_GAME_SCREENS = new Set([
   "world", "combat", "inventory", "quests", "guild", "guild-hall", "marketplace",
   "professions", "pvp", "dungeons", "raids", "pets", "haven", "events", "live-events",
   "daily", "achievements", "friends", "trade", "settings", "hall-of-fame", "class", "factions",
+  "territory-overview",
 ]);
 
 export default function App() {

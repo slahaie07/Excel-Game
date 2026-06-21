@@ -23,6 +23,17 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Cadres de profil visibles en chat et présence
 - Classement contributeurs campagne + bannière campagne dans le monde
 
+### v1.30 — Release carte monde & polish (v1.22→v1.30)
+- **v1.22** : Carte visuelle Terreval + détail bonus XP victoire
+- **v1.23** : Animations mort + attaque ennemie cloud
+- **v1.24** : Écran contrôle territorial complet
+- **v1.25** : Mini-carte persistante dans le monde
+- **v1.26** : Particules ambiantes par biome (Lumina/Umbra/PvP)
+- **v1.27** : Historique hebdo des campagnes (cloud)
+- **v1.28** : Marqueurs événements saisonniers sur la carte
+- **v1.29** : Décomposition des récompenses (base, territoire, événement)
+- **v1.30** : Intégration complète + navigation factions/monde
+
 ### Animations combat & carte territoriale (v1.21)
 - 9 sprites monstres additionnels (boss, événements, zone)
 - Animations d'attaque Phaser (frappe + effets sorts)
@@ -236,6 +247,7 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Récompenses de rang faction + progression locale (v1.16)
 - [x] Campagnes faction hebdo + titres visibles en social (v1.17)
 - [x] Visuels zones/combat/personnages + cadres sociaux + classement campagne (v1.18)
+- [x] Carte monde, minimap, territoires, animations mort, historique (v1.22–v1.30)
 - [x] Animations attaque, carte territoires, sprites monstres complets, XP cloud (v1.21)
 - [x] Sprites monstres, territoires faction, portraits roster (v1.20)
 - [x] Sprites portrait 10 classes, 6 fonds zones, récompenses top 3 campagne (v1.19)

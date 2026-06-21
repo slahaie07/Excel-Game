@@ -11,6 +11,7 @@ import { applySpellEffects, tickBuffs, formatBuffs, applyCombatStartTalents, get
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
 import { getCombatBackground } from "../game/data/assets";
+import { VictoryRewardBreakdown } from "../components/VictoryRewardBreakdown";
 
 interface CombatEntity {
   entityId: string;
@@ -166,6 +167,13 @@ export default function LocalCombatScreen() {
     "Le combat commence !",
   ]);
   const [result, setResult] = useState<"victory" | "defeat" | null>(null);
+  const [victoryRewards, setVictoryRewards] = useState<{
+    xp: number;
+    eclats: number;
+    territoryMultiplier: number;
+    eventMultiplier: number;
+    baseXp: number;
+  } | null>(null);
   const [dungeonComplete, setDungeonComplete] = useState(false);
   const [dungeonRewards, setDungeonRewards] = useState<{ xp: number; eclats: number } | null>(null);
 
@@ -306,6 +314,13 @@ export default function LocalCombatScreen() {
       const data = JSON.parse(localStorage.getItem(charKey) ?? "{}");
       data.eclats = (data.eclats ?? 0) + eclatsGain;
       localStorage.setItem(charKey, JSON.stringify(data));
+      setVictoryRewards({
+        xp: xpGain,
+        eclats: eclatsGain,
+        territoryMultiplier: territoryMult,
+        eventMultiplier: xpMult,
+        baseXp,
+      });
       if (monsterId && combatData.eventId) {
         recordEventKill(characterId, monsterId, combatData.eventId);
       }
@@ -314,11 +329,19 @@ export default function LocalCombatScreen() {
     }
     const zoneId = useGameStore.getState().zoneId;
     const territoryMult = getLocalTerritoryXpMultiplier(zoneId, characterId);
-    addXp(characterId, Math.floor(50 * territoryMult));
+    const xpGain = Math.floor(50 * territoryMult);
+    addXp(characterId, xpGain);
     const charKey = `aetheris-char-${characterId}`;
     const data = JSON.parse(localStorage.getItem(charKey) ?? "{}");
     data.eclats = (data.eclats ?? 0) + 25;
     localStorage.setItem(charKey, JSON.stringify(data));
+    setVictoryRewards({
+      xp: xpGain,
+      eclats: 25,
+      territoryMultiplier: territoryMult,
+      eventMultiplier: 1,
+      baseXp: 50,
+    });
     recordLocalWorldVictory(characterId, zoneId);
   };
 
@@ -468,10 +491,19 @@ export default function LocalCombatScreen() {
             {result === "victory" && combatType === "pvp" && (
               <p className="text-aether-300 text-sm mb-4">Victoire PvP ! Rating augmenté</p>
             )}
-            {result === "victory" && combatType === "world" && (
+            {result === "victory" && victoryRewards && (combatType === "world" || combatType === "event") && (
+              <VictoryRewardBreakdown
+                xp={victoryRewards.xp}
+                eclats={victoryRewards.eclats}
+                territoryMultiplier={victoryRewards.territoryMultiplier}
+                eventMultiplier={victoryRewards.eventMultiplier}
+                baseXp={victoryRewards.baseXp}
+              />
+            )}
+            {result === "victory" && !victoryRewards && combatType === "world" && (
               <p className="text-aether-300 text-sm mb-4">+50 XP • +25 ✦ Éclats</p>
             )}
-            {result === "victory" && combatType === "event" && (
+            {result === "victory" && !victoryRewards && combatType === "event" && (
               <p className="text-aether-300 text-sm mb-4">
                 Récompenses d'événement ! Bonus XP et Éclats appliqués
               </p>

@@ -24,6 +24,8 @@ import { getZoneBackground, getClassPortrait } from "../game/data/assets";
 import { WorldCampaignBanner } from "../components/WorldCampaignBanner";
 import { WorldTerritoryBanner } from "../components/WorldTerritoryBanner";
 import { ZoneTerritoryBadge } from "../components/ZoneTerritoryBadge";
+import { WorldMapPanel } from "../components/WorldMapPanel";
+import { WorldMinimap } from "../components/WorldMinimap";
 import { PlayerNameLine } from "../components/PlayerNameLine";
 
 export default function WorldScreen() {
@@ -298,6 +300,12 @@ export default function WorldScreen() {
           />
         )}
         <div ref={gameRef} className="relative z-10 w-full h-full" />
+        <WorldMinimap
+          zoneId={zoneId}
+          campaigns={campaigns}
+          onOpenMap={() => setScreen("territory-overview")}
+          onSelectZone={(id) => useGameStore.getState().setZone(id)}
+        />
       </div>
 
       <div className="px-4 py-1 text-center">
@@ -346,8 +354,22 @@ export default function WorldScreen() {
         <div className="absolute inset-0 bg-black/60 z-50 flex items-end" onClick={() => setShowMenu(false)}>
           <div className="w-full game-panel p-4 rounded-t-3xl max-h-[60vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <h3 className="font-display font-bold text-lg mb-2">Voyager</h3>
-            <p className="text-aether-500 text-xs mb-3">Contrôle territorial selon les campagnes hebdo</p>
-            <div className="space-y-2">
+            <WorldMapPanel
+              currentZoneId={zoneId}
+              campaigns={campaigns}
+              onSelectZone={(id) => {
+                useGameStore.getState().setZone(id);
+                setShowMenu(false);
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => { setShowMenu(false); setScreen("territory-overview"); }}
+              className="w-full text-center text-aether-400 text-xs py-2 mb-2 hover:text-aether-200"
+            >
+              Vue détaillée des territoires →
+            </button>
+            <div className="space-y-2 mt-3">
               {ZONES.map((z) => (
                 <button
                   key={z.id}
