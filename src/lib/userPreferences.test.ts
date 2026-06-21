@@ -25,14 +25,23 @@ describe("userPreferences", () => {
     expect(prefs.reducedMotion).toBe(false);
     expect(prefs.guideCompleted).toBe(false);
     expect(prefs.lastSeenVersion).toBe("0");
+    expect(prefs.playMode).toBe("cloud");
+    expect(prefs.lastUsername).toBe("");
   });
 
   it("persists partial updates", () => {
-    saveUserPreferences({ reducedMotion: true, guideCompleted: true });
+    saveUserPreferences({
+      reducedMotion: true,
+      guideCompleted: true,
+      playMode: "sanctuary",
+      lastUsername: "Vorren",
+    });
     const prefs = loadUserPreferences();
     expect(prefs.reducedMotion).toBe(true);
     expect(prefs.guideCompleted).toBe(true);
     expect(prefs.lastSeenVersion).toBe("0");
+    expect(prefs.playMode).toBe("sanctuary");
+    expect(prefs.lastUsername).toBe("Vorren");
   });
 
   it("exposes version constants", () => {

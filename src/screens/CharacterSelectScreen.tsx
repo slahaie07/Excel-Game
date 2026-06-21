@@ -47,7 +47,9 @@ function CharacterList({ characters, loading }: { characters: SavedCharacter[]; 
         />
         <h1 className="font-display text-2xl font-bold text-aether-200">Choisissez votre Éveilleur</h1>
         <p className="text-aether-400 text-sm mt-1">Bienvenue, {username}</p>
-        {isCloudAccount(accountId) && <p className="text-green-400/70 text-xs mt-1">☁️ Cloud</p>}
+        <p className="text-aether-500 text-xs mt-1">
+          {isCloudAccount(accountId) ? "☁️ Terreval en ligne" : "🏠 Mode sanctuaire"}
+        </p>
       </div>
       <div className="flex-1 space-y-3 max-w-md mx-auto w-full overflow-y-auto">
         {loading && <p className="text-aether-400 text-center text-sm">Chargement...</p>}

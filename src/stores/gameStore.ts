@@ -94,7 +94,12 @@ export const useGameStore = create<GameState>()(
       isOnline: !!import.meta.env.VITE_CONVEX_URL,
 
       setScreen: (screen) => set({ screen }),
-      setAccount: (accountId, username) => set({ accountId, username }),
+      setAccount: (accountId, username) =>
+        set({
+          accountId,
+          username,
+          isOnline: !accountId.startsWith("local_"),
+        }),
       setCharacter: (characterId, name, classId, options) =>
         set({
           characterId,

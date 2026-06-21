@@ -59,7 +59,7 @@ export default function SettingsScreen() {
           <h2 className="text-aether-400 text-sm font-semibold">Compte</h2>
           <p className="text-white text-sm">{username}</p>
           <p className="text-aether-500 text-xs">
-            Mode : {isConvexEnabled() && isCloudAccount(accountId) ? "☁️ Cloud Convex" : "📱 Local"}
+            Mode : {isCloudAccount(accountId) ? "☁️ Terreval en ligne" : "🏠 Mode sanctuaire"}
           </p>
         </section>
 
@@ -74,9 +74,9 @@ export default function SettingsScreen() {
         <section className="card space-y-2">
           <h2 className="text-aether-400 text-sm font-semibold">Multijoueur</h2>
           <p className="text-aether-300 text-sm">
-            {isOnline && isConvexEnabled()
-              ? "Convex connecté — chat, présence, PvP et guildes synchronisés"
-              : "Hors-ligne — configurez VITE_CONVEX_URL pour le multijoueur"}
+            {isOnline
+              ? "Terreval en ligne — chat, présence, PvP et guildes synchronisés"
+              : "Mode sanctuaire — progression locale sur cet appareil"}
           </p>
         </section>
 
