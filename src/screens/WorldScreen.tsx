@@ -27,6 +27,8 @@ import { ZoneTerritoryBadge } from "../components/ZoneTerritoryBadge";
 import { WorldMapPanel } from "../components/WorldMapPanel";
 import { WorldMinimap } from "../components/WorldMinimap";
 import { PlayerNameLine } from "../components/PlayerNameLine";
+import { WhatsNewModal } from "../components/WhatsNewModal";
+import { APP_VERSION, loadUserPreferences } from "../lib/userPreferences";
 
 export default function WorldScreen() {
   const characterId = useGameStore((s) => s.characterId)!;
@@ -56,6 +58,11 @@ export default function WorldScreen() {
     : null;
   const [showMenu, setShowMenu] = useState(false);
   const [showPlayers, setShowPlayers] = useState(false);
+  const [showWhatsNew, setShowWhatsNew] = useState(() => {
+    const prefs = loadUserPreferences();
+    return prefs.lastSeenVersion !== APP_VERSION;
+  });
+  const reducedMotion = loadUserPreferences().reducedMotion;
   const [onlinePlayers, setOnlinePlayers] = useState(() =>
     getOnlinePlayersInZone(zoneId).filter((p) => p.name !== characterName)
   );
@@ -138,13 +145,14 @@ export default function WorldScreen() {
       entities: worldEntities,
       onMove: () => {},
       onEncounter: handleEncounter,
+      reducedMotion,
     });
 
     return () => {
       phaserRef.current?.destroy(true);
       phaserRef.current = null;
     };
-  }, [zoneId, classId, allMonsterIds.join(","), onlinePlayers.length, handleEncounter]);
+  }, [zoneId, classId, allMonsterIds.join(","), onlinePlayers.length, handleEncounter, reducedMotion]);
 
   const localCampaigns = !isCloudCharacter(characterId)
     ? getLocalFactionCampaigns(characterId)
@@ -388,6 +396,8 @@ export default function WorldScreen() {
           </div>
         </div>
       )}
+
+      {showWhatsNew && <WhatsNewModal onClose={() => setShowWhatsNew(false)} />}
     </div>
   );
 }

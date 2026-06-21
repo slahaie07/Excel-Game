@@ -313,4 +313,16 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Fiche classe | `ClassScreen.tsx` | Grimoire, stats, sélection talents |
 | Migration | `syncCharacterProgression` | Chronomancien → Cryomancien |
 
-Voir `docs/DEPLOYMENT.md`.
+## v2.0 — Version Finale
+
+| Système | Statut | Description |
+|---------|--------|-------------|
+| Progression endgame | ✅ | 7 objectifs trackés (`endgameGoals.ts`, `ProgressScreen`) |
+| Guide joueur | ✅ | Tutoriel intégré (`GuideScreen`) |
+| Crédits | ✅ | Écran de clôture (`CreditsScreen`) |
+| Toasts UX | ✅ | Level-up + succès (`toastStore`, `App.tsx`) |
+| Nouveautés v2 | ✅ | Modal premier lancement (`WhatsNewModal`) |
+| Accessibilité | ✅ | Préférence `reducedMotion` (particules monde) |
+| Polish carte | ✅ | Marqueurs boss sur `WorldMapPanel` |
+
+Voir `CHANGELOG.md` et `docs/DEPLOYMENT.md`.

@@ -23,6 +23,15 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Cadres de profil visibles en chat et présence
 - Classement contributeurs campagne + bannière campagne dans le monde
 
+### v2.0.0 — Version Finale (vfinal)
+- **Progression endgame** : 7 objectifs (niveau 30/60, citadelle, PvP, guilde, faction, succès)
+- **Guide du joueur** + écran crédits
+- **Toasts** montée de niveau et succès débloqués
+- **Modal nouveautés** au premier lancement v2.0
+- **Accessibilité** : réduire les animations
+- **Splash** art roster + badge version finale
+- **Carte** : marqueurs boss (👹)
+
 ### v1.30 — Release carte monde & polish (v1.22→v1.30)
 - **v1.22** : Carte visuelle Terreval + détail bonus XP victoire
 - **v1.23** : Animations mort + attaque ennemie cloud

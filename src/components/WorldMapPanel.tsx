@@ -1,4 +1,4 @@
-import { ZONES } from "../game/data";
+import { ZONES, getMonstersByZone } from "../game/data";
 import { getActiveEvent } from "../game/data/events";
 import {
   getZoneTerritory,
@@ -69,6 +69,7 @@ export function WorldMapPanel({
           activeEvent &&
           (activeEvent.exclusiveMonsters.some((m) => zone.monsters.includes(m)) ||
             zone.monsters.some((m) => activeEvent.exclusiveMonsters.includes(m)));
+        const hasBoss = getMonstersByZone(zone.id).some((m) => m.isBoss);
 
         return (
           <button
@@ -104,6 +105,11 @@ export function WorldMapPanel({
                 title={activeEvent?.name}
               >
                 ★
+              </span>
+            )}
+            {hasBoss && !hasEvent && (
+              <span className="absolute -top-1 -right-1 text-xs" title="Zone avec boss">
+                👹
               </span>
             )}
           </button>

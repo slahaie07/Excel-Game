@@ -30,7 +30,10 @@ export type GameScreen =
   | "hall-of-fame"
   | "class"
   | "factions"
-  | "territory-overview";
+  | "territory-overview"
+  | "guide"
+  | "credits"
+  | "progress";
 
 interface GameState {
   screen: GameScreen;

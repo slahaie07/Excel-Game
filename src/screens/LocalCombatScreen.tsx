@@ -7,6 +7,8 @@ import { advanceDungeonRoom, createNextRoomCombat } from "./DungeonsScreen";
 import { recordEventKill } from "./EventsScreen";
 import { addXp, loadCharacter } from "../lib/characterStorage";
 import { recordLocalWorldVictory, recordLocalPvpVictory, getLocalTerritoryXpMultiplier } from "../lib/factionProgress";
+import { useToastStore } from "../stores/toastStore";
+import { unlockLocalAchievement } from "./AchievementsScreen";
 import { applySpellEffects, tickBuffs, formatBuffs, applyCombatStartTalents, getEffectiveMaxRange, computeTalentModifiers } from "../game/combat/effects";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
@@ -176,6 +178,12 @@ export default function LocalCombatScreen() {
   } | null>(null);
   const [dungeonComplete, setDungeonComplete] = useState(false);
   const [dungeonRewards, setDungeonRewards] = useState<{ xp: number; eclats: number } | null>(null);
+  const showLevelUp = useToastStore((s) => s.showLevelUp);
+
+  const applyXpWithToast = (amount: number) => {
+    const { leveledUp, level } = addXp(characterId, amount);
+    if (leveledUp) showLevelUp(level);
+  };
 
   const player = combat.entities.find((e) => e.isPlayer)!;
   const charData = loadCharacter(characterId);
@@ -293,7 +301,7 @@ export default function LocalCombatScreen() {
         setDungeonComplete(true);
         setDungeonRewards(rewards ?? null);
       }
-      addXp(characterId, 30);
+      applyXpWithToast(30);
       return;
     }
     if (combatType === "event") {
@@ -309,7 +317,7 @@ export default function LocalCombatScreen() {
         : 40;
       const xpGain = Math.floor(baseXp * xpMult * territoryMult);
       const eclatsGain = Math.floor(baseEclats * eclatsMult);
-      addXp(characterId, xpGain);
+      applyXpWithToast(xpGain);
       const charKey = `aetheris-char-${characterId}`;
       const data = JSON.parse(localStorage.getItem(charKey) ?? "{}");
       data.eclats = (data.eclats ?? 0) + eclatsGain;
@@ -325,12 +333,13 @@ export default function LocalCombatScreen() {
         recordEventKill(characterId, monsterId, combatData.eventId);
       }
       recordLocalWorldVictory(characterId, useGameStore.getState().zoneId);
+      unlockLocalAchievement(characterId, "first_victory");
       return;
     }
     const zoneId = useGameStore.getState().zoneId;
     const territoryMult = getLocalTerritoryXpMultiplier(zoneId, characterId);
     const xpGain = Math.floor(50 * territoryMult);
-    addXp(characterId, xpGain);
+    applyXpWithToast(xpGain);
     const charKey = `aetheris-char-${characterId}`;
     const data = JSON.parse(localStorage.getItem(charKey) ?? "{}");
     data.eclats = (data.eclats ?? 0) + 25;
@@ -343,6 +352,7 @@ export default function LocalCombatScreen() {
       baseXp: 50,
     });
     recordLocalWorldVictory(characterId, zoneId);
+    unlockLocalAchievement(characterId, "first_victory");
   };
 
   const endTurn = () => {

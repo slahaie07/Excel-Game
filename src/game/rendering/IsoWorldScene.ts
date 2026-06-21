@@ -27,6 +27,7 @@ export interface IsoWorldConfig {
   obstacles?: { x: number; y: number }[];
   onMove: (x: number, y: number) => void;
   onEncounter?: (entityId: string) => void;
+  reducedMotion?: boolean;
 }
 
 export class IsoWorldScene extends Phaser.Scene {
@@ -67,7 +68,9 @@ export class IsoWorldScene extends Phaser.Scene {
 
     this.drawGrid();
     this.renderEntities();
-    this.createAmbientParticles();
+    if (!this.config.reducedMotion) {
+      this.createAmbientParticles();
+    }
   }
 
   private drawGrid() {
