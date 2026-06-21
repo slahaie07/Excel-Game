@@ -1,0 +1,2161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>M7 Studio — Excellence & Prestige</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold:        #C8A84B;
+      --gold-light:  #E8C96C;
+      --gold-dark:   #9A7A2A;
+      --gold-pale:   #F5E6B2;
+      --black:       #000000;
+      --black-soft:  #0A0A0A;
+      --black-card:  #111111;
+      --black-border:#1A1A1A;
+      --gray:        #888888;
+      --white:       #FFFFFF;
+      --gradient-gold: linear-gradient(135deg, #9A7A2A 0%, #C8A84B 40%, #E8C96C 60%, #C8A84B 80%, #9A7A2A 100%);
+      --gradient-bg:   linear-gradient(180deg, #000000 0%, #0D0D0D 100%);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--black);
+      color: var(--white);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--black); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 3px; }
+
+    /* ── SELECTION ── */
+    ::selection { background: var(--gold); color: var(--black); }
+
+    /* ══════════════════════════════════════════
+       NAVIGATION
+    ══════════════════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      height: 80px;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(200,168,75,0.15);
+      transition: all .4s ease;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 44px; height: 44px;
+      background: var(--gradient-gold);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--black);
+      letter-spacing: -.5px;
+      box-shadow: 0 0 20px rgba(200,168,75,0.4);
+    }
+
+    .nav-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--gray);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: color .3s ease;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+
+    .nav-cta {
+      padding: 11px 28px;
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: all .3s ease;
+    }
+
+    .nav-cta:hover {
+      background: var(--gold);
+      color: var(--black);
+      box-shadow: 0 0 30px rgba(200,168,75,0.35);
+    }
+
+    /* ══════════════════════════════════════════
+       HERO
+    ══════════════════════════════════════════ */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 0 5%;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 50%, rgba(200,168,75,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 80% 20%, rgba(200,168,75,0.04) 0%, transparent 60%),
+        linear-gradient(180deg, #000 0%, #050503 100%);
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(200,168,75,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,168,75,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 900px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 8px 20px;
+      background: rgba(200,168,75,0.1);
+      border: 1px solid rgba(200,168,75,0.3);
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 32px;
+      animation: fadeInDown .8s ease both;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(52px, 9vw, 110px);
+      font-weight: 900;
+      line-height: 1.0;
+      letter-spacing: -2px;
+      margin-bottom: 12px;
+      animation: fadeInUp .8s ease .2s both;
+    }
+
+    .hero-title .line-gold {
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: block;
+    }
+
+    .hero-title .line-white {
+      color: var(--white);
+      display: block;
+    }
+
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(18px, 2.5vw, 26px);
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 48px;
+      letter-spacing: 1px;
+      animation: fadeInUp .8s ease .35s both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp .8s ease .5s both;
+    }
+
+    .btn-primary {
+      padding: 16px 44px;
+      background: var(--gradient-gold);
+      color: var(--black);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all .3s ease;
+      box-shadow: 0 8px 32px rgba(200,168,75,0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 48px rgba(200,168,75,0.5);
+    }
+
+    .btn-secondary {
+      padding: 16px 44px;
+      background: transparent;
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all .3s ease;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      gap: 0;
+      justify-content: center;
+      margin-top: 80px;
+      border-top: 1px solid rgba(200,168,75,0.15);
+      padding-top: 40px;
+      animation: fadeInUp .8s ease .65s both;
+    }
+
+    .hero-stat {
+      flex: 1;
+      max-width: 200px;
+      text-align: center;
+      padding: 0 24px;
+      border-right: 1px solid rgba(200,168,75,0.1);
+    }
+
+    .hero-stat:last-child { border-right: none; }
+
+    .hero-stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 38px;
+      font-weight: 700;
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .hero-stat-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    /* ══════════════════════════════════════════
+       DIVIDER
+    ══════════════════════════════════════════ */
+    .gold-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: .3;
+    }
+
+    /* ══════════════════════════════════════════
+       SECTION COMMONS
+    ══════════════════════════════════════════ */
+    section {
+      padding: 120px 5%;
+    }
+
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-eyebrow::before, .section-eyebrow::after {
+      content: '';
+      display: block;
+      width: 30px;
+      height: 1px;
+      background: var(--gold);
+      opacity: .6;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+
+    .section-title .gold { color: var(--gold); }
+
+    .section-desc {
+      font-size: 16px;
+      color: rgba(255,255,255,0.5);
+      max-width: 560px;
+      line-height: 1.8;
+    }
+
+    /* ══════════════════════════════════════════
+       ABOUT — TWO COLUMNS
+    ══════════════════════════════════════════ */
+    #about {
+      background: var(--black-soft);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-visual {
+      position: relative;
+    }
+
+    .about-image-frame {
+      position: relative;
+      background: var(--black-card);
+      border: 1px solid var(--black-border);
+      border-radius: 4px;
+      overflow: hidden;
+      aspect-ratio: 4/5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .about-image-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gradient-gold);
+      opacity: .04;
+    }
+
+    .studio-icon-large {
+      font-size: 120px;
+      opacity: .6;
+      filter: drop-shadow(0 0 40px rgba(200,168,75,0.5));
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .about-corner {
+      position: absolute;
+      width: 40px; height: 40px;
+      border-color: var(--gold);
+      border-style: solid;
+      opacity: .6;
+    }
+
+    .about-corner.tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+    .about-corner.tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+    .about-corner.bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+    .about-corner.br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+    .about-badge-float {
+      position: absolute;
+      bottom: 32px;
+      right: -20px;
+      background: var(--black);
+      border: 1px solid rgba(200,168,75,0.3);
+      border-radius: 8px;
+      padding: 16px 24px;
+      backdrop-filter: blur(20px);
+      text-align: center;
+    }
+
+    .about-badge-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: block;
+    }
+
+    .about-badge-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+
+    .about-features {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .about-feature {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: rgba(200,168,75,0.04);
+      border: 1px solid rgba(200,168,75,0.1);
+      border-radius: 4px;
+      transition: all .3s ease;
+    }
+
+    .about-feature:hover {
+      background: rgba(200,168,75,0.08);
+      border-color: rgba(200,168,75,0.25);
+      transform: translateX(4px);
+    }
+
+    .about-feature-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .about-feature-text {
+      font-size: 14px;
+      color: rgba(255,255,255,0.75);
+    }
+
+    .about-feature-text strong {
+      display: block;
+      color: var(--white);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    /* ══════════════════════════════════════════
+       SERVICES
+    ══════════════════════════════════════════ */
+    #services {
+      background: var(--black);
+      text-align: center;
+    }
+
+    #services .section-header {
+      margin-bottom: 70px;
+    }
+
+    #services .section-eyebrow {
+      justify-content: center;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 60px;
+    }
+
+    .service-card {
+      position: relative;
+      background: var(--black-card);
+      padding: 52px 40px;
+      border: 1px solid var(--black-border);
+      overflow: hidden;
+      transition: all .4s ease;
+      cursor: default;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gradient-gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .4s ease;
+    }
+
+    .service-card:hover::before { transform: scaleX(1); }
+
+    .service-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,168,75,0.06) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity .4s ease;
+    }
+
+    .service-card:hover::after { opacity: 1; }
+
+    .service-card:hover {
+      border-color: rgba(200,168,75,0.2);
+      transform: translateY(-4px);
+    }
+
+    .service-number {
+      position: absolute;
+      top: 24px; right: 28px;
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 700;
+      color: rgba(200,168,75,0.06);
+      line-height: 1;
+    }
+
+    .service-icon {
+      font-size: 44px;
+      margin-bottom: 24px;
+      display: block;
+      filter: drop-shadow(0 0 20px rgba(200,168,75,0.3));
+    }
+
+    .service-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 14px;
+    }
+
+    .service-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.8;
+      margin-bottom: 28px;
+    }
+
+    .service-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .service-tag {
+      padding: 5px 14px;
+      background: rgba(200,168,75,0.07);
+      border: 1px solid rgba(200,168,75,0.15);
+      border-radius: 100px;
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: .5px;
+    }
+
+    /* ══════════════════════════════════════════
+       EQUIPMENT — MARQUEE
+    ══════════════════════════════════════════ */
+    #equipment {
+      background: var(--black-soft);
+      padding: 80px 0;
+      overflow: hidden;
+    }
+
+    #equipment .inner {
+      padding: 0 5%;
+      margin-bottom: 48px;
+      text-align: center;
+    }
+
+    .marquee-wrap {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .marquee-wrap::before, .marquee-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 120px;
+      z-index: 2;
+    }
+
+    .marquee-wrap::before {
+      left: 0;
+      background: linear-gradient(90deg, var(--black-soft), transparent);
+    }
+
+    .marquee-wrap::after {
+      right: 0;
+      background: linear-gradient(-90deg, var(--black-soft), transparent);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 40px;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 28px;
+      background: var(--black-card);
+      border: 1px solid var(--black-border);
+      border-radius: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .marquee-item-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .marquee-item span {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* ══════════════════════════════════════════
+       STUDIO ROOMS
+    ══════════════════════════════════════════ */
+    #rooms {
+      background: var(--black);
+    }
+
+    .rooms-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-top: 60px;
+    }
+
+    .room-card {
+      position: relative;
+      background: var(--black-card);
+      border: 1px solid var(--black-border);
+      border-radius: 4px;
+      padding: 40px;
+      overflow: hidden;
+      transition: all .4s ease;
+    }
+
+    .room-card:first-child {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .room-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--gradient-gold);
+      opacity: 0;
+      transition: opacity .4s ease;
+    }
+
+    .room-card:hover {
+      border-color: rgba(200,168,75,0.25);
+      transform: translateY(-3px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .room-icon-big {
+      font-size: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 0 30px rgba(200,168,75,0.4));
+    }
+
+    .room-badge {
+      display: inline-block;
+      padding: 5px 14px;
+      background: rgba(200,168,75,0.1);
+      border: 1px solid rgba(200,168,75,0.2);
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .room-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+
+    .room-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .room-specs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .room-spec {
+      padding: 5px 12px;
+      border: 1px solid rgba(200,168,75,0.12);
+      border-radius: 2px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+    }
+
+    /* ══════════════════════════════════════════
+       ARTISTS ROSTER
+    ══════════════════════════════════════════ */
+    #artists {
+      background: var(--black-soft);
+      text-align: center;
+    }
+
+    .artists-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 60px;
+    }
+
+    .artist-card {
+      background: var(--black-card);
+      border: 1px solid var(--black-border);
+      border-radius: 4px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all .3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .artist-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gradient-gold);
+      transform: scaleX(0);
+      transition: transform .3s ease;
+    }
+
+    .artist-card:hover::before { transform: scaleX(1); }
+
+    .artist-card:hover {
+      border-color: rgba(200,168,75,0.2);
+      transform: translateY(-4px);
+    }
+
+    .artist-avatar {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: var(--gradient-gold);
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 0 30px rgba(200,168,75,0.25);
+    }
+
+    .artist-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+
+    .artist-genre {
+      font-size: 12px;
+      color: var(--gold);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .artist-stat {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* ══════════════════════════════════════════
+       PROCESS
+    ══════════════════════════════════════════ */
+    #process {
+      background: var(--black);
+    }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin-top: 60px;
+      position: relative;
+    }
+
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 36px;
+      left: 12%;
+      right: 12%;
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold), rgba(200,168,75,0.1) 50%, var(--gold));
+      opacity: .3;
+    }
+
+    .process-step {
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    .process-step-num {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--black-card);
+      border: 1px solid rgba(200,168,75,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      background: var(--gradient-gold);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 1;
+    }
+
+    .process-step-num-wrap {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--black-card);
+      border: 1px solid rgba(200,168,75,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 0 30px rgba(200,168,75,0.1);
+    }
+
+    .process-step-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+
+    .process-step-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.8;
+    }
+
+    /* ══════════════════════════════════════════
+       PRICING
+    ══════════════════════════════════════════ */
+    #pricing {
+      background: var(--black-soft);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 60px;
+      align-items: start;
+    }
+
+    .pricing-card {
+      background: var(--black-card);
+      border: 1px solid var(--black-border);
+      border-radius: 4px;
+      padding: 48px 36px;
+      text-align: center;
+      position: relative;
+      transition: all .3s ease;
+    }
+
+    .pricing-card.featured {
+      background: linear-gradient(160deg, #0F0F0F 0%, #141200 100%);
+      border-color: rgba(200,168,75,0.35);
+      box-shadow: 0 0 60px rgba(200,168,75,0.08), 0 0 120px rgba(200,168,75,0.04);
+    }
+
+    .pricing-card.featured::before {
+      content: 'MOST POPULAR';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gradient-gold);
+      color: var(--black);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 5px 18px;
+      border-radius: 100px;
+    }
+
+    .pricing-card:hover:not(.featured) {
+      border-color: rgba(200,168,75,0.15);
+      transform: translateY(-4px);
+    }
+
+    .pricing-name {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+
+    .pricing-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 52px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .pricing-price sup {
+      font-size: 22px;
+      vertical-align: top;
+      margin-top: 14px;
+      color: var(--gold);
+    }
+
+    .pricing-period {
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 36px;
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin-bottom: 40px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pricing-features li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .pricing-features li .check {
+      color: var(--gold);
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .pricing-features li .x {
+      color: rgba(255,255,255,0.2);
+      flex-shrink: 0;
+    }
+
+    .pricing-features li.inactive {
+      color: rgba(255,255,255,0.25);
+    }
+
+    /* ══════════════════════════════════════════
+       TESTIMONIALS
+    ══════════════════════════════════════════ */
+    #testimonials {
+      background: var(--black);
+      text-align: center;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 60px;
+    }
+
+    .testimonial-card {
+      background: var(--black-card);
+      border: 1px solid var(--black-border);
+      border-radius: 4px;
+      padding: 40px 36px;
+      text-align: left;
+      position: relative;
+      transition: border-color .3s ease;
+    }
+
+    .testimonial-card:hover {
+      border-color: rgba(200,168,75,0.15);
+    }
+
+    .testimonial-quote {
+      font-size: 52px;
+      color: var(--gold);
+      opacity: .25;
+      font-family: 'Playfair Display', serif;
+      line-height: .8;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 18px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .testimonial-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--gradient-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .testimonial-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--white);
+    }
+
+    .testimonial-role {
+      font-size: 12px;
+      color: var(--gold);
+      letter-spacing: .5px;
+    }
+
+    .stars {
+      color: var(--gold);
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+
+    /* ══════════════════════════════════════════
+       CTA BANNER
+    ══════════════════════════════════════════ */
+    #cta {
+      background: linear-gradient(135deg, #0A0800 0%, #060600 50%, #0A0800 100%);
+      border-top: 1px solid rgba(200,168,75,0.12);
+      border-bottom: 1px solid rgba(200,168,75,0.12);
+      text-align: center;
+      padding: 120px 5%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 50% 50%, rgba(200,168,75,0.06) 0%, transparent 70%);
+    }
+
+    #cta .section-title {
+      font-size: clamp(36px, 5vw, 64px);
+      margin-bottom: 24px;
+    }
+
+    #cta .section-desc {
+      max-width: 600px;
+      margin: 0 auto 48px;
+      font-size: 17px;
+      text-align: center;
+    }
+
+    /* ══════════════════════════════════════════
+       CONTACT
+    ══════════════════════════════════════════ */
+    #contact {
+      background: var(--black-soft);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin-top: 40px;
+    }
+
+    .contact-item {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .contact-item-icon {
+      width: 48px; height: 48px;
+      background: rgba(200,168,75,0.08);
+      border: 1px solid rgba(200,168,75,0.15);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .contact-item-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .contact-item-value {
+      font-size: 15px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .form-input, .form-select, .form-textarea {
+      background: var(--black-card);
+      border: 1px solid var(--black-border);
+      border-radius: 2px;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color .3s ease;
+      width: 100%;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: rgba(200,168,75,0.4);
+    }
+
+    .form-select {
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .form-select option { background: var(--black-card); }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    /* ══════════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════════ */
+    footer {
+      background: var(--black);
+      border-top: 1px solid var(--black-border);
+      padding: 64px 5% 32px;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 56px;
+    }
+
+    .footer-brand .nav-logo {
+      margin-bottom: 20px;
+      display: inline-flex;
+    }
+
+    .footer-brand p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.8;
+      max-width: 300px;
+    }
+
+    .footer-socials {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .footer-social {
+      width: 38px; height: 38px;
+      background: var(--black-card);
+      border: 1px solid var(--black-border);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      text-decoration: none;
+      transition: all .3s ease;
+    }
+
+    .footer-social:hover {
+      border-color: rgba(200,168,75,0.3);
+      background: rgba(200,168,75,0.06);
+    }
+
+    .footer-col-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      color: rgba(255,255,255,0.35);
+      text-decoration: none;
+      transition: color .3s ease;
+    }
+
+    .footer-links a:hover { color: var(--gold); }
+
+    .footer-bottom {
+      border-top: 1px solid var(--black-border);
+      padding-top: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: rgba(255,255,255,0.2);
+    }
+
+    .footer-copy span {
+      color: var(--gold);
+    }
+
+    .footer-legal {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-legal a {
+      font-size: 12px;
+      color: rgba(255,255,255,0.2);
+      text-decoration: none;
+      transition: color .3s ease;
+    }
+
+    .footer-legal a:hover { color: rgba(255,255,255,0.5); }
+
+    /* ══════════════════════════════════════════
+       ANIMATIONS
+    ══════════════════════════════════════════ */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: .5; transform: scale(1); }
+      50%       { opacity: .8; transform: scale(1.05); }
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position:  200% center; }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ══════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      #about { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+      .artists-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 6%; }
+      .nav-links { display: none; }
+      section { padding: 80px 6%; }
+      #about { padding: 80px 6%; }
+      #contact { grid-template-columns: 1fr; padding: 80px 6%; }
+      .services-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .artists-grid { grid-template-columns: 1fr 1fr; }
+      .process-steps { grid-template-columns: 1fr 1fr; }
+      .rooms-grid { grid-template-columns: 1fr; }
+      .room-card:first-child { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+      .form-row { grid-template-columns: 1fr; }
+      .hero-stats { flex-wrap: wrap; }
+      .hero-stat { border-right: none; border-bottom: 1px solid rgba(200,168,75,0.1); padding: 16px 24px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ═══════════════ NAVIGATION ═══════════════ -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">M7</div>
+    <span class="nav-logo-text">STUDIO</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">À Propos</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#rooms">Espaces</a></li>
+    <li><a href="#artists">Artistes</a></li>
+    <li><a href="#pricing">Tarifs</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Réserver</a>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <span class="hero-badge">✦ Studio d'Excellence ✦ Paris, France</span>
+
+    <h1 class="hero-title">
+      <span class="line-gold">M7 Studio</span>
+      <span class="line-white">Où Naît la Musique</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      L'univers complet de la création sonore — enregistrement, mixage, mastering &amp; production
+    </p>
+
+    <div class="hero-actions">
+      <a href="#services" class="btn-primary">
+        ✦ Découvrir nos Services
+      </a>
+      <a href="#rooms" class="btn-secondary">
+        ◈ Visiter le Studio
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-number">500+</div>
+      <div class="hero-stat-label">Albums Produits</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-number">15</div>
+      <div class="hero-stat-label">Années d'Expérience</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-number">7</div>
+      <div class="hero-stat-label">Salles d'Enregistrement</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-number">200+</div>
+      <div class="hero-stat-label">Artistes Accompagnés</div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider"></div>
+
+<!-- ═══════════════ ABOUT ═══════════════ -->
+<section id="about">
+  <div class="about-visual reveal">
+    <div class="about-image-frame">
+      <div class="studio-icon-large">🎚️</div>
+      <span class="about-corner tl"></span>
+      <span class="about-corner tr"></span>
+      <span class="about-corner bl"></span>
+      <span class="about-corner br"></span>
+    </div>
+    <div class="about-badge-float">
+      <span class="about-badge-num">7★</span>
+      <span class="about-badge-label">Classement Elite</span>
+    </div>
+  </div>
+
+  <div class="about-text reveal">
+    <div class="section-eyebrow">Notre ADN</div>
+    <h2 class="section-title">Un Studio. <span class="gold">Tout l'Univers</span> de la Création.</h2>
+    <p class="section-desc">
+      M7 Studio est l'écrin de référence pour les artistes exigeants. 
+      Fondé sur une philosophie simple : offrir l'excellence absolue à chaque session, 
+      de la prise de son brute au master prêt à diffuser.
+    </p>
+
+    <div class="about-features">
+      <div class="about-feature">
+        <span class="about-feature-icon">🎛️</span>
+        <div class="about-feature-text">
+          <strong>Console SSL 9000 &amp; Neve 8078</strong>
+          Équipement analogique de référence mondiale
+        </div>
+      </div>
+      <div class="about-feature">
+        <span class="about-feature-icon">🏆</span>
+        <div class="about-feature-text">
+          <strong>Ingénieurs Certifiés Grammy</strong>
+          Une équipe d'élite à chaque session
+        </div>
+      </div>
+      <div class="about-feature">
+        <span class="about-feature-icon">🌐</span>
+        <div class="about-feature-text">
+          <strong>Connexion Studio Mondiale</strong>
+          Sessions distantes HD, collaboration internationale
+        </div>
+      </div>
+      <div class="about-feature">
+        <span class="about-feature-icon">🔒</span>
+        <div class="about-feature-text">
+          <strong>Confidentialité Absolue</strong>
+          NDA systématique, accès sécurisé 24/7
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ SERVICES ═══════════════ -->
+<section id="services">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">Ce que nous faisons</div>
+    <h2 class="section-title">Services <span class="gold">Premium</span></h2>
+    <p class="section-desc" style="margin:0 auto;">De la première note au produit final — nous gérons tout.</p>
+  </div>
+
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <span class="service-number">01</span>
+      <span class="service-icon">🎙️</span>
+      <h3 class="service-title">Enregistrement</h3>
+      <p class="service-desc">Studios acoustiquement parfaits, micros de collection, préamplis vintage et modernes. Chaque prise capturée avec une fidélité absolue.</p>
+      <div class="service-tags">
+        <span class="service-tag">Vocal</span>
+        <span class="service-tag">Live Band</span>
+        <span class="service-tag">Orchestre</span>
+        <span class="service-tag">Foley</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <span class="service-number">02</span>
+      <span class="service-icon">🎚️</span>
+      <h3 class="service-title">Mixage</h3>
+      <p class="service-desc">Fusion parfaite entre l'analogique chaud et le digital précis. Chaque fréquence à sa place, chaque instrument dans son espace.</p>
+      <div class="service-tags">
+        <span class="service-tag">Analogique</span>
+        <span class="service-tag">Hybride</span>
+        <span class="service-tag">Atmos</span>
+        <span class="service-tag">Binaural</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <span class="service-number">03</span>
+      <span class="service-icon">💿</span>
+      <h3 class="service-title">Mastering</h3>
+      <p class="service-desc">La dernière touche de perfection. Masterisation prête pour le streaming, vinyle, CD et broadcast avec nos chaînes de mastering légendaires.</p>
+      <div class="service-tags">
+        <span class="service-tag">Streaming</span>
+        <span class="service-tag">Vinyle</span>
+        <span class="service-tag">Dolby Atmos</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <span class="service-number">04</span>
+      <span class="service-icon">🎹</span>
+      <h3 class="service-title">Production</h3>
+      <p class="service-desc">Nos producteurs vous guident de l'idée à l'œuvre finale. Arrangements, direction artistique, composition : un regard créatif d'exception.</p>
+      <div class="service-tags">
+        <span class="service-tag">Beat Making</span>
+        <span class="service-tag">Arrangement</span>
+        <span class="service-tag">Direction</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <span class="service-number">05</span>
+      <span class="service-icon">🎬</span>
+      <h3 class="service-title">Post-Production</h3>
+      <p class="service-desc">Sound design, ADR, scoring cinématique, mixage 5.1/7.1/Atmos pour film, série, publicité et jeu vidéo.</p>
+      <div class="service-tags">
+        <span class="service-tag">Cinéma</span>
+        <span class="service-tag">ADR</span>
+        <span class="service-tag">Scoring</span>
+        <span class="service-tag">5.1 / 7.1</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <span class="service-number">06</span>
+      <span class="service-icon">📻</span>
+      <h3 class="service-title">Podcast &amp; Voix Off</h3>
+      <p class="service-desc">Studio dédié voix, acoustique ultra-contrôlée, traitement vocal professionnel pour podcasts, livres audio et narrations de marque.</p>
+      <div class="service-tags">
+        <span class="service-tag">Podcast</span>
+        <span class="service-tag">Livre Audio</span>
+        <span class="service-tag">Pub</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ EQUIPMENT MARQUEE ═══════════════ -->
+<section id="equipment">
+  <div class="inner reveal">
+    <div class="section-eyebrow" style="justify-content:center;">Équipement</div>
+    <h2 class="section-title" style="text-align:center;">L'Atelier des <span class="gold">Légendes</span></h2>
+  </div>
+
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <!-- First set -->
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>SSL 9000 J Series</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Neve 8078</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Pro Tools HDX</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Neumann U47 FET</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>AKG C12 VR</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Manley VOXBOX</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Fairchild 670</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>API 2500</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Lexicon 480L</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>UAD Luna</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Dolby Atmos Suite</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Steinway Grand B</span></div>
+      <!-- Duplicate for seamless loop -->
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>SSL 9000 J Series</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Neve 8078</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Pro Tools HDX</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Neumann U47 FET</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>AKG C12 VR</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Manley VOXBOX</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Fairchild 670</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>API 2500</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Lexicon 480L</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>UAD Luna</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Dolby Atmos Suite</span></div>
+      <div class="marquee-item"><div class="marquee-item-dot"></div><span>Steinway Grand B</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ROOMS ═══════════════ -->
+<section id="rooms">
+  <div class="reveal">
+    <div class="section-eyebrow">Espaces</div>
+    <h2 class="section-title">Nos <span class="gold">Salles d'Exception</span></h2>
+    <p class="section-desc">7 espaces conçus par les plus grands acousticiens au monde.</p>
+  </div>
+
+  <div class="rooms-grid">
+    <div class="room-card reveal">
+      <div class="room-icon-big">🎛️</div>
+      <div>
+        <span class="room-badge">Salle Principale</span>
+        <h3 class="room-title">Studio A — The Gold Room</h3>
+        <p class="room-desc">
+          Notre flagship : 280 m² d'espace d'enregistrement live avec salle de contrôle séparée. 
+          Console SSL 9000 J-Series, acoustique traitée par Walters-Storyk. 
+          Parfaite pour orchestres, live bands et sessions de prestige.
+        </p>
+        <div class="room-specs">
+          <span class="room-spec">280 m²</span>
+          <span class="room-spec">SSL 9000 J</span>
+          <span class="room-spec">Neve 8078</span>
+          <span class="room-spec">Steinway Grand B</span>
+          <span class="room-spec">Hammond B3</span>
+          <span class="room-spec">Isolation 72dB</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="room-card reveal">
+      <div>
+        <span class="room-badge">Studio B</span>
+        <h3 class="room-title">The Black Suite</h3>
+        <p class="room-desc">Studio mid-size dédié production électronique et recording vocal. Console API 1608, ambiance sobre et creative.</p>
+        <div class="room-specs">
+          <span class="room-spec">90 m²</span>
+          <span class="room-spec">API 1608</span>
+          <span class="room-spec">Isolation 68dB</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="room-card reveal">
+      <div>
+        <span class="room-badge">Studio C</span>
+        <h3 class="room-title">Mastering Suite</h3>
+        <p class="room-desc">Salle de mastering dédiée, étalonnée haute précision, enceintes Genelec The Ones, Augspurger custom.</p>
+        <div class="room-specs">
+          <span class="room-spec">45 m²</span>
+          <span class="room-spec">Genelec The Ones</span>
+          <span class="room-spec">Atmos Ready</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ARTISTS ═══════════════ -->
+<section id="artists">
+  <div class="reveal">
+    <div class="section-eyebrow">Roster</div>
+    <h2 class="section-title">Artistes de <span class="gold">Confiance</span></h2>
+    <p class="section-desc" style="margin:0 auto;">Ils ont choisi M7 Studio pour leurs œuvres les plus importantes.</p>
+  </div>
+
+  <div class="artists-grid">
+    <div class="artist-card reveal">
+      <div class="artist-avatar">🎤</div>
+      <h3 class="artist-name">Lyra Voss</h3>
+      <div class="artist-genre">R&amp;B · Soul</div>
+      <div class="artist-stat">3 Albums • 12M streams</div>
+    </div>
+    <div class="artist-card reveal">
+      <div class="artist-avatar">🎸</div>
+      <h3 class="artist-name">The Nomads</h3>
+      <div class="artist-genre">Rock · Alternative</div>
+      <div class="artist-stat">5 Albums • 45M streams</div>
+    </div>
+    <div class="artist-card reveal">
+      <div class="artist-avatar">🎹</div>
+      <h3 class="artist-name">Maël Aurore</h3>
+      <div class="artist-genre">Jazz · Classique</div>
+      <div class="artist-stat">7 Albums • 8M streams</div>
+    </div>
+    <div class="artist-card reveal">
+      <div class="artist-avatar">🎧</div>
+      <h3 class="artist-name">DJ Axiom</h3>
+      <div class="artist-genre">Electronic · House</div>
+      <div class="artist-stat">2 Albums • 30M streams</div>
+    </div>
+    <div class="artist-card reveal">
+      <div class="artist-avatar">🎻</div>
+      <h3 class="artist-name">Ensemble Nexus</h3>
+      <div class="artist-genre">Classique · Contemporain</div>
+      <div class="artist-stat">12 Albums • 5M streams</div>
+    </div>
+    <div class="artist-card reveal">
+      <div class="artist-avatar">🎤</div>
+      <h3 class="artist-name">Zara Moon</h3>
+      <div class="artist-genre">Pop · Electro</div>
+      <div class="artist-stat">1 Album • 22M streams</div>
+    </div>
+    <div class="artist-card reveal">
+      <div class="artist-avatar">🥁</div>
+      <h3 class="artist-name">Korr Bass</h3>
+      <div class="artist-genre">Hip-Hop · Trap</div>
+      <div class="artist-stat">4 Albums • 60M streams</div>
+    </div>
+    <div class="artist-card reveal">
+      <div class="artist-avatar">🎺</div>
+      <h3 class="artist-name">Miles &amp; Co.</h3>
+      <div class="artist-genre">Jazz · Fusion</div>
+      <div class="artist-stat">6 Albums • 4M streams</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PROCESS ═══════════════ -->
+<section id="process">
+  <div class="reveal" style="text-align:center;">
+    <div class="section-eyebrow" style="justify-content:center;">Comment ça marche</div>
+    <h2 class="section-title">Notre <span class="gold">Processus</span></h2>
+  </div>
+
+  <div class="process-steps reveal">
+    <div class="process-step">
+      <div class="process-step-num-wrap">
+        <span style="background:linear-gradient(135deg,#9A7A2A,#E8C96C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;">01</span>
+      </div>
+      <h3 class="process-step-title">Consultation</h3>
+      <p class="process-step-desc">Échange avec notre équipe pour définir votre vision, votre budget et les salles adaptées.</p>
+    </div>
+    <div class="process-step">
+      <div class="process-step-num-wrap">
+        <span style="background:linear-gradient(135deg,#9A7A2A,#E8C96C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;">02</span>
+      </div>
+      <h3 class="process-step-title">Pré-Production</h3>
+      <p class="process-step-desc">Arrangement, répétitions guidées, test d'équipement et préparation complète de la session.</p>
+    </div>
+    <div class="process-step">
+      <div class="process-step-num-wrap">
+        <span style="background:linear-gradient(135deg,#9A7A2A,#E8C96C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;">03</span>
+      </div>
+      <h3 class="process-step-title">Enregistrement</h3>
+      <p class="process-step-desc">Session en studio avec ingénieur dédié, suivi en temps réel et exports quotidiens sécurisés.</p>
+    </div>
+    <div class="process-step">
+      <div class="process-step-num-wrap">
+        <span style="background:linear-gradient(135deg,#9A7A2A,#E8C96C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;">04</span>
+      </div>
+      <h3 class="process-step-title">Mixage &amp; Master</h3>
+      <p class="process-step-desc">Finition de votre œuvre : mixage, révisions, mastering et livraison dans tous les formats.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PRICING ═══════════════ -->
+<section id="pricing">
+  <div class="reveal" style="text-align:center;">
+    <div class="section-eyebrow" style="justify-content:center;">Investissement</div>
+    <h2 class="section-title">Tarifs <span class="gold">Transparents</span></h2>
+    <p class="section-desc" style="margin:0 auto;">Des formules claires pour chaque niveau de projet.</p>
+  </div>
+
+  <div class="pricing-grid reveal">
+    <div class="pricing-card">
+      <div class="pricing-name">Essentiel</div>
+      <div class="pricing-price"><sup>€</sup>350</div>
+      <div class="pricing-period">par demi-journée (4h)</div>
+      <ul class="pricing-features">
+        <li><span class="check">✦</span> Studio B — The Black Suite</li>
+        <li><span class="check">✦</span> Ingénieur de session inclus</li>
+        <li><span class="check">✦</span> Exports WAV/MP3</li>
+        <li><span class="check">✦</span> 2 révisions incluses</li>
+        <li class="inactive"><span class="x">✦</span> Console SSL 9000</li>
+        <li class="inactive"><span class="x">✦</span> Mixage dédié</li>
+      </ul>
+      <a href="#contact" class="btn-secondary" style="width:100%;justify-content:center;">Réserver</a>
+    </div>
+
+    <div class="pricing-card featured">
+      <div class="pricing-name">Prestige</div>
+      <div class="pricing-price"><sup>€</sup>980</div>
+      <div class="pricing-period">par journée complète (10h)</div>
+      <ul class="pricing-features">
+        <li><span class="check">✦</span> Studio A — The Gold Room</li>
+        <li><span class="check">✦</span> Console SSL 9000 incluse</li>
+        <li><span class="check">✦</span> Ingénieur senior dédié</li>
+        <li><span class="check">✦</span> Mixage inclus (2 titres)</li>
+        <li><span class="check">✦</span> Exports tous formats</li>
+        <li><span class="check">✦</span> Révisions illimitées (7j)</li>
+      </ul>
+      <a href="#contact" class="btn-primary" style="width:100%;justify-content:center;">Réserver</a>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pricing-name">Elite</div>
+      <div class="pricing-price"><sup>€</sup>Sur</div>
+      <div class="pricing-period">Devis personnalisé</div>
+      <ul class="pricing-features">
+        <li><span class="check">✦</span> Accès prioritaire 24/7</li>
+        <li><span class="check">✦</span> Production complète d'album</span></li>
+        <li><span class="check">✦</span> Équipe dédiée (3 ingénieurs)</li>
+        <li><span class="check">✦</span> Mastering inclus</li>
+        <li><span class="check">✦</span> Distribution conseils</li>
+        <li><span class="check">✦</span> NDA &amp; sécurité renforcée</li>
+      </ul>
+      <a href="#contact" class="btn-secondary" style="width:100%;justify-content:center;">Nous Contacter</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ TESTIMONIALS ═══════════════ -->
+<section id="testimonials">
+  <div class="reveal">
+    <div class="section-eyebrow" style="justify-content:center;">Témoignages</div>
+    <h2 class="section-title">Ce qu'ils <span class="gold">Disent</span></h2>
+  </div>
+
+  <div class="testimonials-grid reveal">
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <div class="testimonial-quote">"</div>
+      <p class="testimonial-text">M7 Studio a transformé ma façon de créer. La qualité sonore est incomparable, l'équipe est d'un professionnalisme rare.</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">🎤</div>
+        <div>
+          <div class="testimonial-name">Lyra Voss</div>
+          <div class="testimonial-role">Artiste R&B · 12M Streams</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <div class="testimonial-quote">"</div>
+      <p class="testimonial-text">Depuis notre premier album enregistré ici, on ne peut plus imaginer travailler ailleurs. Le Gold Room est un espace magique.</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">🎸</div>
+        <div>
+          <div class="testimonial-name">Alex Nomad</div>
+          <div class="testimonial-role">The Nomads · Rock</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card">
+      <div class="stars">★★★★★</div>
+      <div class="testimonial-quote">"</div>
+      <p class="testimonial-text">Pour mes œuvres classiques, j'avais besoin d'une acoustique parfaite. M7 Studio est la seule réponse. Exceptionnel.</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">🎹</div>
+        <div>
+          <div class="testimonial-name">Maël Aurore</div>
+          <div class="testimonial-role">Pianiste · Jazz &amp; Classique</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CTA ═══════════════ -->
+<section id="cta">
+  <div class="reveal">
+    <h2 class="section-title">Prêt à Créer Votre <span class="gold">Chef-d'Œuvre ?</span></h2>
+    <p class="section-desc">Rejoignez les artistes d'excellence qui font confiance à M7 Studio pour donner vie à leur vision.</p>
+    <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;">
+      <a href="#contact" class="btn-primary">✦ Réserver une Session</a>
+      <a href="tel:+33100000000" class="btn-secondary">📞 Appeler Maintenant</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CONTACT ═══════════════ -->
+<section id="contact">
+  <div class="reveal">
+    <div class="section-eyebrow">Contact</div>
+    <h2 class="section-title">Parlons de Votre <span class="gold">Projet</span></h2>
+    <p class="section-desc">Notre équipe vous répond sous 24h pour discuter de vos besoins.</p>
+
+    <div class="contact-info">
+      <div class="contact-item">
+        <div class="contact-item-icon">📍</div>
+        <div>
+          <div class="contact-item-label">Adresse</div>
+          <div class="contact-item-value">7 Avenue de l'Or, 75008 Paris, France</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-item-icon">📞</div>
+        <div>
+          <div class="contact-item-label">Téléphone</div>
+          <div class="contact-item-value">+33 1 00 00 00 00</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-item-icon">✉️</div>
+        <div>
+          <div class="contact-item-label">Email</div>
+          <div class="contact-item-value">booking@m7studio.fr</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-item-icon">🕐</div>
+        <div>
+          <div class="contact-item-label">Horaires</div>
+          <div class="contact-item-value">Lun – Sam : 9h–23h · Dim : Sur réservation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-form reveal">
+    <form onsubmit="handleForm(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Prénom</label>
+          <input class="form-input" type="text" placeholder="Votre prénom" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nom</label>
+          <input class="form-input" type="text" placeholder="Votre nom" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" placeholder="votre@email.com" required />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Service souhaité</label>
+        <select class="form-select form-input">
+          <option>Enregistrement</option>
+          <option>Mixage</option>
+          <option>Mastering</option>
+          <option>Production complète</option>
+          <option>Post-production</option>
+          <option>Podcast / Voix off</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Formule</label>
+        <select class="form-select form-input">
+          <option>Essentiel — 350€/demi-journée</option>
+          <option>Prestige — 980€/journée</option>
+          <option>Elite — Devis personnalisé</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Votre projet</label>
+        <textarea class="form-textarea" placeholder="Décrivez votre projet, le nombre de titres, les dates souhaitées..." required></textarea>
+      </div>
+
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;border:none;cursor:pointer;">
+        ✦ Envoyer la Demande
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-icon">M7</div>
+        <span class="nav-logo-text">STUDIO</span>
+      </a>
+      <p>L'écrin de référence pour les artistes qui refusent de faire des compromis. Excellence, prestige, et passion au cœur de chaque session.</p>
+      <div class="footer-socials">
+        <a href="#" class="footer-social">𝕏</a>
+        <a href="#" class="footer-social">📸</a>
+        <a href="#" class="footer-social">🎵</a>
+        <a href="#" class="footer-social">▶️</a>
+        <a href="#" class="footer-social">💼</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="footer-col-title">Services</div>
+      <ul class="footer-links">
+        <li><a href="#services">Enregistrement</a></li>
+        <li><a href="#services">Mixage</a></li>
+        <li><a href="#services">Mastering</a></li>
+        <li><a href="#services">Production</a></li>
+        <li><a href="#services">Post-Production</a></li>
+        <li><a href="#services">Podcast</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-col-title">Studio</div>
+      <ul class="footer-links">
+        <li><a href="#rooms">Studio A — Gold Room</a></li>
+        <li><a href="#rooms">Studio B — Black Suite</a></li>
+        <li><a href="#rooms">Mastering Suite</a></li>
+        <li><a href="#equipment">Équipement</a></li>
+        <li><a href="#about">Notre équipe</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-col-title">Infos</div>
+      <ul class="footer-links">
+        <li><a href="#pricing">Tarifs</a></li>
+        <li><a href="#artists">Artistes</a></li>
+        <li><a href="#testimonials">Avis</a></li>
+        <li><a href="#contact">Réservation</a></li>
+        <li><a href="#contact">Presse</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 <span>M7 Studio</span>. Tous droits réservés. Paris, France.</div>
+    <div class="footer-legal">
+      <a href="#">Mentions légales</a>
+      <a href="#">Confidentialité</a>
+      <a href="#">CGV</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════ SCRIPTS ═══════════════ -->
+<script>
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+  revealEls.forEach(el => observer.observe(el));
+
+  // Nav scroll effect
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.height = window.scrollY > 80 ? '64px' : '80px';
+  });
+
+  // Form handler
+  function handleForm(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.textContent = '✦ Demande envoyée !';
+    btn.style.background = 'linear-gradient(135deg, #2A4A2A, #4A8A4A)';
+    btn.style.color = '#fff';
+    setTimeout(() => {
+      btn.innerHTML = '✦ Envoyer la Demande';
+      btn.style.background = '';
+      btn.style.color = '';
+      e.target.reset();
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>
