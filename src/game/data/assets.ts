@@ -34,6 +34,27 @@ export const CLASS_PORTRAITS: Record<string, string> = {
 
 export const ROSTER_ART = "/assets/characters/characters-roster.png";
 
+export const MONSTER_SPRITES: Record<string, string> = {
+  graine_ombre: "/assets/monsters/monster-graine-ombre.png",
+  wisp_sauvage: "/assets/monsters/monster-wisp-sauvage.png",
+  loup_cristal: "/assets/monsters/monster-loup-cristal.png",
+  treant_corrompu: "/assets/monsters/monster-treant-corrompu.png",
+  scorpion_ether: "/assets/monsters/monster-scorpion-ether.png",
+  dragon_aether: "/assets/monsters/monster-dragon-aether.png",
+};
+
+export function getMonsterPortrait(monsterId: string): string | undefined {
+  return MONSTER_SPRITES[monsterId];
+}
+
+export function getMonsterTextureKey(monsterId: string): string {
+  return `monster_${monsterId}`;
+}
+
+export function hasMonsterSprite(monsterId: string): boolean {
+  return monsterId in MONSTER_SPRITES;
+}
+
 export function getZoneBackground(zoneId: string): string | undefined {
   return ZONE_BACKGROUNDS[zoneId];
 }

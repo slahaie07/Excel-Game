@@ -12,6 +12,7 @@ import {
   getAvailableTalents,
   getTalentById,
 } from "../game/data";
+import { getClassPortrait } from "../game/data/assets";
 import { loadCharacter, saveCharacter } from "../lib/characterStorage";
 import { isCloudCharacter } from "../lib/convexUtils";
 
@@ -43,7 +44,15 @@ function ClassSheet({
     <div className="flex-1 flex flex-col bg-gradient-to-b from-aether-950 to-aether-900">
       <div className="p-4 flex items-center gap-3 border-b border-aether-800">
         <button onClick={() => useGameStore.getState().setScreen("world")} className="text-aether-400 text-xl">←</button>
-        <span className="text-3xl">{cls.icon}</span>
+        {getClassPortrait(classId) ? (
+          <img
+            src={getClassPortrait(classId)}
+            alt={cls.name}
+            className="w-12 h-12 rounded-lg object-cover border border-aether-600/50"
+          />
+        ) : (
+          <span className="text-3xl">{cls.icon}</span>
+        )}
         <div>
           <h1 className="font-display text-lg font-bold text-white">{cls.name}</h1>
           <p className="text-aether-400 text-xs">{ARCHETYPE_LABELS[cls.archetype]} • Niv. {level}</p>

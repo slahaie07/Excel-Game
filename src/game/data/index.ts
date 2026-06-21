@@ -54,10 +54,22 @@ export {
   COMBAT_BACKGROUNDS,
   CLASS_PORTRAITS,
   ROSTER_ART,
+  MONSTER_SPRITES,
   getZoneBackground,
   getCombatBackground,
   getClassPortrait,
+  getMonsterPortrait,
+  getMonsterTextureKey,
+  hasMonsterSprite,
 } from "./assets";
+export {
+  getZoneTerritory,
+  getTerritoryXpMultiplier,
+  getAllZoneTerritories,
+  type TerritoryStatus,
+  type ZoneTerritory,
+  type CampaignProgressInput,
+} from "./factionTerritories";
 export {
   CAMPAIGN_RANK_REWARDS,
   getCampaignRankCosmeticIds,

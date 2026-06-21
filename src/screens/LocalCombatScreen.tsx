@@ -6,7 +6,7 @@ import { applyPvpResult } from "./PvPScreen";
 import { advanceDungeonRoom, createNextRoomCombat } from "./DungeonsScreen";
 import { recordEventKill } from "./EventsScreen";
 import { addXp, loadCharacter } from "../lib/characterStorage";
-import { recordLocalWorldVictory, recordLocalPvpVictory } from "../lib/factionProgress";
+import { recordLocalWorldVictory, recordLocalPvpVictory, getLocalTerritoryXpMultiplier } from "../lib/factionProgress";
 import { applySpellEffects, tickBuffs, formatBuffs, applyCombatStartTalents, getEffectiveMaxRange, computeTalentModifiers } from "../game/combat/effects";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
@@ -48,6 +48,7 @@ function toVisualEntities(entities: CombatEntity[], currentEntityId: string, cla
     gridY: e.y,
     icon: e.isPlayer ? getClassIcon(classId) : getMonsterIcon(e.monsterId ?? "graine_ombre"),
     classId: e.isPlayer ? classId : undefined,
+    monsterId: e.isPlayer ? undefined : (e.monsterId ?? "graine_ombre"),
     hp: e.hp,
     maxHp: e.maxHp,
     team: e.team,
@@ -287,13 +288,15 @@ export default function LocalCombatScreen() {
     if (combatType === "event") {
       const xpMult = combatData.xpMultiplier ?? 1;
       const eclatsMult = combatData.eclatsMultiplier ?? 1;
+      const zoneId = useGameStore.getState().zoneId;
+      const territoryMult = getLocalTerritoryXpMultiplier(zoneId, characterId);
       const monsterId = combatData.monsterIds?.[0] as string | undefined;
       const monster = monsterId ? getMonsterById(monsterId) : null;
       const baseXp = monster?.xpReward ?? 80;
       const baseEclats = monster
         ? Math.floor((monster.eclatsReward.min + monster.eclatsReward.max) / 2)
         : 40;
-      const xpGain = Math.floor(baseXp * xpMult);
+      const xpGain = Math.floor(baseXp * xpMult * territoryMult);
       const eclatsGain = Math.floor(baseEclats * eclatsMult);
       addXp(characterId, xpGain);
       const charKey = `aetheris-char-${characterId}`;
@@ -306,12 +309,13 @@ export default function LocalCombatScreen() {
       recordLocalWorldVictory(characterId, useGameStore.getState().zoneId);
       return;
     }
-    addXp(characterId, 50);
+    const zoneId = useGameStore.getState().zoneId;
+    const territoryMult = getLocalTerritoryXpMultiplier(zoneId, characterId);
+    addXp(characterId, Math.floor(50 * territoryMult));
     const charKey = `aetheris-char-${characterId}`;
     const data = JSON.parse(localStorage.getItem(charKey) ?? "{}");
     data.eclats = (data.eclats ?? 0) + 25;
     localStorage.setItem(charKey, JSON.stringify(data));
-    const zoneId = useGameStore.getState().zoneId;
     recordLocalWorldVictory(characterId, zoneId);
   };
 

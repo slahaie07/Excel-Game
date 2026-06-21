@@ -35,6 +35,7 @@ import type * as lib_factionCampaigns from "../lib/factionCampaigns.js";
 import type * as lib_factionContent from "../lib/factionContent.js";
 import type * as lib_factionQuests from "../lib/factionQuests.js";
 import type * as lib_factionRewards from "../lib/factionRewards.js";
+import type * as lib_factionTerritories from "../lib/factionTerritories.js";
 import type * as lib_factions from "../lib/factions.js";
 import type * as lib_hallOfFame from "../lib/hallOfFame.js";
 import type * as lib_notifications from "../lib/notifications.js";
@@ -95,6 +96,7 @@ declare const fullApi: ApiFromModules<{
   "lib/factionContent": typeof lib_factionContent;
   "lib/factionQuests": typeof lib_factionQuests;
   "lib/factionRewards": typeof lib_factionRewards;
+  "lib/factionTerritories": typeof lib_factionTerritories;
   "lib/factions": typeof lib_factions;
   "lib/hallOfFame": typeof lib_hallOfFame;
   "lib/notifications": typeof lib_notifications;

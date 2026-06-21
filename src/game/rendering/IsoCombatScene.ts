@@ -4,7 +4,7 @@ import {
   ZONE_THEMES, type ZoneTileTheme,
 } from "./isometric";
 
-import { addEntityVisual, preloadClassPortraits } from "./spriteLoader";
+import { addEntityVisual, preloadEntitySprites } from "./spriteLoader";
 
 export interface CombatEntityVisual {
   entityId: string;
@@ -13,6 +13,7 @@ export interface CombatEntityVisual {
   gridY: number;
   icon: string;
   classId?: string;
+  monsterId?: string;
   hp: number;
   maxHp: number;
   team: "player" | "enemy";
@@ -55,7 +56,7 @@ export class IsoCombatScene extends Phaser.Scene {
   }
 
   preload() {
-    preloadClassPortraits(this);
+    preloadEntitySprites(this);
   }
 
   create() {
@@ -147,9 +148,11 @@ export class IsoCombatScene extends Phaser.Scene {
       const sprite = addEntityVisual(this, pos.x, pos.y - 10, {
         icon: entity.icon,
         classId: entity.team === "player" ? entity.classId : undefined,
+        monsterId: entity.team === "enemy" ? entity.monsterId : undefined,
         displaySize: entity.team === "player" ? 44 : 36,
         depth: depth + 0.1,
         fontSize: entity.team === "player" ? "26px" : "20px",
+        animate: entity.isCurrent,
       });
       this.entitySprites.push(sprite);
 

@@ -22,6 +22,7 @@ import { FACTION_META } from "../game/data/factionContent";
 import { getClassIcon as getClassIconFromData } from "../game/rendering/isometric";
 import { getZoneBackground, getClassPortrait } from "../game/data/assets";
 import { WorldCampaignBanner } from "../components/WorldCampaignBanner";
+import { WorldTerritoryBanner } from "../components/WorldTerritoryBanner";
 import { PlayerNameLine } from "../components/PlayerNameLine";
 
 export default function WorldScreen() {
@@ -259,6 +260,12 @@ export default function WorldScreen() {
           <span className="text-aether-400 text-xs">→</span>
         </button>
       )}
+
+      <WorldTerritoryBanner
+        zoneId={zoneId}
+        pledgedFactionId={pledgedFactionId}
+        campaigns={campaigns}
+      />
 
       <WorldCampaignBanner pledgedFactionId={pledgedFactionId} campaigns={campaigns} />
 

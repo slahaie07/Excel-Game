@@ -23,6 +23,12 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Cadres de profil visibles en chat et présence
 - Classement contributeurs campagne + bannière campagne dans le monde
 
+### Sprites monstres & territoires faction (v1.20)
+- 6 sprites monstres isométriques avec animation idle (monde + combat)
+- Contrôle territorial des zones selon campagnes hebdo (fortifié / stable / contesté)
+- Bonus XP +15% en zone fortifiée alliée
+- Bannière territoire dans le monde, portraits sur écrans classe/création/sélection
+
 ### Sprites isométriques & récompenses top 3 (v1.19)
 - Portraits des 10 classes + fonds des 6 zones
 - Sprites portrait sur la grille monde/combat (remplace emojis joueurs)
@@ -224,6 +230,7 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Récompenses de rang faction + progression locale (v1.16)
 - [x] Campagnes faction hebdo + titres visibles en social (v1.17)
 - [x] Visuels zones/combat/personnages + cadres sociaux + classement campagne (v1.18)
+- [x] Sprites monstres, territoires faction, portraits roster (v1.20)
 - [x] Sprites portrait 10 classes, 6 fonds zones, récompenses top 3 campagne (v1.19)
 
 ## Licence

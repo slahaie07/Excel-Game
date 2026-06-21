@@ -226,6 +226,17 @@ Les sorts peuvent appliquer des effets persistants (`buffs[]` sur chaque entité
 | Contenu | `lib/factionContent.ts`, `lib/factionQuests.ts` | Quêtes, articles, progression |
 | Combat/PvP | `combat.ts`, `pvp.ts` | Progression quêtes cloud |
 
+## v1.20 — Sprites monstres & territoires faction
+
+| Module | Fichier | Rôle |
+|--------|---------|------|
+| Monstres | `assets.ts`, `spriteLoader.ts`, `public/assets/monsters/` | 6 sprites isométriques + idle |
+| Territoires | `factionTerritories.ts`, `lib/factionTerritories.ts` | Statut zone selon campagnes |
+| Monde | `WorldTerritoryBanner.tsx`, `WorldScreen.tsx` | Bannière contrôle territorial |
+| Combat | `LocalCombatScreen.tsx`, `factionProgress.ts` | Bonus XP zone fortifiée |
+| Roster | `ClassScreen`, `CharacterCreateScreen`, `CharacterSelectScreen` | Portraits illustrés |
+| API | `getFactionTerritory` | Query Convex territoire + multiplicateur XP |
+
 ## v1.19 — Sprites isométriques & récompenses campagne
 
 | Module | Fichier | Rôle |

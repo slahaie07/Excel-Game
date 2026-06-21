@@ -3,8 +3,12 @@ import {
   getZoneBackground,
   getCombatBackground,
   getClassPortrait,
+  getMonsterPortrait,
+  getMonsterTextureKey,
+  hasMonsterSprite,
   CLASS_PORTRAITS,
   ZONE_BACKGROUNDS,
+  MONSTER_SPRITES,
 } from "./assets";
 import { getCampaignRankCosmeticIds } from "./factionCampaignRewards";
 
@@ -22,6 +26,13 @@ describe("game assets", () => {
 
   it("maps combat types to battle art", () => {
     expect(getCombatBackground("pvp")).toContain("/assets/combat/");
+  });
+
+  it("maps monsters to sprite art", () => {
+    expect(Object.keys(MONSTER_SPRITES)).toHaveLength(6);
+    expect(hasMonsterSprite("dragon_aether")).toBe(true);
+    expect(getMonsterPortrait("loup_cristal")).toContain("loup-cristal");
+    expect(getMonsterTextureKey("graine_ombre")).toBe("monster_graine_ombre");
   });
 });
 

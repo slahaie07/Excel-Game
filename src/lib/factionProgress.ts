@@ -12,6 +12,11 @@ import {
   FACTION_CAMPAIGN_TEMPLATES,
   type CampaignPointEvent,
 } from "../game/data/factionCampaigns";
+import {
+  getTerritoryXpMultiplier,
+  getZoneTerritory,
+  type CampaignProgressInput,
+} from "../game/data/factionTerritories";
 
 interface LocalFactionState {
   reputations: Record<FactionId, number>;
@@ -264,6 +269,27 @@ export function recordLocalFactionQuestClaim(characterId: string) {
 
 export function recordLocalFactionShopPurchase(characterId: string) {
   recordPledgedCampaignPoints(characterId, "shop_purchase");
+}
+
+function localCampaignsToInput(characterId: string): CampaignProgressInput[] {
+  const state = loadState(characterId);
+  return FACTION_CAMPAIGN_TEMPLATES.map((template) => {
+    const campaign = state.campaigns[template.factionId] ?? { progress: 0, status: "active" as const };
+    return {
+      factionId: template.factionId,
+      progressPercent: Math.min(100, Math.round((campaign.progress / template.target) * 100)),
+      status: campaign.status,
+    };
+  });
+}
+
+export function getLocalZoneTerritory(zoneId: string, characterId: string) {
+  return getZoneTerritory(zoneId, localCampaignsToInput(characterId));
+}
+
+export function getLocalTerritoryXpMultiplier(zoneId: string, characterId: string): number {
+  const state = loadState(characterId);
+  return getTerritoryXpMultiplier(zoneId, localCampaignsToInput(characterId), state.pledgedFactionId);
 }
 
 export function getLocalFactionCampaigns(characterId: string) {

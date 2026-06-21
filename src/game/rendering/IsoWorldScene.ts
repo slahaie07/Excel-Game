@@ -3,7 +3,7 @@ import {
   gridToIso, isoDepth, drawIsoTile, drawIsoShadow,
   getClassIcon, getMonsterIcon, ZONE_THEMES, type ZoneTileTheme,
 } from "./isometric";
-import { addEntityVisual, preloadClassPortraits } from "./spriteLoader";
+import { addEntityVisual, preloadEntitySprites } from "./spriteLoader";
 
 export interface IsoEntity {
   id: string;
@@ -11,6 +11,7 @@ export interface IsoEntity {
   gridY: number;
   icon: string;
   classId?: string;
+  monsterId?: string;
   label?: string;
   isPlayer?: boolean;
   onClick?: () => void;
@@ -52,7 +53,7 @@ export class IsoWorldScene extends Phaser.Scene {
   }
 
   preload() {
-    preloadClassPortraits(this);
+    preloadEntitySprites(this);
   }
 
   create() {
@@ -124,12 +125,15 @@ export class IsoWorldScene extends Phaser.Scene {
       const sprite = addEntityVisual(this, pos.x, pos.y - 8, {
         icon: entity.icon,
         classId: entity.classId,
+        monsterId: entity.monsterId,
         displaySize,
         depth,
         fontSize: entity.isPlayer ? "28px" : "22px",
+        animate: true,
       });
 
       if (entity.isPlayer) {
+        this.tweens.killTweensOf(sprite);
         this.tweens.add({
           targets: sprite,
           y: pos.y - 12,
@@ -190,6 +194,7 @@ export class IsoWorldScene extends Phaser.Scene {
 export function createMonsterEntities(monsterIds: string[]): IsoEntity[] {
   return monsterIds.map((id, i) => ({
     id,
+    monsterId: id,
     gridX: 3 + (i % 4) * 2,
     gridY: 2 + Math.floor(i / 4) * 2,
     icon: getMonsterIcon(id),

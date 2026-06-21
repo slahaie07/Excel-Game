@@ -222,3 +222,58 @@ export const getCampaignLeaderboard = query({
     return { weekKey, entries, myRank, myPoints };
   },
 });
+
+const territoryStatusValidator = v.union(
+  v.literal("fortified"),
+  v.literal("stable"),
+  v.literal("contested")
+);
+
+export const getFactionTerritory = query({
+  args: {
+    zoneId: v.string(),
+    characterId: v.optional(v.id("characters")),
+  },
+  returns: v.object({
+    zoneId: v.string(),
+    homeFaction: factionIdValidator,
+    status: territoryStatusValidator,
+    dominantFaction: factionIdValidator,
+    xpBonusPercent: v.number(),
+    label: v.string(),
+    xpMultiplier: v.number(),
+  }),
+  handler: async (ctx, args) => {
+    const weekKey = getWeekKey();
+    const rows = await ctx.db
+      .query("factionCampaigns")
+      .withIndex("by_week", (q) => q.eq("weekKey", weekKey))
+      .collect();
+
+    const { campaignRowsToInput, getZoneTerritory, getTerritoryXpMultiplier } = await import(
+      "./lib/factionTerritories"
+    );
+    const input = campaignRowsToInput(
+      rows.map((r) => ({
+        factionId: r.factionId,
+        progress: r.progress,
+        target: r.target,
+        status: r.status,
+      }))
+    );
+
+    let pledgedFactionId = null as import("./lib/factions").FactionId | null;
+    if (args.characterId) {
+      const profile = await ctx.db
+        .query("factionProfiles")
+        .withIndex("by_character", (q) => q.eq("characterId", args.characterId!))
+        .unique();
+      pledgedFactionId = profile?.pledgedFactionId ?? null;
+    }
+
+    const territory = getZoneTerritory(args.zoneId, input);
+    const xpMultiplier = getTerritoryXpMultiplier(args.zoneId, input, pledgedFactionId);
+
+    return { ...territory, xpMultiplier };
+  },
+});
