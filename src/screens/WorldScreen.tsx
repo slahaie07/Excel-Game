@@ -20,7 +20,7 @@ import type { Id } from "../../convex/_generated/dataModel";
 import { loadLocalFactionBadge, getLocalFactionCampaigns } from "../lib/factionProgress";
 import { FACTION_META } from "../game/data/factionContent";
 import { getClassIcon as getClassIconFromData } from "../game/rendering/isometric";
-import { getZoneBackground, getClassPortrait } from "../game/data/assets";
+import { getZoneBackground, getClassPortrait, getRegionOverlayForZone } from "../game/data/assets";
 import { WorldCampaignBanner } from "../components/WorldCampaignBanner";
 import { WorldTerritoryBanner } from "../components/WorldTerritoryBanner";
 import { ZoneTerritoryBadge } from "../components/ZoneTerritoryBadge";
@@ -170,6 +170,7 @@ export default function WorldScreen() {
     : localCampaigns;
   const pledgedFactionId = myFactions?.pledgedFactionId ?? localFactionBadge?.pledgedFactionId ?? null;
   const zoneBackground = getZoneBackground(zoneId);
+  const regionOverlay = getRegionOverlayForZone(zoneId);
   const classPortrait = getClassPortrait(classId);
   const pledgedFaction = myFactions?.pledgedFactionId
     ? myFactions.factions.find((f) => f.isPledged)
@@ -309,6 +310,12 @@ export default function WorldScreen() {
             src={zoneBackground}
             alt=""
             className="absolute inset-0 w-full h-full object-cover opacity-35 pointer-events-none"
+          />
+        )}
+        {regionOverlay && (
+          <div
+            className="absolute inset-0 pointer-events-none z-[1]"
+            style={{ background: regionOverlay }}
           />
         )}
         <div ref={gameRef} className="relative z-10 w-full h-full" />

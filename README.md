@@ -23,6 +23,11 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Cadres de profil visibles en chat et présence
 - Classement contributeurs campagne + bannière campagne dans le monde
 
+### v4.1.0 — Chroniques Régionales
+- **149 quêtes** (+41) : découverte, maîtres de région, donjons v4.0
+- 4 maîtres de région + quête cartographe endgame
+- Teintes visuelles par région en exploration
+
 ### v4.0.0 — Terreval (carte mondiale)
 - **24 zones**, 6 régions, 40+ POI, carte interactive agrandie
 - Givre, Marais, Cendres, Îles Stellaires + passages inter-régions

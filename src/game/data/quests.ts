@@ -3,6 +3,7 @@
  */
 
 import { EXPANSION_QUESTS_V31 } from "./expansionQuests";
+import { EXPANSION_QUESTS_V41 } from "./expansionQuestsV41";
 
 export type QuestType = "main" | "side" | "daily" | "guild" | "dungeon";
 export type QuestObjectiveType = "kill" | "collect" | "talk" | "explore" | "craft" | "deliver";
@@ -346,6 +347,8 @@ export const QUESTS: QuestDefinition[] = [
   },
   // v3.1 — +86 quêtes (donjons, citadelle, endgame, side, daily, guilde)
   ...EXPANSION_QUESTS_V31,
+  // v4.1 — +41 quêtes régionales Terreval (découverte, maîtres, donjons v4.0)
+  ...EXPANSION_QUESTS_V41,
 ];
 
 export function getQuestById(id: string): QuestDefinition | undefined {

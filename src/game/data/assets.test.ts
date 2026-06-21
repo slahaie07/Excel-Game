@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   getZoneBackground,
+  getRegionOverlayForZone,
+  REGION_OVERLAYS,
   getCombatBackground,
   getClassPortrait,
   getMonsterPortrait,
@@ -19,6 +21,14 @@ describe("game assets", () => {
     expect(getZoneBackground("citadelle_stellaire")).toBeDefined();
     expect(getZoneBackground("plateau_givre")).toBeDefined();
     expect(getZoneBackground("iles_stellaires")).toBeDefined();
+  });
+
+  it("provides regional overlay tints for v4.0 zones", () => {
+    expect(Object.keys(REGION_OVERLAYS)).toHaveLength(6);
+    expect(getRegionOverlayForZone("plateau_givre")).toContain("linear-gradient");
+    expect(getRegionOverlayForZone("marais_ether")).toContain("linear-gradient");
+    expect(getRegionOverlayForZone("vallee_cendres")).toContain("linear-gradient");
+    expect(getRegionOverlayForZone("iles_stellaires")).toContain("linear-gradient");
   });
 
   it("maps all classes to portraits", () => {

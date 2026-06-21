@@ -66,6 +66,8 @@ export {
   ROSTER_ART,
   MONSTER_SPRITES,
   getZoneBackground,
+  getRegionOverlayForZone,
+  REGION_OVERLAYS,
   getCombatBackground,
   getClassPortrait,
   getMonsterPortrait,

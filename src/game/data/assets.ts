@@ -2,6 +2,8 @@
  * Chemins des visuels générés pour Aetheris.
  */
 
+import { getRegionForZone, type MapRegionId } from "./expansionZonesV40";
+
 export const ZONE_BACKGROUNDS: Record<string, string> = {
   vallee_eveils: "/assets/zones/zone-vallee-eveils.png",
   port_nebula: "/assets/zones/zone-port-nebula.png",
@@ -85,6 +87,21 @@ export function getMonsterTextureKey(monsterId: string): string {
 
 export function hasMonsterSprite(monsterId: string): boolean {
   return monsterId in MONSTER_SPRITES;
+}
+
+/** Teinte CSS par région Terreval (v4.1) */
+export const REGION_OVERLAYS: Record<MapRegionId, string> = {
+  coeur: "linear-gradient(180deg, rgba(99,102,241,0.12) 0%, transparent 60%)",
+  archipel: "linear-gradient(180deg, rgba(14,165,233,0.14) 0%, transparent 60%)",
+  givre: "linear-gradient(180deg, rgba(56,189,248,0.18) 0%, rgba(147,197,253,0.06) 100%)",
+  marais: "linear-gradient(180deg, rgba(34,197,94,0.14) 0%, rgba(74,222,128,0.05) 100%)",
+  cendres: "linear-gradient(180deg, rgba(249,115,22,0.16) 0%, rgba(251,146,60,0.06) 100%)",
+  stellaire: "linear-gradient(180deg, rgba(167,139,250,0.16) 0%, rgba(196,181,253,0.06) 100%)",
+};
+
+export function getRegionOverlayForZone(zoneId: string): string | undefined {
+  const region = getRegionForZone(zoneId);
+  return region ? REGION_OVERLAYS[region.id] : undefined;
 }
 
 export function getZoneBackground(zoneId: string): string | undefined {

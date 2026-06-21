@@ -1,5 +1,14 @@
 # Changelog
 
+## v4.1.0 — Chroniques Régionales
+
+- **149 quêtes** (+41) : découverte, maîtres de région, donjons v4.0
+- **12 quêtes découverte** — une par zone des 4 nouveaux continents
+- **4 quêtes maître de région** — Givre, Marais, Cendres, Îles Stellaires
+- **24 quêtes donjon** liées aux donjons v4.0
+- **Quête cartographe** endgame — cartographier tout Terreval élargi
+- **Teintes visuelles par région** en exploration (overlay CSS)
+
 ## v4.0.0 — Terreval (carte mondiale ×2)
 
 - **24 zones** (+12) réparties en **6 régions** jouables
