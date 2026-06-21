@@ -76,16 +76,24 @@ export default function M7StudioScreen() {
               </div>
 
               <div className="flex flex-wrap gap-3">
-                <button className="rounded-2xl bg-gradient-to-r from-yellow-200 via-yellow-400 to-amber-600 px-6 py-3 font-black text-black shadow-2xl shadow-yellow-500/25 active:scale-95">
+                <button
+                  type="button"
+                  onClick={() => document.getElementById("m7-gold-vault")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+                  className="rounded-2xl bg-gradient-to-r from-yellow-200 via-yellow-400 to-amber-600 px-6 py-3 font-black text-black shadow-2xl shadow-yellow-500/25 active:scale-95"
+                >
                   Ouvrir les fichiers M7
                 </button>
-                <button className="rounded-2xl border border-yellow-500/35 bg-black/50 px-6 py-3 font-bold text-yellow-100 active:scale-95">
+                <button
+                  type="button"
+                  onClick={() => document.getElementById("m7-services")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                  className="rounded-2xl border border-yellow-500/35 bg-black/50 px-6 py-3 font-bold text-yellow-100 active:scale-95"
+                >
                   Voir le pack complet
                 </button>
               </div>
             </div>
 
-            <div className="rounded-[2rem] border border-yellow-400/25 bg-black/60 p-4 shadow-2xl shadow-yellow-950/40 backdrop-blur">
+            <div id="m7-gold-vault" className="rounded-[2rem] border border-yellow-400/25 bg-black/60 p-4 shadow-2xl shadow-yellow-950/40 backdrop-blur">
               <div className="rounded-[1.5rem] border border-yellow-500/20 bg-gradient-to-br from-zinc-950 via-black to-yellow-950/40 p-5">
                 <div className="mb-5 flex items-center justify-between">
                   <div>
@@ -115,7 +123,7 @@ export default function M7StudioScreen() {
             </div>
           </section>
 
-          <section className="grid gap-3 pb-8 sm:grid-cols-2 lg:grid-cols-3">
+          <section id="m7-services" className="grid gap-3 pb-8 sm:grid-cols-2 lg:grid-cols-3">
             {studioServices.map((service) => (
               <article key={service.label} className="rounded-3xl border border-yellow-500/20 bg-white/[0.035] p-5 shadow-xl shadow-black/20">
                 <div className="mb-4 grid h-11 w-11 place-items-center rounded-2xl border border-yellow-400/25 bg-yellow-300/10 text-xl text-yellow-200">
