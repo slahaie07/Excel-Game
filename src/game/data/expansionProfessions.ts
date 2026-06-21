@@ -37,7 +37,7 @@ export const EXPANSION_PROFESSIONS_V32: ProfessionDefinition[] = [
   // ——— Récolte ———
   {
     id: "pecheur",
-    name: "Pêcheur",
+    name: "Halieute de Brume",
     description: "Pêche des créatures et ressources marines.",
     type: "gathering",
     icon: "🎣",
@@ -49,7 +49,7 @@ export const EXPANSION_PROFESSIONS_V32: ProfessionDefinition[] = [
   },
   {
     id: "paysan",
-    name: "Paysan",
+    name: "Cultivateur Stellaire",
     description: "Cultive céréales et plantes du désert.",
     type: "gathering",
     icon: "🌾",
@@ -134,7 +134,7 @@ export const EXPANSION_PROFESSIONS_V32: ProfessionDefinition[] = [
   // ——— Craft ———
   {
     id: "tailleur",
-    name: "Tailleur",
+    name: "Couturier d'Aether",
     description: "Confectionne capes et armures légères.",
     type: "crafting",
     icon: "🧵",
@@ -147,7 +147,7 @@ export const EXPANSION_PROFESSIONS_V32: ProfessionDefinition[] = [
   },
   {
     id: "cordonnier",
-    name: "Cordonnier",
+    name: "Bottier Enchanté",
     description: "Fabrique bottes et chaussures enchantées.",
     type: "crafting",
     icon: "👞",
@@ -158,7 +158,7 @@ export const EXPANSION_PROFESSIONS_V32: ProfessionDefinition[] = [
   },
   {
     id: "sculpteur",
-    name: "Sculpteur",
+    name: "Archetier Sylvestre",
     description: "Sculpte bâtons et armes magiques en bois.",
     type: "crafting",
     icon: "🪵",
@@ -169,7 +169,7 @@ export const EXPANSION_PROFESSIONS_V32: ProfessionDefinition[] = [
   },
   {
     id: "cuisine",
-    name: "Cuisine",
+    name: "Maître Condimentier",
     description: "Prépare nourriture et buffs de combat.",
     type: "crafting",
     icon: "🍳",
@@ -181,7 +181,7 @@ export const EXPANSION_PROFESSIONS_V32: ProfessionDefinition[] = [
   },
   {
     id: "maroquinier",
-    name: "Maroquinier",
+    name: "Travailleur de Cuirs",
     description: "Travaille cuirs et peaux en équipement.",
     type: "crafting",
     icon: "🧥",
@@ -192,7 +192,7 @@ export const EXPANSION_PROFESSIONS_V32: ProfessionDefinition[] = [
   },
   {
     id: "enchanteur",
-    name: "Enchanteur",
+    name: "Imprimeur de Runes",
     description: "Imprègne objets de pouvoirs stellaires.",
     type: "crafting",
     icon: "✨",
@@ -214,7 +214,7 @@ export const EXPANSION_PROFESSIONS_V32: ProfessionDefinition[] = [
   },
   {
     id: "orfevre",
-    name: "Orfèvre",
+    name: "Orfèvre Royal",
     description: "Maître joaillier des pièces légendaires.",
     type: "crafting",
     icon: "👑",

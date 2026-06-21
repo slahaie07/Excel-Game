@@ -5,7 +5,8 @@ import { getSpellById, getSpellsForClass, getMonsterById } from "../game/data";
 import { applyPvpResult } from "./PvPScreen";
 import { advanceDungeonRoom, createNextRoomCombat } from "./DungeonsScreen";
 import { recordEventKill } from "./EventsScreen";
-import { addXp, loadCharacter } from "../lib/characterStorage";
+import { addXp, loadCharacter, updateCharacter } from "../lib/characterStorage";
+import { getPetCombatBonuses, applyPetXpBonus, applyPetEclatsBonus } from "../lib/petBonuses";
 import { advanceQuestOnKill } from "../lib/questProgress";
 import { recordLocalWorldVictory, recordLocalPvpVictory, getLocalTerritoryXpMultiplier } from "../lib/factionProgress";
 import { useToastStore } from "../stores/toastStore";
@@ -299,7 +300,18 @@ export default function LocalCombatScreen() {
     }
   };
 
+  const applyPetAfterVictory = () => {
+    const pet = getPetCombatBonuses(characterId);
+    if (pet.healAfterCombat <= 0) return;
+    const char = loadCharacter(characterId);
+    if (!char) return;
+    updateCharacter(characterId, {
+      hp: Math.min(char.maxHp, char.hp + pet.healAfterCombat),
+    });
+  };
+
   const awardRewards = () => {
+    const pet = getPetCombatBonuses(characterId);
     if (combatType === "pvp") {
       applyPvpResult(characterId, true, combatData.convexMatchId);
       recordLocalPvpVictory(characterId);
@@ -326,8 +338,8 @@ export default function LocalCombatScreen() {
       const baseEclats = monster
         ? Math.floor((monster.eclatsReward.min + monster.eclatsReward.max) / 2)
         : 40;
-      const xpGain = Math.floor(baseXp * xpMult * territoryMult);
-      const eclatsGain = Math.floor(baseEclats * eclatsMult);
+      const xpGain = applyPetXpBonus(Math.floor(baseXp * xpMult * territoryMult), pet.xpPercent);
+      const eclatsGain = applyPetEclatsBonus(Math.floor(baseEclats * eclatsMult), pet.eclatsPercent);
       applyXpWithToast(xpGain);
       const charKey = `aetheris-char-${characterId}`;
       const data = JSON.parse(localStorage.getItem(charKey) ?? "{}");
@@ -346,19 +358,21 @@ export default function LocalCombatScreen() {
       recordLocalWorldVictory(characterId, useGameStore.getState().zoneId);
       unlockLocalAchievement(characterId, "first_victory");
       recordQuestKills();
+      applyPetAfterVictory();
       return;
     }
     const zoneId = useGameStore.getState().zoneId;
     const territoryMult = getLocalTerritoryXpMultiplier(zoneId, characterId);
-    const xpGain = Math.floor(50 * territoryMult);
+    const xpGain = applyPetXpBonus(Math.floor(50 * territoryMult), pet.xpPercent);
+    const eclatsGain = applyPetEclatsBonus(25, pet.eclatsPercent);
     applyXpWithToast(xpGain);
     const charKey = `aetheris-char-${characterId}`;
     const data = JSON.parse(localStorage.getItem(charKey) ?? "{}");
-    data.eclats = (data.eclats ?? 0) + 25;
+    data.eclats = (data.eclats ?? 0) + eclatsGain;
     localStorage.setItem(charKey, JSON.stringify(data));
     setVictoryRewards({
       xp: xpGain,
-      eclats: 25,
+      eclats: eclatsGain,
       territoryMultiplier: territoryMult,
       eventMultiplier: 1,
       baseXp: 50,
@@ -366,6 +380,7 @@ export default function LocalCombatScreen() {
     recordLocalWorldVictory(characterId, zoneId);
     unlockLocalAchievement(characterId, "first_victory");
     recordQuestKills();
+    applyPetAfterVictory();
   };
 
   const endTurn = () => {

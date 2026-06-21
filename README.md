@@ -59,7 +59,7 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - **30 donjons**, **15 classes**, **75 sorts**
 - Nouvelles classes : Druide, Fulgurancien, Paladin, Faucheur, Artilleur
 
-### v2.2.0 — Archipel de Brume (expansion Dofus Touch)
+### v2.2.0 — Archipel de Brume
 - **12 zones** (6 originales + Archipel de Brume)
 - **Niveau max 100**, 5 sorts/classe, 12 donjons, 22 quêtes
 - **Métiers** : recettes de récolte et craft étendues
@@ -119,7 +119,7 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Migration Chronomancien → Cryomancien
 
 ### Combat tactique (v1.1)
-- Grille isométrique au tour par tour (PA/PM)
+- Grille isométrique au tour par tour (Flux/Élan)
 - 10 classes équilibrées (2 soins, 2 magie, 2 bouclier, 2 gros dégâts, 2 à distance) avec sorts synchronisés client/serveur
 - Combat cloud synchronisé via Convex avec sorts serveur (`convex/lib/spells.ts`)
 - Buffs/debuffs côté serveur (`convex/lib/combatEffects.ts`) + IA ennemie automatique

@@ -29,7 +29,7 @@ export interface RecipeDefinition {
 const BASE_PROFESSIONS: ProfessionDefinition[] = [
   {
     id: "herboriste",
-    name: "Herboriste",
+    name: "Herbaliste Stellaire",
     description: "Récolte des plantes médicinales dans la nature.",
     type: "gathering",
     icon: "🌿",
@@ -41,7 +41,7 @@ const BASE_PROFESSIONS: ProfessionDefinition[] = [
   },
   {
     id: "mineur",
-    name: "Mineur",
+    name: "Foreur d'Éther",
     description: "Extrait des minerais des filons.",
     type: "gathering",
     icon: "⛏️",
@@ -52,7 +52,7 @@ const BASE_PROFESSIONS: ProfessionDefinition[] = [
   },
   {
     id: "bucheron",
-    name: "Bûcheron",
+    name: "Sylveur de Lumina",
     description: "Coupe du bois dans les forêts.",
     type: "gathering",
     icon: "🪓",
@@ -63,7 +63,7 @@ const BASE_PROFESSIONS: ProfessionDefinition[] = [
   },
   {
     id: "alchimie",
-    name: "Alchimie",
+    name: "Distillateur d'Élixirs",
     description: "Crée des potions et élixirs.",
     type: "crafting",
     icon: "⚗️",
@@ -75,7 +75,7 @@ const BASE_PROFESSIONS: ProfessionDefinition[] = [
   },
   {
     id: "forge",
-    name: "Forge",
+    name: "Artificier d'Armes",
     description: "Forge des armes et armures.",
     type: "crafting",
     icon: "🔨",
@@ -87,7 +87,7 @@ const BASE_PROFESSIONS: ProfessionDefinition[] = [
   },
   {
     id: "joaillerie",
-    name: "Joaillerie",
+    name: "Lapidaire d'Éclats",
     description: "Crée des bijoux et amulettes.",
     type: "crafting",
     icon: "💍",

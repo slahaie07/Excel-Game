@@ -15,6 +15,7 @@ import {
 import { getClassPortrait } from "../game/data/assets";
 import { loadCharacter, saveCharacter } from "../lib/characterStorage";
 import { isCloudCharacter } from "../lib/convexUtils";
+import { CODEX_LABEL, STAT_LABELS } from "../lib/gameTerms";
 
 function ClassSheet({
   classId,
@@ -66,11 +67,11 @@ function ClassSheet({
         </div>
 
         <div className="card">
-          <h2 className="text-aether-300 text-sm font-semibold mb-2">Stats de base</h2>
+          <h2 className="text-aether-300 text-sm font-semibold mb-2">Caractéristiques</h2>
           <div className="grid grid-cols-3 gap-2 text-xs">
             {Object.entries(cls.baseStats).map(([key, val]) => (
               <div key={key} className="bg-aether-900/60 rounded-lg p-2 text-center">
-                <p className="text-aether-500 capitalize">{key.slice(0, 3)}</p>
+                <p className="text-aether-500">{STAT_LABELS[key] ?? key}</p>
                 <p className="text-white font-bold">{val}</p>
               </div>
             ))}
@@ -78,7 +79,7 @@ function ClassSheet({
         </div>
 
         <div className="card">
-          <h2 className="text-aether-300 text-sm font-semibold mb-2">Grimoire</h2>
+          <h2 className="text-aether-300 text-sm font-semibold mb-2">{CODEX_LABEL}</h2>
           <div className="space-y-2">
             {schedule.map(({ spellId, levelRequired }) => {
               const spell = getSpellById(spellId) ?? allClassSpells.find((s) => s.id === spellId);

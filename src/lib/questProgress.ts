@@ -8,6 +8,7 @@ import {
 } from "./characterStorage";
 import {
   cloudSyncQuestState,
+  cloudUpdateQuestProgress,
   syncQuestExploreToCloud,
   syncQuestKillToCloud,
 } from "./cloudQuestProgress";
@@ -30,6 +31,12 @@ function asActiveQuests(activeQuests: unknown): ActiveQuest[] {
   return Array.isArray(activeQuests) ? (activeQuests as ActiveQuest[]) : [];
 }
 
+function inventoryCount(characterId: string, itemId: string): number {
+  const char = loadCharacter(characterId);
+  if (!char) return 0;
+  return char.inventory.find((i) => i.itemId === itemId)?.quantity ?? 0;
+}
+
 function incrementMatchingObjectives(
   activeQuests: ActiveQuest[],
   matcher: (obj: ActiveQuestObjective) => boolean,
@@ -50,6 +57,40 @@ function incrementMatchingObjectives(
   });
 }
 
+function setMatchingObjectives(
+  activeQuests: ActiveQuest[],
+  matcher: (obj: ActiveQuestObjective) => boolean,
+  valueFn: (obj: ActiveQuestObjective) => number
+): ActiveQuest[] {
+  return activeQuests.map((quest) => {
+    if (quest.status !== "active") return quest;
+    const objectives = quest.objectives.map((obj) => {
+      if (!matcher(obj)) return obj;
+      const next = Math.min(obj.required, valueFn(obj));
+      if (next === obj.current) return obj;
+      return { ...obj, current: next };
+    });
+    return { ...quest, objectives };
+  });
+}
+
+function syncObjectiveChanges(
+  characterId: string,
+  before: ActiveQuest[],
+  after: ActiveQuest[]
+): void {
+  for (const quest of after) {
+    const prev = before.find((q) => q.questId === quest.questId);
+    if (!prev) continue;
+    quest.objectives.forEach((obj, index) => {
+      const prevObj = prev.objectives[index];
+      if (!prevObj || obj.current <= prevObj.current) return;
+      const delta = obj.current - prevObj.current;
+      cloudUpdateQuestProgress(characterId, quest.questId, index, delta);
+    });
+  }
+}
+
 export function meetsQuestPrerequisites(
   quest: QuestDefinition,
   completedQuests: string[]
@@ -62,8 +103,9 @@ export function advanceQuestOnZoneVisit(characterId: string, zoneId: string): vo
   const char = loadCharacter(characterId);
   if (!char) return;
 
+  const before = asActiveQuests(char.activeQuests);
   const activeQuests = incrementMatchingObjectives(
-    asActiveQuests(char.activeQuests),
+    before,
     (obj) =>
       obj.type === "explore" &&
       !obj.targetId.startsWith("poi_") &&
@@ -72,6 +114,7 @@ export function advanceQuestOnZoneVisit(characterId: string, zoneId: string): vo
 
   updateCharacter(characterId, { activeQuests });
   syncQuestExploreToCloud(characterId, activeQuests, zoneId);
+  syncObjectiveChanges(characterId, before, activeQuests);
   completeQuestIfReady(characterId);
 }
 
@@ -83,8 +126,9 @@ export function advanceQuestOnKill(
   const char = loadCharacter(characterId);
   if (!char) return;
 
+  const before = asActiveQuests(char.activeQuests);
   const activeQuests = incrementMatchingObjectives(
-    asActiveQuests(char.activeQuests),
+    before,
     (obj) =>
       obj.type === "kill" &&
       (obj.targetId === "any" || obj.targetId === monsterId)
@@ -92,6 +136,7 @@ export function advanceQuestOnKill(
 
   updateCharacter(characterId, { activeQuests });
   syncQuestKillToCloud(characterId, activeQuests, monsterId);
+  syncObjectiveChanges(characterId, before, activeQuests);
   completeQuestIfReady(characterId);
 }
 
@@ -99,8 +144,9 @@ export function advanceQuestOnPOIVisit(characterId: string, poiId: string): void
   const char = loadCharacter(characterId);
   if (!char) return;
 
+  const before = asActiveQuests(char.activeQuests);
   const activeQuests = incrementMatchingObjectives(
-    asActiveQuests(char.activeQuests),
+    before,
     (obj) =>
       obj.type === "explore" &&
       obj.targetId.startsWith("poi_") &&
@@ -109,6 +155,75 @@ export function advanceQuestOnPOIVisit(characterId: string, poiId: string): void
 
   updateCharacter(characterId, { activeQuests });
   syncQuestExploreToCloud(characterId, activeQuests, poiId);
+  syncObjectiveChanges(characterId, before, activeQuests);
+  completeQuestIfReady(characterId);
+}
+
+export function advanceQuestOnTalk(characterId: string, npcId: string): void {
+  const char = loadCharacter(characterId);
+  if (!char) return;
+
+  const before = asActiveQuests(char.activeQuests);
+  let activeQuests = incrementMatchingObjectives(
+    before,
+    (obj) => obj.type === "talk" && obj.targetId === npcId
+  );
+
+  activeQuests = incrementMatchingObjectives(
+    activeQuests,
+    (obj) => obj.type === "deliver" && obj.targetId === npcId
+  );
+
+  updateCharacter(characterId, { activeQuests });
+  syncObjectiveChanges(characterId, before, activeQuests);
+  completeQuestIfReady(characterId);
+}
+
+export function advanceQuestOnCraft(characterId: string, itemId: string, quantity = 1): void {
+  const char = loadCharacter(characterId);
+  if (!char) return;
+
+  const before = asActiveQuests(char.activeQuests);
+  const activeQuests = activeQuestsWithCraftProgress(before, itemId, quantity);
+
+  updateCharacter(characterId, { activeQuests });
+  syncObjectiveChanges(characterId, before, activeQuests);
+  completeQuestIfReady(characterId);
+}
+
+function activeQuestsWithCraftProgress(
+  activeQuests: ActiveQuest[],
+  itemId: string,
+  quantity: number
+): ActiveQuest[] {
+  return activeQuests.map((quest) => {
+    if (quest.status !== "active") return quest;
+    const objectives = quest.objectives.map((obj) => {
+      if (obj.type !== "craft" || obj.targetId !== itemId || obj.current >= obj.required) {
+        return obj;
+      }
+      return {
+        ...obj,
+        current: Math.min(obj.required, obj.current + quantity),
+      };
+    });
+    return { ...quest, objectives };
+  });
+}
+
+export function refreshCollectQuestProgress(characterId: string): void {
+  const char = loadCharacter(characterId);
+  if (!char) return;
+
+  const before = asActiveQuests(char.activeQuests);
+  const activeQuests = setMatchingObjectives(
+    before,
+    (obj) => obj.type === "collect",
+    (obj) => inventoryCount(characterId, obj.targetId)
+  );
+
+  updateCharacter(characterId, { activeQuests });
+  syncObjectiveChanges(characterId, before, activeQuests);
   completeQuestIfReady(characterId);
 }
 

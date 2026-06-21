@@ -12,7 +12,8 @@ import { VictoryRewardBreakdown } from "../components/VictoryRewardBreakdown";
 import { formatBuffs } from "../game/combat/effects";
 import { getDungeonById, getRoomMonsters, getRaidById, getPhaseMonsters } from "../game/data";
 import { cacheCloudCombat, buildCloudCombatLocalId } from "../lib/cloudCombat";
-import { FLUX, ELAN, formatElanMove } from "../lib/gameTerms";
+import { FLUX, ELAN, formatElanMove, mapCombatError } from "../lib/gameTerms";
+import { advanceQuestOnKill } from "../lib/questProgress";
 
 interface CloudEntity {
   entityId: string;
@@ -138,7 +139,7 @@ export default function CloudCombatScreen() {
         setLog((p) => [...p, formatElanMove(distance)]);
       }
     } catch (e) {
-      setLog((p) => [...p, e instanceof Error ? e.message : "Erreur"]);
+      setLog((p) => [...p, mapCombatError(e instanceof Error ? e.message : "Erreur")]);
     }
   }, [isPlayerTurn, player, combatDoc, selectedSpell, castSpellMut, moveEntityMut, convexCombatId, playerEntityId]);
 
@@ -148,12 +149,18 @@ export default function CloudCombatScreen() {
       await endTurnMut({ combatId: convexCombatId, entityId: playerEntityId });
       setLog((p) => [...p, "Fin du tour"]);
     } catch (e) {
-      setLog((p) => [...p, e instanceof Error ? e.message : "Erreur"]);
+      setLog((p) => [...p, mapCombatError(e instanceof Error ? e.message : "Erreur")]);
     }
   };
 
   useEffect(() => {
     if (combatDoc?.status === "victory") {
+      const zoneId = useGameStore.getState().zoneId;
+      for (const entity of combatDoc.entities) {
+        if (entity.team === "enemy" && entity.monsterId) {
+          advanceQuestOnKill(characterId, entity.monsterId, zoneId);
+        }
+      }
       void applyRewards({ combatId: convexCombatId, characterId });
       if (combatType === "dungeon" && combatData.convexRunId) {
         void advanceRoom({ runId: combatData.convexRunId as Id<"dungeonRuns"> }).then((res) => {

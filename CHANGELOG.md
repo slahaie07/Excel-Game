@@ -9,6 +9,7 @@
 - **18 objectifs endgame** — chronique finale + gardien mythique
 - **Version finale** du contenu Terreval (vfinal)
 - **Polish premium** — terminologie Flux/Élan, guide premier perso, copy FR, icônes PWA, cartes quêtes enrichies
+- **Identité Aetheris** — PNJ interactifs, quêtes talk/collect/craft, équipement jouable, compagnons actifs, niveau 200 cloud
 
 ## v4.2.0 — Terreval Complet
 

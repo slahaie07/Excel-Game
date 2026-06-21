@@ -22,7 +22,7 @@ Créer un MMORPG tactique mobile aussi complet que les références du genre, av
 |---------|--------|-------------|
 | Création de compte | ✅ | Local + Convex |
 | Création de personnage | ✅ | 10 classes équilibrées (5 archétypes × 2), 5 slots |
-| Combat tactique | ✅ | Grille isométrique, PA/PM, sorts serveur, buffs cloud |
+| Combat tactique | ✅ | Grille isométrique, Flux/Élan, sorts serveur, buffs cloud |
 | Donjons coop | ✅ | Jusqu'à 4 joueurs, combat partagé Convex |
 | Guerres de guildes | ✅ | Déclaration, scores 24h, contribution membres |
 | Trade direct | ✅ | Sessions P2P avec double confirmation |
@@ -61,7 +61,7 @@ Voir historique : PvP, donjons, pets, havre, chat, présence, Capacitor.
 | Gros dégâts | Berserker Tellurique, Éclaireur des Brumes |
 | À distance | Archer Lunaire, Invocateur d'Aether |
 
-Équilibrage sorts : sort de base (3 PA) ≈ 9–15 dégâts ou 15–25 soins ; sort de zone (5–6 PA) ≈ 11–19 dégâts.
+Équilibrage sorts : sort de base (3 Flux) ≈ 9–15 dégâts ou 15–25 soins ; sort de zone (5–6 Flux) ≈ 11–19 dégâts.
 
 ## Économie
 
@@ -70,8 +70,8 @@ Voir historique : PvP, donjons, pets, havre, chat, présence, Capacitor.
 
 ## Formules de combat
 
-- PA max = 6 + floor(niveau / 10)
-- PM max = 3 + floor(agilité / 5) + floor(niveau / 15)
+- Flux max = 6 + floor(niveau / 10)
+- Élan max = 3 + floor(agilité / 5) + floor(niveau / 15)
 - PV max = 50 + vitalité × 5 + niveau × 10
 - XP suivant = niveau × 100 + (niveau - 1) × 50
 

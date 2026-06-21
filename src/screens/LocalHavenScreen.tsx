@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useGameStore } from "../stores/gameStore";
+import { REFUGE_LABEL } from "../lib/gameTerms";
 import { FURNITURE, getFurnitureById, getHavenLevel } from "../game/data";
 import { loadCharacter, saveCharacter, type HavenData } from "../lib/characterStorage";
 
@@ -90,7 +91,7 @@ export default function LocalHavenScreen() {
     <div className="flex-1 flex flex-col bg-aether-950">
       <div className="flex items-center gap-3 p-4 border-b border-aether-700/40">
         <button onClick={() => setScreen("world")} className="text-aether-400 text-xl">←</button>
-        <h1 className="font-display text-xl font-bold">Mon Havre</h1>
+        <h1 className="font-display text-xl font-bold">Mon {REFUGE_LABEL}</h1>
         <span className="ml-auto text-crystal-gold text-sm">✦ {eclats}</span>
       </div>
 

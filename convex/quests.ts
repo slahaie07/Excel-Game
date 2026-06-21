@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { MAX_CHARACTER_LEVEL } from "./lib/constants";
 
 export const startQuest = mutation({
   args: {
@@ -143,7 +144,7 @@ export const syncQuestState = mutation({
     if (args.xp !== undefined) {
       let newXp = character.xp + args.xp;
       let newLevel = character.level;
-      while (newXp >= character.xpToNext && newLevel < 200) {
+      while (newXp >= character.xpToNext && newLevel < MAX_CHARACTER_LEVEL) {
         newXp -= character.xpToNext;
         newLevel++;
       }

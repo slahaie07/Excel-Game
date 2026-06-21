@@ -21,7 +21,8 @@ export {
   TERRITORY_NODE_COLORS,
 } from "./worldMap";
 export { MAP_POIS, getPOIsForZone, getPOIById } from "./mapPOIs";
-export { ITEMS, EQUIPMENT_SLOTS, getItemById } from "./items";
+export { NPCS, getNpcById, getNpcsForZone } from "./npcs";
+export { ITEMS, EQUIPMENT_SLOTS, getItemById, type EquipmentSlot } from "./items";
 export { QUESTS, getQuestById, getQuestsForZone } from "./quests";
 export { PROFESSIONS, MAX_PROFESSION_SLOTS, getProfessionById } from "./professions";
 export { DUNGEONS, getDungeonById, getDungeonsForZone, getRoomMonsters } from "./dungeons";

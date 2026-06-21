@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { MAX_CHARACTER_LEVEL } from "./lib/constants";
 import { getUnlockedSpellIds, mergeUnlockedSpells, migrateLegacyClass } from "./lib/classProgression";
 import { canSelectTalent } from "./lib/talents";
 
@@ -181,7 +182,7 @@ export const addXp = mutation({
     let newLevel = character.level;
     let leveledUp = false;
 
-    while (newXp >= character.xpToNext && newLevel < 60) {
+    while (newXp >= character.xpToNext && newLevel < MAX_CHARACTER_LEVEL) {
       newXp -= character.xpToNext;
       newLevel++;
       leveledUp = true;

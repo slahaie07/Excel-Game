@@ -9,7 +9,7 @@ import { useOnlinePresence, getOnlinePlayersInZone, OnlinePresenceSync, CloudZon
 import { CloudCharacterSync } from "./CharacterSelectScreen";
 import { IsoWorldScene, createMonsterEntities, getClassIcon } from "../game/rendering/IsoWorldScene";
 import { loadCharacter } from "../lib/characterStorage";
-import { advanceQuestOnZoneVisit } from "../lib/questProgress";
+import { advanceQuestOnZoneVisit, refreshCollectQuestProgress } from "../lib/questProgress";
 import { isCloudCharacter, isConvexEnabled } from "../lib/convexUtils";
 import { CloudEncounterStarter } from "../components/CloudEncounterStarter";
 import { CloudWorldBoss } from "../components/CloudWorldBoss";
@@ -29,6 +29,7 @@ import { ZoneTerritoryBadge } from "../components/ZoneTerritoryBadge";
 import { WorldMapPanel } from "../components/WorldMapPanel";
 import { WorldMinimap } from "../components/WorldMinimap";
 import { ZonePOIList } from "../components/ZonePOIList";
+import { ZoneNPCList } from "../components/ZoneNPCList";
 import { PlayerNameLine } from "../components/PlayerNameLine";
 import { WhatsNewModal } from "../components/WhatsNewModal";
 import { APP_VERSION, loadUserPreferences } from "../lib/userPreferences";
@@ -78,6 +79,7 @@ export default function WorldScreen() {
 
   useEffect(() => {
     advanceQuestOnZoneVisit(characterId, zoneId);
+    refreshCollectQuestProgress(characterId);
   }, [characterId, zoneId]);
 
   const zone = getZoneById(zoneId)!;
@@ -194,7 +196,7 @@ export default function WorldScreen() {
     { id: "dungeons", icon: "🏚️", label: "Donjons" },
     { id: "pvp", icon: "⚔️", label: "Arène" },
     { id: "pets", icon: "✨", label: "Compagnons" },
-    { id: "haven", icon: "🏠", label: "Havre" },
+    { id: "haven", icon: "🏠", label: "Refuge" },
     { id: "events", icon: activeEvent?.icon ?? "🎉", label: "Évent" },
     { id: "daily", icon: "🎁", label: "Quotidien" },
     { id: "guild", icon: "🏰", label: "Guilde" },
@@ -292,6 +294,7 @@ export default function WorldScreen() {
 
       <WorldCampaignBanner pledgedFactionId={pledgedFactionId} campaigns={campaigns} />
 
+      <ZoneNPCList zoneId={zoneId} characterId={characterId} />
       <ZonePOIList zoneId={zoneId} characterId={characterId} />
 
       {isConvexEnabled() && isCloudCharacter(characterId) && (

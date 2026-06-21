@@ -8,6 +8,7 @@ import { recordInvasionKill } from "./worldInvasions";
 import { recordMenteePveWin } from "./mentorship";
 import { addZoneFactionReputation, recordFactionQuestProgress } from "./factions";
 import { recordPledgedCampaignEvent } from "./factionCampaigns";
+import { MAX_CHARACTER_LEVEL } from "./lib/constants";
 import { applySpellEffects, tickBuffs } from "./lib/combatEffects";
 import {
   applyCombatStartTalents,
@@ -480,7 +481,7 @@ export const moveEntity = mutation({
     if (!entity || !entity.isAlive) throw new Error("Entité invalide");
 
     const distance = Math.abs(args.targetX - entity.x) + Math.abs(args.targetY - entity.y);
-    if (distance > entity.mp) throw new Error("Pas assez de PM");
+    if (distance > entity.mp) throw new Error("Pas assez d'Élan");
 
     const occupied = combat.entities.some(
       (e) => e.isAlive && e.x === args.targetX && e.y === args.targetY
@@ -525,7 +526,7 @@ export const castSpell = mutation({
     const casterIdx = combat.entities.findIndex((e) => e.entityId === args.entityId);
     const caster = combat.entities[casterIdx];
     if (!caster || !caster.isAlive) throw new Error("Lanceur invalide");
-    if (caster.ap < spell.apCost) throw new Error("Pas assez de PA");
+    if (caster.ap < spell.apCost) throw new Error("Pas assez de Flux");
 
     if (caster.ownerCharacterId) {
       const owner = await ctx.db.get("characters", caster.ownerCharacterId);
@@ -730,7 +731,7 @@ export const applyVictoryRewards = mutation({
       let newLevel = character.level;
       let xpToNext = character.xpToNext;
 
-      while (newXp >= xpToNext && newLevel < 60) {
+      while (newXp >= xpToNext && newLevel < MAX_CHARACTER_LEVEL) {
         newXp -= xpToNext;
         newLevel++;
         xpToNext = newLevel * 100 + (newLevel - 1) * 50;
