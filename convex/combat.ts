@@ -15,6 +15,7 @@ import {
   getEffectiveMaxRange,
   SPELL_AREAS,
 } from "./lib/talentModifiers";
+import { getTerritoryXpMultiplierForCharacter } from "./lib/factionTerritories";
 
 const MONSTER_DATA: Record<string, { hp: number; ap: number; mp: number; damage: number; name: string }> = {
   graine_ombre: { hp: 30, ap: 4, mp: 3, damage: 5, name: "Graine d'Ombre" },
@@ -23,6 +24,15 @@ const MONSTER_DATA: Record<string, { hp: number; ap: number; mp: number; damage:
   gardien_ruines: { hp: 300, ap: 8, mp: 3, damage: 20, name: "Gardien des Ruines" },
   treant_corrompu: { hp: 120, ap: 5, mp: 2, damage: 15, name: "Tréant Corrompu" },
   fee_brume: { hp: 80, ap: 7, mp: 6, damage: 18, name: "Fée de Brume" },
+  champion_lumina: { hp: 500, ap: 10, mp: 4, damage: 30, name: "Champion de Lumina" },
+  scorpion_ether: { hp: 150, ap: 6, mp: 5, damage: 25, name: "Scorpion d'Éther" },
+  sphinx_ombres: { hp: 800, ap: 12, mp: 5, damage: 40, name: "Sphinx des Ombres" },
+  golem_stellaire: { hp: 250, ap: 6, mp: 2, damage: 35, name: "Golem Stellaire" },
+  dragon_aether: { hp: 2000, ap: 14, mp: 6, damage: 60, name: "Dragon d'Aether" },
+  event_gardien_floral: { hp: 100, ap: 6, mp: 4, damage: 14, name: "Gardien Floral" },
+  event_esprit_eclipse: { hp: 140, ap: 7, mp: 5, damage: 22, name: "Esprit d'Éclipse" },
+  event_ombre_majeur: { hp: 200, ap: 8, mp: 4, damage: 28, name: "Ombre Majeure" },
+  event_cristal_ancien: { hp: 280, ap: 9, mp: 3, damage: 35, name: "Gardien de Cristal Ancien" },
 };
 
 type Entity = {
@@ -121,6 +131,40 @@ function resolveCombatStatus(entities: Entity[]): {
   }
   if (playersAlive.length === 0) return { status: "defeat" };
   return { status: "active" };
+}
+
+async function resolveCombatWithTerritory(
+  ctx: MutationCtx,
+  entities: Entity[],
+  combat: {
+    zoneId: string;
+    characterId: Id<"characters">;
+    combatType?: "world" | "dungeon" | "pvp" | "event";
+    rewards?: { xp: number; eclats: number; items: { itemId: string; quantity: number }[] };
+  }
+): Promise<{
+  status: "active" | "victory" | "defeat";
+  rewards?: { xp: number; eclats: number; items: { itemId: string; quantity: number }[] };
+}> {
+  const base = resolveCombatStatus(entities);
+  if (base.status !== "victory") return base;
+
+  const rewards = combat.rewards ?? base.rewards;
+  if (!rewards) return base;
+
+  const type = combat.combatType ?? "world";
+  if (type !== "world" && type !== "event") {
+    return { status: "victory", rewards };
+  }
+
+  const mult = await getTerritoryXpMultiplierForCharacter(ctx, combat.zoneId, combat.characterId);
+  return {
+    status: "victory",
+    rewards: {
+      ...rewards,
+      xp: Math.floor(rewards.xp * mult),
+    },
+  };
 }
 
 function runEnemyTurn(entities: Entity[]): Entity[] {
@@ -571,7 +615,12 @@ export const castSpell = mutation({
       return e;
     });
 
-    const resolved = resolveCombatStatus(updatedEntities);
+    const resolved = await resolveCombatWithTerritory(ctx, updatedEntities, {
+      zoneId: combat.zoneId,
+      characterId: combat.characterId,
+      combatType: combat.combatType,
+      rewards: combat.rewards,
+    });
     await ctx.db.patch("combats", args.combatId, {
       entities: updatedEntities,
       status: resolved.status,
@@ -624,7 +673,12 @@ export const endTurn = mutation({
     // IA ennemie automatique
     if (nextEntity?.team === "enemy") {
       entities = runEnemyTurn(entities);
-      const resolved = resolveCombatStatus(entities);
+      const resolved = await resolveCombatWithTerritory(ctx, entities, {
+        zoneId: combat.zoneId,
+        characterId: combat.characterId,
+        combatType: combat.combatType,
+        rewards: combat.rewards,
+      });
       if (resolved.status !== "active") {
         await ctx.db.patch("combats", args.combatId, {
           entities,

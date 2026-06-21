@@ -38,9 +38,18 @@ export const MONSTER_SPRITES: Record<string, string> = {
   graine_ombre: "/assets/monsters/monster-graine-ombre.png",
   wisp_sauvage: "/assets/monsters/monster-wisp-sauvage.png",
   loup_cristal: "/assets/monsters/monster-loup-cristal.png",
+  gardien_ruines: "/assets/monsters/monster-gardien-ruines.png",
   treant_corrompu: "/assets/monsters/monster-treant-corrompu.png",
+  fee_brume: "/assets/monsters/monster-fee-brume.png",
+  champion_lumina: "/assets/monsters/monster-champion-lumina.png",
   scorpion_ether: "/assets/monsters/monster-scorpion-ether.png",
+  sphinx_ombres: "/assets/monsters/monster-sphinx-ombres.png",
+  golem_stellaire: "/assets/monsters/monster-golem-stellaire.png",
   dragon_aether: "/assets/monsters/monster-dragon-aether.png",
+  event_gardien_floral: "/assets/monsters/monster-event-gardien-floral.png",
+  event_esprit_eclipse: "/assets/monsters/monster-event-esprit-eclipse.png",
+  event_ombre_majeur: "/assets/monsters/monster-event-ombre-majeur.png",
+  event_cristal_ancien: "/assets/monsters/monster-event-cristal-ancien.png",
 };
 
 export function getMonsterPortrait(monsterId: string): string | undefined {

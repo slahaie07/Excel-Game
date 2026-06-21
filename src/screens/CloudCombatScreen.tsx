@@ -112,7 +112,11 @@ export default function CloudCombatScreen() {
           targetY: y,
         });
         setSelectedSpell(null);
-        if (res.damage) setLog((p) => [...p, `${spell.name} : ${res.damage} dégâts`]);
+        sceneRef.current?.playSpellEffect(player.x, player.y, x, y, spell.apCost > 3 ? 0xff6600 : 0x44aaff);
+        if (res.damage) {
+          sceneRef.current?.playAttackEffect(player.x, player.y, x, y);
+          setLog((p) => [...p, `${spell.name} : ${res.damage} dégâts`]);
+        }
         if (res.heal) setLog((p) => [...p, `Soin : +${res.heal} PV`]);
       } else {
         const distance = Math.abs(x - player.x) + Math.abs(y - player.y);

@@ -206,6 +206,9 @@ export default function LocalCombatScreen() {
 
       effectLog.forEach((msg) => setLog((prev) => [...prev, `${spell.name} : ${msg}`]));
       sceneRef.current?.playSpellEffect(player.x, player.y, x, y, spell.apCost > 3 ? 0xff6600 : 0x44aaff);
+      if (spell.effects.some((e) => e.type === "damage")) {
+        sceneRef.current?.playAttackEffect(player.x, player.y, x, y);
+      }
 
       const newEntities = combat.entities.map((ent) => {
         if (ent.entityId === "player") {
@@ -331,6 +334,10 @@ export default function LocalCombatScreen() {
     });
 
     const enemy = enemies[0]!;
+    const playerEntity = combat.entities.find((e) => e.isPlayer);
+    if (playerEntity) {
+      sceneRef.current?.playAttackEffect(enemy.x, enemy.y, playerEntity.x, playerEntity.y);
+    }
     const dmg = Math.floor(Math.random() * 8) + 5;
     newEntities = newEntities.map((e) => {
       if (e.isPlayer) {

@@ -116,7 +116,7 @@ export default function SettingsScreen() {
           Déconnexion
         </button>
 
-        <p className="text-aether-600 text-xs text-center">Aetheris v1.20 — Monstres, Territoires & Roster</p>
+        <p className="text-aether-600 text-xs text-center">Aetheris v1.21 — Animations & Carte Territoriale</p>
       </div>
     </div>
   );

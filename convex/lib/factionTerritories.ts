@@ -1,4 +1,7 @@
 import { FACTION_META, ZONE_FACTION_MAP, type FactionId } from "./factions";
+import type { MutationCtx } from "../_generated/server";
+import type { Id } from "../_generated/dataModel";
+import { getWeekKey } from "./factionCampaignProgress";
 
 export type TerritoryStatus = "fortified" | "stable" | "contested";
 
@@ -102,4 +105,29 @@ export function campaignRowsToInput(
     progressPercent: Math.min(100, Math.round((r.progress / r.target) * 100)),
     status: r.status,
   }));
+}
+
+export async function getTerritoryXpMultiplierForCharacter(
+  ctx: MutationCtx,
+  zoneId: string,
+  characterId: Id<"characters">
+): Promise<number> {
+  const weekKey = getWeekKey();
+  const rows = await ctx.db
+    .query("factionCampaigns")
+    .withIndex("by_week", (q) => q.eq("weekKey", weekKey))
+    .collect();
+  const profile = await ctx.db
+    .query("factionProfiles")
+    .withIndex("by_character", (q) => q.eq("characterId", characterId))
+    .unique();
+  const input = campaignRowsToInput(
+    rows.map((r) => ({
+      factionId: r.factionId,
+      progress: r.progress,
+      target: r.target,
+      status: r.status,
+    }))
+  );
+  return getTerritoryXpMultiplier(zoneId, input, profile?.pledgedFactionId ?? null);
 }

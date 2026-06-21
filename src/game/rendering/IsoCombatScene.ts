@@ -122,6 +122,32 @@ export class IsoCombatScene extends Phaser.Scene {
     });
   }
 
+  playAttackEffect(fromX: number, fromY: number, toX: number, toY: number) {
+    const from = gridToIso(fromX, fromY, this.tileW, this.tileH, this.offsetX, this.offsetY);
+    const to = gridToIso(toX, toY, this.tileW, this.tileH, this.offsetX, this.offsetY);
+
+    const slash = this.add.graphics();
+    slash.lineStyle(3, 0xff5544, 0.95);
+    slash.lineBetween(from.x, from.y - 12, to.x, to.y - 12);
+    slash.setDepth(900);
+    this.tweens.add({
+      targets: slash,
+      alpha: 0,
+      duration: 180,
+      onComplete: () => slash.destroy(),
+    });
+
+    const impact = this.add.circle(to.x, to.y - 12, 6, 0xff3333, 0.7);
+    impact.setDepth(901);
+    this.tweens.add({
+      targets: impact,
+      scale: 2.2,
+      alpha: 0,
+      duration: 220,
+      onComplete: () => impact.destroy(),
+    });
+  }
+
   private renderEntities() {
     this.entitySprites.forEach((s) => s.destroy());
     this.entitySprites = [];

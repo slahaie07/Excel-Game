@@ -23,6 +23,7 @@ import { getClassIcon as getClassIconFromData } from "../game/rendering/isometri
 import { getZoneBackground, getClassPortrait } from "../game/data/assets";
 import { WorldCampaignBanner } from "../components/WorldCampaignBanner";
 import { WorldTerritoryBanner } from "../components/WorldTerritoryBanner";
+import { ZoneTerritoryBadge } from "../components/ZoneTerritoryBadge";
 import { PlayerNameLine } from "../components/PlayerNameLine";
 
 export default function WorldScreen() {
@@ -344,7 +345,8 @@ export default function WorldScreen() {
       {showMenu && (
         <div className="absolute inset-0 bg-black/60 z-50 flex items-end" onClick={() => setShowMenu(false)}>
           <div className="w-full game-panel p-4 rounded-t-3xl max-h-[60vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <h3 className="font-display font-bold text-lg mb-4">Voyager</h3>
+            <h3 className="font-display font-bold text-lg mb-2">Voyager</h3>
+            <p className="text-aether-500 text-xs mb-3">Contrôle territorial selon les campagnes hebdo</p>
             <div className="space-y-2">
               {ZONES.map((z) => (
                 <button
@@ -353,9 +355,10 @@ export default function WorldScreen() {
                   className={`card w-full flex items-center gap-3 ${z.id === zoneId ? "border-aether-500" : ""}`}
                 >
                   <span className="text-2xl">{z.icon}</span>
-                  <div className="text-left">
+                  <div className="text-left flex-1 min-w-0">
                     <p className="font-bold text-white text-sm">{z.name}</p>
                     <p className="text-aether-500 text-xs">Niv. {z.levelRange[0]}-{z.levelRange[1]}</p>
+                    <ZoneTerritoryBadge zoneId={z.id} campaigns={campaigns} compact />
                   </div>
                 </button>
               ))}

@@ -45,6 +45,46 @@ export function addIdleMotion(
   });
 }
 
+export function playAttackLunge(
+  scene: Phaser.Scene,
+  target: Phaser.GameObjects.GameObject,
+  baseX: number,
+  baseY: number,
+  towardX: number,
+  towardY: number,
+  distance = 14
+): void {
+  const dx = towardX - baseX;
+  const dy = towardY - baseY;
+  const len = Math.sqrt(dx * dx + dy * dy) || 1;
+  scene.tweens.add({
+    targets: target,
+    x: baseX + (dx / len) * distance,
+    y: baseY + (dy / len) * (distance * 0.6),
+    duration: 110,
+    yoyo: true,
+    ease: "Power2",
+  });
+}
+
+export function playDamageShake(
+  scene: Phaser.Scene,
+  target: Phaser.GameObjects.GameObject
+): void {
+  const startX = (target as Phaser.GameObjects.Image).x;
+  scene.tweens.add({
+    targets: target,
+    x: startX + 4,
+    duration: 40,
+    yoyo: true,
+    repeat: 2,
+    ease: "Sine.easeInOut",
+    onComplete: () => {
+      (target as Phaser.GameObjects.Image).x = startX;
+    },
+  });
+}
+
 export function addEntityVisual(
   scene: Phaser.Scene,
   x: number,
