@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>M7 Studio — Créativité. Excellence. Prestige.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E5C97E;
+      --gold-pale: #F5E6C0;
+      --gold-dark: #8B6914;
+      --black: #000000;
+      --black-rich: #0A0A0A;
+      --black-deep: #111111;
+      --black-soft: #1A1A1A;
+      --black-mid: #222222;
+      --white: #FFFFFF;
+      --white-off: #F8F5EE;
+      --gray-light: #888888;
+      --gray-mid: #444444;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--black-rich);
+      color: var(--white-off);
+      font-family: 'Montserrat', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ─── SCROLLBAR ─────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--black-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+    /* ─── UTILS ─────────────────────────────────── */
+    .gold { color: var(--gold); }
+    .serif { font-family: 'Playfair Display', serif; }
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label::before, .section-label::after {
+      content: '';
+      display: block;
+      width: 30px;
+      height: 1px;
+      background: var(--gold);
+    }
+    .section-label::before { display: none; }
+    .divider {
+      width: 60px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 20px 0;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 38px;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+      color: var(--black);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.35s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold-pale));
+      opacity: 0;
+      transition: opacity 0.35s;
+    }
+    .btn-primary:hover::before { opacity: 1; }
+    .btn-primary span { position: relative; z-index: 1; }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 38px;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      background: transparent;
+      transition: all 0.35s ease;
+    }
+    .btn-outline:hover {
+      background: var(--gold);
+      color: var(--black);
+    }
+
+    /* ─── NAV ────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 0 60px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+      transition: all 0.3s;
+    }
+    .nav-logo {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+    .nav-logo-m7 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.05em;
+    }
+    .nav-logo-sub {
+      font-size: 0.5rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-top: 2px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-off);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.25s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-cta { margin-left: 20px; }
+
+    /* ─── HERO ───────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background: var(--black);
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,168,76,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(201,168,76,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 30% 30% at 80% 20%, rgba(201,168,76,0.04) 0%, transparent 60%);
+    }
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 80%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 20px;
+      max-width: 1000px;
+    }
+    .hero-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+    .hero-eyebrow span { display: block; width: 40px; height: 1px; background: var(--gold); }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 9vw, 8rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .hero-title .line-gold {
+      background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 40%, var(--gold-light) 70%, var(--gold-pale) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block;
+    }
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      font-style: italic;
+      color: rgba(245,230,192,0.7);
+      margin-bottom: 50px;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .hero-scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--gold);
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      animation: bounce 2s infinite;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+    /* Stats bar */
+    .hero-stats {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(10,10,10,0.95);
+      border-top: 1px solid rgba(201,168,76,0.2);
+      display: flex;
+      justify-content: center;
+      gap: 0;
+    }
+    .stat-item {
+      padding: 28px 60px;
+      text-align: center;
+      border-right: 1px solid rgba(201,168,76,0.12);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gray-light);
+      font-weight: 500;
+    }
+
+    /* ─── ABOUT ──────────────────────────────────── */
+    #about {
+      padding: 140px 60px;
+      background: var(--black-deep);
+      position: relative;
+    }
+    #about::before {
+      content: 'M7';
+      position: absolute;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Playfair Display', serif;
+      font-size: 18rem;
+      font-weight: 900;
+      color: rgba(201,168,76,0.03);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+    .about-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: center;
+    }
+    .about-img-wrap {
+      position: relative;
+    }
+    .about-img-box {
+      width: 100%;
+      aspect-ratio: 4/5;
+      background: var(--black-soft);
+      border: 1px solid rgba(201,168,76,0.15);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .about-img-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.08), transparent 60%);
+    }
+    .about-img-inner {
+      font-family: 'Playfair Display', serif;
+      font-size: 7rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      z-index: 1;
+    }
+    .about-corner {
+      position: absolute;
+      width: 40px; height: 40px;
+      border-color: var(--gold);
+      border-style: solid;
+    }
+    .about-corner.tl { top: -10px; left: -10px; border-width: 2px 0 0 2px; }
+    .about-corner.br { bottom: -10px; right: -10px; border-width: 0 2px 2px 0; }
+    .about-badge {
+      position: absolute;
+      bottom: -30px; right: -30px;
+      width: 120px; height: 120px;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--black);
+    }
+    .about-badge-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .about-badge-txt {
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 4px;
+    }
+    .about-text { position: relative; z-index: 1; }
+    .about-h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin: 18px 0 24px;
+    }
+    .about-p {
+      font-size: 0.9rem;
+      line-height: 1.9;
+      color: rgba(248,245,238,0.7);
+      margin-bottom: 16px;
+      font-weight: 300;
+    }
+    .about-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 36px;
+    }
+    .about-feat {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      color: rgba(248,245,238,0.8);
+    }
+    .about-feat-icon {
+      width: 6px; height: 6px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    /* ─── SERVICES ───────────────────────────────── */
+    #services {
+      padding: 140px 60px;
+      background: var(--black);
+      position: relative;
+    }
+    .section-header {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 80px;
+    }
+    .section-header .section-label { justify-content: center; }
+    .section-header .section-label::before { display: block; }
+    .section-h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 18px 0 20px;
+    }
+    .section-p {
+      font-size: 0.85rem;
+      line-height: 1.9;
+      color: rgba(248,245,238,0.6);
+      font-weight: 300;
+    }
+    .services-grid {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .service-card {
+      background: var(--black-soft);
+      padding: 50px 40px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      cursor: default;
+      border: 1px solid rgba(201,168,76,0.06);
+    }
+    .service-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.06), transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .service-card:hover::before { opacity: 1; }
+    .service-card:hover { border-color: rgba(201,168,76,0.25); transform: translateY(-4px); }
+    .service-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: rgba(201,168,76,0.08);
+      line-height: 1;
+      margin-bottom: 30px;
+      transition: color 0.4s;
+    }
+    .service-card:hover .service-num { color: rgba(201,168,76,0.15); }
+    .service-icon {
+      width: 52px; height: 52px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .service-icon svg { width: 100%; height: 100%; }
+    .service-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: var(--white-off);
+    }
+    .service-desc {
+      font-size: 0.8rem;
+      line-height: 1.85;
+      color: rgba(248,245,238,0.55);
+      font-weight: 300;
+      margin-bottom: 28px;
+    }
+    .service-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .service-list li {
+      font-size: 0.72rem;
+      color: rgba(201,168,76,0.8);
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .service-list li::before {
+      content: '';
+      display: block;
+      width: 16px; height: 1px;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    /* ─── PORTFOLIO ──────────────────────────────── */
+    #portfolio {
+      padding: 140px 60px;
+      background: var(--black-deep);
+    }
+    .portfolio-filter {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: 60px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 10px 24px;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 600;
+      border: 1px solid rgba(201,168,76,0.2);
+      background: transparent;
+      color: rgba(248,245,238,0.5);
+      cursor: pointer;
+      transition: all 0.25s;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--black);
+    }
+    .portfolio-grid {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(3, 260px);
+      gap: 4px;
+    }
+    .porto-item {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--black-soft);
+    }
+    .porto-item:nth-child(1) { grid-column: span 5; grid-row: span 2; }
+    .porto-item:nth-child(2) { grid-column: span 4; grid-row: span 1; }
+    .porto-item:nth-child(3) { grid-column: span 3; grid-row: span 1; }
+    .porto-item:nth-child(4) { grid-column: span 4; grid-row: span 1; }
+    .porto-item:nth-child(5) { grid-column: span 3; grid-row: span 1; }
+    .porto-item:nth-child(6) { grid-column: span 4; grid-row: span 1; }
+    .porto-item:nth-child(7) { grid-column: span 5; grid-row: span 1; }
+    .porto-item:nth-child(8) { grid-column: span 3; grid-row: span 1; }
+    .porto-bg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      transition: transform 0.5s ease;
+    }
+    .porto-item:hover .porto-bg { transform: scale(1.08); }
+    .porto-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.35s;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 28px;
+    }
+    .porto-item:hover .porto-overlay { opacity: 1; }
+    .porto-cat {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .porto-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--white-off);
+    }
+    /* Portfolio background patterns */
+    .pb-1 { background: linear-gradient(135deg, #1a0f00, #2a1800); }
+    .pb-2 { background: linear-gradient(135deg, #0d0d0d, #1f1a0f); }
+    .pb-3 { background: linear-gradient(135deg, #0a0a0a, #151008); }
+    .pb-4 { background: linear-gradient(135deg, #110800, #1e1200); }
+    .pb-5 { background: linear-gradient(135deg, #080808, #120f00); }
+    .pb-6 { background: linear-gradient(135deg, #0f0a00, #1a1400); }
+    .pb-7 { background: linear-gradient(135deg, #0a0800, #181300); }
+    .pb-8 { background: linear-gradient(135deg, #0d0a00, #1c1500); }
+
+    /* ─── PROCESS ────────────────────────────────── */
+    #process {
+      padding: 140px 60px;
+      background: var(--black);
+    }
+    .process-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      position: relative;
+    }
+    .process-grid::before {
+      content: '';
+      position: absolute;
+      top: 60px;
+      left: 12.5%;
+      right: 12.5%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--gold), transparent);
+      opacity: 0.25;
+    }
+    .process-step {
+      padding: 0 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .step-num-wrap {
+      width: 120px; height: 120px;
+      border: 1px solid rgba(201,168,76,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 32px;
+      position: relative;
+      background: var(--black-deep);
+    }
+    .step-num-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(201,168,76,0.1);
+    }
+    .step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      z-index: 1;
+    }
+    .step-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--white-off);
+    }
+    .step-desc {
+      font-size: 0.78rem;
+      line-height: 1.8;
+      color: rgba(248,245,238,0.5);
+      font-weight: 300;
+    }
+
+    /* ─── PRICING ────────────────────────────────── */
+    #pricing {
+      padding: 140px 60px;
+      background: var(--black-deep);
+    }
+    .pricing-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      align-items: start;
+    }
+    .price-card {
+      background: var(--black-soft);
+      padding: 52px 42px;
+      position: relative;
+      border: 1px solid rgba(201,168,76,0.08);
+      transition: all 0.35s;
+    }
+    .price-card.featured {
+      background: linear-gradient(160deg, #0f0a00, #1a1200, #0a0800);
+      border: 1px solid rgba(201,168,76,0.4);
+      transform: translateY(-20px);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(201,168,76,0.05);
+    }
+    .price-card:hover { border-color: rgba(201,168,76,0.25); }
+    .price-badge {
+      position: absolute;
+      top: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: var(--black);
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 6px 20px;
+      white-space: nowrap;
+    }
+    .price-tier {
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+    .price-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--white-off);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .price-amount sup {
+      font-size: 1.4rem;
+      vertical-align: super;
+      color: var(--gold);
+      font-weight: 400;
+    }
+    .price-freq {
+      font-size: 0.75rem;
+      color: var(--gray-light);
+      margin-bottom: 36px;
+    }
+    .price-divider {
+      height: 1px;
+      background: rgba(201,168,76,0.12);
+      margin-bottom: 32px;
+    }
+    .price-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 40px;
+    }
+    .price-features li {
+      font-size: 0.8rem;
+      color: rgba(248,245,238,0.7);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 300;
+    }
+    .price-features li .check {
+      color: var(--gold);
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .price-features li.disabled { opacity: 0.3; }
+    .price-features li.disabled .check { color: var(--gray-mid); }
+
+    /* ─── TESTIMONIALS ───────────────────────────── */
+    #testimonials {
+      padding: 140px 60px;
+      background: var(--black);
+      position: relative;
+      overflow: hidden;
+    }
+    #testimonials::before {
+      content: '"';
+      position: absolute;
+      top: 60px; left: 60px;
+      font-family: 'Playfair Display', serif;
+      font-size: 25rem;
+      color: rgba(201,168,76,0.03);
+      line-height: 1;
+      font-weight: 900;
+      pointer-events: none;
+    }
+    .testimonials-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .testi-card {
+      background: var(--black-soft);
+      padding: 40px;
+      border: 1px solid rgba(201,168,76,0.08);
+      position: relative;
+      transition: border-color 0.3s;
+    }
+    .testi-card:hover { border-color: rgba(201,168,76,0.25); }
+    .testi-stars {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 20px;
+    }
+    .star { color: var(--gold); font-size: 0.85rem; }
+    .testi-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-style: italic;
+      line-height: 1.7;
+      color: rgba(248,245,238,0.8);
+      margin-bottom: 28px;
+    }
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .testi-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--black);
+      flex-shrink: 0;
+    }
+    .testi-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--white-off);
+      margin-bottom: 3px;
+    }
+    .testi-role {
+      font-size: 0.7rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+    }
+
+    /* ─── TEAM ───────────────────────────────────── */
+    #team {
+      padding: 140px 60px;
+      background: var(--black-deep);
+    }
+    .team-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+    .team-card {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .team-img {
+      aspect-ratio: 3/4;
+      background: var(--black-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(201,168,76,0.06);
+      transition: border-color 0.35s;
+    }
+    .team-card:hover .team-img { border-color: rgba(201,168,76,0.3); }
+    .team-img-inner {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      transition: transform 0.4s;
+    }
+    .team-card:hover .team-img-inner { transform: scale(1.05); }
+    .team-info {
+      padding: 24px 24px 28px;
+      background: var(--black-soft);
+      border: 1px solid rgba(201,168,76,0.06);
+      border-top: none;
+    }
+    .team-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .team-role {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    /* ─── CONTACT / CTA ──────────────────────────── */
+    #contact {
+      padding: 140px 60px;
+      background: var(--black);
+      position: relative;
+      overflow: hidden;
+    }
+    .contact-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(201,168,76,0.04), transparent);
+    }
+    .contact-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      position: relative;
+      z-index: 2;
+    }
+    .contact-info h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 18px 0 24px;
+    }
+    .contact-info p {
+      font-size: 0.85rem;
+      line-height: 1.9;
+      color: rgba(248,245,238,0.6);
+      margin-bottom: 40px;
+    }
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .contact-detail {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.82rem;
+      color: rgba(248,245,238,0.75);
+    }
+    .contact-detail-icon {
+      width: 44px; height: 44px;
+      border: 1px solid rgba(201,168,76,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--gold);
+      font-size: 1rem;
+    }
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-field { display: flex; flex-direction: column; gap: 8px; }
+    .form-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+    }
+    .form-input, .form-select, .form-textarea {
+      background: var(--black-soft);
+      border: 1px solid rgba(201,168,76,0.15);
+      color: var(--white-off);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      padding: 14px 18px;
+      outline: none;
+      transition: border-color 0.25s;
+      width: 100%;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: rgba(201,168,76,0.5);
+    }
+    .form-select { appearance: none; cursor: pointer; }
+    .form-textarea { resize: vertical; min-height: 120px; }
+    .form-input::placeholder, .form-textarea::placeholder {
+      color: rgba(248,245,238,0.25);
+    }
+    option { background: var(--black-soft); }
+
+    /* ─── FOOTER ─────────────────────────────────── */
+    footer {
+      background: var(--black-rich);
+      border-top: 1px solid rgba(201,168,76,0.12);
+      padding: 80px 60px 40px;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 60px;
+      max-width: 1300px;
+      margin: 0 auto 60px;
+    }
+    .footer-brand-m7 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .footer-brand-sub {
+      font-size: 0.55rem;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+    .footer-about {
+      font-size: 0.8rem;
+      line-height: 1.85;
+      color: rgba(248,245,238,0.45);
+      margin-bottom: 28px;
+    }
+    .social-links {
+      display: flex;
+      gap: 10px;
+    }
+    .social-link {
+      width: 38px; height: 38px;
+      border: 1px solid rgba(201,168,76,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+    .social-link:hover {
+      background: var(--gold);
+      color: var(--black);
+      border-color: var(--gold);
+    }
+    .footer-col h4 {
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .footer-col ul a {
+      font-size: 0.8rem;
+      color: rgba(248,245,238,0.45);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+    .footer-col ul a:hover { color: var(--gold); }
+    .footer-bottom {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 30px;
+      border-top: 1px solid rgba(201,168,76,0.08);
+    }
+    .footer-copy {
+      font-size: 0.72rem;
+      color: rgba(248,245,238,0.3);
+      letter-spacing: 0.05em;
+    }
+    .footer-legal {
+      display: flex;
+      gap: 28px;
+    }
+    .footer-legal a {
+      font-size: 0.7rem;
+      color: rgba(248,245,238,0.3);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+    .footer-legal a:hover { color: var(--gold); }
+
+    /* ─── GOLD LINE DECORATION ───────────────────── */
+    .gold-line {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 60px;
+    }
+    .gold-line-bar {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3));
+    }
+    .gold-line-diamond {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      transform: rotate(45deg);
+    }
+
+    /* ─── AWARDS BAND ────────────────────────────── */
+    #awards {
+      background: var(--black-soft);
+      border-top: 1px solid rgba(201,168,76,0.1);
+      border-bottom: 1px solid rgba(201,168,76,0.1);
+      padding: 40px 60px;
+      overflow: hidden;
+    }
+    .awards-track {
+      display: flex;
+      gap: 60px;
+      align-items: center;
+    }
+    .award-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .award-icon { font-size: 1.5rem; }
+    .award-text {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(248,245,238,0.4);
+      font-weight: 500;
+    }
+    .award-sep {
+      width: 1px; height: 30px;
+      background: rgba(201,168,76,0.2);
+      flex-shrink: 0;
+    }
+
+    /* ─── ANIMATIONS ─────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .anim {
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards;
+    }
+    .anim-delay-1 { animation-delay: 0.1s; }
+    .anim-delay-2 { animation-delay: 0.2s; }
+    .anim-delay-3 { animation-delay: 0.3s; }
+    .anim-delay-4 { animation-delay: 0.4s; }
+
+    /* ─── RESPONSIVE ─────────────────────────────── */
+    @media (max-width: 1100px) {
+      nav { padding: 0 30px; }
+      .nav-links { gap: 24px; }
+      #about, #services, #portfolio, #process, #pricing, #testimonials, #team, #contact { padding: 100px 30px; }
+      .about-inner { grid-template-columns: 1fr; gap: 60px; }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+      .process-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .process-grid::before { display: none; }
+      .pricing-grid { grid-template-columns: 1fr; gap: 16px; max-width: 500px; }
+      .price-card.featured { transform: none; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr 1fr; }
+      .contact-inner { grid-template-columns: 1fr; gap: 60px; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .portfolio-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+      .porto-item { grid-column: span 1 !important; grid-row: span 1 !important; height: 220px; }
+    }
+    @media (max-width: 700px) {
+      nav { padding: 0 20px; height: 70px; }
+      .nav-links { display: none; }
+      .hero-stats { display: none; }
+      .stat-item { padding: 20px 30px; }
+      #about, #services, #portfolio, #process, #pricing, #testimonials, #team, #contact { padding: 80px 20px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr 1fr; }
+      footer { padding: 60px 20px 30px; }
+      .footer-top { grid-template-columns: 1fr; gap: 36px; }
+      .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAVIGATION ───────────────────────── -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-m7">M7</div>
+    <div class="nav-logo-sub">Studio</div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#about">À Propos</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#process">Processus</a></li>
+    <li><a href="#pricing">Tarifs</a></li>
+    <li><a href="#team">Équipe</a></li>
+  </ul>
+  <a href="#contact" class="btn-primary nav-cta"><span>Nous Contacter</span></a>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────── -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span></span>
+      Bienvenue chez M7 Studio
+      <span></span>
+    </div>
+    <h1 class="hero-title">
+      <span>L'Excellence</span>
+      <span class="line-gold">Sans Limite</span>
+    </h1>
+    <p class="hero-subtitle">
+      Photographie. Vidéo. Musique. Design. Branding. Production.<br/>
+      Votre vision. Notre maîtrise. Un résultat d'exception.
+    </p>
+    <div class="hero-actions">
+      <a href="#portfolio" class="btn-primary"><span>Découvrir le Portfolio</span></a>
+      <a href="#services" class="btn-outline">Nos Services</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Défiler
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">10+</div>
+      <div class="stat-label">Années d'Excellence</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">850+</div>
+      <div class="stat-label">Projets Réalisés</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">200+</div>
+      <div class="stat-label">Clients Premium</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">32</div>
+      <div class="stat-label">Récompenses</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Satisfaction Client</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── AWARDS BAND ──────────────────────── -->
+<div id="awards">
+  <div class="awards-track">
+    <div class="award-item"><span class="award-icon">🏆</span><span class="award-text">Studio de l'Année 2024</span></div>
+    <div class="award-sep"></div>
+    <div class="award-item"><span class="award-icon">🥇</span><span class="award-text">Prix d'Excellence Créative</span></div>
+    <div class="award-sep"></div>
+    <div class="award-item"><span class="award-icon">⭐</span><span class="award-text">Top 10 Studios Premium</span></div>
+    <div class="award-sep"></div>
+    <div class="award-item"><span class="award-icon">🎖️</span><span class="award-text">Meilleure Production Vidéo</span></div>
+    <div class="award-sep"></div>
+    <div class="award-item"><span class="award-icon">💎</span><span class="award-text">Label Prestige & Luxe</span></div>
+    <div class="award-sep"></div>
+    <div class="award-item"><span class="award-icon">🎵</span><span class="award-text">Studio Musical Certifié Platinum</span></div>
+    <div class="award-sep"></div>
+    <div class="award-item"><span class="award-icon">📸</span><span class="award-text">Award International de Photographie</span></div>
+  </div>
+</div>
+
+<!-- ─── ABOUT ────────────────────────────── -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-img-wrap">
+      <div class="about-img-box">
+        <div class="about-corner tl"></div>
+        <div class="about-corner br"></div>
+        <div class="about-img-inner">M7</div>
+      </div>
+      <div class="about-badge">
+        <div class="about-badge-num">10</div>
+        <div class="about-badge-txt">Ans de Prestige</div>
+      </div>
+    </div>
+    <div class="about-text">
+      <div class="section-label">Notre Histoire</div>
+      <h2 class="about-h2">
+        Un Studio Né pour<br/><em class="gold">l'Excellence</em>
+      </h2>
+      <p class="about-p">
+        M7 Studio est un espace créatif d'exception, fondé sur une vision simple : offrir à chaque client une expérience premium inégalée. Depuis plus de 10 ans, nous combinons technologie de pointe et savoir-faire artistique pour produire des œuvres qui marquent les esprits.
+      </p>
+      <p class="about-p">
+        Notre studio est équipé des dernières technologies — éclairages professionnels, cabines de mixage acoustique, décors modulables, et équipements 8K — le tout dans un cadre sobre et luxueux, entièrement pensé en or et noir.
+      </p>
+      <div class="about-features">
+        <div class="about-feat"><div class="about-feat-icon"></div> Studio Photo 500m²</div>
+        <div class="about-feat"><div class="about-feat-icon"></div> Cabine Audio Certifiée</div>
+        <div class="about-feat"><div class="about-feat-icon"></div> Régie Vidéo 8K</div>
+        <div class="about-feat"><div class="about-feat-icon"></div> Décors Modulables</div>
+        <div class="about-feat"><div class="about-feat-icon"></div> Post-Production Intégrée</div>
+        <div class="about-feat"><div class="about-feat-icon"></div> Direction Artistique</div>
+        <div class="about-feat"><div class="about-feat-icon"></div> Makeup & Stylisme</div>
+        <div class="about-feat"><div class="about-feat-icon"></div> Livraison Sous 48h</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SERVICES ──────────────────────────── -->
+<section id="services">
+  <div class="section-header">
+    <div class="section-label">Ce Que Nous Faisons</div>
+    <h2 class="section-h2">Services <em class="gold">Premium</em> & Complets</h2>
+    <div class="divider" style="margin: 0 auto 20px;"></div>
+    <p class="section-p">De la photographie haute couture à la production musicale platinum, M7 Studio couvre l'intégralité de votre univers créatif avec une exigence absolue.</p>
+  </div>
+  <div class="services-grid">
+
+    <!-- Photographie -->
+    <div class="service-card">
+      <div class="service-num">01</div>
+      <div class="service-icon">
+        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="12" width="44" height="32" rx="3" stroke="#C9A84C" stroke-width="1.5"/>
+          <circle cx="26" cy="28" r="8" stroke="#C9A84C" stroke-width="1.5"/>
+          <circle cx="26" cy="28" r="3" fill="#C9A84C" opacity="0.4"/>
+          <rect x="18" y="7" width="16" height="5" rx="2" stroke="#C9A84C" stroke-width="1.5"/>
+          <circle cx="41" cy="18" r="2" fill="#C9A84C"/>
+        </svg>
+      </div>
+      <h3 class="service-title">Photographie</h3>
+      <p class="service-desc">Sessions photo professionnelles pour mode, portraits, publicité, e-commerce et événements. Chaque cliché est une œuvre.</p>
+      <ul class="service-list">
+        <li>Shooting Mode & Haute Couture</li>
+        <li>Portraits Corporate & Artistiques</li>
+        <li>Publicité & Lookbook</li>
+        <li>Photographie Événementielle</li>
+        <li>Retouche & Post-Production</li>
+      </ul>
+    </div>
+
+    <!-- Vidéo -->
+    <div class="service-card">
+      <div class="service-num">02</div>
+      <div class="service-icon">
+        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="12" width="32" height="28" rx="3" stroke="#C9A84C" stroke-width="1.5"/>
+          <path d="M36 18l12-6v28l-12-6V18z" stroke="#C9A84C" stroke-width="1.5" stroke-linejoin="round"/>
+          <circle cx="20" cy="26" r="6" stroke="#C9A84C" stroke-width="1.5"/>
+          <path d="M18 24l4 2-4 2v-4z" fill="#C9A84C"/>
+        </svg>
+      </div>
+      <h3 class="service-title">Production Vidéo</h3>
+      <p class="service-desc">Clips musicaux, spots publicitaires, films d'entreprise et documentaires en qualité 4K/8K. Une narration visuelle sans compromis.</p>
+      <ul class="service-list">
+        <li>Clips Musicaux & Artistiques</li>
+        <li>Publicités TV & Digital</li>
+        <li>Films Institutionnels</li>
+        <li>Motion Design & VFX</li>
+        <li>Montage & Étalonnage</li>
+      </ul>
+    </div>
+
+    <!-- Musique -->
+    <div class="service-card">
+      <div class="service-num">03</div>
+      <div class="service-icon">
+        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 38V14l28-4v24" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="13" cy="38" r="7" stroke="#C9A84C" stroke-width="1.5"/>
+          <circle cx="41" cy="34" r="7" stroke="#C9A84C" stroke-width="1.5"/>
+          <path d="M20 22l28-4" stroke="#C9A84C" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <h3 class="service-title">Production Musicale</h3>
+      <p class="service-desc">Enregistrement, mixage et mastering dans notre cabine acoustique certifiée. Du premier accord au master final prêt pour les plateformes.</p>
+      <ul class="service-list">
+        <li>Enregistrement Multi-Piste</li>
+        <li>Mixage & Mastering Platinum</li>
+        <li>Composition & Arrangement</li>
+        <li>Beat Making & Prod</li>
+        <li>Distribution Digitale</li>
+      </ul>
+    </div>
+
+    <!-- Branding -->
+    <div class="service-card">
+      <div class="service-num">04</div>
+      <div class="service-icon">
+        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 42L26 10l16 32" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15 32h22" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="26" cy="10" r="3" fill="#C9A84C" opacity="0.5"/>
+        </svg>
+      </div>
+      <h3 class="service-title">Branding & Identité</h3>
+      <p class="service-desc">Construction d'identités visuelles puissantes et mémorables. Logo, charte graphique, packaging — votre marque, sublimée.</p>
+      <ul class="service-list">
+        <li>Création de Logo Premium</li>
+        <li>Charte Graphique Complète</li>
+        <li>Packaging & Print</li>
+        <li>Stratégie de Marque</li>
+        <li>Brand Guidelines</li>
+      </ul>
+    </div>
+
+    <!-- Événements -->
+    <div class="service-card">
+      <div class="service-num">05</div>
+      <div class="service-icon">
+        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="16" width="36" height="28" rx="2" stroke="#C9A84C" stroke-width="1.5"/>
+          <path d="M8 24h36" stroke="#C9A84C" stroke-width="1.5"/>
+          <rect x="18" y="8" width="4" height="10" rx="1" fill="#C9A84C" opacity="0.5"/>
+          <rect x="30" y="8" width="4" height="10" rx="1" fill="#C9A84C" opacity="0.5"/>
+          <circle cx="20" cy="33" r="2" fill="#C9A84C"/>
+          <circle cx="26" cy="33" r="2" fill="#C9A84C" opacity="0.5"/>
+          <circle cx="32" cy="33" r="2" fill="#C9A84C"/>
+        </svg>
+      </div>
+      <h3 class="service-title">Couverture Événementielle</h3>
+      <p class="service-desc">Mariages, galas, concerts, lancements de produits. Une équipe dédiée pour immortaliser chaque moment avec élégance et précision.</p>
+      <ul class="service-list">
+        <li>Mariages & Cérémonies</li>
+        <li>Galas & Événements Corporate</li>
+        <li>Concerts & Shows</li>
+        <li>Lancements Produits</li>
+        <li>Reportages & Documentaires</li>
+      </ul>
+    </div>
+
+    <!-- Digital & Social -->
+    <div class="service-card">
+      <div class="service-num">06</div>
+      <div class="service-icon">
+        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="10" width="40" height="28" rx="2" stroke="#C9A84C" stroke-width="1.5"/>
+          <path d="M16 42h20M26 38v4" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M18 24l6 6 10-12" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3 class="service-title">Contenu Digital & Social</h3>
+      <p class="service-desc">Stratégie de contenu, création de visuels pour réseaux sociaux, reels et campagnes digitales. Votre présence en ligne, magnifiée.</p>
+      <ul class="service-list">
+        <li>Contenu Instagram & TikTok</li>
+        <li>Reels & Shorts Professionnels</li>
+        <li>Campagnes Digitales</li>
+        <li>Story Design & Templates</li>
+        <li>Stratégie Éditoriale</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── PORTFOLIO ─────────────────────────── -->
+<section id="portfolio">
+  <div class="section-header">
+    <div class="section-label">Nos Réalisations</div>
+    <h2 class="section-h2">Portfolio <em class="gold">d'Excellence</em></h2>
+    <div class="divider" style="margin: 0 auto 20px;"></div>
+    <p class="section-p">Quelques-unes de nos créations les plus emblématiques. Chaque projet raconte une histoire unique.</p>
+  </div>
+  <div class="portfolio-filter">
+    <button class="filter-btn active">Tout</button>
+    <button class="filter-btn">Photo</button>
+    <button class="filter-btn">Vidéo</button>
+    <button class="filter-btn">Musique</button>
+    <button class="filter-btn">Branding</button>
+    <button class="filter-btn">Événements</button>
+  </div>
+  <div class="portfolio-grid">
+    <div class="porto-item">
+      <div class="porto-bg pb-1"><span style="color:rgba(201,168,76,0.3);font-family:'Playfair Display',serif;font-weight:900;">📸</span></div>
+      <div class="porto-overlay">
+        <div class="porto-cat">Photographie Mode</div>
+        <div class="porto-name">Collection Haute Couture Alia</div>
+      </div>
+    </div>
+    <div class="porto-item">
+      <div class="porto-bg pb-2"><span style="color:rgba(201,168,76,0.3);font-family:'Playfair Display',serif;">🎬</span></div>
+      <div class="porto-overlay">
+        <div class="porto-cat">Vidéo Publicitaire</div>
+        <div class="porto-name">Spot TV Luxe – Parfum Nocturne</div>
+      </div>
+    </div>
+    <div class="porto-item">
+      <div class="porto-bg pb-3"><span style="color:rgba(201,168,76,0.3);">🎵</span></div>
+      <div class="porto-overlay">
+        <div class="porto-cat">Production Musicale</div>
+        <div class="porto-name">Album Platinum – Kaïs El Mahi</div>
+      </div>
+    </div>
+    <div class="porto-item">
+      <div class="porto-bg pb-4"><span style="color:rgba(201,168,76,0.3);">💍</span></div>
+      <div class="porto-overlay">
+        <div class="porto-cat">Événement</div>
+        <div class="porto-name">Mariage Somptueux – Villa Royale</div>
+      </div>
+    </div>
+    <div class="porto-item">
+      <div class="porto-bg pb-5"><span style="color:rgba(201,168,76,0.3);">🎯</span></div>
+      <div class="porto-overlay">
+        <div class="porto-cat">Branding</div>
+        <div class="porto-name">Identité Visuelle – Groupe Aurore</div>
+      </div>
+    </div>
+    <div class="porto-item">
+      <div class="porto-bg pb-6"><span style="color:rgba(201,168,76,0.3);">🌟</span></div>
+      <div class="porto-overlay">
+        <div class="porto-cat">Clip Musical</div>
+        <div class="porto-name">Clip Officiel – Nour & L'Orchestre</div>
+      </div>
+    </div>
+    <div class="porto-item">
+      <div class="porto-bg pb-7"><span style="color:rgba(201,168,76,0.3);">📱</span></div>
+      <div class="porto-overlay">
+        <div class="porto-cat">Contenu Digital</div>
+        <div class="porto-name">Campagne Social – Maison Dorée</div>
+      </div>
+    </div>
+    <div class="porto-item">
+      <div class="porto-bg pb-8"><span style="color:rgba(201,168,76,0.3);">🏛️</span></div>
+      <div class="porto-overlay">
+        <div class="porto-cat">Corporate</div>
+        <div class="porto-name">Film Institutionnel – Banque Prestige</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROCESS ───────────────────────────── -->
+<section id="process">
+  <div class="section-header">
+    <div class="section-label">Notre Approche</div>
+    <h2 class="section-h2">Un Processus <em class="gold">Maîtrisé</em></h2>
+    <div class="divider" style="margin: 0 auto 20px;"></div>
+    <p class="section-p">Chaque projet suit une méthodologie rigoureuse pour garantir un résultat à la hauteur de vos ambitions.</p>
+  </div>
+  <div class="process-grid">
+    <div class="process-step">
+      <div class="step-num-wrap"><div class="step-num">01</div></div>
+      <h3 class="step-title">Consultation</h3>
+      <p class="step-desc">Une réunion approfondie pour comprendre votre vision, vos objectifs et l'univers de votre marque. Nous écoutons avant d'agir.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num-wrap"><div class="step-num">02</div></div>
+      <h3 class="step-title">Conception</h3>
+      <p class="step-desc">Nos directeurs artistiques développent un concept sur-mesure, des moodboards et une proposition créative validée avec vous.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num-wrap"><div class="step-num">03</div></div>
+      <h3 class="step-title">Production</h3>
+      <p class="step-desc">Tournage, enregistrement ou shooting dans notre studio premium, avec une équipe experte et des équipements de dernière génération.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num-wrap"><div class="step-num">04</div></div>
+      <h3 class="step-title">Livraison</h3>
+      <p class="step-desc">Post-production soignée, révisions incluses et livraison dans les formats adaptés à vos besoins. Résultat garanti sous 48h.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRICING ───────────────────────────── -->
+<section id="pricing">
+  <div class="section-header">
+    <div class="section-label">Investissement</div>
+    <h2 class="section-h2">Formules <em class="gold">Sur Mesure</em></h2>
+    <div class="divider" style="margin: 0 auto 20px;"></div>
+    <p class="section-p">Des offres pensées pour chaque ambition. Chaque prestation peut être personnalisée selon vos besoins spécifiques.</p>
+  </div>
+  <div class="pricing-grid">
+
+    <div class="price-card">
+      <div class="price-tier">Essentiel</div>
+      <div class="price-amount"><sup>€</sup>490</div>
+      <div class="price-freq">par session</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li><span class="check">◆</span> Studio 4 heures</li>
+        <li><span class="check">◆</span> 1 Photographe professionnel</li>
+        <li><span class="check">◆</span> 30 photos retouchées HD</li>
+        <li><span class="check">◆</span> 1 décor inclus</li>
+        <li><span class="check">◆</span> Livraison sous 72h</li>
+        <li class="disabled"><span class="check">◆</span> Direction artistique</li>
+        <li class="disabled"><span class="check">◆</span> Stylisme & Makeup</li>
+        <li class="disabled"><span class="check">◆</span> Vidéo incluse</li>
+      </ul>
+      <a href="#contact" class="btn-outline" style="width:100%;justify-content:center;">Choisir cette formule</a>
+    </div>
+
+    <div class="price-card featured">
+      <div class="price-badge">✦ Plus Populaire</div>
+      <div class="price-tier">Prestige</div>
+      <div class="price-amount"><sup>€</sup>1 200</div>
+      <div class="price-freq">par session complète</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li><span class="check">◆</span> Studio 8 heures</li>
+        <li><span class="check">◆</span> Équipe complète (photo + vidéo)</li>
+        <li><span class="check">◆</span> 80 photos retouchées + 2 clips</li>
+        <li><span class="check">◆</span> 3 décors modulables</li>
+        <li><span class="check">◆</span> Direction artistique incluse</li>
+        <li><span class="check">◆</span> Stylisme & Makeup professionnel</li>
+        <li><span class="check">◆</span> Livraison sous 48h</li>
+        <li><span class="check">◆</span> 2 révisions incluses</li>
+      </ul>
+      <a href="#contact" class="btn-primary" style="width:100%;justify-content:center;"><span>Choisir cette formule</span></a>
+    </div>
+
+    <div class="price-card">
+      <div class="price-tier">Élite</div>
+      <div class="price-amount"><sup>€</sup>Sur Devis</div>
+      <div class="price-freq">projet complet</div>
+      <div class="price-divider"></div>
+      <ul class="price-features">
+        <li><span class="check">◆</span> Studio dédié illimité</li>
+        <li><span class="check">◆</span> Équipe multimédia complète</li>
+        <li><span class="check">◆</span> Production photo + vidéo + audio</li>
+        <li><span class="check">◆</span> Stratégie branding complète</li>
+        <li><span class="check">◆</span> Direction artistique exclusive</li>
+        <li><span class="check">◆</span> Stylisme, Makeup, Décors custom</li>
+        <li><span class="check">◆</span> Livraison express 24h</li>
+        <li><span class="check">◆</span> Révisions illimitées</li>
+      </ul>
+      <a href="#contact" class="btn-outline" style="width:100%;justify-content:center;">Demander un Devis</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── TESTIMONIALS ──────────────────────── -->
+<section id="testimonials">
+  <div class="section-header">
+    <div class="section-label">Ils Nous Font Confiance</div>
+    <h2 class="section-h2">Paroles de <em class="gold">Clients</em></h2>
+    <div class="divider" style="margin: 0 auto 20px;"></div>
+    <p class="section-p">La satisfaction de nos clients est notre plus belle récompense. Voici ce qu'ils disent de M7 Studio.</p>
+  </div>
+  <div class="testimonials-grid">
+
+    <div class="testi-card">
+      <div class="testi-stars">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+      </div>
+      <p class="testi-text">"M7 Studio a transformé notre vision en quelque chose de bien supérieur à ce que nous imaginions. L'équipe est exceptionnelle, professionnelle et créative. Le résultat est tout simplement magistral."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">S</div>
+        <div>
+          <div class="testi-name">Sophia Belkacem</div>
+          <div class="testi-role">Directrice, Maison Éclat</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+      </div>
+      <p class="testi-text">"Notre clip a été vu plus de 2 millions de fois en une semaine. La qualité de production de M7 Studio est digne des plus grandes maisons de disques. Je ne travaillerai qu'avec eux désormais."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">K</div>
+        <div>
+          <div class="testi-name">Karim Idrissi</div>
+          <div class="testi-role">Artiste Musical</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">
+        <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+      </div>
+      <p class="testi-text">"Notre identité de marque a été totalement repensée par M7 Studio. En 3 mois, notre notoriété a explosé. Un investissement qui en vaut dix fois le prix. Merci à toute l'équipe !"</p>
+      <div class="testi-author">
+        <div class="testi-avatar">A</div>
+        <div>
+          <div class="testi-name">Amira Touhami</div>
+          <div class="testi-role">CEO, Groupe Lumière</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── TEAM ──────────────────────────────── -->
+<section id="team">
+  <div class="section-header">
+    <div class="section-label">Les Artisans du Prestige</div>
+    <h2 class="section-h2">Notre <em class="gold">Équipe</em></h2>
+    <div class="divider" style="margin: 0 auto 20px;"></div>
+    <p class="section-p">Des experts passionnés, formés aux plus grandes écoles et ayant collaboré avec les plus grandes marques mondiales.</p>
+  </div>
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="team-img"><div class="team-img-inner">MA</div></div>
+      <div class="team-info">
+        <div class="team-name">Mohamed Amine</div>
+        <div class="team-role">Fondateur & Directeur Créatif</div>
+      </div>
+    </div>
+    <div class="team-card">
+      <div class="team-img"><div class="team-img-inner">LB</div></div>
+      <div class="team-info">
+        <div class="team-name">Lina Bouzidi</div>
+        <div class="team-role">Directrice Artistique</div>
+      </div>
+    </div>
+    <div class="team-card">
+      <div class="team-img"><div class="team-img-inner">YC</div></div>
+      <div class="team-info">
+        <div class="team-name">Yassine Chouari</div>
+        <div class="team-role">Réalisateur & Chef Opérateur</div>
+      </div>
+    </div>
+    <div class="team-card">
+      <div class="team-img"><div class="team-img-inner">NM</div></div>
+      <div class="team-info">
+        <div class="team-name">Nadia Mansouri</div>
+        <div class="team-role">Productrice Musicale</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTACT ───────────────────────────── -->
+<section id="contact">
+  <div class="contact-bg"></div>
+  <div class="contact-inner">
+    <div class="contact-info">
+      <div class="section-label">Travaillons Ensemble</div>
+      <h2>Démarrons <em class="gold">Votre Projet</em></h2>
+      <div class="divider"></div>
+      <p>Prêt à créer quelque chose d'exceptionnel ? Contactez-nous pour discuter de votre projet. Notre équipe vous répond dans les 24 heures.</p>
+      <div class="contact-details">
+        <div class="contact-detail">
+          <div class="contact-detail-icon">📍</div>
+          <div>12 Rue du Prestige, Studio Tower<br/>Casablanca 20000, Maroc</div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-detail-icon">📞</div>
+          <div>+212 (0) 6 00 00 00 00</div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-detail-icon">✉️</div>
+          <div>contact@m7studio.com</div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-detail-icon">🕐</div>
+          <div>Lun – Sam : 9h00 – 20h00<br/>Sur rendez-vous uniquement</div>
+        </div>
+      </div>
+    </div>
+    <form class="contact-form" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <div class="form-field">
+          <label class="form-label">Prénom</label>
+          <input type="text" class="form-input" placeholder="Votre prénom" required />
+        </div>
+        <div class="form-field">
+          <label class="form-label">Nom</label>
+          <input type="text" class="form-input" placeholder="Votre nom" required />
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" placeholder="votre@email.com" required />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Téléphone</label>
+        <input type="tel" class="form-input" placeholder="+212 6 00 00 00 00" />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Service souhaité</label>
+        <select class="form-select form-input">
+          <option value="">Choisissez un service...</option>
+          <option>Photographie</option>
+          <option>Production Vidéo</option>
+          <option>Production Musicale</option>
+          <option>Branding & Identité</option>
+          <option>Couverture Événementielle</option>
+          <option>Contenu Digital & Social</option>
+          <option>Formule Prestige (tout inclus)</option>
+          <option>Autre / Sur Mesure</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Votre Message</label>
+        <textarea class="form-textarea" placeholder="Décrivez votre projet, vos attentes et votre budget indicatif..." required></textarea>
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;padding:18px;">
+        <span>Envoyer ma Demande ✦</span>
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- ─── FOOTER ────────────────────────────── -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand-m7">M7</div>
+      <div class="footer-brand-sub">Studio — Prestige & Excellence</div>
+      <p class="footer-about">M7 Studio est la référence premium en production créative. Photographie, vidéo, musique, branding — nous transformons vos idées en chefs-d'œuvre visuels et sonores.</p>
+      <div class="social-links">
+        <a href="#" class="social-link">IG</a>
+        <a href="#" class="social-link">FB</a>
+        <a href="#" class="social-link">YT</a>
+        <a href="#" class="social-link">TK</a>
+        <a href="#" class="social-link">LI</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#services">Photographie</a></li>
+        <li><a href="#services">Production Vidéo</a></li>
+        <li><a href="#services">Production Musicale</a></li>
+        <li><a href="#services">Branding & Design</a></li>
+        <li><a href="#services">Événementiel</a></li>
+        <li><a href="#services">Contenu Digital</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Studio</h4>
+      <ul>
+        <li><a href="#about">À Propos</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#process">Notre Processus</a></li>
+        <li><a href="#team">L'Équipe</a></li>
+        <li><a href="#pricing">Tarifs</a></li>
+        <li><a href="#testimonials">Témoignages</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#contact">Prendre RDV</a></li>
+        <li><a href="tel:+212600000000">+212 6 00 00 00 00</a></li>
+        <li><a href="mailto:contact@m7studio.com">contact@m7studio.com</a></li>
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">YouTube</a></li>
+        <li><a href="#">WhatsApp Business</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2026 M7 Studio. Tous droits réservés. Crafted with ✦ & Passion.</p>
+    <div class="footer-legal">
+      <a href="#">Mentions Légales</a>
+      <a href="#">Politique de Confidentialité</a>
+      <a href="#">CGV</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── Filter buttons ── */
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  /* ── Form submit ── */
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"] span');
+    btn.textContent = '✦ Demande Envoyée !';
+    btn.parentElement.style.background = 'linear-gradient(135deg, #8B6914, #C9A84C, #E5C97E)';
+    setTimeout(() => {
+      btn.textContent = 'Envoyer ma Demande ✦';
+      btn.parentElement.style.background = '';
+      e.target.reset();
+    }, 3000);
+  }
+
+  /* ── Scroll-aware nav ── */
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 80) {
+      nav.style.height = '70px';
+      nav.style.borderBottomColor = 'rgba(201,168,76,0.25)';
+    } else {
+      nav.style.height = '90px';
+      nav.style.borderBottomColor = 'rgba(201,168,76,0.15)';
+    }
+  });
+
+  /* ── Intersection Observer for fade-up ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.service-card, .porto-item, .process-step, .price-card, .testi-card, .team-card, .about-inner, .contact-inner').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(28px)';
+    el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
