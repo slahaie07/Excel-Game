@@ -47,6 +47,7 @@ export default function ProgressScreen() {
     achievementsUnlocked,
     achievementsTotal,
     pledgedFaction: !!(cloudFactions?.pledgedFactionId ?? localBadge.pledgedFactionId),
+    completedQuests: char?.completedQuests ?? [],
   });
 
   return (

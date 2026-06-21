@@ -15,7 +15,15 @@ export interface ProgressContext {
   achievementsUnlocked: number;
   achievementsTotal: number;
   pledgedFaction: boolean;
+  completedQuests?: string[];
 }
+
+const REGION_MASTER_QUEST_IDS = [
+  "maitre_region_givre",
+  "maitre_region_marais",
+  "maitre_region_cendres",
+  "maitre_region_stellaire",
+] as const;
 
 export const ENDGAME_GOALS: EndgameGoal[] = [
   {
@@ -83,6 +91,39 @@ export const ENDGAME_GOALS: EndgameGoal[] = [
     label: "Débloquer la moitié des succès",
     icon: "🏅",
     check: (c) => c.achievementsTotal > 0 && c.achievementsUnlocked >= c.achievementsTotal / 2,
+  },
+  {
+    id: "explore_glaise_nord",
+    label: "Explorer la Glaise du Nord",
+    icon: "❄️",
+    check: (c) => c.zoneId === "glaise_nord",
+  },
+  {
+    id: "explore_chambre_magma",
+    label: "Explorer la Chambre du Magma",
+    icon: "🌋",
+    check: (c) => c.zoneId === "chambre_magma",
+  },
+  {
+    id: "explore_observatoire_lune",
+    label: "Explorer l'Observatoire de la Lune",
+    icon: "🌙",
+    check: (c) => c.zoneId === "observatoire_lune",
+  },
+  {
+    id: "cartographe_complete",
+    label: "Terminer la quête Cartographe de Terreval",
+    icon: "🗺️",
+    check: (c) => (c.completedQuests ?? []).includes("cartographe_terreval"),
+  },
+  {
+    id: "maitre_4_regions",
+    label: "Maîtriser les 4 régions de Terreval",
+    icon: "🏆",
+    check: (c) => {
+      const completed = c.completedQuests ?? [];
+      return REGION_MASTER_QUEST_IDS.every((id) => completed.includes(id));
+    },
   },
 ];
 

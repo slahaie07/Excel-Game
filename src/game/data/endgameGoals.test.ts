@@ -12,8 +12,8 @@ describe("endgameGoals", () => {
     pledgedFaction: false,
   };
 
-  it("defines 11 endgame goals", () => {
-    expect(ENDGAME_GOALS).toHaveLength(11);
+  it("defines 16 endgame goals", () => {
+    expect(ENDGAME_GOALS).toHaveLength(16);
   });
 
   it("starts at 0% with fresh character", () => {
@@ -49,5 +49,23 @@ describe("endgameGoals", () => {
     expect(progress.goals.find((g) => g.id === "faction")?.done).toBe(true);
     expect(progress.goals.find((g) => g.id === "achievements_half")?.done).toBe(true);
     expect(progress.completedCount).toBe(4);
+  });
+
+  it("tracks v4 zone exploration and regional master quests", () => {
+    const progress = getEndgameProgress({
+      ...baseCtx,
+      zoneId: "observatoire_lune",
+      completedQuests: [
+        "cartographe_terreval",
+        "maitre_region_givre",
+        "maitre_region_marais",
+        "maitre_region_cendres",
+        "maitre_region_stellaire",
+      ],
+    });
+    expect(progress.goals.find((g) => g.id === "explore_observatoire_lune")?.done).toBe(true);
+    expect(progress.goals.find((g) => g.id === "cartographe_complete")?.done).toBe(true);
+    expect(progress.goals.find((g) => g.id === "maitre_4_regions")?.done).toBe(true);
+    expect(progress.completedCount).toBe(3);
   });
 });
