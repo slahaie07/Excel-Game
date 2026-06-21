@@ -4,7 +4,19 @@
 
 Créer un MMORPG tactique mobile aussi complet que les références du genre, avec un univers original centré sur les Cristaux d'Aether.
 
-## Systèmes implémentés (v1.12)
+## Systèmes implémentés (v5.0 — finale)
+
+| Système | Statut | Description |
+|---------|--------|-------------|
+| Monde Terreval | ✅ | 24 zones, 6 régions, 40+ POI |
+| Quêtes | ✅ | 260 quêtes (main, side, daily, guilde, donjon, POI) |
+| Donjons | ✅ | 120 donjons dont 26 mythiques v5 |
+| Métiers | ✅ | 30 métiers, 5 slots par personnage |
+| Progression quêtes | ✅ | Zones, kills, POI — local + cloud sync |
+| Endgame | ✅ | 18 objectifs + Chronique Finale |
+| Multijoueur Convex | ✅ | Combat, guildes, raids, marché, chat |
+
+## Systèmes implémentés (v1.12 — historique)
 
 | Système | Statut | Description |
 |---------|--------|-------------|

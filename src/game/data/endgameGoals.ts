@@ -125,6 +125,21 @@ export const ENDGAME_GOALS: EndgameGoal[] = [
       return REGION_MASTER_QUEST_IDS.every((id) => completed.includes(id));
     },
   },
+  {
+    id: "chronique_finale",
+    label: "Terminer la Chronique Finale de Terreval",
+    icon: "📜",
+    check: (c) => (c.completedQuests ?? []).includes("chronique_terreval_finale"),
+  },
+  {
+    id: "mythique_vaincu",
+    label: "Vaincre un gardien de donjon mythique",
+    icon: "👹",
+    check: (c) => {
+      const completed = c.completedQuests ?? [];
+      return completed.some((id) => id.startsWith("quete_") && id.includes("_mythique"));
+    },
+  },
 ];
 
 export function getEndgameProgress(ctx: ProgressContext) {

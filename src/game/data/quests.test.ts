@@ -3,15 +3,18 @@ import { QUESTS } from "./quests";
 import { EXPANSION_QUESTS_V31 } from "./expansionQuests";
 import { EXPANSION_QUESTS_V41 } from "./expansionQuestsV41";
 import { EXPANSION_QUESTS_V42 } from "./expansionQuestsV42";
+import { EXPANSION_QUESTS_V50 } from "./expansionQuestsV50";
 import { EXPANSION_DUNGEONS_V30 } from "./expansionV30";
 import { EXPANSION_DUNGEONS_V40 } from "./expansionDungeonsV40";
+import { EXPANSION_DUNGEONS_V50 } from "./expansionDungeonsV50";
 
 describe("quests", () => {
-  it("has 190+ quests after v4.2 expansion", () => {
-    expect(QUESTS.length).toBeGreaterThanOrEqual(190);
+  it("has 250+ quests after v5.0 expansion", () => {
+    expect(QUESTS.length).toBeGreaterThanOrEqual(250);
     expect(EXPANSION_QUESTS_V31.length).toBe(86);
     expect(EXPANSION_QUESTS_V41.length).toBe(41);
     expect(EXPANSION_QUESTS_V42.length).toBe(47);
+    expect(EXPANSION_QUESTS_V50.length).toBe(64);
   });
 
   it("has 24+ daily quests including v4.2 zone dailies", () => {
@@ -38,7 +41,7 @@ describe("quests", () => {
   it("dungeon quests reference valid expansion bosses", () => {
     const dungeonQuests = QUESTS.filter((q) => q.type === "dungeon");
     expect(dungeonQuests.length).toBe(
-      EXPANSION_DUNGEONS_V30.length + EXPANSION_DUNGEONS_V40.length
+      EXPANSION_DUNGEONS_V30.length + EXPANSION_DUNGEONS_V40.length + EXPANSION_DUNGEONS_V50.length
     );
     for (const quest of dungeonQuests) {
       const kill = quest.objectives.find((o) => o.type === "kill");

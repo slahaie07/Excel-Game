@@ -74,27 +74,24 @@ Ou en langage naturel :
 | 4 — Polish | visual | assets, particules |
 | 5 — Release | ship | vX.Y.0, PR |
 
-## État actuel (v4.2)
+## État actuel (v5.0 — finale)
 
 | Métrique | Valeur |
 |----------|--------|
 | Zones | 24 |
 | Régions | 6 |
-| Quêtes | 196 |
-| Donjons | 94 |
-| Métiers | 22 |
+| Quêtes | 260 |
+| Donjons | 120 |
+| Métiers | 30 |
 | Classes | 15 |
 | Niveau max | 200 |
-| Objectifs endgame | 16 |
+| Objectifs endgame | 18 |
 
-## Prochaines étapes (v5 — à assigner aux agents)
+## Prochaines étapes (post-v5)
 
-1. **world** + **visual** — assets PNG dédiés 24 zones
-2. **quest** — quêtes POI restantes (landmark, vendor, teleporter)
-3. **dungeon** — 30 donjons régionaux mythiques
-4. **backend** — sync quêtes cloud temps réel
-5. **social** — raid guilde cross-région
-6. **ship** — GAME_DESIGN.md à jour, CI vert
+1. **visual** — assets PNG dédiés par zone (polish optionnel)
+2. **social** — raid guilde cross-région avancé
+3. **ship** — maintenance et équilibrage live
 
 ## Développement local
 

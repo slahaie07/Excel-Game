@@ -1,5 +1,6 @@
 import { EXPANSION_DUNGEONS_V30 } from "./expansionV30";
 import { EXPANSION_DUNGEONS_V40 } from "./expansionDungeonsV40";
+import { EXPANSION_DUNGEONS_V50 } from "./expansionDungeonsV50";
 
 export interface DungeonDefinition {
   id: string;
@@ -388,6 +389,7 @@ export const DUNGEONS: DungeonDefinition[] = [
   },
   ...EXPANSION_DUNGEONS_V30,
   ...EXPANSION_DUNGEONS_V40,
+  ...EXPANSION_DUNGEONS_V50,
 ];
 
 export function getDungeonById(id: string): DungeonDefinition | undefined {

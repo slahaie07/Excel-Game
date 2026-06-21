@@ -1,5 +1,14 @@
 # Changelog
 
+## v5.0.0 — Terreval Finale
+
+- **260 quêtes** (+64) : POI restants, donjons mythiques, chroniques endgame
+- **120 donjons** (+26) : raids mythiques régionaux avec boss dédiés
+- **30 métiers** (+7) : Glaciologue, Archéologue, Distillateur, Éleveur, Gemmologue, Ingénieur Stellaire, Calligraphe
+- **Sync cloud des quêtes** — progression temps réel via Convex (`cloudQuestProgress`, `CloudQuestSync`)
+- **18 objectifs endgame** — chronique finale + gardien mythique
+- **Version finale** du contenu Terreval (vfinal)
+
 ## v4.2.0 — Terreval Complet
 
 - **196 quêtes** (+47) : dailies, ponts régionaux, guilde, chasses, POI

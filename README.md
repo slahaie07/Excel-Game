@@ -23,6 +23,12 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - Cadres de profil visibles en chat et présence
 - Classement contributeurs campagne + bannière campagne dans le monde
 
+### v5.0.0 — Terreval Finale (vfinal)
+- **260 quêtes**, **120 donjons**, **30 métiers**
+- 26 donjons mythiques régionaux + 32 quêtes POI + chroniques endgame
+- Sync cloud des quêtes en temps réel (Convex)
+- 18 objectifs endgame incluant la Chronique Finale
+
 ### v4.2.0 — Terreval Complet
 - **196 quêtes**, progression jouable (zones / kills / POI)
 - 26 dailies, 10 quêtes guilde régionales, 10 quêtes POI trésor/lore
@@ -319,7 +325,7 @@ Commande : `/build-aetheris` pour lancer le pipeline complet.
 - [x] Version finale — guide, crédits, progression endgame, toasts, accessibilité (v2.0 vfinal)
 - [x] Terreval v4.0–v4.2 — 24 zones, 196 quêtes, progression jouable
 - [x] 10 super-agents Cursor — pipeline multi-agent (AGENTS.md)
-- [ ] v5.0 — assets dédiés, 250+ quêtes, raids régionaux, quest cloud sync
+- [x] v5.0 — 260 quêtes, 120 donjons, 30 métiers, sync cloud quêtes (vfinal)
 
 ## Licence
 

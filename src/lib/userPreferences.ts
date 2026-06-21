@@ -26,5 +26,5 @@ export function saveUserPreferences(patch: Partial<UserPreferences>): UserPrefer
   return next;
 }
 
-export const APP_VERSION = "4.2.0";
-export const VERSION_LABEL = "Terreval";
+export const APP_VERSION = "5.0.0";
+export const VERSION_LABEL = "Terreval Finale";

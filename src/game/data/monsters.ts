@@ -4,6 +4,7 @@
 
 import { EXPANSION_BOSSES_V30 } from "./expansionV30";
 import { EXPANSION_MONSTERS_V40 } from "./expansionMonstersV40";
+import { EXPANSION_MONSTERS_V50 } from "./expansionMonstersV50";
 
 export interface MonsterDefinition {
   id: string;
@@ -90,6 +91,7 @@ export const MONSTERS: MonsterDefinition[] = [
 
   ...EXPANSION_BOSSES_V30,
   ...EXPANSION_MONSTERS_V40,
+  ...EXPANSION_MONSTERS_V50,
 ];
 
 export function getMonstersByZone(zoneId: string): MonsterDefinition[] {

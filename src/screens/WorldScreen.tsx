@@ -17,6 +17,7 @@ import { CloudWorldInvasion } from "../components/CloudWorldInvasion";
 import { NotificationBell } from "../components/NotificationBell";
 import { CloudPushSync } from "../components/CloudPushSync";
 import { CloudAchievementSync } from "../components/CloudAchievementSync";
+import { CloudQuestSync } from "../components/CloudQuestSync";
 import type { Id } from "../../convex/_generated/dataModel";
 import { loadLocalFactionBadge, getLocalFactionCampaigns } from "../lib/factionProgress";
 import { FACTION_META } from "../game/data/factionContent";
@@ -213,7 +214,10 @@ export default function WorldScreen() {
         />
       )}
       {isConvexEnabled() && isCloudCharacter(characterId) && (
-        <CloudAchievementSync characterId={characterId} />
+        <>
+          <CloudAchievementSync characterId={characterId} />
+          <CloudQuestSync characterId={characterId} />
+        </>
       )}
       {isConvexEnabled() && isCloudCharacter(characterId) && (
         <CloudPushSync

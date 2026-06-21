@@ -3,6 +3,7 @@ import { useGameStore } from "../stores/gameStore";
 import { QUESTS, getQuestById } from "../game/data";
 import { loadCharacter, saveCharacter } from "../lib/characterStorage";
 import { meetsQuestPrerequisites } from "../lib/questProgress";
+import { cloudStartQuest } from "../lib/cloudQuestProgress";
 
 interface ActiveQuest {
   questId: string;
@@ -40,6 +41,16 @@ export default function QuestsScreen() {
         },
       ],
     });
+    cloudStartQuest(
+      characterId,
+      questId,
+      quest.objectives.map((o) => ({
+        type: o.type,
+        targetId: o.targetId,
+        current: 0,
+        required: o.count,
+      }))
+    );
     setRefreshKey((k) => k + 1);
   };
 

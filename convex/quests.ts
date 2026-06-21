@@ -98,3 +98,61 @@ export const getActiveQuests = query({
     return character.activeQuests;
   },
 });
+
+const questObjectiveInput = v.object({
+  type: v.string(),
+  targetId: v.string(),
+  current: v.number(),
+  required: v.number(),
+});
+
+const activeQuestInput = v.object({
+  questId: v.string(),
+  status: v.string(),
+  objectives: v.array(questObjectiveInput),
+});
+
+/** Sync quest state from client after local progression (cloud characters). */
+export const syncQuestState = mutation({
+  args: {
+    characterId: v.id("characters"),
+    activeQuests: v.array(activeQuestInput),
+    completedQuests: v.array(v.string()),
+    eclats: v.optional(v.number()),
+    xp: v.optional(v.number()),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const character = await ctx.db.get("characters", args.characterId);
+    if (!character) throw new Error("Personnage introuvable");
+
+    const patch: Record<string, unknown> = {
+      activeQuests: args.activeQuests.map((q) => ({
+        questId: q.questId,
+        status: "active" as const,
+        objectives: q.objectives,
+        startedAt: Date.now(),
+      })),
+      completedQuests: args.completedQuests,
+    };
+
+    if (args.eclats !== undefined) {
+      patch.eclats = args.eclats;
+    }
+
+    if (args.xp !== undefined) {
+      let newXp = character.xp + args.xp;
+      let newLevel = character.level;
+      while (newXp >= character.xpToNext && newLevel < 200) {
+        newXp -= character.xpToNext;
+        newLevel++;
+      }
+      patch.xp = newXp;
+      patch.level = newLevel;
+      patch.xpToNext = newLevel * 100 + (newLevel - 1) * 50;
+    }
+
+    await ctx.db.patch("characters", args.characterId, patch);
+    return null;
+  },
+});

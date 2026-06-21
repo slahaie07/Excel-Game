@@ -6,6 +6,11 @@ import {
   loadCharacter,
   updateCharacter,
 } from "./characterStorage";
+import {
+  cloudSyncQuestState,
+  syncQuestExploreToCloud,
+  syncQuestKillToCloud,
+} from "./cloudQuestProgress";
 
 export interface ActiveQuestObjective {
   type: string;
@@ -66,6 +71,7 @@ export function advanceQuestOnZoneVisit(characterId: string, zoneId: string): vo
   );
 
   updateCharacter(characterId, { activeQuests });
+  syncQuestExploreToCloud(characterId, activeQuests, zoneId);
   completeQuestIfReady(characterId);
 }
 
@@ -85,6 +91,7 @@ export function advanceQuestOnKill(
   );
 
   updateCharacter(characterId, { activeQuests });
+  syncQuestKillToCloud(characterId, activeQuests, monsterId);
   completeQuestIfReady(characterId);
 }
 
@@ -101,6 +108,7 @@ export function advanceQuestOnPOIVisit(characterId: string, poiId: string): void
   );
 
   updateCharacter(characterId, { activeQuests });
+  syncQuestExploreToCloud(characterId, activeQuests, poiId);
   completeQuestIfReady(characterId);
 }
 
@@ -149,6 +157,11 @@ export function completeQuestIfReady(characterId: string): string[] {
     activeQuests: stillActive,
     completedQuests,
     eclats: (char.eclats ?? 0) + totalEclats,
+  });
+
+  cloudSyncQuestState(characterId, stillActive, completedQuests, {
+    eclats: (char.eclats ?? 0) + totalEclats,
+    xp: totalXp > 0 ? totalXp : undefined,
   });
 
   if (totalXp > 0) addXp(characterId, totalXp);

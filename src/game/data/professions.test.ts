@@ -1,14 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { PROFESSIONS, MAX_PROFESSION_SLOTS } from "./professions";
 import { EXPANSION_PROFESSIONS_V32 } from "./expansionProfessions";
+import { EXPANSION_PROFESSIONS_V50 } from "./expansionProfessionsV50";
 import { ITEMS } from "./items";
 
 const itemIds = new Set(ITEMS.map((i) => i.id));
 
 describe("professions", () => {
-  it("has 20+ professions after v3.2 expansion", () => {
-    expect(PROFESSIONS.length).toBeGreaterThanOrEqual(20);
+  it("has 30 professions after v5.0 expansion", () => {
+    expect(PROFESSIONS.length).toBe(30);
     expect(EXPANSION_PROFESSIONS_V32.length).toBe(17);
+    expect(EXPANSION_PROFESSIONS_V50.length).toBe(7);
     expect(MAX_PROFESSION_SLOTS).toBe(5);
   });
 

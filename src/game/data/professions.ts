@@ -6,6 +6,7 @@ import {
   EXISTING_PROFESSION_RECIPES,
   EXPANSION_PROFESSIONS_V32,
 } from "./expansionProfessions";
+import { EXPANSION_PROFESSIONS_V50 } from "./expansionProfessionsV50";
 
 export interface ProfessionDefinition {
   id: string;
@@ -108,6 +109,7 @@ function mergeProfessionRecipes(base: ProfessionDefinition[]): ProfessionDefinit
 export const PROFESSIONS: ProfessionDefinition[] = [
   ...mergeProfessionRecipes(BASE_PROFESSIONS),
   ...EXPANSION_PROFESSIONS_V32,
+  ...EXPANSION_PROFESSIONS_V50,
 ];
 
 export const MAX_PROFESSION_SLOTS = 5;

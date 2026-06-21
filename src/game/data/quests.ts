@@ -5,6 +5,7 @@
 import { EXPANSION_QUESTS_V31 } from "./expansionQuests";
 import { EXPANSION_QUESTS_V41 } from "./expansionQuestsV41";
 import { EXPANSION_QUESTS_V42 } from "./expansionQuestsV42";
+import { EXPANSION_QUESTS_V50 } from "./expansionQuestsV50";
 
 export type QuestType = "main" | "side" | "daily" | "guild" | "dungeon";
 export type QuestObjectiveType = "kill" | "collect" | "talk" | "explore" | "craft" | "deliver";
@@ -352,6 +353,8 @@ export const QUESTS: QuestDefinition[] = [
   ...EXPANSION_QUESTS_V41,
   // v4.2 — dailies manquantes, ponts régionaux, guilde, chasses v4, POI
   ...EXPANSION_QUESTS_V42,
+  // v5.0 — POI restants, donjons mythiques, chroniques finales
+  ...EXPANSION_QUESTS_V50,
 ];
 
 export function getQuestById(id: string): QuestDefinition | undefined {
