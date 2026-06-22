@@ -7,6 +7,7 @@ import { advanceDungeonRoom, createNextRoomCombat } from "./DungeonsScreen";
 import { recordEventKill } from "./EventsScreen";
 import { trackSeasonKill, trackSeasonDungeonComplete, trackSeasonPvpWin } from "../lib/seasonEngine";
 import { addXp } from "../lib/characterStorage";
+import { getPlayerCombatStats } from "../lib/mountEngine";
 import { applySpellEffects, tickBuffs, formatBuffs } from "../game/combat/effects";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
@@ -56,18 +57,19 @@ function toVisualEntities(entities: CombatEntity[], currentEntityId: string, cla
 function initCombat(
   monsterIds: string[],
   playerName = "Éveilleur",
-  pvpOpponent?: { name: string; classId: string; level: number }
+  pvpOpponent?: { name: string; classId: string; level: number },
+  playerStats?: { hp: number; maxHp: number; ap: number; maxAp: number; mp: number; maxMp: number } | null
 ): CombatState {
   const playerEntity: CombatEntity = {
     entityId: "player",
     name: playerName,
     isPlayer: true,
-    hp: 100,
-    maxHp: 100,
-    ap: 6,
-    maxAp: 6,
-    mp: 3,
-    maxMp: 3,
+    hp: playerStats?.hp ?? 100,
+    maxHp: playerStats?.maxHp ?? 100,
+    ap: playerStats?.ap ?? 6,
+    maxAp: playerStats?.maxAp ?? 6,
+    mp: playerStats?.mp ?? 3,
+    maxMp: playerStats?.maxMp ?? 3,
     x: 2,
     y: 4,
     team: "player",
@@ -141,7 +143,8 @@ export default function LocalCombatScreen() {
     initCombat(
       combatData.monsterIds ?? ["graine_ombre"],
       characterName,
-      combatData.pvpOpponent
+      combatData.pvpOpponent,
+      getPlayerCombatStats(characterId)
     )
   );
   const [selectedSpell, setSelectedSpell] = useState<string | null>(null);

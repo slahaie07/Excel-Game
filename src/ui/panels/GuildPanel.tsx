@@ -107,7 +107,7 @@ export default function GuildPanel({ cloud }: { cloud?: boolean }) {
     if (!myGuild) return;
     const result = donateToGuildAction(amount);
     if (result.success) {
-      setMessage(`${amount} kamas donnés au trésor !`);
+      setMessage(`${amount} éclats donnés au trésor !`);
       refresh();
       refreshPlayerCharacter();
     } else {
@@ -278,7 +278,7 @@ function GuildDetailView({
       <div className="card space-y-3">
         <h2 className="text-crystal-gold text-xs font-bold uppercase">Trésor de guilde</h2>
         <p className="text-aether-400 text-xs">
-          Vos kamas : ✦ {eclats.toLocaleString("fr-FR")}
+          Vos éclats : ✦ {eclats.toLocaleString("fr-FR")}
         </p>
         <div className="flex gap-2">
           <input
@@ -298,7 +298,7 @@ function GuildDetailView({
       </div>
 
       <button onClick={onOpenHall} className="btn-secondary w-full text-sm">
-        🏰 Guild Hall
+        🏰 Hall de guilde
       </button>
 
       {membership?.role !== "leader" && (

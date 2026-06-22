@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { loadCharacter, saveCharacter } from "../lib/characterStorage";
-import { buyMount as buyMountEngine, equipMount as equipMountEngine } from "../lib/mountEngine";
+import { buyMount as buyMountEngine, equipMount as equipMountEngine, applyMountStats } from "../lib/mountEngine";
 import {
   createGuild as createGuildEngine,
   joinGuild as joinGuildEngine,
@@ -62,12 +62,13 @@ type GuildActionResult = ActionResult & { guildId?: string };
 function buildPlayerCharacter(characterId: string): PlayerCharacter | null {
   const char = loadCharacter(characterId);
   if (!char) return null;
+  const withMount = applyMountStats(char);
   return {
-    level: char.level,
-    eclats: char.eclats,
-    mountId: char.mountId,
-    ownedMounts: char.ownedMounts ?? [],
-    guildId: char.guildId,
+    level: withMount.level,
+    eclats: withMount.eclats,
+    mountId: withMount.mountId,
+    ownedMounts: withMount.ownedMounts ?? [],
+    guildId: withMount.guildId,
     petId: char.petId,
     seasonProgress: char.seasonProgress,
   };
@@ -200,6 +201,7 @@ export const useGameStore = create<GameState>()(
           livePlayerKey: null,
           combatId: null,
           combatSource: null,
+          screen: "pvp",
         }),
       setRaid: (raidId, options) =>
         set({ raidId, convexRaidRunId: options?.convexRunId ?? null }),

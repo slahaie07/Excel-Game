@@ -26,6 +26,10 @@ npm-debug.log*
 *.tsbuildinfo
 .metrics/latest.json
 
+# Capacitor generated web assets (rebuilt via npm run build:mobile)
+android/app/src/main/assets/public/
+ios/App/App/public/
+
 # Old files
 Optimisation de connaissances*
 Excel-Game.html

@@ -37,10 +37,10 @@ export const GUILD_TREASURY_XP_RATIO = 10;
 
 export const GUILD_PERKS: GuildPerk[] = [
   { level: 1, name: "Bannière de guilde", description: "Accès au hall de guilde.", icon: "🏰" },
-  { level: 2, name: "Bonus d'XP +5%", description: "Les membres gagnent 5% d'XP en plus.", icon: "✨" },
+  { level: 2, name: "Bonus d'XP +5%", description: "Bientôt : +5 % d'XP pour les membres.", icon: "✨" },
   { level: 3, name: "Trésor étendu", description: "Capacité du trésor augmentée.", icon: "💰" },
   { level: 5, name: "Officiers", description: "Le chef peut nommer des officiers.", icon: "⚔️" },
-  { level: 7, name: "Bonus Éclats +5%", description: "Les membres gagnent 5% d'Éclats en plus.", icon: "✦" },
+  { level: 7, name: "Bonus Éclats +5%", description: "Bientôt : +5 % d'Éclats pour les membres.", icon: "✦" },
   { level: 10, name: "Légende d'Étheris", description: "Emblème légendaire débloqué.", icon: "👑" },
 ];
 

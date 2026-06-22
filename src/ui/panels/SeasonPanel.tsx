@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useGameStore } from "../../stores/gameStore";
@@ -25,6 +25,8 @@ export default function SeasonPanel() {
   const [tab, setTab] = useState<Tab>("pass");
   const [, setTick] = useState(0);
   const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
+  const lastSubmittedScore = useRef(-1);
 
   const char = loadCharacter(characterId);
   ensureSeasonProgress(characterId);
@@ -38,18 +40,21 @@ export default function SeasonPanel() {
   );
 
   useEffect(() => {
-    const id = setInterval(() => setTick((t) => t + 1), 30_000);
+    const id = setInterval(() => setTick((t) => t + 1), 1_000);
     return () => clearInterval(id);
   }, []);
 
   useEffect(() => {
     if (!isConvexEnabled() || !season || !view) return;
+    const score = getSeasonLeaderboardScore(view.progress);
+    if (score === lastSubmittedScore.current) return;
+    lastSubmittedScore.current = score;
     void submitScore({
       seasonId: season.id,
       playerName: characterName,
-      score: getSeasonLeaderboardScore(view.progress),
+      score,
     });
-  }, [season?.id, characterName, view?.progress.passXp, view?.progress.currency, submitScore]);
+  }, [season?.id, characterName, view?.progress.passXp, view?.progress.currency, submitScore, season, view]);
 
   const refresh = useCallback(() => setTick((t) => t + 1), []);
 
@@ -68,18 +73,21 @@ export default function SeasonPanel() {
 
   const handleClaimTier = (tier: number) => {
     const result = storeClaimTier(tier);
+    setIsError(!result.ok);
     setMessage(result.ok ? `Palier ${tier} réclamé !` : (result.error ?? "Erreur"));
     refresh();
   };
 
   const handleClaimQuest = (questId: string) => {
     const result = claimSeasonQuestReward(characterId, questId);
+    setIsError(!result.ok);
     setMessage(result.ok ? "Récompense de quête réclamée !" : (result.error ?? "Erreur"));
     refresh();
   };
 
   const handleBuy = (itemId: string) => {
     const result = storeBuyItem(itemId);
+    setIsError(!result.ok);
     setMessage(result.ok ? "Achat effectué !" : (result.error ?? "Erreur"));
     refresh();
   };
@@ -115,7 +123,14 @@ export default function SeasonPanel() {
       </div>
 
       {message && (
-        <div className="mx-4 mt-2 card py-2 px-3 text-center text-aether-300 text-xs">{message}</div>
+        <div
+          className={`mx-4 mt-2 card py-2 px-3 text-center text-xs ${
+            isError ? "text-red-400 border-red-500/30" : "text-green-400 border-green-500/30"
+          }`}
+          role="status"
+        >
+          {message}
+        </div>
       )}
 
       {notifications.length > 0 && (

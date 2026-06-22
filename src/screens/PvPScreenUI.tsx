@@ -147,6 +147,7 @@ interface PvPScreenUIProps {
   onClaimReward?: (claimId: string) => void;
   onEquipCosmetic?: (cosmeticId: string | null, slot: "title" | "frame") => void;
   onMatchmake: () => void;
+  onCancelSearch?: () => void;
   onBack: () => void;
 }
 
@@ -189,6 +190,7 @@ export function PvPScreenUI({
   onClaimReward,
   onEquipCosmetic,
   onMatchmake,
+  onCancelSearch,
   onBack,
 }: PvPScreenUIProps) {
   const classData = CLASSES.find((c) => c.id === classId);
@@ -203,7 +205,7 @@ export function PvPScreenUI({
       <div className="flex items-center gap-3 p-4 border-b border-aether-700/40">
         <button onClick={onBack} className="text-aether-400 text-xl">←</button>
         <h1 className="font-display text-xl font-bold">⚔️ Arène PvP</h1>
-        {loading && <span className="ml-auto text-aether-500 text-xs">Sync...</span>}
+        {loading && <span className="ml-auto text-aether-500 text-xs">Synchro...</span>}
       </div>
 
       <div className="p-4 space-y-4 flex-1 overflow-y-auto">
@@ -395,7 +397,7 @@ export function PvPScreenUI({
             {equippedTitle && (
               <p className="text-crystal-gold text-xs">{equippedTitle.name}</p>
             )}
-            <p className="text-aether-400 text-sm">Rating global : {rating}</p>
+            <p className="text-aether-400 text-sm">Score classé : {rating}</p>
             {seasonRating && (
               <p className="text-crystal-gold text-xs">Saison : {seasonRating.rating} ({seasonRating.wins}V / {seasonRating.losses}D)</p>
             )}
@@ -493,7 +495,7 @@ export function PvPScreenUI({
           <div className="card border-crystal-gold/30 bg-crystal-gold/5">
             <p className="text-crystal-gold text-xs font-bold uppercase mb-1">Duel 1v1 en ligne</p>
             <p className="text-aether-400 text-xs">
-              Affrontez un autre joueur en temps réel. Les actions sont synchronisées via Convex.
+              Affrontez un autre joueur en temps réel. Connexion multijoueur requise.
             </p>
             {searching && liveQueueStatus && (
               <p className="text-aether-300 text-xs mt-2">
@@ -530,6 +532,16 @@ export function PvPScreenUI({
               ? "Rechercher un duel 1v1"
               : `Lancer un ${mode}`}
         </button>
+
+        {searching && onCancelSearch && (
+          <button
+            onClick={onCancelSearch}
+            className="btn-secondary w-full min-h-[44px]"
+            aria-label="Annuler la recherche d'adversaire"
+          >
+            Annuler la recherche
+          </button>
+        )}
 
         {(leagueLeaderboard ?? []).length > 0 && (
           <div>
@@ -597,7 +609,7 @@ export function PvPScreenUI({
           {activeBoard.length === 0 ? (
             <p className="text-aether-500 text-sm text-center py-4">Aucun joueur classé</p>
           ) : (
-            activeBoard
+            [...activeBoard]
               .sort((a, b) => b.rating - a.rating)
               .slice(0, 10)
               .map((entry, i) => {

@@ -106,22 +106,21 @@ export default function LocalPvPScreen() {
   }, [pendingLiveMatch, pvpArenaMode, playerKey, setLiveMatch, startLivePvpCombat]);
 
   useEffect(() => {
-    if (
-      liveQueueStatus?.status === "matched" &&
-      liveQueueStatus.matchId &&
-      !matchStarted.current
-    ) {
-      // getActiveLiveMatch effect will pick this up
-    }
-  }, [liveQueueStatus]);
-
-  useEffect(() => {
     return () => {
       if (searching && pvpArenaMode === "live" && convexOn) {
         void leaveLiveQueue({ playerKey });
       }
     };
   }, [searching, pvpArenaMode, convexOn, playerKey, leaveLiveQueue]);
+
+  const cancelSearch = () => {
+    if (pvpArenaMode === "live" && convexOn) {
+      void leaveLiveQueue({ playerKey });
+    }
+    setSearching(false);
+    matchStarted.current = false;
+    setError("");
+  };
 
   const startBotMatchmaking = () => {
     if ((char?.level ?? 1) < 10) {
@@ -219,6 +218,7 @@ export default function LocalPvPScreen() {
       error={error}
       leaderboard={leaderboard}
       onMatchmake={startMatchmaking}
+      onCancelSearch={searching ? cancelSearch : undefined}
       onBack={handleBack}
     />
   );

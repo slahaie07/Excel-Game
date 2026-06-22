@@ -66,7 +66,7 @@ export default function MountPanel() {
   return (
     <div className="flex-1 flex flex-col bg-aether-950 overflow-hidden">
       <div className="flex items-center gap-3 p-4 border-b border-aether-700/40">
-        <button onClick={() => setScreen("world")} className="text-aether-400 text-xl">
+        <button onClick={() => setScreen("world")} className="text-aether-400 text-xl" aria-label="Retour au monde">
           ←
         </button>
         <h1 className="font-display text-xl font-bold">Montures</h1>
@@ -158,17 +158,18 @@ export default function MountPanel() {
                   <p className="font-bold text-white text-sm">{mount.name}</p>
                   <p className="text-aether-500 text-xs truncate">{mount.description}</p>
                   <p className="text-aether-400 text-[10px] mt-0.5">
-                    Niv. {mount.levelRequired} • ✦ {mount.kamasCost.toLocaleString("fr-FR")} kamas
+                    Niv. {mount.levelRequired} • ✦ {mount.kamasCost.toLocaleString("fr-FR")} éclats
                   </p>
                 </div>
                 {owned ? (
                   <span className="text-green-400 text-xs">Possédée</span>
                 ) : locked ? (
-                  <span className="text-aether-600 text-xs">🔒</span>
+                  <span className="text-aether-500 text-xs">Niv. {mount.levelRequired}</span>
                 ) : (
                   <button
                     onClick={() => handleBuy(mount.id)}
                     disabled={!canBuy}
+                    title={!canBuy && eclats < mount.kamasCost ? "Éclats insuffisants" : undefined}
                     className={`text-xs py-1 px-3 rounded-lg ${
                       canBuy ? "btn-primary" : "btn-secondary opacity-50"
                     }`}

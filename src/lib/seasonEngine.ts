@@ -110,8 +110,8 @@ function applyQuestRewards(characterId: string, quest: SeasonQuest, progress: Se
   if (quest.rewards.xp) addXp(characterId, quest.rewards.xp);
   if (quest.rewards.eclats) {
     saveCharacter(characterId, {
-      ...loadCharacter(characterId)!,
-      eclats: (loadCharacter(characterId)?.eclats ?? char.eclats) + quest.rewards.eclats,
+      ...char,
+      eclats: char.eclats + quest.rewards.eclats,
     });
   }
 }

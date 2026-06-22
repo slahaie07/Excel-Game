@@ -91,7 +91,7 @@ export async function recordSeasonMatch(
 }
 
 export const getActiveSeason = query({
-  args: {},
+  args: { now: v.number() },
   returns: v.union(
     v.object({
       _id: v.id("pvpSeasons"),
@@ -109,7 +109,7 @@ export const getActiveSeason = query({
     }),
     v.null()
   ),
-  handler: async (ctx) => {
+  handler: async (ctx, args) => {
     const season = await ctx.db
       .query("pvpSeasons")
       .withIndex("by_status", (q) => q.eq("status", "active"))
@@ -117,8 +117,7 @@ export const getActiveSeason = query({
 
     if (!season) return null;
 
-    const now = Date.now();
-    if (now >= season.endsAt) return null;
+    if (args.now >= season.endsAt) return null;
 
     return {
       _id: season._id,
@@ -126,7 +125,7 @@ export const getActiveSeason = query({
       seasonNumber: season.seasonNumber,
       startsAt: season.startsAt,
       endsAt: season.endsAt,
-      daysLeft: Math.ceil((season.endsAt - now) / (24 * 60 * 60 * 1000)),
+      daysLeft: Math.ceil((season.endsAt - args.now) / (24 * 60 * 60 * 1000)),
       themeId: season.themeId ?? null,
       themeName: season.themeName ?? null,
       themeIcon: season.themeIcon ?? null,

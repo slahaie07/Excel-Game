@@ -13,6 +13,7 @@ import {
   mapLiveEntitiesForPlayer,
   type PvpLiveAction,
 } from "../lib/pvpRealtime";
+import { trackSeasonPvpWin } from "../lib/seasonEngine";
 import { applyLocalPvpResult } from "./LocalPvPScreen";
 
 interface LiveEntity {
@@ -34,38 +35,49 @@ interface LiveEntity {
 }
 
 export default function LivePvpCombatScreen() {
-  const liveMatchId = useGameStore((s) => s.liveMatchId)! as Id<"pvpLiveMatches">;
-  const livePlayerKey = useGameStore((s) => s.livePlayerKey)!;
+  const liveMatchId = useGameStore((s) => s.liveMatchId) as Id<"pvpLiveMatches"> | null;
+  const livePlayerKey = useGameStore((s) => s.livePlayerKey);
   const classId = useGameStore((s) => s.classId)!;
   const characterId = useGameStore((s) => s.characterId)!;
   const endLivePvpCombat = useGameStore((s) => s.endLivePvpCombat);
 
-  const matchDoc = useQuery(api.pvpLive.getLiveMatch, { matchId: liveMatchId });
+  const matchDoc = useQuery(
+    api.pvpLive.getLiveMatch,
+    liveMatchId ? { matchId: liveMatchId } : "skip"
+  );
   const submitAction = useMutation(api.pvpLive.submitPvpAction);
   const abandonMatch = useMutation(api.pvpLive.abandonLiveMatch);
 
   const gameRef = useRef<HTMLDivElement>(null);
   const phaserRef = useRef<Phaser.Game | null>(null);
   const sceneRef = useRef<IsoCombatScene | null>(null);
+  const seasonTracked = useRef(false);
 
   const [selectedSpell, setSelectedSpell] = useState<string | null>(null);
-  const [log, setLog] = useState<string[]>(["Duel joueur en ligne — en attente de sync..."]);
+  const [log, setLog] = useState<string[]>(["Duel joueur en ligne — synchronisation..."]);
   const [submitting, setSubmitting] = useState(false);
+  const [confirmFlee, setConfirmFlee] = useState(false);
 
   const rawEntities: LiveEntity[] = matchDoc?.entities ?? [];
-  const mappedEntities = mapLiveEntitiesForPlayer(rawEntities, livePlayerKey, classId);
+  const mappedEntities = livePlayerKey
+    ? mapLiveEntitiesForPlayer(rawEntities, livePlayerKey, classId)
+    : [];
   const myEntity = mappedEntities.find((e) => e.playerKey === livePlayerKey);
   const playerEntityId = myEntity?.entityId ?? "";
   const spells = getSpellsForClass(classId);
   const isMyTurn =
     matchDoc?.status === "active" &&
+    !!livePlayerKey &&
     matchDoc.currentPlayerKey === livePlayerKey;
   const isPlayerTurn = isMyTurn && !!myEntity?.isAlive;
   const player = myEntity;
 
   const result =
-    matchDoc?.status === "victory_a" || matchDoc?.status === "victory_b" || matchDoc?.status === "abandoned"
+    matchDoc?.status === "victory_a" ||
+    matchDoc?.status === "victory_b" ||
+    matchDoc?.status === "abandoned"
       ? (() => {
+          if (!livePlayerKey) return null;
           const won = didPlayerWin(
             matchDoc.status,
             livePlayerKey,
@@ -78,8 +90,9 @@ export default function LivePvpCombatScreen() {
       : null;
 
   const toVisual = useCallback(
-    (ents: LiveEntity[], currentKey: string): CombatEntityVisual[] =>
-      mapLiveEntitiesForPlayer(ents, livePlayerKey, classId).map((e) => ({
+    (ents: LiveEntity[], currentKey: string): CombatEntityVisual[] => {
+      if (!livePlayerKey) return [];
+      return mapLiveEntitiesForPlayer(ents, livePlayerKey, classId).map((e) => ({
         entityId: e.entityId,
         name: e.name,
         gridX: e.x,
@@ -90,13 +103,14 @@ export default function LivePvpCombatScreen() {
         team: e.team,
         isAlive: e.isAlive,
         isCurrent: e.playerKey === currentKey,
-      })),
+      }));
+    },
     [classId, livePlayerKey]
   );
 
   const runAction = useCallback(
     async (action: PvpLiveAction) => {
-      if (!isPlayerTurn || submitting) return;
+      if (!liveMatchId || !livePlayerKey || !isPlayerTurn || submitting) return false;
       setSubmitting(true);
       try {
         const res = await submitAction({
@@ -108,8 +122,10 @@ export default function LivePvpCombatScreen() {
           setLog((p) => [...p, entry]);
         });
         setSelectedSpell(null);
+        return true;
       } catch (e) {
         setLog((p) => [...p, e instanceof Error ? e.message : "Erreur"]);
+        return false;
       } finally {
         setSubmitting(false);
       }
@@ -124,19 +140,21 @@ export default function LivePvpCombatScreen() {
       if (selectedSpell) {
         const spell = getSpellById(selectedSpell);
         if (!spell || player.ap < spell.apCost) return;
-        await runAction({
+        const ok = await runAction({
           type: "cast",
           spellId: selectedSpell,
           targetX: x,
           targetY: y,
         });
-        sceneRef.current?.playSpellEffect(
-          player.x,
-          player.y,
-          x,
-          y,
-          spell.apCost > 3 ? 0xff6600 : 0x44aaff
-        );
+        if (ok) {
+          sceneRef.current?.playSpellEffect(
+            player.x,
+            player.y,
+            x,
+            y,
+            spell.apCost > 3 ? 0xff6600 : 0x44aaff
+          );
+        }
       } else {
         const distance = Math.abs(x - player.x) + Math.abs(y - player.y);
         if (distance > player.mp || distance === 0) return;
@@ -155,6 +173,10 @@ export default function LivePvpCombatScreen() {
   useEffect(() => {
     if (result === "victory") {
       applyLocalPvpResult(characterId, true);
+      if (!seasonTracked.current) {
+        seasonTracked.current = true;
+        trackSeasonPvpWin(characterId);
+      }
     } else if (result === "defeat") {
       applyLocalPvpResult(characterId, false);
     }
@@ -173,56 +195,105 @@ export default function LivePvpCombatScreen() {
     };
 
     phaserRef.current = new Phaser.Game(config);
-    phaserRef.current.scene.start("IsoCombatScene", {
-      entities: toVisual(rawEntities, matchDoc?.currentPlayerKey ?? livePlayerKey),
-      currentEntityId: playerEntityId,
-      onCellClick: handleCellClick,
-      combatType: "pvp",
-    });
     sceneRef.current = phaserRef.current.scene.getScene("IsoCombatScene") as IsoCombatScene;
 
     return () => {
       phaserRef.current?.destroy(true);
       phaserRef.current = null;
+      sceneRef.current = null;
     };
   }, []);
 
   useEffect(() => {
-    if (!matchDoc) return;
-    sceneRef.current?.updateEntities(
+    if (!sceneRef.current || !matchDoc) return;
+    sceneRef.current.updateEntities(
       toVisual(matchDoc.entities, matchDoc.currentPlayerKey),
       playerEntityId
     );
-  }, [matchDoc, toVisual, playerEntityId]);
+    if (!sceneRef.current.scene.isActive()) {
+      phaserRef.current?.scene.start("IsoCombatScene", {
+        entities: toVisual(matchDoc.entities, matchDoc.currentPlayerKey),
+        currentEntityId: playerEntityId,
+        onCellClick: handleCellClick,
+        combatType: "pvp",
+      });
+    }
+  }, [matchDoc, toVisual, playerEntityId, handleCellClick]);
 
-  const handleFlee = () => {
-    void abandonMatch({ matchId: liveMatchId, playerKey: livePlayerKey });
+  const handleFlee = async () => {
+    if (!liveMatchId || !livePlayerKey) return;
+    if (!confirmFlee) {
+      setConfirmFlee(true);
+      return;
+    }
+    try {
+      await abandonMatch({ matchId: liveMatchId, playerKey: livePlayerKey });
+    } catch (e) {
+      setLog((p) => [...p, e instanceof Error ? e.message : "Abandon impossible"]);
+      setConfirmFlee(false);
+      return;
+    }
     endLivePvpCombat();
   };
 
+  if (!liveMatchId || !livePlayerKey) {
+    return (
+      <div className="flex-1 flex flex-col bg-aether-950 items-center justify-center p-8">
+        <p className="text-aether-400 mb-4">Session de duel invalide.</p>
+        <button onClick={() => endLivePvpCombat()} className="btn-primary">
+          Retour à l&apos;arène
+        </button>
+      </div>
+    );
+  }
+
+  if (matchDoc === undefined) {
+    return (
+      <div className="flex-1 flex flex-col bg-aether-950 items-center justify-center p-8" role="status">
+        <p className="text-aether-300 text-lg mb-2">Chargement du duel...</p>
+        <p className="text-aether-500 text-sm">Connexion au serveur Convex</p>
+      </div>
+    );
+  }
+
+  if (matchDoc === null) {
+    return (
+      <div className="flex-1 flex flex-col bg-aether-950 items-center justify-center p-8">
+        <p className="text-red-400 mb-2">Match introuvable ou expiré.</p>
+        <button onClick={() => endLivePvpCombat()} className="btn-primary">
+          Retour à l&apos;arène
+        </button>
+      </div>
+    );
+  }
+
   const opponentName =
-    livePlayerKey === matchDoc?.playerAKey
-      ? matchDoc?.playerBName
-      : matchDoc?.playerAName;
+    livePlayerKey === matchDoc.playerAKey ? matchDoc.playerBName : matchDoc.playerAName;
 
   return (
     <div className="flex-1 flex flex-col bg-aether-950 relative">
       <div className="flex items-center justify-between p-3 bg-aether-900/80">
-        <span className="font-display font-bold text-aether-200">
-          ⚔️ Duel en ligne vs {opponentName ?? "..."} — Tour {matchDoc?.turn ?? 1}
+        <span className="font-display font-bold text-aether-200 text-sm sm:text-base">
+          ⚔️ Duel vs {opponentName} — Tour {matchDoc.turn}
         </span>
-        <button onClick={handleFlee} className="text-aether-400 text-sm">
-          Abandonner
+        <button
+          onClick={() => void handleFlee()}
+          className={`text-sm px-3 py-2 rounded-lg min-h-[44px] ${
+            confirmFlee ? "bg-red-700 text-white" : "text-aether-400"
+          }`}
+          aria-label={confirmFlee ? "Confirmer l'abandon" : "Abandonner le duel"}
+        >
+          {confirmFlee ? "Confirmer ?" : "Abandonner"}
         </button>
       </div>
 
-      {!isMyTurn && matchDoc?.status === "active" && (
-        <p className="text-center text-aether-400 text-xs py-1 bg-aether-900/50">
+      {!isMyTurn && matchDoc.status === "active" && (
+        <p className="text-center text-aether-400 text-xs py-2 bg-aether-900/50" role="status">
           Tour de l&apos;adversaire...
         </p>
       )}
 
-      <div ref={gameRef} className="flex-shrink-0" style={{ height: 380 }} />
+      <div ref={gameRef} className="flex-shrink-0" style={{ height: 380 }} aria-label="Grille de combat" />
 
       {player && (
         <div className="px-4 py-2 flex flex-wrap gap-4 text-sm">
@@ -245,29 +316,30 @@ export default function LivePvpCombatScreen() {
                   setSelectedSpell(selectedSpell === spell.id ? null : spell.id)
                 }
                 disabled={!player || player.ap < spell.apCost || submitting}
-                className={`flex-shrink-0 card p-2 text-center min-w-[70px] ${
+                aria-label={`Sort ${spell.name}, ${spell.apCost} PA`}
+                className={`flex-shrink-0 card p-2 text-center min-w-[80px] min-h-[72px] ${
                   selectedSpell === spell.id
                     ? "border-aether-500 ring-2 ring-aether-500/30"
                     : ""
                 } ${!player || player.ap < spell.apCost ? "opacity-40" : ""}`}
               >
                 <span className="text-xl">{spell.icon}</span>
-                <p className="text-[10px] text-aether-300 mt-1">{spell.name}</p>
-                <p className="text-[9px] text-orange-400">{spell.apCost} PA</p>
+                <p className="text-xs text-aether-300 mt-1">{spell.name}</p>
+                <p className="text-[10px] text-orange-400">{spell.apCost} PA</p>
               </button>
             ))}
           </div>
           <button
             onClick={() => void runAction({ type: "endTurn" })}
             disabled={submitting}
-            className="btn-secondary w-full mt-2 disabled:opacity-60"
+            className="btn-secondary w-full mt-2 min-h-[44px] disabled:opacity-60"
           >
             Fin du tour
           </button>
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto px-4 py-2">
+      <div className="flex-1 overflow-y-auto px-4 py-2" aria-live="polite">
         {log.slice(-6).map((entry, i) => (
           <p key={i} className="text-aether-400 text-xs mb-1">
             {entry}
@@ -287,7 +359,7 @@ export default function LivePvpCombatScreen() {
                 ? "Vous avez vaincu votre adversaire en ligne !"
                 : "Votre adversaire l'a emporté."}
             </p>
-            <button onClick={() => endLivePvpCombat()} className="btn-primary w-full">
+            <button onClick={() => endLivePvpCombat()} className="btn-primary w-full min-h-[44px]">
               Retour à l&apos;arène
             </button>
           </div>

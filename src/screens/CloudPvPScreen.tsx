@@ -27,7 +27,7 @@ export default function CloudPvPScreen() {
   const char = loadCharacter(characterId);
   const cloudChar = useQuery(api.characters.getCharacter, { characterId });
   const leaderboard = useQuery(api.pvp.getLeaderboard, { limit: 10 });
-  const activeSeason = useQuery(api.seasons.getActiveSeason, {});
+  const activeSeason = useQuery(api.seasons.getActiveSeason, { now });
   const seasonLeaderboard = useQuery(
     api.seasons.getSeasonLeaderboard,
     activeSeason ? { seasonId: activeSeason._id, limit: 10 } : "skip"

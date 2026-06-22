@@ -24,7 +24,7 @@ export function buyMount(characterId: string, mountId: string): MountResult {
   }
 
   if (char.eclats < mount.kamasCost) {
-    return { success: false, error: "Kamas insuffisants" };
+    return { success: false, error: "Éclats insuffisants" };
   }
 
   const updated: CharacterData = {
@@ -108,4 +108,29 @@ function applyStatBonuses(
 export function getActiveMountBonuses(char: CharacterData): MountStatBonuses | null {
   if (!char.mountId) return null;
   return getMountById(char.mountId)?.statBonuses ?? null;
+}
+
+/** Stats de combat du joueur avec bonus de monture appliqués. */
+export function getPlayerCombatStats(characterId: string): {
+  hp: number;
+  maxHp: number;
+  ap: number;
+  maxAp: number;
+  mp: number;
+  maxMp: number;
+} | null {
+  const char = loadCharacter(characterId);
+  if (!char) return null;
+  const withMount = applyMountStats(char);
+  const maxHp = withMount.maxHp ?? 100;
+  const maxAp = withMount.maxAp ?? 6;
+  const maxMp = withMount.maxMp ?? 3;
+  return {
+    hp: Math.min(withMount.hp ?? maxHp, maxHp),
+    maxHp,
+    ap: withMount.ap ?? maxAp,
+    maxAp,
+    mp: Math.min(withMount.mp ?? maxMp, maxMp),
+    maxMp,
+  };
 }

@@ -350,10 +350,11 @@ export const abandonLiveMatch = mutation({
     if (!isA && !isB) throw new Error("Non participant");
 
     const winnerKey = isA ? match.playerBKey : match.playerAKey;
+    const abandonerName = isA ? match.playerAName : match.playerBName;
     await ctx.db.patch("pvpLiveMatches", args.matchId, {
       status: "abandoned",
       winnerPlayerKey: winnerKey,
-      combatLog: [...match.combatLog, `${args.playerKey} a abandonné`],
+      combatLog: [...match.combatLog, `${abandonerName} a abandonné`],
       updatedAt: Date.now(),
     });
 
