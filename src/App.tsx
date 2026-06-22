@@ -25,6 +25,8 @@ import FriendsScreen from "./screens/FriendsScreen";
 import TradeScreen from "./screens/TradeScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import HallOfFameScreen from "./screens/HallOfFameScreen";
+import MountsScreen from "./screens/MountsScreen";
+import SeasonScreen from "./screens/SeasonScreen";
 import ChatOverlay from "./components/ChatOverlay";
 
 const SCREENS = {
@@ -45,6 +47,7 @@ const SCREENS = {
   "dungeon-run": DungeonsScreen,
   raids: RaidsScreen,
   pets: PetsScreen,
+  mounts: MountsScreen,
   haven: HavenScreen,
   events: EventsScreen,
   "live-events": LiveEventsScreen,
@@ -54,12 +57,13 @@ const SCREENS = {
   trade: TradeScreen,
   settings: SettingsScreen,
   "hall-of-fame": HallOfFameScreen,
+  season: SeasonScreen,
 } as const;
 
 const IN_GAME_SCREENS = new Set([
   "world", "combat", "inventory", "quests", "guild", "guild-hall", "marketplace",
-  "professions", "pvp", "dungeons", "raids", "pets", "haven", "events", "live-events",
-  "daily", "achievements", "friends", "trade", "settings", "hall-of-fame",
+  "professions", "pvp", "dungeons", "raids", "pets", "mounts", "haven", "events", "live-events",
+  "daily", "achievements", "friends", "trade", "settings", "hall-of-fame", "season",
 ]);
 
 export default function App() {

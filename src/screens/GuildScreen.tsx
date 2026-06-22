@@ -6,6 +6,7 @@ import { useGameStore } from "../stores/gameStore";
 import { isCloudCharacter } from "../lib/convexUtils";
 import { formatCountdown, warProgressPercent } from "../lib/formatTime";
 import { GUILD_EMBLEMS, GUILD_BANNERS } from "../game/data/guildCosmetics";
+import GuildPanel from "../ui/panels/GuildPanel";
 import { GuildScreenUI } from "./GuildScreenUI";
 
 function CloudGuild() {
@@ -337,35 +338,7 @@ function CloudGuild() {
 }
 
 function LocalGuild() {
-  const characterId = useGameStore((s) => s.characterId)!;
-  const [guilds, setGuilds] = useState(() =>
-    JSON.parse(localStorage.getItem("aetheris-guilds") ?? "[]") as {
-      id: string; name: string; tag: string; level: number; members: number; emblem: string;
-    }[]
-  );
-
-  return (
-    <GuildScreenUI
-      guilds={guilds}
-      onCreate={async (name, tag) => {
-        const newGuild = { id: `guild_${Date.now()}`, name, tag, level: 1, members: 1, emblem: "🏰" };
-        const updated = [...guilds, newGuild];
-        setGuilds(updated);
-        localStorage.setItem("aetheris-guilds", JSON.stringify(updated));
-        const charData = JSON.parse(localStorage.getItem(`aetheris-char-${characterId}`) ?? "{}");
-        charData.guildId = newGuild.id;
-        localStorage.setItem(`aetheris-char-${characterId}`, JSON.stringify(charData));
-      }}
-      onJoin={async (guildId) => {
-        const updated = guilds.map((g) => g.id === guildId ? { ...g, members: g.members + 1 } : g);
-        setGuilds(updated);
-        localStorage.setItem("aetheris-guilds", JSON.stringify(updated));
-        const charData = JSON.parse(localStorage.getItem(`aetheris-char-${characterId}`) ?? "{}");
-        charData.guildId = guildId;
-        localStorage.setItem(`aetheris-char-${characterId}`, JSON.stringify(charData));
-      }}
-    />
-  );
+  return <GuildPanel />;
 }
 
 export default function GuildScreen() {

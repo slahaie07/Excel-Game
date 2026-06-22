@@ -209,3 +209,71 @@ export const initSeason = mutation({
     return season._id;
   },
 });
+
+/** Classement invité pour les événements saisonniers (sans auth) */
+export const submitGuestSeasonScore = mutation({
+  args: {
+    seasonId: v.string(),
+    playerName: v.string(),
+    score: v.number(),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const trimmedName = args.playerName.trim().slice(0, 32);
+    if (!trimmedName || args.score < 0) return null;
+
+    const existing = await ctx.db
+      .query("seasonalEventScores")
+      .withIndex("by_season_and_name", (q) =>
+        q.eq("seasonId", args.seasonId).eq("playerName", trimmedName)
+      )
+      .unique();
+
+    const now = Date.now();
+    if (existing) {
+      if (args.score > existing.score) {
+        await ctx.db.patch("seasonalEventScores", existing._id, {
+          score: args.score,
+          updatedAt: now,
+        });
+      }
+    } else {
+      await ctx.db.insert("seasonalEventScores", {
+        seasonId: args.seasonId,
+        playerName: trimmedName,
+        score: args.score,
+        updatedAt: now,
+      });
+    }
+    return null;
+  },
+});
+
+export const getSeasonEventLeaderboard = query({
+  args: {
+    seasonId: v.string(),
+    limit: v.optional(v.number()),
+  },
+  returns: v.array(
+    v.object({
+      playerName: v.string(),
+      score: v.number(),
+      updatedAt: v.number(),
+    })
+  ),
+  handler: async (ctx, args) => {
+    const rows = await ctx.db
+      .query("seasonalEventScores")
+      .withIndex("by_season", (q) => q.eq("seasonId", args.seasonId))
+      .collect();
+
+    return rows
+      .sort((a, b) => b.score - a.score || b.updatedAt - a.updatedAt)
+      .slice(0, args.limit ?? 20)
+      .map((r) => ({
+        playerName: r.playerName,
+        score: r.score,
+        updatedAt: r.updatedAt,
+      }));
+  },
+});

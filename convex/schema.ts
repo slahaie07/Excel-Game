@@ -35,6 +35,7 @@ const combatEntity = v.object({
   isPlayer: v.boolean(),
   classId: v.optional(v.string()),
   monsterId: v.optional(v.string()),
+  playerKey: v.optional(v.string()),
   hp: v.number(),
   maxHp: v.number(),
   ap: v.number(),
@@ -468,6 +469,15 @@ export default defineSchema({
     .index("by_character", ["characterId"])
     .index("by_season_and_character", ["seasonId", "characterId"]),
 
+  seasonalEventScores: defineTable({
+    seasonId: v.string(),
+    playerName: v.string(),
+    score: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_season", ["seasonId"])
+    .index("by_season_and_name", ["seasonId", "playerName"]),
+
   guildHallVisits: defineTable({
     guildId: v.id("guilds"),
     visitorId: v.id("characters"),
@@ -660,4 +670,49 @@ export default defineSchema({
     rewardLeaguePoints: v.number(),
     updatedAt: v.number(),
   }).index("by_character_and_day", ["characterId", "dayKey"]),
+
+  /** File d'attente PvP temps réel (invités + local, clé playerKey) */
+  pvpLiveQueue: defineTable({
+    playerKey: v.string(),
+    playerName: v.string(),
+    classId: v.string(),
+    level: v.number(),
+    rating: v.number(),
+    characterStats: characterStats,
+    spells: v.array(v.string()),
+    joinedAt: v.number(),
+    status: v.union(v.literal("waiting"), v.literal("matched")),
+    matchId: v.optional(v.id("pvpLiveMatches")),
+  })
+    .index("by_player_key", ["playerKey"])
+    .index("by_status", ["status", "joinedAt"]),
+
+  /** État de combat PvP live synchronisé entre deux joueurs */
+  pvpLiveMatches: defineTable({
+    playerAKey: v.string(),
+    playerBKey: v.string(),
+    playerAName: v.string(),
+    playerBName: v.string(),
+    playerAClassId: v.string(),
+    playerBClassId: v.string(),
+    status: v.union(
+      v.literal("active"),
+      v.literal("victory_a"),
+      v.literal("victory_b"),
+      v.literal("abandoned")
+    ),
+    turn: v.number(),
+    currentPlayerKey: v.string(),
+    entities: v.array(combatEntity),
+    gridWidth: v.number(),
+    gridHeight: v.number(),
+    obstacles: v.array(v.object({ x: v.number(), y: v.number() })),
+    combatLog: v.array(v.string()),
+    winnerPlayerKey: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_status", ["status"])
+    .index("by_player_a", ["playerAKey"])
+    .index("by_player_b", ["playerBKey"]),
 });

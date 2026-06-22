@@ -113,6 +113,14 @@ interface PvPScreenUIProps {
   streak: number;
   mode: "1v1" | "2v2" | "3v3";
   onModeChange: (mode: "1v1" | "2v2" | "3v3") => void;
+  arenaMode?: "bot" | "live";
+  onArenaModeChange?: (mode: "bot" | "live") => void;
+  liveQueueStatus?: {
+    inQueue: boolean;
+    status: "idle" | "waiting" | "matched";
+    playersWaiting: number;
+  } | null;
+  liveConvexEnabled?: boolean;
   searching: boolean;
   queueStatus?: { playersWaiting: number; playersNeeded: number } | null;
   error: string;
@@ -151,6 +159,10 @@ export function PvPScreenUI({
   streak,
   mode,
   onModeChange,
+  arenaMode = "bot",
+  onArenaModeChange,
+  liveQueueStatus,
+  liveConvexEnabled = false,
   searching,
   queueStatus,
   error,
@@ -435,6 +447,30 @@ export function PvPScreenUI({
         )}
 
         <div>
+          <h2 className="text-aether-400 text-sm mb-2">Type d&apos;arène</h2>
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            <button
+              onClick={() => onArenaModeChange?.("bot")}
+              className={`card py-3 text-center ${arenaMode === "bot" ? "border-red-500 ring-2 ring-red-500/30" : ""}`}
+            >
+              <p className="font-bold text-white">🤖 Arène IA</p>
+              <p className="text-aether-500 text-xs">Adversaire simulé</p>
+            </button>
+            <button
+              onClick={() => onArenaModeChange?.("live")}
+              disabled={!liveConvexEnabled}
+              className={`card py-3 text-center ${arenaMode === "live" ? "border-crystal-gold ring-2 ring-crystal-gold/30" : ""} ${!liveConvexEnabled ? "opacity-50" : ""}`}
+            >
+              <p className="font-bold text-white">👥 Duel Joueurs</p>
+              <p className="text-aether-500 text-xs">
+                {liveConvexEnabled ? "Temps réel en ligne" : "Convex requis"}
+              </p>
+            </button>
+          </div>
+        </div>
+
+        {arenaMode === "bot" && (
+        <div>
           <h2 className="text-aether-400 text-sm mb-2">Mode de combat</h2>
           <div className="grid grid-cols-3 gap-2">
             {(["1v1", "2v2", "3v3"] as const).map((m) => (
@@ -451,10 +487,27 @@ export function PvPScreenUI({
             ))}
           </div>
         </div>
+        )}
+
+        {arenaMode === "live" && liveConvexEnabled && (
+          <div className="card border-crystal-gold/30 bg-crystal-gold/5">
+            <p className="text-crystal-gold text-xs font-bold uppercase mb-1">Duel 1v1 en ligne</p>
+            <p className="text-aether-400 text-xs">
+              Affrontez un autre joueur en temps réel. Les actions sont synchronisées via Convex.
+            </p>
+            {searching && liveQueueStatus && (
+              <p className="text-aether-300 text-xs mt-2">
+                {liveQueueStatus.status === "matched"
+                  ? "Adversaire trouvé ! Lancement du duel..."
+                  : `En file d'attente (${liveQueueStatus.playersWaiting} joueur${liveQueueStatus.playersWaiting > 1 ? "s" : ""})...`}
+              </p>
+            )}
+          </div>
+        )}
 
         {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
-        {searching && queueStatus && (
+        {searching && arenaMode === "bot" && queueStatus && (
           <p className="text-aether-400 text-xs text-center">
             Joueurs en file : {queueStatus.playersWaiting}/{queueStatus.playersNeeded}
           </p>
@@ -462,14 +515,20 @@ export function PvPScreenUI({
 
         <button
           onClick={onMatchmake}
-          disabled={searching || loading}
+          disabled={searching || loading || (arenaMode === "live" && !liveConvexEnabled)}
           className="btn-primary w-full bg-gradient-to-r from-red-700 to-red-500 disabled:opacity-60"
         >
           {searching
-            ? queueStatus
-              ? `Recherche ${mode} (${queueStatus.playersWaiting}/${queueStatus.playersNeeded})...`
-              : "Recherche d'adversaire..."
-            : `Lancer un ${mode}`}
+            ? arenaMode === "live"
+              ? liveQueueStatus?.status === "matched"
+                ? "Connexion au duel..."
+                : `Recherche joueur (${liveQueueStatus?.playersWaiting ?? 0} en file)...`
+              : queueStatus
+                ? `Recherche ${mode} (${queueStatus.playersWaiting}/${queueStatus.playersNeeded})...`
+                : "Recherche d'adversaire..."
+            : arenaMode === "live"
+              ? "Rechercher un duel 1v1"
+              : `Lancer un ${mode}`}
         </button>
 
         {(leagueLeaderboard ?? []).length > 0 && (

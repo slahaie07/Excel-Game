@@ -1,3 +1,22 @@
+export interface SeasonObjectiveProgress {
+  questId: string;
+  objectives: { current: number; required: number }[];
+  completed: boolean;
+  claimed: boolean;
+}
+
+export interface SeasonProgress {
+  seasonId: string;
+  currency: number;
+  passXp: number;
+  claimedTiers: number[];
+  objectives: SeasonObjectiveProgress[];
+  shopPurchases: Record<string, number>;
+}
+
+/** Alias pour compatibilité avec les specs produit */
+export type PlayerCharacter = CharacterData;
+
 export interface CharacterData {
   id?: string;
   name: string;
@@ -22,10 +41,13 @@ export interface CharacterData {
   professions?: { professionId: string; level: number; xp: number }[];
   petId?: string;
   guildId?: string;
+  mountId?: string;
+  ownedMounts?: string[];
   pvpRating?: number;
   pvpWins?: number;
   pvpLosses?: number;
   haven?: HavenData;
+  seasonProgress?: SeasonProgress;
 }
 
 export interface HavenData {

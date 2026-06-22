@@ -5,6 +5,7 @@ import { getSpellById, getSpellsForClass, getMonsterById } from "../game/data";
 import { applyPvpResult } from "./PvPScreen";
 import { advanceDungeonRoom, createNextRoomCombat } from "./DungeonsScreen";
 import { recordEventKill } from "./EventsScreen";
+import { trackSeasonKill, trackSeasonDungeonComplete, trackSeasonPvpWin } from "../lib/seasonEngine";
 import { addXp } from "../lib/characterStorage";
 import { applySpellEffects, tickBuffs, formatBuffs } from "../game/combat/effects";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
@@ -135,6 +136,7 @@ export default function LocalCombatScreen() {
 
   const combatData = JSON.parse(localStorage.getItem(`aetheris-combat-${combatId}`) ?? "{}");
   const combatType = combatData.type ?? "world";
+  const isLivePvp = combatType === "pvp_live";
   const [combat, setCombatState] = useState<CombatState>(() =>
     initCombat(
       combatData.monsterIds ?? ["graine_ombre"],
@@ -144,7 +146,7 @@ export default function LocalCombatScreen() {
   );
   const [selectedSpell, setSelectedSpell] = useState<string | null>(null);
   const [log, setLog] = useState<string[]>([
-    combatType === "pvp" ? `⚔️ Duel PvP contre ${combatData.pvpOpponent?.name ?? "adversaire"} !` :
+    combatType === "pvp" || isLivePvp ? `⚔️ Duel PvP contre ${combatData.pvpOpponent?.name ?? "adversaire"} !` :
     combatType === "dungeon" ? `🏚️ Salle ${(combatData.roomIndex ?? 0) + 1} du donjon` :
     combatType === "event" ? `🎉 Combat d'événement saisonnier !` :
     "Le combat commence !",
@@ -233,7 +235,7 @@ export default function LocalCombatScreen() {
       setResult("defeat");
       setCombatState({ ...combat, entities, status: "defeat" });
       setLog((prev) => [...prev, "💀 Défaite..."]);
-      if (combatType === "pvp") applyPvpResult(characterId, false, combatData.convexMatchId);
+      if (combatType === "pvp" || isLivePvp) applyPvpResult(characterId, false, combatData.convexMatchId);
       return;
     }
 
@@ -241,8 +243,9 @@ export default function LocalCombatScreen() {
   };
 
   const awardRewards = () => {
-    if (combatType === "pvp") {
+    if (combatType === "pvp" || isLivePvp) {
       applyPvpResult(characterId, true, combatData.convexMatchId);
+      trackSeasonPvpWin(characterId);
       return;
     }
     if (combatType === "dungeon") {
@@ -250,6 +253,7 @@ export default function LocalCombatScreen() {
       if (complete) {
         setDungeonComplete(true);
         setDungeonRewards(rewards ?? null);
+        trackSeasonDungeonComplete(characterId);
       }
       addXp(characterId, 30);
       return;
@@ -273,6 +277,7 @@ export default function LocalCombatScreen() {
       if (monsterId && combatData.eventId) {
         recordEventKill(characterId, monsterId, combatData.eventId);
       }
+      trackSeasonKill(characterId, monsterId);
       return;
     }
     addXp(characterId, 50);
@@ -280,6 +285,8 @@ export default function LocalCombatScreen() {
     const data = JSON.parse(localStorage.getItem(charKey) ?? "{}");
     data.eclats = (data.eclats ?? 0) + 25;
     localStorage.setItem(charKey, JSON.stringify(data));
+    const worldMonsterId = combatData.monsterIds?.[0] as string | undefined;
+    trackSeasonKill(characterId, worldMonsterId);
   };
 
   const endTurn = () => {

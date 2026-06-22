@@ -9,6 +9,7 @@ export { PROFESSIONS, getProfessionById } from "./professions";
 export { DUNGEONS, getDungeonById, getDungeonsForZone, getRoomMonsters } from "./dungeons";
 export { RAIDS, getRaidById, getPhaseMonsters } from "./raids";
 export { PETS, getPetById } from "./pets";
+export { MOUNTS, getMountById } from "../../data/mounts";
 export { FURNITURE, HAVEN_LEVELS, getFurnitureById, getHavenLevel } from "./housing";
 export { COSMETICS, GUILD_HALL_EMOTES, getCosmeticById } from "./cosmetics";
 export {

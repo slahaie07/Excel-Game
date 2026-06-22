@@ -35,4 +35,12 @@ body {
     @apply bg-gradient-to-b from-aether-950/95 to-aether-900/90 backdrop-blur-md
            border-t border-aether-600/30;
   }
+
+  .panel-overlay {
+    @apply absolute inset-0 bg-black/60 z-50 flex items-end;
+  }
+
+  .panel-wide {
+    @apply w-full game-panel p-4 rounded-t-3xl max-h-[85vh] overflow-y-auto;
+  }
 }

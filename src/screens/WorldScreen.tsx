@@ -5,6 +5,7 @@ import Phaser from "phaser";
 import { useGameStore } from "../stores/gameStore";
 import { ZONES, getZoneById, getMonstersByZone, CLASSES } from "../game/data";
 import { getActiveEvent } from "../game/data/events";
+import { getCurrentSeason } from "../data/seasons";
 import { useOnlinePresence, getOnlinePlayersInZone, OnlinePresenceSync, CloudZonePlayers } from "../lib/useOnlinePresence";
 import { CloudCharacterSync } from "./CharacterSelectScreen";
 import { IsoWorldScene, createMonsterEntities, getClassIcon } from "../game/rendering/IsoWorldScene";
@@ -46,6 +47,7 @@ export default function WorldScreen() {
 
   useOnlinePresence();
   const activeEvent = getActiveEvent();
+  const activeSeason = getCurrentSeason();
 
   const zone = getZoneById(zoneId)!;
   const classData = CLASSES.find((c) => c.id === classId);
@@ -132,8 +134,10 @@ export default function WorldScreen() {
     { id: "dungeons", icon: "🏚️", label: "Donjons" },
     { id: "pvp", icon: "⚔️", label: "Arène" },
     { id: "pets", icon: "✨", label: "Pets" },
+    { id: "mounts", icon: "🐴", label: "Montures" },
     { id: "haven", icon: "🏠", label: "Havre" },
     { id: "events", icon: activeEvent?.icon ?? "🎉", label: "Évent" },
+    { id: "season", icon: "🌑", label: "Saison" },
     { id: "daily", icon: "🎁", label: "Daily" },
     { id: "guild", icon: "🏰", label: "Guilde" },
   ] as const;
@@ -198,6 +202,19 @@ export default function WorldScreen() {
           <span className="text-aether-400 text-xs">→</span>
         </button>
       )}
+
+      <button
+        onClick={() => setScreen("season")}
+        className="mx-3 mt-2 card py-2 px-3 flex items-center gap-2 active:scale-[0.98]"
+        style={{ borderColor: activeSeason.color + "80" }}
+      >
+        <span className="text-xl">{activeSeason.icon}</span>
+        <div className="flex-1 text-left">
+          <p className="text-white text-xs font-bold">{activeSeason.name}</p>
+          <p className="text-aether-500 text-[10px]">Pass saisonnier • Boutique d'éclats</p>
+        </div>
+        <span className="text-aether-400 text-xs">→</span>
+      </button>
 
       {isConvexEnabled() && isCloudCharacter(characterId) && (
         <CloudWorldInvasion
