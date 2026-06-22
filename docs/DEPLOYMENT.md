@@ -77,10 +77,33 @@ Publiez via Google Play / App Store selon vos comptes développeur.
 
 Sans `VITE_CONVEX_URL`, le jeu fonctionne entièrement en local (localStorage). Le multijoueur cloud nécessite Convex configuré.
 
+## 6. Déploiement automatisé (GitHub Actions)
+
+Le workflow `.github/workflows/deploy.yml` déploie sur push vers `main` **si** ces secrets sont configurés dans le repo GitHub (Settings → Secrets) :
+
+| Secret | Description |
+|--------|-------------|
+| `CONVEX_DEPLOY_KEY` | Clé de déploiement Convex (Settings → Deploy Key) |
+| `NETLIFY_AUTH_TOKEN` | Token personnel Netlify |
+| `NETLIFY_SITE_ID` | API ID du site Netlify |
+
+En local :
+
+```bash
+export CONVEX_DEPLOY_KEY=...
+export NETLIFY_AUTH_TOKEN=...
+export NETLIFY_SITE_ID=...
+npm run deploy
+```
+
+> **Note :** Si GitHub Actions est bloqué (facturation), utilisez `npm run deploy` en local avec les variables ci-dessus.
+
 ## Checklist production
 
-- [ ] `npx convex deploy` exécuté
-- [ ] `VITE_CONVEX_URL` configuré sur Netlify
+- [x] Merge v1.12 sur `main` (22 juin 2026)
+- [ ] `CONVEX_DEPLOY_KEY` + `npx convex deploy` (ou `npm run deploy`)
+- [ ] `VITE_CONVEX_URL` injecté au build (automatique via `npm run deploy`)
+- [ ] `NETLIFY_AUTH_TOKEN` + `NETLIFY_SITE_ID` configurés
 - [ ] CI verte sur `main` (`npm run check` passe en local)
 - [ ] Test manuel : création compte cloud, combat, donjon coop, PvP arène IA
 - [ ] Test manuel : PvP live (file d'attente → duel joueur)

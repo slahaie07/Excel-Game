@@ -21,7 +21,9 @@
     "cap:android": "npx cap open android",
     "cap:ios": "npx cap open ios",
     "convex:dev": "CONVEX_AGENT_MODE=anonymous npx convex dev",
-    "convex:deploy": "npx convex deploy"
+    "convex:deploy": "npx convex deploy",
+    "deploy": "node scripts/deploy-production.mjs",
+    "deploy:build": "npx convex deploy --cmd 'npm run build' --cmd-url-env-var-name VITE_CONVEX_URL"
   },
   "dependencies": {
     "@capacitor/push-notifications": "^7.0.6",
