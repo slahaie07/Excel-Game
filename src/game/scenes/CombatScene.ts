@@ -37,10 +37,18 @@ export class CombatScene extends Phaser.Scene {
   }
 
   create() {
-    this.cameras.main.setBackgroundColor(0x0d1117);
+    const { dungeonRun, combatSource } = useGameStore.getState();
+    const title =
+      combatSource === "dungeon" && dungeonRun
+        ? `🏰 Donjon — Salle ${dungeonRun.roomIndex + 1}`
+        : "⚔️ Combat Tactique";
+
+    this.cameras.main.setBackgroundColor(
+      combatSource === "dungeon" ? 0x1a0a2e : 0x0d1117,
+    );
 
     this.add
-      .text(400, 15, "⚔️ Combat Tactique", {
+      .text(400, 15, title, {
         fontSize: "18px",
         color: "#f4d03f",
         fontFamily: "Cinzel",
@@ -321,9 +329,12 @@ export class CombatScene extends Phaser.Scene {
   private endCombat() {
     const victory = this.combatState.phase === "victory";
     const rewards = victory ? getCombatRewards(this.combatState) : undefined;
+    const wasDungeon = useGameStore.getState().combatSource === "dungeon";
     useGameStore.getState().endCombat(victory, rewards);
     this.scene.stop();
-    this.scene.resume("WorldScene");
+    if (!wasDungeon) {
+      this.scene.resume("WorldScene");
+    }
   }
 
   private syncState() {

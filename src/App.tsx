@@ -15,6 +15,7 @@ import { NpcDialog } from "./ui/components/NpcDialog";
 import { NotificationToast } from "./ui/components/NotificationToast";
 import { SettingsPanel } from "./ui/panels/SettingsPanel";
 import { CharacterSelect } from "./ui/screens/CharacterSelect";
+import { DungeonPanel } from "./ui/panels/DungeonPanel";
 import { useAutoSave } from "./hooks/useAutoSave";
 
 export function App() {
@@ -27,7 +28,7 @@ export function App() {
 
   useEffect(() => {
     if (
-      (screen === "world" || screen === "combat") &&
+      (screen === "world" || screen === "combat" || screen === "dungeon") &&
       player &&
       containerRef.current &&
       !gameRef.current
@@ -59,9 +60,11 @@ export function App() {
       {(screen === "world" || screen === "combat") && player && (
         <>
           <div id="game-canvas" ref={containerRef} className="game-canvas" />
-          <HUD />
           <NpcDialog />
         </>
+      )}
+      {(screen === "world" || screen === "combat" || screen === "dungeon") && player && (
+        <HUD />
       )}
       {screen === "inventory" && <InventoryPanel />}
       {screen === "quests" && <QuestPanel />}
@@ -70,6 +73,7 @@ export function App() {
       {screen === "shop" && <ShopPanel />}
       {screen === "guild" && <GuildPanel />}
       {screen === "settings" && <SettingsPanel />}
+      {screen === "dungeon" && <DungeonPanel />}
       <NotificationToast />
     </div>
   );

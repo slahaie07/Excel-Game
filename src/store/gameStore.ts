@@ -10,7 +10,18 @@ import {
   applyQuestRewards,
   getKilledMonsterIds,
   recordMonsterKills,
+  recordDungeonCompletion,
 } from "../lib/questEngine";
+import {
+  type DungeonRun,
+  createDungeonCombat,
+  getCurrentRoom,
+  isLastRoom,
+  rollCompletionLoot,
+  canEnterDungeon,
+} from "../lib/dungeonEngine";
+import type { DungeonId } from "../data/dungeons";
+import { DUNGEONS } from "../data/dungeons";
 
 export type GameScreen =
   | "splash"
@@ -79,6 +90,8 @@ export interface GameState {
   screen: GameScreen;
   player: PlayerCharacter | null;
   combat: CombatState | null;
+  combatSource: "world" | "dungeon";
+  dungeonRun: DungeonRun | null;
   selectedNpc: string | null;
   chatMessages: ChatMessage[];
   notifications: Notification[];
@@ -93,6 +106,12 @@ export interface GameState {
   changeZone: (zone: ZoneId, x: number, y: number) => void;
   startCombat: (combat: CombatState) => void;
   endCombat: (victory: boolean, rewards?: { xp: number; kamas: number; loot: string[] }) => void;
+  startDungeon: (dungeonId: DungeonId) => void;
+  startDungeonCombat: () => void;
+  advanceDungeon: () => void;
+  completeDungeon: () => void;
+  abandonDungeon: () => void;
+  failDungeon: () => void;
   addItem: (itemId: string, quantity: number) => void;
   removeItem: (itemId: string, quantity: number) => boolean;
   equipItem: (itemId: string) => void;
@@ -128,6 +147,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   screen: "splash",
   player: null,
   combat: null,
+  combatSource: "world",
+  dungeonRun: null,
   selectedNpc: null,
   chatMessages: [],
   notifications: [],
@@ -180,11 +201,146 @@ export const useGameStore = create<GameState>((set, get) => ({
     get().addNotification(`Vous entrez dans une nouvelle zone.`, "info");
   },
 
-  startCombat: (combat) => set({ combat, screen: "combat" }),
+  startCombat: (combat) => set({ combat, combatSource: "world", screen: "combat" }),
+
+  startDungeon: (dungeonId) => {
+    const { player } = get();
+    if (!player) return;
+    const error = canEnterDungeon(player, dungeonId);
+    if (error) {
+      get().addNotification(error, "warning");
+      return;
+    }
+    const dungeon = DUNGEONS[dungeonId];
+    set({
+      dungeonRun: {
+        dungeonId,
+        roomIndex: 0,
+        status: "active",
+        startedAt: Date.now(),
+      },
+      screen: "dungeon",
+    });
+    get().addNotification(`Vous entrez dans ${dungeon.name}...`, "info");
+  },
+
+  startDungeonCombat: () => {
+    const { player, dungeonRun } = get();
+    if (!player || !dungeonRun) return;
+    const room = getCurrentRoom(dungeonRun);
+    if (!room) return;
+    const combat = createDungeonCombat(player, room);
+    set({ combat, combatSource: "dungeon", screen: "combat" });
+  },
+
+  advanceDungeon: () => {
+    const { dungeonRun } = get();
+    if (!dungeonRun) return;
+    set({
+      dungeonRun: { ...dungeonRun, roomIndex: dungeonRun.roomIndex + 1 },
+      screen: "dungeon",
+    });
+    const room = getCurrentRoom({ ...dungeonRun, roomIndex: dungeonRun.roomIndex + 1 });
+    if (room) {
+      get().addNotification(`Salle suivante : ${room.name}`, "info");
+    }
+  },
+
+  completeDungeon: () => {
+    const { player, dungeonRun } = get();
+    if (!player || !dungeonRun) return;
+
+    const dungeon = DUNGEONS[dungeonRun.dungeonId];
+    const loot = rollCompletionLoot(dungeon);
+
+    get().addXp(dungeon.completionRewards.xp);
+    get().addKamas(dungeon.completionRewards.kamas);
+    for (const itemId of loot) {
+      get().addItem(itemId, 1);
+    }
+
+    const { player: withQuest, completed } = recordDungeonCompletion(
+      useGameStore.getState().player!,
+      dungeonRun.dungeonId,
+    );
+    const updated = applyQuestRewards(withQuest, completed);
+
+    set({ player: updated, dungeonRun: null, screen: "world" });
+
+    get().addNotification(
+      `Donjon terminé ! +${dungeon.completionRewards.xp} XP, +${dungeon.completionRewards.kamas} Kamas`,
+      "success",
+    );
+    for (const { quest } of completed) {
+      get().addNotification(`Quête terminée : ${quest.name} !`, "success");
+    }
+
+    saveCharacter(updated);
+  },
+
+  abandonDungeon: () => {
+    set({ dungeonRun: null, screen: "world" });
+    get().addNotification("Vous quittez le donjon.", "info");
+  },
+
+  failDungeon: () => {
+    const { player, dungeonRun } = get();
+    if (!player) return;
+    const revived = {
+      ...player,
+      stats: { ...player.stats, hp: Math.floor(player.stats.maxHp * 0.2) },
+    };
+    set({
+      player: revived,
+      dungeonRun: dungeonRun ? { ...dungeonRun, status: "failed" } : null,
+      screen: "world",
+    });
+    get().addNotification("Échec dans le donjon... Vous êtes évacué.", "warning");
+    set({ dungeonRun: null });
+    saveCharacter(revived);
+  },
 
   endCombat: (victory, rewards) => {
-    const { player, combat } = get();
+    const { player, combat, combatSource, dungeonRun } = get();
     if (!player) return;
+
+    if (combatSource === "dungeon" && dungeonRun) {
+      if (victory) {
+        let currentPlayer = player;
+
+        if (combat) {
+          const killed = getKilledMonsterIds(combat);
+          const afterKills = recordMonsterKills(currentPlayer, killed);
+          currentPlayer = afterKills.player;
+
+          const playerEntity = combat.entities.find(
+            (e) => e.team === "player" && e.isAlive,
+          );
+          if (playerEntity) {
+            currentPlayer = {
+              ...currentPlayer,
+              stats: {
+                ...currentPlayer.stats,
+                hp: playerEntity.stats.hp,
+                pa: currentPlayer.stats.maxPa,
+                pm: currentPlayer.stats.maxPm,
+              },
+            };
+          }
+          set({ player: currentPlayer });
+        }
+
+        if (isLastRoom(dungeonRun)) {
+          get().completeDungeon();
+        } else {
+          get().advanceDungeon();
+        }
+      } else {
+        get().failDungeon();
+      }
+      set({ combat: null, combatSource: "world" });
+      return;
+    }
 
     let updatedPlayer = { ...player };
 

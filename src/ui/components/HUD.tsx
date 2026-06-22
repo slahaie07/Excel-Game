@@ -6,6 +6,7 @@ export function HUD() {
   const player = useGameStore((s) => s.player);
   const setScreen = useGameStore((s) => s.setScreen);
   const screen = useGameStore((s) => s.screen);
+  const dungeonRun = useGameStore((s) => s.dungeonRun);
 
   if (!player) return null;
 
@@ -33,7 +34,7 @@ export function HUD() {
         </div>
       </div>
 
-      {screen === "world" && (
+      {(screen === "world" || screen === "dungeon") && (
         <nav className="hud-menu">
           <button className="hud-btn" onClick={() => setScreen("inventory")} title="Inventaire">
             🎒
@@ -41,6 +42,11 @@ export function HUD() {
           <button className="hud-btn" onClick={() => setScreen("quests")} title="Quêtes">
             📜
           </button>
+          {!dungeonRun && (
+            <button className="hud-btn" onClick={() => setScreen("dungeon")} title="Donjons">
+              🏰
+            </button>
+          )}
           <button className="hud-btn" onClick={() => setScreen("craft")} title="Artisanat">
             🔨
           </button>

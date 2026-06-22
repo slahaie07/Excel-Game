@@ -209,6 +209,28 @@ export class WorldScene extends Phaser.Scene {
     if (moved) {
       newX = Phaser.Math.Clamp(newX, 0, zone.mapWidth - 1);
       newY = Phaser.Math.Clamp(newY, 0, zone.mapHeight - 1);
+
+      if (newX === zone.mapWidth - 1) {
+        const nextZone = zone.connections[0];
+        if (nextZone) {
+          const next = ZONES[nextZone];
+          store.changeZone(nextZone, 2, Math.floor(next.mapHeight / 2));
+          this.scene.restart();
+          return;
+        }
+      }
+      if (newX === 0) {
+        const prevZone = zone.connections.find((z) =>
+          ZONES[z]?.connections.includes(player.zone),
+        );
+        if (prevZone) {
+          const prev = ZONES[prevZone];
+          store.changeZone(prevZone, prev.mapWidth - 2, Math.floor(prev.mapHeight / 2));
+          this.scene.restart();
+          return;
+        }
+      }
+
       store.movePlayer(newX, newY);
       this.updatePlayerPosition(newX, newY);
     }

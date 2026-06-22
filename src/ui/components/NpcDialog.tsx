@@ -118,6 +118,18 @@ export function NpcDialog() {
         {npc.role === "bank" && (
           <p className="npc-text">{npc.dialogues.bank}</p>
         )}
+
+        {npc.id === "explorateur" && (
+          <button
+            className="btn-primary"
+            onClick={() => {
+              setSelectedNpc(null);
+              setScreen("dungeon");
+            }}
+          >
+            🏰 Entrer dans le Donjon des Cristaux
+          </button>
+        )}
       </div>
     </div>
   );

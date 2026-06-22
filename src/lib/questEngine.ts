@@ -126,3 +126,43 @@ export function acceptQuest(
 
   return { ...player, questProgress };
 }
+
+export function recordDungeonCompletion(
+  player: PlayerCharacter,
+  dungeonId: string,
+): { player: PlayerCharacter; completed: QuestCompletion[] } {
+  const questProgress = { ...player.questProgress };
+  const completed: QuestCompletion[] = [];
+
+  for (const quest of Object.values(QUESTS)) {
+    const entry = questProgress[quest.id] ?? {
+      status: "available" as const,
+      objectives: {},
+    };
+
+    if (entry.status === "completed") continue;
+
+    if (entry.status === "available") {
+      entry.status = "active";
+    }
+
+    for (const obj of quest.objectives) {
+      if (obj.type === "explore" && obj.target === dungeonId) {
+        entry.objectives[obj.id] = obj.quantity;
+      }
+    }
+
+    const allDone = quest.objectives.every(
+      (obj) => (entry.objectives[obj.id] ?? 0) >= obj.quantity,
+    );
+
+    if (allDone && entry.status === "active") {
+      entry.status = "completed";
+      completed.push({ questId: quest.id, quest });
+    }
+
+    questProgress[quest.id] = entry;
+  }
+
+  return { player: { ...player, questProgress }, completed };
+}

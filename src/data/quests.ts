@@ -223,6 +223,17 @@ export const NPCS: Record<string, Npc> = {
     quests: ["quete_faille"],
     shop: false, icon: "🙏",
   },
+  explorateur: {
+    id: "explorateur", name: "Explorateur Vex", role: "quest_giver",
+    zone: "crystal_caves", x: 8, y: 6,
+    dialogues: {
+      greeting: "Les grottes recèlent un donjon oublié... Seuls les braves osent s'y aventurer.",
+      quest: "Le Donjon des Cristaux attend. Prêt à descendre ?",
+      dungeon: "Je peux vous guider vers l'entrée du donjon.",
+    },
+    quests: ["quete_donjon_grotte"],
+    shop: false, icon: "🗺️",
+  },
 };
 
 export interface Npc {

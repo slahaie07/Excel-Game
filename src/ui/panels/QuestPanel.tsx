@@ -69,6 +69,9 @@ export function QuestPanel() {
         <section>
           <h3 className="section-title">Donjons</h3>
           {dungeonQuests.map(renderQuest)}
+          <button className="btn-secondary quest-dungeon-btn" onClick={() => setScreen("dungeon")}>
+            🏰 Accéder aux donjons de la zone
+          </button>
         </section>
       </div>
     </div>

@@ -13,8 +13,8 @@ Le Continent d'Étheris a été brisé par la Grande Faille. Cinq cités-refuges
 - **8 classes jouables** — Gardien, Arcaniste, Rôdeur, Mystique, Forgeur, Ombrelame, Invocateur, Alchimiste
 - **32+ sorts** — dégâts, soins, buffs, debuffs, invocations, contrôle
 - **Exploration isométrique** — 6 zones avec niveaux 1-80
-- **Rencontres aléatoires** — groupes de monstres adaptés au niveau
-- **Système de quêtes actif** — acceptation chez les NPCs, suivi des kills, récompenses automatiques
+- **Donjons instanciés** — salles enchaînées, boss final, loot épique (Donjon des Cristaux, Tanière des Gobelins)
+- **Transitions de zones** — parcourez le monde via les bords de carte
 
 ### Progression & Persistance
 - **Sauvegarde automatique** — localStorage toutes les 30 secondes
