@@ -207,6 +207,94 @@ html, body, #root {
 .dungeon-fight-btn { font-size: 1.1rem; padding: 1rem; }
 .dungeon-hp-hint { text-align: center; font-size: 0.8rem; color: var(--text-secondary); margin-top: 1rem; }
 
+/* PvP Arena */
+.pvp-rank-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-left: 3px solid var(--accent-gold);
+}
+.pvp-rank-main { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+.pvp-rank-icon { font-size: 2.5rem; }
+.pvp-rank-tier { display: block; font-size: 1.1rem; color: var(--accent-gold); }
+.pvp-rank-rating { font-size: 0.85rem; color: var(--text-secondary); }
+.pvp-rank-stats { display: flex; flex-wrap: wrap; gap: 0.75rem; font-size: 0.8rem; color: var(--text-secondary); }
+
+.pvp-tiers { margin-bottom: 1rem; }
+.pvp-tiers h3 { font-size: 0.85rem; color: var(--accent-gold); margin-bottom: 0.5rem; }
+.pvp-tier-list { display: flex; flex-direction: column; gap: 0.35rem; }
+.pvp-tier-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--bg-card);
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+.pvp-tier-item.active { border: 1px solid var(--accent-gold); background: #1e2a45; }
+.pvp-tier-range { margin-left: auto; color: var(--text-secondary); font-size: 0.75rem; }
+
+.pvp-rewards-hint {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: var(--bg-card);
+  border-radius: 8px;
+}
+.pvp-rewards-hint p { width: 100%; margin: 0 0 0.25rem; }
+
+.pvp-queue-btn { width: 100%; font-size: 1.1rem; padding: 1rem; margin-bottom: 1rem; }
+.pvp-online-hint { font-size: 0.75rem; color: var(--accent-green); text-align: center; }
+
+.pvp-match-panel { border-color: var(--accent-gold); }
+.pvp-vs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+.pvp-fighter { text-align: center; flex: 1; }
+.pvp-fighter-icon {
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 2px solid var(--accent-gold);
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.pvp-fighter-tier { display: block; font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem; }
+.pvp-vs-label { font-family: var(--font-title); font-size: 1.5rem; color: var(--accent-red); }
+.pvp-match-hint { font-size: 0.85rem; color: var(--text-secondary); text-align: center; margin-bottom: 1rem; }
+.pvp-actions { display: flex; flex-direction: column; gap: 0.5rem; }
+.pvp-fight-btn { font-size: 1.1rem; padding: 1rem; }
+
+.pvp-leaderboard { margin-top: 1rem; }
+.pvp-leaderboard h3 { font-size: 0.85rem; color: var(--accent-gold); margin-bottom: 0.5rem; }
+.pvp-lb-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+.pvp-lb-rank { width: 1.5rem; color: var(--accent-gold); font-weight: 700; }
+.pvp-lb-name { flex: 1; }
+.pvp-lb-rating { color: var(--accent-gold); font-weight: 600; }
+
 .btn-primary {
   background: linear-gradient(135deg, var(--accent-gold), #d4ac0d);
   color: #0a0e1a;

@@ -22,6 +22,15 @@ import {
 } from "../lib/dungeonEngine";
 import type { DungeonId } from "../data/dungeons";
 import { DUNGEONS } from "../data/dungeons";
+import { canEnterArena } from "../data/pvp";
+import {
+  type PvpRun,
+  createPvpCombat,
+  defaultPvpStats,
+  generateOpponent,
+  resolvePvpMatch,
+  type PvpStats,
+} from "../lib/pvpEngine";
 
 export type GameScreen =
   | "splash"
@@ -74,6 +83,7 @@ export interface PlayerCharacter {
   petId?: string;
   guildId?: string;
   achievements: string[];
+  pvpStats?: PvpStats;
 }
 
 export interface Pet {
@@ -90,8 +100,9 @@ export interface GameState {
   screen: GameScreen;
   player: PlayerCharacter | null;
   combat: CombatState | null;
-  combatSource: "world" | "dungeon";
+  combatSource: "world" | "dungeon" | "pvp";
   dungeonRun: DungeonRun | null;
+  pvpRun: PvpRun | null;
   selectedNpc: string | null;
   chatMessages: ChatMessage[];
   notifications: Notification[];
@@ -112,6 +123,9 @@ export interface GameState {
   completeDungeon: () => void;
   abandonDungeon: () => void;
   failDungeon: () => void;
+  startPvpMatch: () => void;
+  startPvpCombat: () => void;
+  abandonPvp: () => void;
   addItem: (itemId: string, quantity: number) => void;
   removeItem: (itemId: string, quantity: number) => boolean;
   equipItem: (itemId: string) => void;
@@ -149,6 +163,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   combat: null,
   combatSource: "world",
   dungeonRun: null,
+  pvpRun: null,
   selectedNpc: null,
   chatMessages: [],
   notifications: [],
@@ -177,6 +192,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       questProgress: {},
       professions: {},
       achievements: [],
+      pvpStats: defaultPvpStats(),
     };
     set({ player, screen: "world" });
     saveCharacter(useGameStore.getState().player!);
@@ -300,9 +316,102 @@ export const useGameStore = create<GameState>((set, get) => ({
     saveCharacter(revived);
   },
 
+  startPvpMatch: () => {
+    const { player } = get();
+    if (!player) return;
+    const error = canEnterArena(player.level);
+    if (error) {
+      get().addNotification(error, "warning");
+      return;
+    }
+    const opponent = generateOpponent(player);
+    const playerRating = player.pvpStats?.rating ?? 1000;
+    set({
+      pvpRun: {
+        opponent,
+        playerRatingBefore: playerRating,
+        startedAt: Date.now(),
+      },
+      screen: "pvp",
+    });
+    get().addNotification(
+      `Adversaire trouvé : ${opponent.name} (${opponent.tier.icon} ${opponent.tier.name})`,
+      "info",
+    );
+  },
+
+  startPvpCombat: () => {
+    const { player, pvpRun } = get();
+    if (!player || !pvpRun) return;
+    const combat = createPvpCombat(player, pvpRun.opponent);
+    set({ combat, combatSource: "pvp", screen: "combat" });
+  },
+
+  abandonPvp: () => {
+    set({ pvpRun: null, screen: "world" });
+    get().addNotification("Vous quittez l'arène.", "info");
+  },
+
   endCombat: (victory, rewards) => {
     const { player, combat, combatSource, dungeonRun } = get();
     if (!player) return;
+
+    if (combatSource === "pvp" && get().pvpRun) {
+      const run = get().pvpRun!;
+      const { stats, result } = resolvePvpMatch(player, run, victory);
+
+      let updatedPlayer: PlayerCharacter = { ...player, pvpStats: stats };
+
+      if (combat && victory) {
+        const playerEntity = combat.entities.find(
+          (e) => e.team === "player" && e.isAlive,
+        );
+        if (playerEntity) {
+          updatedPlayer = {
+            ...updatedPlayer,
+            stats: {
+              ...updatedPlayer.stats,
+              hp: playerEntity.stats.hp,
+              pa: updatedPlayer.stats.maxPa,
+              pm: updatedPlayer.stats.maxPm,
+            },
+          };
+        }
+      } else if (!victory) {
+        updatedPlayer = {
+          ...updatedPlayer,
+          stats: {
+            ...updatedPlayer.stats,
+            hp: Math.floor(updatedPlayer.stats.maxHp * 0.5),
+          },
+        };
+      }
+
+      set({ player: updatedPlayer });
+
+      if (victory) {
+        get().addXp(result.xp);
+        get().addKamas(result.kamas);
+        get().addNotification(
+          `Victoire ! ${result.ratingChange >= 0 ? "+" : ""}${result.ratingChange} pts → ${result.newRating} (${result.tier.icon} ${result.tier.name})`,
+          "success",
+        );
+      } else {
+        get().addNotification(
+          `Défaite. ${result.ratingChange} pts → ${result.newRating}`,
+          "warning",
+        );
+      }
+
+      const finalPlayer = useGameStore.getState().player;
+      if (finalPlayer) {
+        set({ player: { ...finalPlayer, pvpStats: stats } });
+        saveCharacter({ ...finalPlayer, pvpStats: stats });
+      }
+
+      set({ combat: null, combatSource: "world", pvpRun: null, screen: "pvp" });
+      return;
+    }
 
     if (combatSource === "dungeon" && dungeonRun) {
       if (victory) {

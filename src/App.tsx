@@ -16,6 +16,7 @@ import { NotificationToast } from "./ui/components/NotificationToast";
 import { SettingsPanel } from "./ui/panels/SettingsPanel";
 import { CharacterSelect } from "./ui/screens/CharacterSelect";
 import { DungeonPanel } from "./ui/panels/DungeonPanel";
+import { PvpPanel } from "./ui/panels/PvpPanel";
 import { useAutoSave } from "./hooks/useAutoSave";
 
 export function App() {
@@ -63,7 +64,7 @@ export function App() {
           <NpcDialog />
         </>
       )}
-      {(screen === "world" || screen === "combat" || screen === "dungeon") && player && (
+      {(screen === "world" || screen === "combat" || screen === "dungeon" || screen === "pvp") && player && (
         <HUD />
       )}
       {screen === "inventory" && <InventoryPanel />}
@@ -74,6 +75,7 @@ export function App() {
       {screen === "guild" && <GuildPanel />}
       {screen === "settings" && <SettingsPanel />}
       {screen === "dungeon" && <DungeonPanel />}
+      {screen === "pvp" && <PvpPanel />}
       <NotificationToast />
     </div>
   );

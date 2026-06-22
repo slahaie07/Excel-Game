@@ -10,6 +10,7 @@
 
 import type * as characters from "../characters.js";
 import type * as guest from "../guest.js";
+import type * as pvp from "../pvp.js";
 
 import type {
   ApiFromModules,
@@ -20,6 +21,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   characters: typeof characters;
   guest: typeof guest;
+  pvp: typeof pvp;
 }>;
 
 /**

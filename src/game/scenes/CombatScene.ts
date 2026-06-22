@@ -39,17 +39,27 @@ export class CombatScene extends Phaser.Scene {
   }
 
   create() {
-    const { dungeonRun, combatSource } = useGameStore.getState();
+    const { dungeonRun, combatSource, pvpRun } = useGameStore.getState();
     const title =
-      combatSource === "dungeon" && dungeonRun
-        ? `🏰 Donjon — Salle ${dungeonRun.roomIndex + 1}`
-        : "⚔️ Combat Tactique";
+      combatSource === "pvp" && pvpRun
+        ? `🏟️ Arène — ${pvpRun.opponent.name}`
+        : combatSource === "dungeon" && dungeonRun
+          ? `🏰 Donjon — Salle ${dungeonRun.roomIndex + 1}`
+          : "⚔️ Combat Tactique";
 
     this.tileKey =
-      combatSource === "dungeon" ? "tile_dungeon" : "tile_whispering_forest";
+      combatSource === "pvp"
+        ? "tile_sky_temple"
+        : combatSource === "dungeon"
+          ? "tile_dungeon"
+          : "tile_whispering_forest";
 
     this.cameras.main.setBackgroundColor(
-      combatSource === "dungeon" ? 0x1a0a2e : 0x0d1117,
+      combatSource === "pvp"
+        ? 0x1a1a3e
+        : combatSource === "dungeon"
+          ? 0x1a0a2e
+          : 0x0d1117,
     );
 
     this.add
@@ -340,6 +350,7 @@ export class CombatScene extends Phaser.Scene {
     )
       return;
 
+    const isPvp = useGameStore.getState().combatSource === "pvp";
     const players = this.combatState.entities.filter(
       (e) => e.team === "player" && e.isAlive,
     );
@@ -347,15 +358,52 @@ export class CombatScene extends Phaser.Scene {
     if (!target) return;
 
     const dist = manhattanDistance(current.position, target.position);
-    if (dist > 1) {
-      const dx = Math.sign(target.position.x - current.position.x);
-      const dy = Math.sign(target.position.y - current.position.y);
-      const newPos = {
-        x: current.position.x + dx,
-        y: current.position.y + dy,
-      };
-      this.combatState = moveEntity(this.combatState, current.id, newPos);
-    } else if (current.spells.length > 0) {
+    let acted = false;
+
+    if (isPvp && current.spells.length > 0 && current.stats.pa > 0) {
+      for (const spellId of current.spells) {
+        const spell = SPELLS[spellId];
+        if (!spell || spell.paCost > current.stats.pa) continue;
+        const cells = getSpellTargets(this.combatState, current, spell);
+        const canHit = cells.some(
+          (c) => c.x === target.position.x && c.y === target.position.y,
+        );
+        if (canHit) {
+          this.combatState = castSpell(
+            this.combatState,
+            current.id,
+            spellId,
+            target.position,
+          );
+          acted = true;
+          break;
+        }
+      }
+    }
+
+    if (!acted && dist > 1 && current.stats.pm > 0) {
+      const cells = getReachableCells(this.combatState, current);
+      const closer = cells
+        .map((c) => ({ c, d: manhattanDistance(c, target.position) }))
+        .filter(({ d }) => d < dist)
+        .sort((a, b) => a.d - b.d)[0];
+      if (closer) {
+        this.combatState = moveEntity(
+          this.combatState,
+          current.id,
+          closer.c,
+        );
+        acted = true;
+      } else {
+        const dx = Math.sign(target.position.x - current.position.x);
+        const dy = Math.sign(target.position.y - current.position.y);
+        this.combatState = moveEntity(this.combatState, current.id, {
+          x: current.position.x + dx,
+          y: current.position.y + dy,
+        });
+        acted = true;
+      }
+    } else if (!acted && dist <= 1 && current.spells.length > 0) {
       const spellId = current.spells[0];
       if (spellId) {
         this.combatState = castSpell(
@@ -373,16 +421,25 @@ export class CombatScene extends Phaser.Scene {
 
     if (this.combatState.phase !== "combat") {
       this.endCombat();
+      return;
+    }
+
+    const next = getCurrentEntity(this.combatState);
+    if (next?.team === "enemy") {
+      this.time.delayedCall(isPvp ? 600 : 800, () => this.aiTurn());
     }
   }
 
   private endCombat() {
     const victory = this.combatState.phase === "victory";
-    const rewards = victory ? getCombatRewards(this.combatState) : undefined;
-    const wasDungeon = useGameStore.getState().combatSource === "dungeon";
+    const source = useGameStore.getState().combatSource;
+    const rewards =
+      victory && source === "world"
+        ? getCombatRewards(this.combatState)
+        : undefined;
     useGameStore.getState().endCombat(victory, rewards);
     this.scene.stop();
-    if (!wasDungeon) {
+    if (source === "world") {
       this.scene.resume("WorldScene");
     }
   }

@@ -166,4 +166,16 @@ export default defineSchema({
     .index("by_status", ["status"])
     .index("by_player1", ["player1Id"])
     .index("by_player2", ["player2Id"]),
+
+  pvpRankings: defineTable({
+    playerKey: v.string(),
+    playerName: v.string(),
+    classId: v.string(),
+    rating: v.number(),
+    wins: v.number(),
+    losses: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_rating", ["rating"])
+    .index("by_player_key", ["playerKey"]),
 });

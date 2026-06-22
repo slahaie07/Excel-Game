@@ -34,7 +34,7 @@ export function HUD() {
         </div>
       </div>
 
-      {(screen === "world" || screen === "dungeon") && (
+      {(screen === "world" || screen === "dungeon" || screen === "pvp") && (
         <nav className="hud-menu">
           <button className="hud-btn" onClick={() => setScreen("inventory")} title="Inventaire">
             🎒
@@ -45,6 +45,11 @@ export function HUD() {
           {!dungeonRun && (
             <button className="hud-btn" onClick={() => setScreen("dungeon")} title="Donjons">
               🏰
+            </button>
+          )}
+          {!dungeonRun && (
+            <button className="hud-btn" onClick={() => setScreen("pvp")} title="Arène PvP">
+              🏟️
             </button>
           )}
           <button className="hud-btn" onClick={() => setScreen("craft")} title="Artisanat">
