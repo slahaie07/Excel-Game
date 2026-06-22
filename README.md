@@ -99,6 +99,13 @@ MMORPG tactique mobile inspiré des grands RPG isométriques au tour par tour, a
 - **Défis PvP quotidiens** — 3 missions/jour, récompenses éclats + points ligue
 - **Boss d'invasion** — Avatar des Ombres quand la barre atteint 100 %
 
+### PvP live, montures, guildes locales & saisons (v1.12)
+- **Duel joueurs temps réel** — file d'attente Convex, combat synchronisé (`convex/pvpLive.ts`)
+- **Montures** — 6 montures achetables, bonus vitesse/XP, équipement depuis le HUD
+- **Guildes locales** — création/adhésion hors-ligne, dons et progression persistante
+- **Saisons événementielles** — scores kills/donjon/PvP, classement invité Convex
+- **Automatisme taille** — budgets bundle, lazy loading, CI avec rapport PR
+
 ### Graphismes isométriques
 - Monde et combat en vue isométrique 2:1 (Phaser 3)
 - Tuiles thématiques par zone, ombres, tri de profondeur
@@ -193,6 +200,8 @@ convex/          # Backend temps réel (combat, guildes, marché, chat)
 - [x] Tournois PvP hebdo, Panthéon cross-serveur, cosmétiques de guilde (v1.9)
 - [x] Ligues PvP, mentorat joueurs, invasions monde dynamiques (v1.10)
 - [x] Réputation factions, défis PvP quotidiens, boss invasion (v1.11)
+- [x] PvP live joueur vs joueur, montures, guildes locales, saisons (v1.12)
+- [x] Automatisme taille projet — métriques, budgets, code splitting (v1.12)
 
 ## Licence
 

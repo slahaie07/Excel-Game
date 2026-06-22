@@ -1,4 +1,4 @@
-# Déploiement Aetheris v1.1
+# Déploiement Aetheris v1.12
 
 ## Prérequis
 
@@ -56,6 +56,11 @@ Le workflow `.github/workflows/ci.yml` s'exécute sur push/PR vers `main` :
 3. `npm run typecheck`
 4. `npm run build`
 5. `npm test`
+6. `npm run metrics` + `npm run size:check` (budgets dans `budgets.json`)
+
+En local, la même chaîne est disponible via `npm run check`.
+
+Les PR reçoivent un commentaire automatique avec le tableau de taille du bundle.
 
 Aucune configuration supplémentaire requise pour la CI.
 
@@ -76,5 +81,8 @@ Sans `VITE_CONVEX_URL`, le jeu fonctionne entièrement en local (localStorage). 
 
 - [ ] `npx convex deploy` exécuté
 - [ ] `VITE_CONVEX_URL` configuré sur Netlify
-- [ ] CI verte sur `main`
-- [ ] Test manuel : création compte cloud, combat, donjon coop, PvP
+- [ ] CI verte sur `main` (`npm run check` passe en local)
+- [ ] Test manuel : création compte cloud, combat, donjon coop, PvP arène IA
+- [ ] Test manuel : PvP live (file d'attente → duel joueur)
+- [ ] Test manuel : monture achetée/équipée, guilde locale créée
+- [ ] Test manuel : scores saison (kills, donjon, PvP) visibles dans le panneau Saison
