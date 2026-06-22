@@ -4,25 +4,63 @@ import {
   getRegionOverlayForZone,
   REGION_OVERLAYS,
   getCombatBackground,
+  resolveCombatBackground,
   getClassPortrait,
   getMonsterPortrait,
   getMonsterTextureKey,
   hasMonsterSprite,
+  getDungeonBackground,
+  getPoiMapArt,
+  getRaidBackground,
+  getDungeonRoomBackground,
+  getTotalMapCount,
+  TARGET_MAP_COUNT,
   CLASS_PORTRAITS,
   ZONE_BACKGROUNDS,
+  DUNGEON_BACKGROUNDS,
+  POI_MAPS,
+  RAID_BACKGROUNDS,
+  DUNGEON_ROOM_BACKGROUNDS,
   MONSTER_SPRITES,
   NPC_PORTRAITS,
 } from "./assets";
+import { DUNGEONS } from "./dungeons";
+import { MAP_POIS } from "./mapPOIs";
+import { RAIDS } from "./raids";
 import { getCampaignRankCosmeticIds } from "./factionCampaignRewards";
 
 describe("game assets", () => {
-  it("maps all zones to background art", () => {
+  it("catalogues 350 maps across Terreval", () => {
+    expect(getTotalMapCount()).toBe(TARGET_MAP_COUNT);
     expect(Object.keys(ZONE_BACKGROUNDS)).toHaveLength(25);
+    expect(Object.keys(DUNGEON_BACKGROUNDS)).toHaveLength(DUNGEONS.length);
+    expect(Object.keys(POI_MAPS)).toHaveLength(MAP_POIS.length);
+    expect(Object.keys(RAID_BACKGROUNDS)).toHaveLength(RAIDS.length);
+    expect(Object.keys(DUNGEON_ROOM_BACKGROUNDS).length).toBeGreaterThanOrEqual(155);
+  });
+
+  it("maps all zones to background art", () => {
     expect(getZoneBackground("jardin_initiation")).toBeDefined();
     expect(getZoneBackground("port_nebula")).toContain("port-nebula");
     expect(getZoneBackground("citadelle_stellaire")).toBeDefined();
     expect(getZoneBackground("plateau_givre")).toBeDefined();
     expect(getZoneBackground("iles_stellaires")).toBeDefined();
+  });
+
+  it("maps dungeons, POI and raids to map art", () => {
+    expect(getDungeonBackground("ruines_corrompues")).toContain("ruines-corrompues");
+    expect(getPoiMapArt(MAP_POIS[0]!.id)).toContain("/assets/pois/");
+    expect(getRaidBackground("sanctuaire_draconique")).toContain("sanctuaire-draconique");
+    expect(getDungeonRoomBackground("ruines_corrompues", 0)).toContain("room-1");
+  });
+
+  it("resolves dungeon combat backgrounds from room art", () => {
+    const bg = resolveCombatBackground({
+      combatType: "dungeon",
+      dungeonId: "ruines_corrompues",
+      roomIndex: 0,
+    });
+    expect(bg).toContain("dungeon-ruines-corrompues-room-1");
   });
 
   it("provides regional overlay tints for v4.0 zones", () => {

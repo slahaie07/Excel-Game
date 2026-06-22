@@ -19,6 +19,10 @@ ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "public" / "assets"
 DATA = ROOT / "src" / "game" / "data"
 
+# Objectif catalogue : 350 cartes (25 zones + 121 donjons + POI + raids + salles de donjon)
+TARGET_TOTAL_MAPS = 350
+TARGET_DUNGEON_ROOM_MAPS = 155
+
 # ——— Palette Aetheris ———
 BG_DARK = (26, 15, 46)
 CYAN = (94, 234, 212)
@@ -187,6 +191,98 @@ def parse_npcs() -> list[tuple[str, str, str]]:
     return re.findall(r'id:\s*"([^"]+)"[\s\S]*?name:\s*"([^"]+)"[\s\S]*?title:\s*"([^"]+)"', text)
 
 
+def parse_dungeons() -> list[tuple[str, str, str, int]]:
+    """id, name, zoneId, rooms — aligné sur l'export TypeScript DUNGEONS."""
+    dungeons: list[tuple[str, str, str, int]] = []
+    seen: set[str] = set()
+
+    def add(dungeon_id: str, name: str, zone_id: str, rooms: int) -> None:
+        if dungeon_id in seen:
+            return
+        seen.add(dungeon_id)
+        dungeons.append((dungeon_id, name, zone_id, rooms))
+
+    tutorial = (DATA / "tutorialContent.ts").read_text(encoding="utf-8")
+    tutorial_match = re.search(
+        r'TUTORIAL_DUNGEON[\s\S]*?id:\s*"([^"]+)"[\s\S]*?name:\s*"([^"]+)"[\s\S]*?rooms:\s*(\d+)',
+        tutorial,
+    )
+    if tutorial_match:
+        add(
+            tutorial_match.group(1),
+            tutorial_match.group(2),
+            "jardin_initiation",
+            int(tutorial_match.group(3)),
+        )
+
+    dungeons_text = (DATA / "dungeons.ts").read_text(encoding="utf-8")
+    for match in re.finditer(
+        r'id:\s*"([^"]+)"[\s\S]*?name:\s*"([^"]+)"[\s\S]*?zoneId:\s*"([^"]+)"[\s\S]*?rooms:\s*(\d+)[\s\S]*?groupSize:',
+        dungeons_text,
+        re.DOTALL,
+    ):
+        add(match.group(1), match.group(2), match.group(3), int(match.group(4)))
+
+    seed_pattern = re.compile(
+        r'\{ id: "([^"]+)", name: "([^"]+)", description: "[^"]*", zoneId: "([^"]+)", levelRequired: \d+, rooms: (\d+)',
+    )
+    for fname in ("expansionV30.ts", "expansionDungeonsV40.ts", "expansionDungeonsV50.ts"):
+        path = DATA / fname
+        if not path.exists():
+            continue
+        for match in seed_pattern.finditer(path.read_text(encoding="utf-8")):
+            add(match.group(1), match.group(2), match.group(3), int(match.group(4)))
+
+    return dungeons
+
+
+def parse_pois() -> list[tuple[str, str, str, str]]:
+    """id, name, zoneId, type"""
+    text = (DATA / "mapPOIs.ts").read_text(encoding="utf-8")
+    seeds = re.findall(
+        r'\{\s*zoneId:\s*"([^"]+)"\s*,\s*type:\s*"([^"]+)"\s*,\s*name:\s*"((?:[^"\\]|\\.)*)"',
+        text,
+    )
+    pois: list[tuple[str, str, str, str]] = []
+    for index, (zone_id, poi_type, name) in enumerate(seeds):
+        pois.append((f"poi_{zone_id}_{index}", name, zone_id, poi_type))
+    return pois
+
+
+def parse_raids() -> list[tuple[str, str, str, int]]:
+    """id, name, zoneId, phases"""
+    text = (DATA / "raids.ts").read_text(encoding="utf-8")
+    raids: list[tuple[str, str, str, int]] = []
+    seen: set[str] = set()
+    pattern = re.compile(
+        r'id:\s*"([^"]+)"[\s\S]*?name:\s*"([^"]+)"[\s\S]*?zoneId:\s*"([^"]+)"[\s\S]*?phases:\s*(\d+)',
+        re.DOTALL,
+    )
+    for match in pattern.finditer(text):
+        raid_id, name, zone_id, phases = match.groups()
+        if raid_id in seen:
+            continue
+        seen.add(raid_id)
+        raids.append((raid_id, name, zone_id, int(phases)))
+    return raids
+
+
+def dungeon_room_slots(dungeons: list[tuple[str, str, str, int]], limit: int) -> list[tuple[str, int]]:
+    slots: list[tuple[str, int]] = []
+    for dungeon_id, _name, _zone, rooms in dungeons:
+        if rooms >= 999:
+            continue
+        for room_index in range(rooms):
+            if len(slots) >= limit:
+                return slots
+            slots.append((dungeon_id, room_index))
+    return slots
+
+
+def theme_for_zone(zone_id: str) -> tuple[tuple[int, int, int], tuple[int, int, int]]:
+    return ZONE_THEMES.get(zone_id, ((99, 102, 241), (26, 15, 46)))
+
+
 def draw_zone(zone_id: str, name: str) -> Image.Image:
     w, h = 960, 540
     top, bottom = ZONE_THEMES.get(zone_id, ((99, 102, 241), (26, 15, 46)))
@@ -289,6 +385,84 @@ def draw_roster() -> Image.Image:
     return img
 
 
+def draw_dungeon_map(dungeon_id: str, name: str, zone_id: str) -> Image.Image:
+    w, h = 960, 540
+    top, bottom = theme_for_zone(zone_id)
+    img = gradient_vertical((w, h), tuple(c // 2 for c in top), BG_DARK)
+    img = add_noise(img, 10)
+    draw = ImageDraw.Draw(img, "RGBA")
+    # Arche d'entrée
+    draw.polygon([(w // 2 - 120, h - 80), (w // 2, h - 220), (w // 2 + 120, h - 80)], fill=(*VIOLET, 180))
+    draw.rectangle([(w // 2 - 90, h - 220), (w // 2 + 90, h - 80)], fill=(bottom[0] // 3, bottom[1] // 3, bottom[2] // 3, 220))
+    draw_crystals(draw, w, h, dungeon_id, count=6)
+    font = load_font(26, bold=True)
+    small = load_font(13)
+    draw.rectangle([(0, h - 56), (w, h)], fill=(26, 15, 46, 210))
+    draw.text((24, h - 48), name[:36], fill=GOLD, font=font)
+    draw.text((24, h - 22), "Donjon — Terreval", fill=CYAN, font=small)
+    return img
+
+
+def draw_poi_map(poi_id: str, name: str, poi_type: str, zone_id: str) -> Image.Image:
+    w, h = 480, 270
+    top, bottom = theme_for_zone(zone_id)
+    img = gradient_vertical((w, h), top, bottom)
+    draw = ImageDraw.Draw(img, "RGBA")
+    icons = {
+        "teleporter": "🌀",
+        "landmark": "📍",
+        "treasure": "💎",
+        "lore": "📜",
+        "vendor": "🏪",
+        "dungeon": "🚪",
+    }
+    draw.rounded_rectangle([(16, 16), (w - 16, h - 16)], radius=12, outline=(*CYAN, 200), width=2)
+    font = load_font(18, bold=True)
+    draw.text((24, h - 52), name[:28], fill=(255, 255, 255), font=font)
+    draw.text((24, h - 28), poi_type.capitalize(), fill=CYAN, font=load_font(11))
+    hsh = int(hashlib.md5(poi_id.encode()).hexdigest()[:8], 16)
+    cx, cy = w // 2, h // 2 - 10
+    r = 36 + (hsh % 16)
+    draw.ellipse([(cx - r, cy - r), (cx + r, cy + r)], fill=(*VIOLET, 120), outline=CYAN, width=2)
+    return img
+
+
+def draw_raid_map(raid_id: str, name: str, zone_id: str) -> Image.Image:
+    w, h = 960, 540
+    top, bottom = theme_for_zone(zone_id)
+    img = gradient_vertical((w, h), top, (10, 5, 25))
+    draw = ImageDraw.Draw(img, "RGBA")
+    draw_crystals(draw, w, h, raid_id, count=9)
+    for i in range(3):
+        y = 80 + i * 40
+        draw.line([(40, y), (w - 40, y)], fill=(*GOLD, 60), width=2)
+    font = load_font(30, bold=True)
+    draw.text((24, 24), name[:40], fill=GOLD, font=font)
+    draw.text((24, 62), "Raid épique — Terreval", fill=CYAN, font=load_font(14))
+    return img
+
+
+def draw_dungeon_room(dungeon_id: str, room_index: int, zone_id: str) -> Image.Image:
+    w, h = 960, 540
+    top, bottom = theme_for_zone(zone_id)
+    img = gradient_vertical((w, h), (top[0] // 3, top[1] // 3, top[2] // 3), BG_DARK)
+    draw = ImageDraw.Draw(img, "RGBA")
+    for row in range(6):
+        for col in range(10):
+            cx = col * 90 + (row % 2) * 45 + 30
+            cy = h - 60 - row * 32
+            alpha = 30 + (room_index * 7) % 40
+            draw.polygon(
+                [(cx, cy), (cx + 36, cy + 18), (cx, cy + 36), (cx - 36, cy + 18)],
+                outline=(94, 234, 212, alpha),
+            )
+    hsh = int(hashlib.md5(f"{dungeon_id}:{room_index}".encode()).hexdigest()[:8], 16)
+    draw.ellipse([(w // 2 - 60, h // 2 - 40), (w // 2 + 60, h // 2 + 40)], fill=(*bottom, 100 + hsh % 80))
+    font = load_font(22, bold=True)
+    draw.text((24, h - 44), f"Salle {room_index + 1}", fill=CYAN, font=font)
+    return img
+
+
 def draw_combat_bg() -> Image.Image:
     w, h = 960, 540
     img = gradient_vertical((w, h), (30, 20, 50), (10, 5, 20))
@@ -309,21 +483,65 @@ def draw_combat_bg() -> Image.Image:
 
 def main() -> None:
     zones_dir = PUBLIC / "zones"
+    dungeons_dir = PUBLIC / "dungeons"
+    dungeon_rooms_dir = PUBLIC / "dungeon-rooms"
+    pois_dir = PUBLIC / "pois"
+    raids_dir = PUBLIC / "raids"
     chars_dir = PUBLIC / "characters"
     monsters_dir = PUBLIC / "monsters"
     npcs_dir = PUBLIC / "npcs"
     combat_dir = PUBLIC / "combat"
-    for d in (zones_dir, chars_dir, monsters_dir, npcs_dir, combat_dir):
+    for d in (
+        zones_dir,
+        dungeons_dir,
+        dungeon_rooms_dir,
+        pois_dir,
+        raids_dir,
+        chars_dir,
+        monsters_dir,
+        npcs_dir,
+        combat_dir,
+    ):
         d.mkdir(parents=True, exist_ok=True)
 
     zones = parse_zones()
+    dungeons = parse_dungeons()
+    pois = parse_pois()
+    raids = parse_raids()
     classes = parse_classes()
     monsters = parse_monsters()
     npcs = parse_npcs()
+    room_slots = dungeon_room_slots(dungeons, TARGET_DUNGEON_ROOM_MAPS)
+    zone_lookup = {z[0]: z[1] for z in zones}
+    dungeon_zone = {d[0]: d[2] for d in dungeons}
 
-    print(f"Generating {len(zones)} zones…")
+    print(f"Generating {len(zones)} zone maps…")
     for zone_id, name in zones:
         draw_zone(zone_id, name).save(zones_dir / f"zone-{slug(zone_id)}.png", optimize=True)
+
+    print(f"Generating {len(dungeons)} dungeon maps…")
+    for dungeon_id, name, zone_id, _rooms in dungeons:
+        draw_dungeon_map(dungeon_id, name, zone_id).save(
+            dungeons_dir / f"dungeon-{slug(dungeon_id)}.png", optimize=True
+        )
+
+    print(f"Generating {len(pois)} POI maps…")
+    for poi_id, name, zone_id, poi_type in pois:
+        draw_poi_map(poi_id, name, poi_type, zone_id).save(
+            pois_dir / f"poi-{slug(poi_id)}.png", optimize=True
+        )
+
+    print(f"Generating {len(raids)} raid maps…")
+    for raid_id, name, zone_id, _phases in raids:
+        draw_raid_map(raid_id, name, zone_id).save(raids_dir / f"raid-{slug(raid_id)}.png", optimize=True)
+
+    print(f"Generating {len(room_slots)} dungeon room maps…")
+    for dungeon_id, room_index in room_slots:
+        zone_id = dungeon_zone.get(dungeon_id, "vallee_eveils")
+        draw_dungeon_room(dungeon_id, room_index, zone_id).save(
+            dungeon_rooms_dir / f"dungeon-{slug(dungeon_id)}-room-{room_index + 1}.png",
+            optimize=True,
+        )
 
     print(f"Generating {len(classes)} class portraits…")
     for class_id, name in classes:
@@ -343,8 +561,17 @@ def main() -> None:
 
     draw_combat_bg().save(combat_dir / "combat-tactical.png", optimize=True)
 
+    map_total = len(zones) + len(dungeons) + len(pois) + len(raids) + len(room_slots)
+    portrait_total = len(classes) + 1 + len(monsters) + len(npcs) + 1
     print(f"Done — assets in {PUBLIC}")
-    print(f"  zones: {len(zones)}, classes: {len(classes)}, monsters: {len(monsters)}, npcs: {len(npcs)}")
+    print(
+        f"  maps: {map_total} (zones {len(zones)}, dungeons {len(dungeons)}, "
+        f"pois {len(pois)}, raids {len(raids)}, rooms {len(room_slots)})"
+    )
+    print(f"  portraits/sprites: {portrait_total}")
+    print(f"  grand total PNG: {map_total + portrait_total}")
+    if map_total < TARGET_TOTAL_MAPS:
+        print(f"  ⚠ map count {map_total} < target {TARGET_TOTAL_MAPS}")
 
 
 if __name__ == "__main__":

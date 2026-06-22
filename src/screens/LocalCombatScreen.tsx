@@ -14,7 +14,7 @@ import { unlockLocalAchievement } from "./AchievementsScreen";
 import { applySpellEffects, tickBuffs, formatBuffs, applyCombatStartTalents, getEffectiveMaxRange, computeTalentModifiers } from "../game/combat/effects";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
-import { getCombatBackground } from "../game/data/assets";
+import { getCombatBackground, resolveCombatBackground } from "../game/data/assets";
 import { VictoryRewardBreakdown } from "../components/VictoryRewardBreakdown";
 import { FLUX, ELAN, formatElanMove } from "../lib/gameTerms";
 
@@ -463,7 +463,12 @@ export default function LocalCombatScreen() {
 
       <div className="relative flex-shrink-0" style={{ height: 380 }}>
         <img
-          src={getCombatBackground(combatType)}
+          src={resolveCombatBackground({
+            combatType,
+            dungeonId: combatData.dungeonId as string | undefined,
+            roomIndex: combatData.roomIndex as number | undefined,
+            raidId: combatData.raidId as string | undefined,
+          }) ?? getCombatBackground(combatType)}
           alt=""
           className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"
         />

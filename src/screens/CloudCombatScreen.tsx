@@ -7,7 +7,7 @@ import { useGameStore } from "../stores/gameStore";
 import { getSpellById, getSpellsForClass } from "../game/data";
 import { IsoCombatScene, type CombatEntityVisual } from "../game/rendering/IsoCombatScene";
 import { getMonsterIcon, getClassIcon } from "../game/rendering/isometric";
-import { getCombatBackground } from "../game/data/assets";
+import { getCombatBackground, resolveCombatBackground } from "../game/data/assets";
 import { VictoryRewardBreakdown } from "../components/VictoryRewardBreakdown";
 import { formatBuffs } from "../game/combat/effects";
 import { getDungeonById, getRoomMonsters, getRaidById, getPhaseMonsters } from "../game/data";
@@ -282,7 +282,12 @@ export default function CloudCombatScreen() {
 
       <div className="relative flex-shrink-0" style={{ height: 380 }}>
         <img
-          src={getCombatBackground(combatType)}
+          src={resolveCombatBackground({
+            combatType,
+            dungeonId: combatData.dungeonId as string | undefined,
+            roomIndex: combatData.roomIndex as number | undefined,
+            raidId: combatData.raidId as string | undefined,
+          }) ?? getCombatBackground(combatType)}
           alt=""
           className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"
         />

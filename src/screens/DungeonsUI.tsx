@@ -1,5 +1,6 @@
 import type { DungeonDefinition } from "../game/data/dungeons";
 import { getDungeonById } from "../game/data";
+import { getDungeonBackground } from "../game/data/assets";
 
 export interface DungeonRunView {
   dungeonId: string;
@@ -77,7 +78,15 @@ export function DungeonsUI({
         {dungeons.map((dungeon) => {
           const locked = charLevel < dungeon.levelRequired;
           return (
-            <div key={dungeon.id} className={`card ${locked ? "opacity-50" : ""}`}>
+            <div key={dungeon.id} className={`card overflow-hidden ${locked ? "opacity-50" : ""}`}>
+              {getDungeonBackground(dungeon.id) && (
+                <img
+                  src={getDungeonBackground(dungeon.id)}
+                  alt=""
+                  className="w-full h-24 object-cover opacity-70"
+                />
+              )}
+              <div className="p-3">
               <div className="flex items-start gap-3">
                 <span className="text-3xl">{dungeon.icon}</span>
                 <div className="flex-1">
@@ -105,6 +114,7 @@ export function DungeonsUI({
               {locked && (
                 <p className="text-red-400 text-xs mt-2 text-center">Niveau {dungeon.levelRequired} requis</p>
               )}
+              </div>
             </div>
           );
         })}

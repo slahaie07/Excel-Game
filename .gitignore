@@ -28,3 +28,4 @@ npm-debug.log*
 # Old files
 Optimisation de connaissances*
 Excel-Game.html
+__pycache__/

@@ -1,4 +1,5 @@
 import { getPOIsForZone } from "../game/data/mapPOIs";
+import { getPoiMapArt } from "../game/data/assets";
 import { getRegionForZone } from "../game/data/worldMap";
 import { advanceQuestOnPOIVisit } from "../lib/questProgress";
 
@@ -27,10 +28,14 @@ export function ZonePOIList({
             key={poi.id}
             type="button"
             onClick={() => advanceQuestOnPOIVisit(characterId, poi.id)}
-            className="flex-shrink-0 flex items-center gap-1.5 bg-aether-900/60 rounded-lg px-2 py-1 border border-aether-700/40 hover:border-aether-500/60 active:scale-95 transition-colors"
+            className="flex-shrink-0 flex items-center gap-1.5 bg-aether-900/60 rounded-lg px-2 py-1 border border-aether-700/40 hover:border-aether-500/60 active:scale-95 transition-colors overflow-hidden"
             title={poi.description}
           >
-            <span className="text-sm">{poi.icon}</span>
+            {getPoiMapArt(poi.id) ? (
+              <img src={getPoiMapArt(poi.id)} alt="" className="w-10 h-6 rounded object-cover flex-shrink-0" />
+            ) : (
+              <span className="text-sm">{poi.icon}</span>
+            )}
             <div className="min-w-0 text-left">
               <p className="text-aether-200 text-[10px] font-medium truncate max-w-[100px]">
                 {poi.name}
