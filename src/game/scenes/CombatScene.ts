@@ -12,18 +12,20 @@ import {
   manhattanDistance,
 } from "../combat/CombatEngine";
 import { SPELLS } from "../../data/spells";
+import { getEntitySpriteKey } from "../assets/SpriteFactory";
 
 const TILE_W = 48;
 const TILE_H = 24;
 
 export class CombatScene extends Phaser.Scene {
   private combatState!: CombatState;
-  private gridGraphics!: Phaser.GameObjects.Graphics;
+  private gridContainer!: Phaser.GameObjects.Container;
   private entitySprites = new Map<string, Phaser.GameObjects.Container>();
   private highlightGraphics!: Phaser.GameObjects.Graphics;
   private mode: "move" | "spell" | "idle" = "idle";
   private offsetX = 200;
   private offsetY = 80;
+  private tileKey = "tile_dungeon";
 
   constructor() {
     super({ key: "CombatScene" });
@@ -43,6 +45,9 @@ export class CombatScene extends Phaser.Scene {
         ? `🏰 Donjon — Salle ${dungeonRun.roomIndex + 1}`
         : "⚔️ Combat Tactique";
 
+    this.tileKey =
+      combatSource === "dungeon" ? "tile_dungeon" : "tile_whispering_forest";
+
     this.cameras.main.setBackgroundColor(
       combatSource === "dungeon" ? 0x1a0a2e : 0x0d1117,
     );
@@ -55,7 +60,7 @@ export class CombatScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    this.gridGraphics = this.add.graphics();
+    this.gridContainer = this.add.container(0, 0);
     this.highlightGraphics = this.add.graphics();
     this.drawGrid();
     this.drawEntities();
@@ -71,16 +76,21 @@ export class CombatScene extends Phaser.Scene {
   }
 
   private drawGrid() {
-    const g = this.gridGraphics;
-    g.clear();
+    this.gridContainer.removeAll(true);
+
     for (let y = 0; y < this.combatState.gridHeight; y++) {
       for (let x = 0; x < this.combatState.gridWidth; x++) {
         const iso = this.gridToIso(x, y);
         const isObstacle = this.combatState.obstacles.some(
           (o) => o.x === x && o.y === y,
         );
-        const color = isObstacle ? 0x4a3728 : (x + y) % 2 === 0 ? 0x1a2e1a : 0x152515;
-        this.drawIsoTile(g, iso.x, iso.y, color);
+        const key = isObstacle ? "tile_obstacle" : this.tileKey;
+        const tile = this.add.image(iso.x, iso.y, key);
+        tile.setDisplaySize(TILE_W, TILE_H);
+        if (!isObstacle && (x + y) % 2 === 1) {
+          tile.setTint(0xbbbbbb);
+        }
+        this.gridContainer.add(tile);
       }
     }
   }
@@ -91,7 +101,7 @@ export class CombatScene extends Phaser.Scene {
     y: number,
     color: number,
   ) {
-    g.fillStyle(color, 1);
+    g.fillStyle(color, 0.35);
     g.beginPath();
     g.moveTo(x, y - TILE_H / 2);
     g.lineTo(x + TILE_W / 2, y);
@@ -99,7 +109,7 @@ export class CombatScene extends Phaser.Scene {
     g.lineTo(x - TILE_W / 2, y);
     g.closePath();
     g.fillPath();
-    g.lineStyle(1, 0x333333, 0.3);
+    g.lineStyle(1, color, 0.6);
     g.strokePath();
   }
 
@@ -110,26 +120,62 @@ export class CombatScene extends Phaser.Scene {
     for (const entity of this.combatState.entities) {
       if (!entity.isAlive) continue;
       const iso = this.gridToIso(entity.position.x, entity.position.y);
-      const container = this.add.container(iso.x, iso.y - 16);
+      const container = this.add.container(iso.x, iso.y);
 
       const isCurrent = entity.id === this.combatState.currentEntityId;
-      const circle = this.add.circle(0, 0, 16, entity.color, 0.9);
+      const spriteKey = getEntitySpriteKey(
+        entity.team,
+        entity.classId,
+        entity.monsterId,
+      );
+
       if (isCurrent) {
-        circle.setStrokeStyle(3, 0xf4d03f);
+        const ring = this.add.sprite(0, 2, "select_ring");
+        ring.setDisplaySize(28, 14);
+        ring.setAlpha(0.8);
+        container.add(ring);
+        this.tweens.add({
+          targets: ring,
+          alpha: 0.3,
+          duration: 500,
+          yoyo: true,
+          repeat: -1,
+        });
       }
 
-      const icon = this.add
-        .text(0, 0, entity.icon, { fontSize: "16px" })
-        .setOrigin(0.5);
+      const shadow = this.add.image(0, 2, "shadow");
+      shadow.setAlpha(0.3);
+      shadow.setDisplaySize(20, 8);
+      container.add(shadow);
+
+      const sprite = this.add.sprite(0, 0, spriteKey);
+      sprite.setOrigin(0.5, 1);
+      if (entity.team === "enemy") {
+        sprite.setFlipX(entity.position.x > 7);
+      }
+      container.add(sprite);
 
       const hpBar = this.add.graphics();
       const hpRatio = entity.stats.hp / entity.stats.maxHp;
       hpBar.fillStyle(0x333333);
-      hpBar.fillRect(-14, 18, 28, 4);
-      hpBar.fillStyle(hpRatio > 0.5 ? 0x2ecc71 : hpRatio > 0.25 ? 0xf39c12 : 0xe74c3c);
-      hpBar.fillRect(-14, 18, 28 * hpRatio, 4);
+      hpBar.fillRect(-14, -28, 28, 4);
+      hpBar.fillStyle(
+        hpRatio > 0.5 ? 0x2ecc71 : hpRatio > 0.25 ? 0xf39c12 : 0xe74c3c,
+      );
+      hpBar.fillRect(-14, -28, 28 * hpRatio, 4);
+      container.add(hpBar);
 
-      container.add([circle, icon, hpBar]);
+      const nameLabel = this.add
+        .text(0, -32, entity.name, {
+          fontSize: "8px",
+          color: "#ffffff",
+          fontFamily: "Nunito",
+          stroke: "#000000",
+          strokeThickness: 2,
+        })
+        .setOrigin(0.5);
+      container.add(nameLabel);
+
       this.entitySprites.set(entity.id, container);
     }
   }
@@ -224,7 +270,6 @@ export class CombatScene extends Phaser.Scene {
     const cells = getReachableCells(this.combatState, current);
     const g = this.highlightGraphics;
     g.clear();
-    g.fillStyle(0x3498db, 0.3);
     for (const cell of cells) {
       const iso = this.gridToIso(cell.x, cell.y);
       this.drawIsoTile(g, iso.x, iso.y, 0x3498db);
@@ -288,7 +333,12 @@ export class CombatScene extends Phaser.Scene {
 
   private aiTurn() {
     const current = getCurrentEntity(this.combatState);
-    if (!current || current.team !== "enemy" || this.combatState.phase !== "combat") return;
+    if (
+      !current ||
+      current.team !== "enemy" ||
+      this.combatState.phase !== "combat"
+    )
+      return;
 
     const players = this.combatState.entities.filter(
       (e) => e.team === "player" && e.isAlive,

@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { generateAllSprites } from "./assets/SpriteFactory";
 import { WorldScene } from "./scenes/WorldScene";
 import { CombatScene } from "./scenes/CombatScene";
 
@@ -18,8 +19,9 @@ export function createPhaserGame(parent: string): Phaser.Game {
       activePointers: 2,
     },
     render: {
-      pixelArt: false,
-      antialias: true,
+      pixelArt: true,
+      antialias: false,
+      roundPixels: true,
     },
   };
 
@@ -32,11 +34,7 @@ class BootScene extends Phaser.Scene {
   }
 
   preload() {
-    const gfx = this.add.graphics({});
-    gfx.fillStyle(0x3498db);
-    gfx.fillCircle(16, 16, 14);
-    gfx.generateTexture("player", 32, 32);
-    gfx.destroy();
+    generateAllSprites(this);
   }
 
   create() {

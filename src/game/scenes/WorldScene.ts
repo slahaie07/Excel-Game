@@ -9,14 +9,17 @@ import {
   initCombatState,
 } from "../combat/CombatEngine";
 import { CLASSES } from "../../data/classes";
+import { heroTextureKey, zoneTileKey } from "../assets/SpriteFactory";
 
 const TILE_W = 64;
 const TILE_H = 32;
 
 export class WorldScene extends Phaser.Scene {
   private playerSprite!: Phaser.GameObjects.Sprite;
+  private playerShadow!: Phaser.GameObjects.Image;
+  private playerBaseY = 0;
   private npcSprites: Phaser.GameObjects.Container[] = [];
-  private mapGraphics!: Phaser.GameObjects.Graphics;
+  private mapContainer!: Phaser.GameObjects.Container;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private touchTarget: { x: number; y: number } | null = null;
   private encounterCooldown = 0;
@@ -32,65 +35,47 @@ export class WorldScene extends Phaser.Scene {
     const zone = ZONES[player.zone];
     this.cameras.main.setBackgroundColor(0x0a0e1a);
 
-    this.mapGraphics = this.add.graphics();
-    this.drawIsometricMap(zone.mapWidth, zone.mapHeight);
+    this.mapContainer = this.add.container(0, 0);
+    this.drawIsometricMap(player.zone, zone.mapWidth, zone.mapHeight);
 
-    this.playerSprite = this.add.sprite(0, 0, "player");
-    this.playerSprite.setScale(1.2);
+    const heroKey = heroTextureKey(player.classId);
+    this.playerShadow = this.add.image(0, 0, "shadow").setAlpha(0.35);
+    this.playerSprite = this.add.sprite(0, 0, heroKey);
+    this.playerSprite.setOrigin(0.5, 1);
     this.updatePlayerPosition(player.position.x, player.position.y);
 
     this.spawnNpcs(player.zone);
     this.setupCamera();
     this.setupInput();
-
   }
 
-  private drawIsometricMap(width: number, height: number) {
-    const g = this.mapGraphics;
-    g.clear();
+  private drawIsometricMap(zoneId: ZoneId, width: number, height: number) {
+    this.mapContainer.removeAll(true);
+    const tileKey = zoneTileKey(zoneId);
 
     for (let y = 0; y < height; y++) {
       for (let x = 0; x < width; x++) {
         const iso = this.gridToIso(x, y);
         const isPath = (x + y) % 3 !== 0;
-        const color = isPath ? 0x1a3a2a : 0x0f2818;
-        this.drawIsoTile(g, iso.x, iso.y, color);
+        const isBorder =
+          x === 0 || y === 0 || x === width - 1 || y === height - 1;
 
-        if (x === 0 || y === 0 || x === width - 1 || y === height - 1) {
-          this.drawIsoTile(g, iso.x, iso.y, 0x2c1810, 0.5);
-        }
+        const tile = this.add.image(iso.x, iso.y, tileKey);
+        tile.setDisplaySize(TILE_W, TILE_H);
+        if (!isPath) tile.setTint(0x888888);
+        if (isBorder) tile.setTint(0x664422);
+        tile.setAlpha(isBorder ? 0.85 : 1);
+        this.mapContainer.add(tile);
       }
     }
 
-    const zone = useGameStore.getState().player?.zone;
-    if (zone) {
-      const zoneData = ZONES[zone];
-      g.fillStyle(0xf4d03f, 0.15);
-      const center = this.gridToIso(
-        Math.floor(zoneData.mapWidth / 2),
-        Math.floor(zoneData.mapHeight / 2),
-      );
-      g.fillCircle(center.x, center.y - 16, 40);
-    }
-  }
-
-  private drawIsoTile(
-    g: Phaser.GameObjects.Graphics,
-    x: number,
-    y: number,
-    color: number,
-    alpha = 1,
-  ) {
-    g.fillStyle(color, alpha);
-    g.beginPath();
-    g.moveTo(x, y - TILE_H / 2);
-    g.lineTo(x + TILE_W / 2, y);
-    g.lineTo(x, y + TILE_H / 2);
-    g.lineTo(x - TILE_W / 2, y);
-    g.closePath();
-    g.fillPath();
-    g.lineStyle(1, 0x000000, 0.15);
-    g.strokePath();
+    const zoneData = ZONES[zoneId];
+    const center = this.gridToIso(
+      Math.floor(zoneData.mapWidth / 2),
+      Math.floor(zoneData.mapHeight / 2),
+    );
+    const glow = this.add.circle(center.x, center.y - 16, 40, 0xf4d03f, 0.08);
+    this.mapContainer.add(glow);
   }
 
   private gridToIso(gridX: number, gridY: number) {
@@ -110,7 +95,9 @@ export class WorldScene extends Phaser.Scene {
 
   private updatePlayerPosition(gridX: number, gridY: number) {
     const iso = this.gridToIso(gridX, gridY);
-    this.playerSprite.setPosition(iso.x, iso.y - 20);
+    this.playerBaseY = iso.y - 8;
+    this.playerShadow.setPosition(iso.x, iso.y + 2);
+    this.playerSprite.setPosition(iso.x, this.playerBaseY);
     this.cameras.main.centerOn(iso.x, iso.y);
   }
 
@@ -123,23 +110,37 @@ export class WorldScene extends Phaser.Scene {
       const iso = this.gridToIso(npc.x, npc.y);
       const container = this.add.container(iso.x, iso.y - 20);
 
-      const bg = this.add.circle(0, 0, 18, 0x3498db, 0.8);
-      const label = this.add
-        .text(0, -30, npc.icon, { fontSize: "20px" })
+      const marker = this.add.sprite(0, -4, "npc_marker");
+      marker.setOrigin(0.5, 1);
+
+      const icon = this.add
+        .text(0, -18, npc.icon, { fontSize: "14px" })
         .setOrigin(0.5);
+
       const name = this.add
-        .text(0, 25, npc.name, {
-          fontSize: "10px",
-          color: "#ffffff",
+        .text(0, 8, npc.name, {
+          fontSize: "9px",
+          color: "#f4d03f",
           fontFamily: "Nunito",
+          stroke: "#000000",
+          strokeThickness: 2,
         })
         .setOrigin(0.5);
 
-      container.add([bg, label, name]);
+      container.add([marker, icon, name]);
       container.setSize(36, 36);
       container.setInteractive({ useHandCursor: true });
       container.on("pointerdown", () => {
         useGameStore.getState().setSelectedNpc(npc.id);
+      });
+
+      this.tweens.add({
+        targets: marker,
+        y: -7,
+        duration: 800 + Math.random() * 400,
+        yoyo: true,
+        repeat: -1,
+        ease: "Sine.easeInOut",
       });
 
       this.npcSprites.push(container);
@@ -164,10 +165,13 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
-  update(_time: number, delta: number) {
+  update(time: number, delta: number) {
     const store = useGameStore.getState();
     const { player } = store;
     if (!player) return;
+
+    this.playerSprite.y =
+      this.playerBaseY + Math.sin(time / 400) * 2;
 
     let moved = false;
     let newX = player.position.x;
@@ -225,7 +229,11 @@ export class WorldScene extends Phaser.Scene {
         );
         if (prevZone) {
           const prev = ZONES[prevZone];
-          store.changeZone(prevZone, prev.mapWidth - 2, Math.floor(prev.mapHeight / 2));
+          store.changeZone(
+            prevZone,
+            prev.mapWidth - 2,
+            Math.floor(prev.mapHeight / 2),
+          );
           this.scene.restart();
           return;
         }
