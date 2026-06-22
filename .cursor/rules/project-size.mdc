@@ -1,0 +1,46 @@
+---
+description: Automatisme taille projet — budgets bundle, métriques, lazy loading
+alwaysApply: true
+globs: ["src/**", "convex/**", "vite.config.ts", "budgets.json"]
+---
+
+# Taille du projet Aetheris
+
+Ce repo a une **automatisation de taille**. Avant et après tout gros ajout :
+
+```bash
+npm run check          # typecheck + test + build + métriques + budgets
+npm run metrics        # rapport console
+npm run size:check     # vérifie budgets.json (après build)
+```
+
+## Budgets (budgets.json)
+
+- Bundle JS gzip max ~560 KB
+- Chunk unique max ~320 KB gzip
+- Croissance vs baseline max +8%
+
+## Règles d'implémentation
+
+1. **Nouveaux écrans** → `React.lazy()` dans `App.tsx`, jamais import statique
+2. **Phaser** → reste dans chunks séparés (`manualChunks` vite) ; ne pas dupliquer l'import
+3. **Convex** → fonctions dans `convex/` ; éviter la logique métier lourde côté client
+4. **Données** → `src/game/data/` ; pas de gros tableaux inline dans les composants
+5. Après feature > 200 lignes : lancer `npm run metrics` et ajuster si proche des limites
+
+## Si le budget est dépassé
+
+- Activer lazy loading sur écrans non critiques
+- Extraire données vers `src/game/data/`
+- Vérifier qu'aucune dépendance inutile n'a été ajoutée
+- Mettre à jour `budgets.json` **uniquement** si la croissance est justifiée (noter pourquoi dans le PR)
+
+## Baseline
+
+Après un build sain sur main :
+
+```bash
+npm run metrics:baseline
+```
+
+Commit `.metrics/baseline.json` avec la justification.

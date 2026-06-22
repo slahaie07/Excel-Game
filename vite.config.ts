@@ -32,5 +32,23 @@ export default defineConfig({
     }),
   ],
   server: { port: 5173, host: true },
-  build: { target: "esnext" },
+  build: {
+    target: "esnext",
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules/phaser")) return "phaser";
+          if (id.includes("node_modules/convex")) return "convex";
+          if (
+            id.includes("node_modules/react/") ||
+            id.includes("node_modules/react-dom") ||
+            id.includes("node_modules/react-router")
+          ) {
+            return "react-vendor";
+          }
+        },
+      },
+    },
+  },
 });

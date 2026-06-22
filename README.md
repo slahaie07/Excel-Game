@@ -111,6 +111,22 @@ npm run cap:android    # Ouvrir Android Studio
 npm run cap:ios        # Ouvrir Xcode
 ```
 
+### Automatisme taille du projet
+
+Le CI surveille la **grosseur** du bundle et du code (`budgets.json`) :
+
+```bash
+npm run metrics          # Rapport lignes de code + chunks
+npm run size:check       # Vérifie les budgets (après build)
+npm run check            # typecheck + test + build + métriques + budgets
+npm run metrics:baseline # Met à jour la baseline de référence
+```
+
+- **Lazy loading** de tous les écrans (`React.lazy`)
+- **Code splitting** : Phaser, React et Convex en chunks séparés
+- **PR** : commentaire automatique avec tableau de taille
+- Règle agent : `.cursor/rules/project-size.mdc`
+
 ## Démarrage rapide
 
 ```bash

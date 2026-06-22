@@ -1,33 +1,44 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { useGameStore } from "./stores/gameStore";
 import SplashScreen from "./screens/SplashScreen";
-import LoginScreen from "./screens/LoginScreen";
-import CharacterSelectScreen from "./screens/CharacterSelectScreen";
-import CharacterCreateScreen from "./screens/CharacterCreateScreen";
-import WorldScreen from "./screens/WorldScreen";
-import CombatScreen from "./screens/CombatScreen";
-import InventoryScreen from "./screens/InventoryScreen";
-import QuestsScreen from "./screens/QuestsScreen";
-import GuildScreen from "./screens/GuildScreen";
-import GuildHallScreen from "./screens/GuildHallScreen";
-import MarketplaceScreen from "./screens/MarketplaceScreen";
-import ProfessionsScreen from "./screens/ProfessionsScreen";
-import PvPScreen from "./screens/PvPScreen";
-import DungeonsScreen from "./screens/DungeonsScreen";
-import RaidsScreen from "./screens/RaidsScreen";
-import PetsScreen from "./screens/PetsScreen";
-import HavenScreen from "./screens/HavenScreen";
-import EventsScreen from "./screens/EventsScreen";
-import LiveEventsScreen from "./screens/LiveEventsScreen";
-import DailyRewardsScreen from "./screens/DailyRewardsScreen";
-import AchievementsScreen from "./screens/AchievementsScreen";
-import FriendsScreen from "./screens/FriendsScreen";
-import TradeScreen from "./screens/TradeScreen";
-import SettingsScreen from "./screens/SettingsScreen";
-import HallOfFameScreen from "./screens/HallOfFameScreen";
-import MountsScreen from "./screens/MountsScreen";
-import SeasonScreen from "./screens/SeasonScreen";
 import ChatOverlay from "./components/ChatOverlay";
+
+const LoginScreen = lazy(() => import("./screens/LoginScreen"));
+const CharacterSelectScreen = lazy(() => import("./screens/CharacterSelectScreen"));
+const CharacterCreateScreen = lazy(() => import("./screens/CharacterCreateScreen"));
+const WorldScreen = lazy(() => import("./screens/WorldScreen"));
+const CombatScreen = lazy(() => import("./screens/CombatScreen"));
+const InventoryScreen = lazy(() => import("./screens/InventoryScreen"));
+const QuestsScreen = lazy(() => import("./screens/QuestsScreen"));
+const GuildScreen = lazy(() => import("./screens/GuildScreen"));
+const GuildHallScreen = lazy(() => import("./screens/GuildHallScreen"));
+const MarketplaceScreen = lazy(() => import("./screens/MarketplaceScreen"));
+const ProfessionsScreen = lazy(() => import("./screens/ProfessionsScreen"));
+const PvPScreen = lazy(() => import("./screens/PvPScreen"));
+const DungeonsScreen = lazy(() => import("./screens/DungeonsScreen"));
+const RaidsScreen = lazy(() => import("./screens/RaidsScreen"));
+const PetsScreen = lazy(() => import("./screens/PetsScreen"));
+const HavenScreen = lazy(() => import("./screens/HavenScreen"));
+const EventsScreen = lazy(() => import("./screens/EventsScreen"));
+const LiveEventsScreen = lazy(() => import("./screens/LiveEventsScreen"));
+const DailyRewardsScreen = lazy(() => import("./screens/DailyRewardsScreen"));
+const AchievementsScreen = lazy(() => import("./screens/AchievementsScreen"));
+const FriendsScreen = lazy(() => import("./screens/FriendsScreen"));
+const TradeScreen = lazy(() => import("./screens/TradeScreen"));
+const SettingsScreen = lazy(() => import("./screens/SettingsScreen"));
+const HallOfFameScreen = lazy(() => import("./screens/HallOfFameScreen"));
+const MountsScreen = lazy(() => import("./screens/MountsScreen"));
+const SeasonScreen = lazy(() => import("./screens/SeasonScreen"));
+
+function ScreenLoader() {
+  return (
+    <div className="h-dvh w-full flex flex-col items-center justify-center gap-3 bg-[#0d0618]">
+      <div className="w-10 h-10 rounded-full border-2 border-crystal-gold/30 border-t-crystal-gold animate-spin" />
+      <p className="text-aether-400 text-sm">Chargement...</p>
+    </div>
+  );
+}
 
 const SCREENS = {
   splash: SplashScreen,
@@ -71,11 +82,23 @@ export default function App() {
   const characterId = useGameStore((s) => s.characterId);
   const Screen = SCREENS[screen] ?? SplashScreen;
   const showChat = characterId && IN_GAME_SCREENS.has(screen);
+  const needsSuspense = screen !== "splash";
+
+  const content = <Screen />;
 
   return (
     <div className="h-dvh w-full flex flex-col overflow-hidden">
       <Routes>
-        <Route path="*" element={<Screen />} />
+        <Route
+          path="*"
+          element={
+            needsSuspense ? (
+              <Suspense fallback={<ScreenLoader />}>{content}</Suspense>
+            ) : (
+              content
+            )
+          }
+        />
       </Routes>
       {showChat && <ChatOverlay />}
     </div>

@@ -1,0 +1,19 @@
+{
+  "$schema": "./scripts/budgets.schema.json",
+  "description": "Limites de taille — CI échoue si dépassées. Ajuster avec npm run metrics.",
+  "bundle": {
+    "maxTotalJsRawKb": 2200,
+    "maxTotalJsGzipKb": 560,
+    "maxSingleChunkRawKb": 1550,
+    "maxSingleChunkGzipKb": 350
+  },
+  "codebase": {
+    "maxSrcLines": 30000,
+    "maxConvexLines": 10000,
+    "maxScreenFiles": 60
+  },
+  "growth": {
+    "maxBundleGrowthPercent": 8,
+    "baselineFile": ".metrics/baseline.json"
+  }
+}

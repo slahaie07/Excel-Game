@@ -1,0 +1,240 @@
+{
+  "generatedAt": "2026-06-22T21:25:28.643Z",
+  "codebase": {
+    "srcLines": 12785,
+    "srcByTopDir": {
+      "src": 12785
+    },
+    "convexLines": 8664,
+    "srcFiles": 104,
+    "convexFiles": 46,
+    "screenFiles": 54
+  },
+  "bundle": {
+    "chunks": [
+      {
+        "name": "phaser-C1V8Vywt.js",
+        "rawKb": 1447,
+        "gzipKb": 331.9
+      },
+      {
+        "name": "react-vendor-eDKmdpIA.js",
+        "rawKb": 225.5,
+        "gzipKb": 72.1
+      },
+      {
+        "name": "convex-BK_3Q8K4.js",
+        "rawKb": 68.8,
+        "gzipKb": 19.4
+      },
+      {
+        "name": "index-Nyh3Ce25.js",
+        "rawKb": 34.6,
+        "gzipKb": 11.6
+      },
+      {
+        "name": "CombatScreen-3Byvfd2H.js",
+        "rawKb": 30.2,
+        "gzipKb": 9.1
+      },
+      {
+        "name": "PvPScreen-DvkLvxL0.js",
+        "rawKb": 23.1,
+        "gzipKb": 6.6
+      },
+      {
+        "name": "WorldScreen-9YLMasfs.js",
+        "rawKb": 20.6,
+        "gzipKb": 7.1
+      },
+      {
+        "name": "GuildScreen-CWR3NfZ1.js",
+        "rawKb": 18.5,
+        "gzipKb": 4.8
+      },
+      {
+        "name": "GuildHallScreen-v7-H6yMA.js",
+        "rawKb": 8.4,
+        "gzipKb": 2.9
+      },
+      {
+        "name": "pushNotifications-DsOfc_vD.js",
+        "rawKb": 8.4,
+        "gzipKb": 3.4
+      },
+      {
+        "name": "HavenScreen-BCtYGd7q.js",
+        "rawKb": 8.3,
+        "gzipKb": 2.3
+      },
+      {
+        "name": "SeasonScreen-BoYKcAPm.js",
+        "rawKb": 7.9,
+        "gzipKb": 2.5
+      },
+      {
+        "name": "EventsScreen-DPiqIipy.js",
+        "rawKb": 7.6,
+        "gzipKb": 2.5
+      },
+      {
+        "name": "isometric-CYfoSTQ8.js",
+        "rawKb": 6.8,
+        "gzipKb": 2.7
+      },
+      {
+        "name": "RaidsScreen-BVG5icIn.js",
+        "rawKb": 5.9,
+        "gzipKb": 2
+      },
+      {
+        "name": "DungeonsScreen-B9WZqPx1.js",
+        "rawKb": 5.7,
+        "gzipKb": 2.1
+      },
+      {
+        "name": "QuestsScreen-Bu0It8iX.js",
+        "rawKb": 5.7,
+        "gzipKb": 2.1
+      },
+      {
+        "name": "TradeScreen-BmXZJDRM.js",
+        "rawKb": 5.7,
+        "gzipKb": 1.7
+      },
+      {
+        "name": "SettingsScreen-CvgPhxok.js",
+        "rawKb": 5.2,
+        "gzipKb": 1.7
+      },
+      {
+        "name": "LiveEventsScreen-BCo_PJ3P.js",
+        "rawKb": 5.1,
+        "gzipKb": 1.8
+      },
+      {
+        "name": "FriendsScreen-DFtjJUGE.js",
+        "rawKb": 4.9,
+        "gzipKb": 1.6
+      },
+      {
+        "name": "items-C7QKmyzh.js",
+        "rawKb": 4.8,
+        "gzipKb": 1.5
+      },
+      {
+        "name": "monsters-CI2QsuDZ.js",
+        "rawKb": 4.8,
+        "gzipKb": 1.6
+      },
+      {
+        "name": "ProfessionsScreen-DW0XXR_a.js",
+        "rawKb": 4.7,
+        "gzipKb": 1.7
+      },
+      {
+        "name": "MarketplaceScreen-BT_O0QmM.js",
+        "rawKb": 4.4,
+        "gzipKb": 1.6
+      },
+      {
+        "name": "MountsScreen-BUQfeqg6.js",
+        "rawKb": 4.3,
+        "gzipKb": 1.5
+      },
+      {
+        "name": "PetsScreen-B8Qx_xGO.js",
+        "rawKb": 4.3,
+        "gzipKb": 1.6
+      },
+      {
+        "name": "LoginScreen-D5M5AaQQ.js",
+        "rawKb": 3.2,
+        "gzipKb": 1.5
+      },
+      {
+        "name": "CharacterCreateScreen-D8OW90d6.js",
+        "rawKb": 3.1,
+        "gzipKb": 1.4
+      },
+      {
+        "name": "raids-CTIaCivG.js",
+        "rawKb": 3.1,
+        "gzipKb": 0.8
+      },
+      {
+        "name": "classes-BkSQo-BH.js",
+        "rawKb": 3,
+        "gzipKb": 1.3
+      },
+      {
+        "name": "HallOfFameScreen-DbKNX13m.js",
+        "rawKb": 2.7,
+        "gzipKb": 1
+      },
+      {
+        "name": "AchievementsScreen-DX4eeoxk.js",
+        "rawKb": 2.6,
+        "gzipKb": 1.1
+      },
+      {
+        "name": "CharacterSelectScreen-B6ZjhZB2.js",
+        "rawKb": 2.4,
+        "gzipKb": 1.1
+      },
+      {
+        "name": "dungeons-ChOnOipq.js",
+        "rawKb": 2.3,
+        "gzipKb": 0.9
+      },
+      {
+        "name": "DailyRewardsScreen-D8gRkuka.js",
+        "rawKb": 2.2,
+        "gzipKb": 1
+      },
+      {
+        "name": "InventoryScreen-B02wUm0E.js",
+        "rawKb": 1.9,
+        "gzipKb": 0.8
+      },
+      {
+        "name": "cosmetics-ClrHxeUp.js",
+        "rawKb": 1.7,
+        "gzipKb": 0.6
+      },
+      {
+        "name": "housing-DNzCbVz4.js",
+        "rawKb": 1.7,
+        "gzipKb": 0.7
+      },
+      {
+        "name": "guildCosmetics-CnPJD1ZR.js",
+        "rawKb": 1,
+        "gzipKb": 0.5
+      },
+      {
+        "name": "dungeonHelpers-x4yQcwva.js",
+        "rawKb": 0.9,
+        "gzipKb": 0.4
+      },
+      {
+        "name": "convexBridge-BRHfZN69.js",
+        "rawKb": 0.5,
+        "gzipKb": 0.3
+      },
+      {
+        "name": "formatTime-DYE8v712.js",
+        "rawKb": 0.3,
+        "gzipKb": 0.2
+      },
+      {
+        "name": "cloudCombat-DZVK6smA.js",
+        "rawKb": 0.2,
+        "gzipKb": 0.2
+      }
+    ],
+    "totalRaw": 2014,
+    "totalGzip": 515.2
+  },
+  "distSizeMb": 0
+}

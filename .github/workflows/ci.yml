@@ -26,3 +26,90 @@ jobs:
       - run: npm run build
 
       - run: npm test
+
+      - name: Project metrics
+        run: npm run metrics
+
+      - name: Bundle size budgets
+        run: npm run size:check
+
+      - name: Upload size report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: project-metrics
+          path: .metrics/latest.json
+          retention-days: 30
+
+  size-report:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: build
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - run: npm ci
+
+      - run: CONVEX_AGENT_MODE=anonymous npx convex dev --once
+
+      - run: npm run build && npm run metrics
+
+      - name: PR size comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = '.metrics/latest.json';
+            if (!fs.existsSync(path)) return;
+            const m = JSON.parse(fs.readFileSync(path, 'utf8'));
+            const b = m.bundle;
+            const c = m.codebase;
+            const body = `## 📊 Taille du projet
+
+            | Métrique | Valeur |
+            |----------|--------|
+            | Bundle JS (gzip) | **${b.totalGzip} KB** |
+            | Bundle JS (brut) | ${b.totalRaw} KB |
+            | Chunks | ${b.chunks.length} |
+            | Lignes src/ | ${c.srcLines.toLocaleString()} |
+            | Lignes convex/ | ${c.convexLines.toLocaleString()} |
+            | Écrans | ${c.screenFiles} |
+
+            <details>
+            <summary>Top chunks</summary>
+
+            ${b.chunks.slice(0, 6).map(ch => `- \`${ch.name}\` — ${ch.rawKb} KB (${ch.gzipKb} KB gzip)`).join('\n')}
+            </details>
+
+            Budgets définis dans \`budgets.json\`. Localement : \`npm run check\`.`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const marker = '<!-- project-size-report -->';
+            const existing = comments.find(c => c.body?.includes(marker));
+            const fullBody = marker + '\n' + body;
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: fullBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: fullBody,
+              });
+            }
