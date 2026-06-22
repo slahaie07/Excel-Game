@@ -39,12 +39,13 @@ Le Continent d'Étheris a été brisé par la Grande Faille. Cinq cités-refuges
 - **Guildes** — création, grades, coffre, guerres
 - **Boutique & échanges** — achat/vente d'objets
 - **8 métiers d'artisanat** — forge, alchimie, couture, etc.
-- **PvP** — arène classée (backend prêt)
+- **PvP** — arène classée avec ELO, paliers et classement global
+- **Export mobile** — Capacitor 8 (Android + iOS)
 
 ### Technique
 - **Frontend** — React 19 + Phaser 3 + TypeScript
 - **Backend** — Convex (temps réel, persistance, multijoueur)
-- **Mobile-first** — contrôles tactiles, responsive, PWA-ready
+- **Mobile** — Capacitor 8, safe areas, orientation paysage, icônes natives
 
 ## Démarrage
 
@@ -53,6 +54,27 @@ npm install
 npm run dev          # Frontend (port 5173)
 npm run convex:dev   # Backend temps réel (optionnel)
 ```
+
+## Build mobile (Capacitor)
+
+```bash
+npm run icons        # Génère icônes + splash (resources/)
+npm run build:mobile # Build web + sync Android/iOS
+
+# Ouvrir dans Android Studio / Xcode
+npm run cap:android
+npm run cap:ios
+
+# Lancer sur appareil / émulateur
+npm run cap:run:android
+npm run cap:run:ios
+```
+
+Prérequis :
+- **Android** : Android Studio, JDK 17+, SDK Android
+- **iOS** : macOS, Xcode 15+ (build iOS impossible sous Linux)
+
+Identifiant app : `com.etheris.chroniques`
 
 ## Structure
 
@@ -70,13 +92,13 @@ convex/            # Backend temps réel
 
 ## Roadmap
 
-- [ ] Sprites et animations pixel art
-- [ ] Multijoueur en temps réel (Convex)
-- [ ] Donjons instanciés coopératifs
-- [ ] PvP arène classée
+- [x] Sprites pixel art procéduraux
+- [x] Donjons instanciés
+- [x] PvP arène classée
+- [x] Export mobile (Capacitor)
+- [ ] Multijoueur PvP humain en temps réel
 - [ ] Montures et enclos de guilde
 - [ ] Événements saisonniers
-- [ ] Export mobile (Capacitor)
 
 ## Licence
 

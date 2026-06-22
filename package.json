@@ -7,12 +7,25 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "build:mobile": "npm run build && npx cap sync",
+    "icons": "node scripts/generate-icons.mjs",
+    "cap:sync": "npx cap sync",
+    "cap:android": "npx cap open android",
+    "cap:ios": "npx cap open ios",
+    "cap:run:android": "npm run build:mobile && npx cap run android",
+    "cap:run:ios": "npm run build:mobile && npx cap run ios",
     "preview": "vite preview",
     "convex:dev": "CONVEX_AGENT_MODE=anonymous npx convex dev",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@capacitor/app": "^8.1.0",
+    "@capacitor/core": "^8.4.1",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/keyboard": "^8.0.5",
+    "@capacitor/splash-screen": "^8.0.1",
+    "@capacitor/status-bar": "^8.0.2",
     "convex": "^1.21.0",
     "phaser": "^3.87.0",
     "react": "^19.0.0",
@@ -20,9 +33,13 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.4.1",
+    "@capacitor/cli": "^8.4.1",
+    "@capacitor/ios": "^8.4.1",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "sharp": "^0.35.2",
     "typescript": "^5.7.2",
     "vite": "^6.0.5"
   }

@@ -4,3 +4,12 @@ dist/
 .convex/
 *.local
 tsconfig.tsbuildinfo
+
+# Capacitor / native build artifacts
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+ios/App/Pods/
+ios/App/build/
+DerivedData/

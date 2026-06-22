@@ -19,6 +19,10 @@
   --border: #2c3e50;
   --font-title: "Cinzel", serif;
   --font-body: "Nunito", sans-serif;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
 }
 
 html, body, #root {
@@ -30,6 +34,14 @@ html, body, #root {
   font-family: var(--font-body);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.native-app body {
+  position: fixed;
+  inset: 0;
 }
 
 .app {
@@ -428,7 +440,7 @@ html, body, #root {
 .hud-top {
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem;
+  padding: calc(0.5rem + var(--safe-top)) 0.5rem 0.5rem;
   background: linear-gradient(180deg, rgba(10,14,26,0.9), transparent);
 }
 
@@ -462,7 +474,7 @@ html, body, #root {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.75rem;
+  padding: 0.75rem 0.75rem calc(0.75rem + var(--safe-bottom));
   background: linear-gradient(0deg, rgba(10,14,26,0.95), transparent);
   pointer-events: auto;
 }
@@ -470,6 +482,8 @@ html, body, #root {
 .hud-btn {
   width: 48px;
   height: 48px;
+  min-width: 48px;
+  min-height: 48px;
   border-radius: 12px;
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -723,4 +737,14 @@ html, body, #root {
   .class-grid { grid-template-columns: repeat(2, 1fr); }
   .inventory-grid { grid-template-columns: repeat(5, 1fr); }
   .panel { max-width: 100%; }
+  .hud-btn { width: 52px; height: 52px; min-width: 52px; min-height: 52px; }
+}
+
+@media (pointer: coarse) {
+  .btn-primary,
+  .btn-secondary,
+  .channel-btn,
+  .shop-item-btn {
+    min-height: 44px;
+  }
 }

@@ -1,0 +1,40 @@
+import type { CapacitorConfig } from "@capacitor/cli";
+
+const config: CapacitorConfig = {
+  appId: "com.etheris.chroniques",
+  appName: "Chroniques d'Étheris",
+  webDir: "dist",
+  server: {
+    androidScheme: "https",
+  },
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 2000,
+      launchAutoHide: true,
+      backgroundColor: "#0a0e1a",
+      showSpinner: false,
+      androidScaleType: "CENTER_CROP",
+      splashFullScreen: true,
+      splashImmersive: true,
+    },
+    StatusBar: {
+      style: "DARK",
+      backgroundColor: "#0a0e1a",
+    },
+    Keyboard: {
+      resize: "body",
+      resizeOnFullScreen: true,
+    },
+  },
+  android: {
+    allowMixedContent: false,
+    backgroundColor: "#0a0e1a",
+  },
+  ios: {
+    backgroundColor: "#0a0e1a",
+    contentInset: "automatic",
+    scrollEnabled: false,
+  },
+};
+
+export default config;
