@@ -16,7 +16,9 @@
     "cap:android": "npx cap open android",
     "cap:ios": "npx cap open ios",
     "convex:dev": "CONVEX_AGENT_MODE=anonymous npx convex dev",
-    "convex:deploy": "npx convex deploy"
+    "convex:deploy": "npx convex deploy",
+    "generate:assets": "python3 scripts/generate-game-assets.py",
+    "generate:icons": "python3 scripts/generate-pwa-icons.py"
   },
   "dependencies": {
     "@capacitor/push-notifications": "^7.0.6",

@@ -11,6 +11,7 @@ import {
   CLASS_PORTRAITS,
   ZONE_BACKGROUNDS,
   MONSTER_SPRITES,
+  NPC_PORTRAITS,
 } from "./assets";
 import { getCampaignRankCosmeticIds } from "./factionCampaignRewards";
 
@@ -42,15 +43,17 @@ describe("game assets", () => {
   });
 
   it("maps monsters to sprite art", () => {
-    expect(Object.keys(MONSTER_SPRITES).length).toBeGreaterThanOrEqual(28);
+    expect(Object.keys(MONSTER_SPRITES).length).toBeGreaterThanOrEqual(100);
     expect(hasMonsterSprite("dragon_aether")).toBe(true);
     expect(hasMonsterSprite("fee_brume")).toBe(true);
-    expect(hasMonsterSprite("event_cristal_ancien")).toBe(true);
-    expect(hasMonsterSprite("dragon_givre")).toBe(true);
-    expect(hasMonsterSprite("titan_cendre")).toBe(true);
-    expect(hasMonsterSprite("boss_dome_lunaire")).toBe(true);
+    expect(hasMonsterSprite("etincelle_naissante")).toBe(true);
+    expect(hasMonsterSprite("echo_entrainement")).toBe(true);
     expect(getMonsterPortrait("loup_cristal")).toContain("loup-cristal");
     expect(getMonsterTextureKey("graine_ombre")).toBe("monster_graine_ombre");
+  });
+
+  it("maps NPCs to portrait art", () => {
+    expect(Object.keys(NPC_PORTRAITS).length).toBeGreaterThanOrEqual(40);
   });
 });
 
