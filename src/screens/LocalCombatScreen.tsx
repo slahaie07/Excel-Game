@@ -468,6 +468,8 @@ export default function LocalCombatScreen() {
             dungeonId: combatData.dungeonId as string | undefined,
             roomIndex: combatData.roomIndex as number | undefined,
             raidId: combatData.raidId as string | undefined,
+            phaseIndex: combatData.phaseIndex as number | undefined,
+            zoneId: combatData.zoneId as string | undefined,
           }) ?? getCombatBackground(combatType)}
           alt=""
           className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none"

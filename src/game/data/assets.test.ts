@@ -12,15 +12,22 @@ import {
   getDungeonBackground,
   getPoiMapArt,
   getRaidBackground,
+  getRaidPhaseBackground,
+  getRegionCombatBackground,
   getDungeonRoomBackground,
   getTotalMapCount,
-  TARGET_MAP_COUNT,
+  getExpectedMapCount,
+  countFiniteDungeonRooms,
+  countRaidPhases,
+  MIN_MAP_COUNT,
   CLASS_PORTRAITS,
   ZONE_BACKGROUNDS,
   DUNGEON_BACKGROUNDS,
   POI_MAPS,
   RAID_BACKGROUNDS,
+  RAID_PHASE_BACKGROUNDS,
   DUNGEON_ROOM_BACKGROUNDS,
+  REGION_COMBAT_BACKGROUNDS,
   MONSTER_SPRITES,
   NPC_PORTRAITS,
 } from "./assets";
@@ -30,13 +37,16 @@ import { RAIDS } from "./raids";
 import { getCampaignRankCosmeticIds } from "./factionCampaignRewards";
 
 describe("game assets", () => {
-  it("catalogues 350 maps across Terreval", () => {
-    expect(getTotalMapCount()).toBe(TARGET_MAP_COUNT);
+  it("catalogues complete Terreval map coverage", () => {
+    expect(getTotalMapCount()).toBe(getExpectedMapCount());
+    expect(getTotalMapCount()).toBeGreaterThanOrEqual(MIN_MAP_COUNT);
     expect(Object.keys(ZONE_BACKGROUNDS)).toHaveLength(25);
     expect(Object.keys(DUNGEON_BACKGROUNDS)).toHaveLength(DUNGEONS.length);
     expect(Object.keys(POI_MAPS)).toHaveLength(MAP_POIS.length);
     expect(Object.keys(RAID_BACKGROUNDS)).toHaveLength(RAIDS.length);
-    expect(Object.keys(DUNGEON_ROOM_BACKGROUNDS).length).toBeGreaterThanOrEqual(155);
+    expect(Object.keys(DUNGEON_ROOM_BACKGROUNDS)).toHaveLength(countFiniteDungeonRooms());
+    expect(Object.keys(RAID_PHASE_BACKGROUNDS)).toHaveLength(countRaidPhases());
+    expect(Object.keys(REGION_COMBAT_BACKGROUNDS)).toHaveLength(6);
   });
 
   it("maps all zones to background art", () => {
@@ -47,20 +57,38 @@ describe("game assets", () => {
     expect(getZoneBackground("iles_stellaires")).toBeDefined();
   });
 
-  it("maps dungeons, POI and raids to map art", () => {
+  it("maps dungeons, POI, raids and phases to map art", () => {
     expect(getDungeonBackground("ruines_corrompues")).toContain("ruines-corrompues");
     expect(getPoiMapArt(MAP_POIS[0]!.id)).toContain("/assets/pois/");
     expect(getRaidBackground("sanctuaire_draconique")).toContain("sanctuaire-draconique");
+    expect(getRaidPhaseBackground("sanctuaire_draconique", 0)).toContain("phase-1");
     expect(getDungeonRoomBackground("ruines_corrompues", 0)).toContain("room-1");
+    expect(getRegionCombatBackground("plateau_givre")).toContain("combat-region-givre");
   });
 
-  it("resolves dungeon combat backgrounds from room art", () => {
-    const bg = resolveCombatBackground({
-      combatType: "dungeon",
-      dungeonId: "ruines_corrompues",
-      roomIndex: 0,
-    });
-    expect(bg).toContain("dungeon-ruines-corrompues-room-1");
+  it("resolves dungeon and raid combat backgrounds", () => {
+    expect(
+      resolveCombatBackground({
+        combatType: "dungeon",
+        dungeonId: "ruines_corrompues",
+        roomIndex: 0,
+      })
+    ).toContain("dungeon-ruines-corrompues-room-1");
+
+    expect(
+      resolveCombatBackground({
+        combatType: "raid",
+        raidId: "sanctuaire_draconique",
+        phaseIndex: 2,
+      })
+    ).toContain("sanctuaire-draconique-phase-3");
+
+    expect(
+      resolveCombatBackground({
+        combatType: "world",
+        zoneId: "marais_ether",
+      })
+    ).toContain("combat-region-marais");
   });
 
   it("provides regional overlay tints for v4.0 zones", () => {

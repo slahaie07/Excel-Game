@@ -3,7 +3,7 @@
  * Régénérer : npm run generate:assets
  */
 
-import { getRegionForZone, type MapRegionId } from "./expansionZonesV40";
+import { getRegionForZone, MAP_REGIONS, type MapRegionId } from "./expansionZonesV40";
 import { ZONES } from "./zones";
 import { CLASSES } from "./classes";
 import { MONSTERS } from "./monsters";
@@ -12,12 +12,32 @@ import { DUNGEONS } from "./dungeons";
 import { MAP_POIS } from "./mapPOIs";
 import { RAIDS } from "./raids";
 
-/** Nombre cible de cartes générées (zones + donjons + POI + raids + salles). */
-export const TARGET_MAP_COUNT = 350;
-const TARGET_DUNGEON_ROOM_MAPS = 155;
+/** Plancher historique du catalogue (avant salles complètes). */
+export const MIN_MAP_COUNT = 350;
 
 function assetSlug(id: string): string {
   return id.replace(/_/g, "-");
+}
+
+export function countFiniteDungeonRooms(): number {
+  return DUNGEONS.filter((d) => d.rooms < 999).reduce((sum, d) => sum + d.rooms, 0);
+}
+
+export function countRaidPhases(): number {
+  return RAIDS.reduce((sum, r) => sum + r.phases, 0);
+}
+
+/** Nombre attendu de cartes une fois le générateur exécuté. */
+export function getExpectedMapCount(): number {
+  return (
+    ZONES.length +
+    DUNGEONS.length +
+    MAP_POIS.length +
+    RAIDS.length +
+    countFiniteDungeonRooms() +
+    countRaidPhases() +
+    MAP_REGIONS.length
+  );
 }
 
 export const ZONE_BACKGROUNDS: Record<string, string> = Object.fromEntries(
@@ -38,23 +58,39 @@ export const RAID_BACKGROUNDS: Record<string, string> = Object.fromEntries(
 
 function buildDungeonRoomBackgrounds(): Record<string, string> {
   const entries: [string, string][] = [];
-  let count = 0;
   for (const dungeon of DUNGEONS) {
     if (dungeon.rooms >= 999) continue;
     for (let roomIndex = 0; roomIndex < dungeon.rooms; roomIndex++) {
-      if (count >= TARGET_DUNGEON_ROOM_MAPS) return Object.fromEntries(entries);
       const key = `${dungeon.id}:${roomIndex}`;
       entries.push([
         key,
         `/assets/dungeon-rooms/dungeon-${assetSlug(dungeon.id)}-room-${roomIndex + 1}.png`,
       ]);
-      count++;
     }
   }
   return Object.fromEntries(entries);
 }
 
 export const DUNGEON_ROOM_BACKGROUNDS: Record<string, string> = buildDungeonRoomBackgrounds();
+
+function buildRaidPhaseBackgrounds(): Record<string, string> {
+  const entries: [string, string][] = [];
+  for (const raid of RAIDS) {
+    for (let phaseIndex = 0; phaseIndex < raid.phases; phaseIndex++) {
+      entries.push([
+        `${raid.id}:${phaseIndex}`,
+        `/assets/raid-phases/raid-${assetSlug(raid.id)}-phase-${phaseIndex + 1}.png`,
+      ]);
+    }
+  }
+  return Object.fromEntries(entries);
+}
+
+export const RAID_PHASE_BACKGROUNDS: Record<string, string> = buildRaidPhaseBackgrounds();
+
+export const REGION_COMBAT_BACKGROUNDS: Record<MapRegionId, string> = Object.fromEntries(
+  MAP_REGIONS.map((r) => [r.id, `/assets/combat/combat-region-${assetSlug(r.id)}.png`])
+) as Record<MapRegionId, string>;
 
 export const COMBAT_BACKGROUNDS: Partial<Record<string, string>> = {
   combat: "/assets/combat/combat-tactical.png",
@@ -85,7 +121,9 @@ export function getTotalMapCount(): number {
     Object.keys(DUNGEON_BACKGROUNDS).length +
     Object.keys(POI_MAPS).length +
     Object.keys(RAID_BACKGROUNDS).length +
-    Object.keys(DUNGEON_ROOM_BACKGROUNDS).length
+    Object.keys(DUNGEON_ROOM_BACKGROUNDS).length +
+    Object.keys(RAID_PHASE_BACKGROUNDS).length +
+    Object.keys(REGION_COMBAT_BACKGROUNDS).length
   );
 }
 
@@ -136,6 +174,15 @@ export function getRaidBackground(raidId: string): string | undefined {
   return RAID_BACKGROUNDS[raidId];
 }
 
+export function getRaidPhaseBackground(raidId: string, phaseIndex: number): string | undefined {
+  return RAID_PHASE_BACKGROUNDS[`${raidId}:${phaseIndex}`];
+}
+
+export function getRegionCombatBackground(zoneId: string): string | undefined {
+  const region = getRegionForZone(zoneId);
+  return region ? REGION_COMBAT_BACKGROUNDS[region.id] : undefined;
+}
+
 export function getDungeonRoomBackground(dungeonId: string, roomIndex: number): string | undefined {
   return DUNGEON_ROOM_BACKGROUNDS[`${dungeonId}:${roomIndex}`];
 }
@@ -145,6 +192,8 @@ export interface CombatBackgroundContext {
   dungeonId?: string;
   roomIndex?: number;
   raidId?: string;
+  phaseIndex?: number;
+  zoneId?: string;
 }
 
 export function resolveCombatBackground(ctx?: CombatBackgroundContext): string | undefined {
@@ -155,8 +204,21 @@ export function resolveCombatBackground(ctx?: CombatBackgroundContext): string |
     if (dungeonArt) return dungeonArt;
   }
   if (ctx?.combatType === "raid" && ctx.raidId) {
+    if (ctx.phaseIndex != null) {
+      const phaseArt = getRaidPhaseBackground(ctx.raidId, ctx.phaseIndex);
+      if (phaseArt) return phaseArt;
+    }
     const raidArt = getRaidBackground(ctx.raidId);
     if (raidArt) return raidArt;
+  }
+  if (ctx?.zoneId && (ctx.combatType === "world" || ctx.combatType === "event")) {
+    const regional = getRegionCombatBackground(ctx.zoneId);
+    if (regional) return regional;
+    const zoneArt = getZoneBackground(ctx.zoneId);
+    if (zoneArt) return zoneArt;
+  }
+  if (ctx?.combatType === "pvp") {
+    return REGION_COMBAT_BACKGROUNDS.coeur ?? getCombatBackground("pvp");
   }
   return getCombatBackground(ctx?.combatType);
 }

@@ -19,9 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "public" / "assets"
 DATA = ROOT / "src" / "game" / "data"
 
-# Objectif catalogue : 350 cartes (25 zones + 121 donjons + POI + raids + salles de donjon)
-TARGET_TOTAL_MAPS = 350
-TARGET_DUNGEON_ROOM_MAPS = 155
+# Minimum historique ; le catalogue complet couvre toutes salles + phases raid + arènes régionales.
+MIN_MAP_COUNT = 350
 
 # ——— Palette Aetheris ———
 BG_DARK = (26, 15, 46)
@@ -55,6 +54,15 @@ ZONE_THEMES: dict[str, tuple[tuple[int, int, int], tuple[int, int, int]]] = {
     "iles_stellaires": ((167, 139, 250), (79, 70, 229)),
     "atoll_nebula": ((56, 189, 248), (14, 165, 233)),
     "observatoire_lune": ((129, 140, 248), (67, 56, 202)),
+}
+
+REGION_THEMES: dict[str, tuple[tuple[int, int, int], tuple[int, int, int]]] = {
+    "coeur": ((99, 102, 241), (67, 56, 202)),
+    "archipel": ((14, 165, 233), (30, 64, 175)),
+    "givre": ((56, 189, 248), (125, 211, 252)),
+    "marais": ((34, 197, 94), (22, 101, 52)),
+    "cendres": ((249, 115, 22), (124, 45, 18)),
+    "stellaire": ((167, 139, 250), (79, 70, 229)),
 }
 
 CLASS_COLORS: dict[str, tuple[int, int, int]] = {
@@ -267,15 +275,26 @@ def parse_raids() -> list[tuple[str, str, str, int]]:
     return raids
 
 
-def dungeon_room_slots(dungeons: list[tuple[str, str, str, int]], limit: int) -> list[tuple[str, int]]:
+def dungeon_room_slots(
+    dungeons: list[tuple[str, str, str, int]],
+    limit: int | None = None,
+) -> list[tuple[str, int]]:
     slots: list[tuple[str, int]] = []
     for dungeon_id, _name, _zone, rooms in dungeons:
         if rooms >= 999:
             continue
         for room_index in range(rooms):
-            if len(slots) >= limit:
+            if limit is not None and len(slots) >= limit:
                 return slots
             slots.append((dungeon_id, room_index))
+    return slots
+
+
+def raid_phase_slots(raids: list[tuple[str, str, str, int]]) -> list[tuple[str, int]]:
+    slots: list[tuple[str, int]] = []
+    for raid_id, _name, _zone, phases in raids:
+        for phase_index in range(phases):
+            slots.append((raid_id, phase_index))
     return slots
 
 
@@ -463,6 +482,40 @@ def draw_dungeon_room(dungeon_id: str, room_index: int, zone_id: str) -> Image.I
     return img
 
 
+def draw_raid_phase(raid_id: str, phase_index: int, zone_id: str, raid_name: str) -> Image.Image:
+    w, h = 960, 540
+    top, bottom = theme_for_zone(zone_id)
+    img = gradient_vertical((w, h), (top[0] // 2, top[1] // 2, top[2] // 2), (10, 5, 28))
+    draw = ImageDraw.Draw(img, "RGBA")
+    draw_crystals(draw, w, h, f"{raid_id}:{phase_index}", count=7 + phase_index % 3)
+    for i in range(phase_index + 1):
+        y = 90 + i * 28
+        draw.line([(60, y), (w - 60, y)], fill=(*GOLD, 50 + i * 15), width=2)
+    font = load_font(24, bold=True)
+    draw.text((24, 24), raid_name[:34], fill=GOLD, font=font)
+    draw.text((24, h - 44), f"Phase {phase_index + 1}", fill=CYAN, font=load_font(20, bold=True))
+    return img
+
+
+def draw_region_combat(region_id: str, label: str) -> Image.Image:
+    w, h = 960, 540
+    top, bottom = REGION_THEMES.get(region_id, ((99, 102, 241), (67, 56, 202)))
+    img = gradient_vertical((w, h), top, BG_DARK)
+    draw = ImageDraw.Draw(img, "RGBA")
+    for row in range(8):
+        for col in range(12):
+            cx = col * 80 + (row % 2) * 40 + 20
+            cy = h - 80 - row * 35
+            draw.polygon(
+                [(cx, cy), (cx + 40, cy + 20), (cx, cy + 40), (cx - 40, cy + 20)],
+                outline=(94, 234, 212, 35),
+            )
+    draw_crystals(draw, w, h, region_id, count=5)
+    font = load_font(24, bold=True)
+    draw.text((24, 24), f"Arène — {label}", fill=CYAN, font=font)
+    return img
+
+
 def draw_combat_bg() -> Image.Image:
     w, h = 960, 540
     img = gradient_vertical((w, h), (30, 20, 50), (10, 5, 20))
@@ -487,20 +540,22 @@ def main() -> None:
     dungeon_rooms_dir = PUBLIC / "dungeon-rooms"
     pois_dir = PUBLIC / "pois"
     raids_dir = PUBLIC / "raids"
+    raid_phases_dir = PUBLIC / "raid-phases"
+    combat_dir = PUBLIC / "combat"
     chars_dir = PUBLIC / "characters"
     monsters_dir = PUBLIC / "monsters"
     npcs_dir = PUBLIC / "npcs"
-    combat_dir = PUBLIC / "combat"
     for d in (
         zones_dir,
         dungeons_dir,
         dungeon_rooms_dir,
         pois_dir,
         raids_dir,
+        raid_phases_dir,
+        combat_dir,
         chars_dir,
         monsters_dir,
         npcs_dir,
-        combat_dir,
     ):
         d.mkdir(parents=True, exist_ok=True)
 
@@ -511,8 +566,18 @@ def main() -> None:
     classes = parse_classes()
     monsters = parse_monsters()
     npcs = parse_npcs()
-    room_slots = dungeon_room_slots(dungeons, TARGET_DUNGEON_ROOM_MAPS)
-    zone_lookup = {z[0]: z[1] for z in zones}
+    room_slots = dungeon_room_slots(dungeons)
+    raid_phase_slots_list = raid_phase_slots(raids)
+    region_labels = {
+        "coeur": "Cœur de Terreval",
+        "archipel": "Archipel de Brume",
+        "givre": "Hautes Terres de Givre",
+        "marais": "Marais d'Éther",
+        "cendres": "Vallée des Cendres",
+        "stellaire": "Îles Stellaires",
+    }
+    raid_zone = {r[0]: r[2] for r in raids}
+    raid_names = {r[0]: r[1] for r in raids}
     dungeon_zone = {d[0]: d[2] for d in dungeons}
 
     print(f"Generating {len(zones)} zone maps…")
@@ -534,6 +599,21 @@ def main() -> None:
     print(f"Generating {len(raids)} raid maps…")
     for raid_id, name, zone_id, _phases in raids:
         draw_raid_map(raid_id, name, zone_id).save(raids_dir / f"raid-{slug(raid_id)}.png", optimize=True)
+
+    print(f"Generating {len(raid_phase_slots_list)} raid phase maps…")
+    for raid_id, phase_index in raid_phase_slots_list:
+        zone_id = raid_zone.get(raid_id, "citadelle_stellaire")
+        name = raid_names.get(raid_id, raid_id)
+        draw_raid_phase(raid_id, phase_index, zone_id, name).save(
+            raid_phases_dir / f"raid-{slug(raid_id)}-phase-{phase_index + 1}.png",
+            optimize=True,
+        )
+
+    print(f"Generating {len(REGION_THEMES)} regional combat arenas…")
+    for region_id, label in region_labels.items():
+        draw_region_combat(region_id, label).save(
+            combat_dir / f"combat-region-{slug(region_id)}.png", optimize=True
+        )
 
     print(f"Generating {len(room_slots)} dungeon room maps…")
     for dungeon_id, room_index in room_slots:
@@ -561,17 +641,26 @@ def main() -> None:
 
     draw_combat_bg().save(combat_dir / "combat-tactical.png", optimize=True)
 
-    map_total = len(zones) + len(dungeons) + len(pois) + len(raids) + len(room_slots)
+    map_total = (
+        len(zones)
+        + len(dungeons)
+        + len(pois)
+        + len(raids)
+        + len(room_slots)
+        + len(raid_phase_slots_list)
+        + len(REGION_THEMES)
+    )
     portrait_total = len(classes) + 1 + len(monsters) + len(npcs) + 1
     print(f"Done — assets in {PUBLIC}")
     print(
         f"  maps: {map_total} (zones {len(zones)}, dungeons {len(dungeons)}, "
-        f"pois {len(pois)}, raids {len(raids)}, rooms {len(room_slots)})"
+        f"pois {len(pois)}, raids {len(raids)}, rooms {len(room_slots)}, "
+        f"raid phases {len(raid_phase_slots_list)}, regions {len(REGION_THEMES)})"
     )
     print(f"  portraits/sprites: {portrait_total}")
     print(f"  grand total PNG: {map_total + portrait_total}")
-    if map_total < TARGET_TOTAL_MAPS:
-        print(f"  ⚠ map count {map_total} < target {TARGET_TOTAL_MAPS}")
+    if map_total < MIN_MAP_COUNT:
+        print(f"  ⚠ map count {map_total} < minimum {MIN_MAP_COUNT}")
 
 
 if __name__ == "__main__":
