@@ -110,6 +110,57 @@ html, body, #root {
   color: var(--text-secondary);
 }
 
+.splash-btn { margin-top: 0.5rem; }
+.splash-btn-secondary { margin-top: 0.75rem; width: 100%; max-width: 280px; }
+
+/* Character Select */
+.char-select {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 1.5rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.char-select-empty {
+  text-align: center;
+  color: var(--text-secondary);
+  margin: 2rem 0;
+}
+
+.char-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+
+.char-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.char-card-info { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.85rem; }
+.char-card-info strong { font-size: 1rem; color: var(--accent-gold); }
+.char-card-zone { color: var(--text-secondary); text-transform: capitalize; font-size: 0.75rem; }
+.char-card-kamas { font-size: 0.8rem; }
+.char-card-actions { display: flex; flex-direction: column; gap: 0.4rem; }
+.char-select-new { width: 100%; }
+
+.online-badge { color: var(--accent-green); font-size: 0.75rem; margin-left: 0.5rem; }
+
+.npc-quest-offer {
+  background: var(--bg-card);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.quest-active-label { color: var(--accent-gold); font-size: 0.85rem; }
+.quest-done { color: var(--accent-green); font-size: 0.85rem; }
+
 /* Buttons */
 .btn-primary {
   background: linear-gradient(135deg, var(--accent-gold), #d4ac0d);

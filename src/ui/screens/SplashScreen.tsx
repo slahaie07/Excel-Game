@@ -20,9 +20,15 @@ export function SplashScreen() {
         <p className="splash-lore">{UNIVERSE.lore}</p>
         <button
           className="btn-primary splash-btn"
+          onClick={() => setScreen("character_select")}
+        >
+          Jouer
+        </button>
+        <button
+          className="btn-secondary splash-btn-secondary"
           onClick={() => setScreen("character_create")}
         >
-          Commencer l&apos;Aventure
+          Nouveau héros
         </button>
         <p className="splash-version">v0.1.0 — Univers d&apos;Étheris</p>
       </div>

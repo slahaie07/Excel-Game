@@ -14,6 +14,13 @@ Le Continent d'Étheris a été brisé par la Grande Faille. Cinq cités-refuges
 - **32+ sorts** — dégâts, soins, buffs, debuffs, invocations, contrôle
 - **Exploration isométrique** — 6 zones avec niveaux 1-80
 - **Rencontres aléatoires** — groupes de monstres adaptés au niveau
+- **Système de quêtes actif** — acceptation chez les NPCs, suivi des kills, récompenses automatiques
+
+### Progression & Persistance
+- **Sauvegarde automatique** — localStorage toutes les 30 secondes
+- **Sélection de personnages** — plusieurs héros par appareil
+- **Système XP/niveaux** — 80 niveaux max
+- **Inventaire** — 30 slots + équipement (7 emplacements)
 
 ### Progression
 - **Système de niveaux** — XP, montée de stats, 80 niveaux max
@@ -28,7 +35,7 @@ Le Continent d'Étheris a été brisé par la Grande Faille. Cinq cités-refuges
 - **Donjons** — contenu coopératif
 
 ### Social & Économie
-- **Chat multi-canaux** — global, zone, guilde, commerce
+- **Chat temps réel** — Convex (global, zone, commerce) avec repli hors-ligne
 - **Guildes** — création, grades, coffre, guerres
 - **Boutique & échanges** — achat/vente d'objets
 - **8 métiers d'artisanat** — forge, alchimie, couture, etc.
@@ -43,13 +50,8 @@ Le Continent d'Étheris a été brisé par la Grande Faille. Cinq cités-refuges
 
 ```bash
 npm install
-npm run dev
-```
-
-Pour le backend Convex (optionnel, mode invité par défaut) :
-
-```bash
-npm run convex:dev
+npm run dev          # Frontend (port 5173)
+npm run convex:dev   # Backend temps réel (optionnel)
 ```
 
 ## Structure

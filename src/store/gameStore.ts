@@ -5,9 +5,16 @@ import type { ZoneId } from "../data/universe";
 import type { CombatState } from "../game/combat/CombatEngine";
 import type { QuestStatus } from "../data/quests";
 import { ITEMS } from "../data/items";
+import { saveCharacter } from "../lib/saveManager";
+import {
+  applyQuestRewards,
+  getKilledMonsterIds,
+  recordMonsterKills,
+} from "../lib/questEngine";
 
 export type GameScreen =
   | "splash"
+  | "character_select"
   | "login"
   | "character_create"
   | "world"
@@ -151,10 +158,14 @@ export const useGameStore = create<GameState>((set, get) => ({
       achievements: [],
     };
     set({ player, screen: "world" });
+    saveCharacter(useGameStore.getState().player!);
     get().addNotification(`Bienvenue, ${name} ! Votre aventure commence.`, "success");
   },
 
-  loadCharacter: (player) => set({ player, screen: "world" }),
+  loadCharacter: (player) => {
+    set({ player, screen: "world" });
+    saveCharacter(player);
+  },
 
   movePlayer: (x, y) => {
     const { player } = get();
@@ -172,8 +183,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   startCombat: (combat) => set({ combat, screen: "combat" }),
 
   endCombat: (victory, rewards) => {
-    const { player } = get();
+    const { player, combat } = get();
     if (!player) return;
+
+    let updatedPlayer = { ...player };
 
     if (victory && rewards) {
       get().addXp(rewards.xp);
@@ -181,6 +194,26 @@ export const useGameStore = create<GameState>((set, get) => ({
       for (const item of rewards.loot) {
         get().addItem(item, 1);
       }
+
+      if (combat) {
+        const killed = getKilledMonsterIds(combat);
+        const afterKills = recordMonsterKills(
+          useGameStore.getState().player!,
+          killed,
+        );
+        const withRewards = applyQuestRewards(
+          afterKills.player,
+          afterKills.completed,
+        );
+        updatedPlayer = withRewards;
+
+        for (const { quest } of afterKills.completed) {
+          get().addNotification(`Quête terminée : ${quest.name} !`, "success");
+        }
+
+        set({ player: updatedPlayer });
+      }
+
       get().addNotification(
         `Victoire ! +${rewards.xp} XP, +${rewards.kamas} Kamas`,
         "success",
@@ -193,6 +226,9 @@ export const useGameStore = create<GameState>((set, get) => ({
       set({ player: revived });
       get().addNotification("Défaite... Vous reprenez conscience au village.", "warning");
     }
+
+    const finalPlayer = useGameStore.getState().player;
+    if (finalPlayer) saveCharacter(finalPlayer);
     set({ combat: null, screen: "world" });
   },
 

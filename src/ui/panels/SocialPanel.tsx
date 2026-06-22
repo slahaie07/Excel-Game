@@ -1,35 +1,96 @@
 import { useState } from "react";
-import { useGameStore } from "../../store/gameStore";
+import { useMutation, useQuery } from "convex/react";
+import { useGameStore, type ChatMessage } from "../../store/gameStore";
+import { api } from "../../../convex/_generated/api";
+import { convexClient } from "../../lib/convex";
 
 type Channel = "global" | "zone" | "guild" | "trade";
+type PublicChannel = "global" | "zone" | "trade";
+
+interface DisplayMessage {
+  id: string;
+  channel: Channel;
+  sender: string;
+  message: string;
+  timestamp: number;
+}
 
 export function SocialPanel() {
   const setScreen = useGameStore((s) => s.setScreen);
-  const chatMessages = useGameStore((s) => s.chatMessages);
+  const localMessages = useGameStore((s) => s.chatMessages);
   const addChatMessage = useGameStore((s) => s.addChatMessage);
   const player = useGameStore((s) => s.player);
   const [channel, setChannel] = useState<Channel>("global");
   const [input, setInput] = useState("");
 
-  const filtered = chatMessages.filter((m) => m.channel === channel);
+  const isPublicChannel = channel !== "guild";
+  const online = convexClient !== null && isPublicChannel;
+  const convexChannel: PublicChannel = channel === "guild" ? "global" : channel;
 
-  const sendMessage = () => {
+  const remoteMessages = useQuery(
+    api.guest.getPublicChat,
+    online ? { channel: convexChannel, limit: 50 } : "skip",
+  );
+
+  const sendPublic = useMutation(api.guest.sendPublicChat);
+
+  const messages: DisplayMessage[] =
+    online && remoteMessages
+      ? remoteMessages.map((m) => ({
+          id: m._id,
+          channel: channel,
+          sender: m.senderName,
+          message: m.message,
+          timestamp: m.timestamp,
+        }))
+      : localMessages
+          .filter((m: ChatMessage) => m.channel === channel)
+          .map((m) => ({
+            id: m.id,
+            channel,
+            sender: m.sender,
+            message: m.message,
+            timestamp: m.timestamp,
+          }));
+
+  const sendMessage = async () => {
     if (!input.trim() || !player) return;
-    addChatMessage({
-      id: `msg_${Date.now()}`,
-      channel,
-      sender: player.name,
-      message: input.trim(),
-      timestamp: Date.now(),
-    });
+    const text = input.trim();
     setInput("");
+
+    if (online) {
+      try {
+        await sendPublic({
+          channel: convexChannel,
+          senderName: player.name,
+          message: text,
+          zone: channel === "zone" ? player.zone : undefined,
+        });
+      } catch {
+        addChatMessage({
+          id: `msg_${Date.now()}`,
+          channel,
+          sender: player.name,
+          message: text,
+          timestamp: Date.now(),
+        });
+      }
+    } else {
+      addChatMessage({
+        id: `msg_${Date.now()}`,
+        channel,
+        sender: player.name,
+        message: text,
+        timestamp: Date.now(),
+      });
+    }
   };
 
   return (
     <div className="panel-overlay">
       <div className="panel panel-wide">
         <div className="panel-header">
-          <h2>💬 Social</h2>
+          <h2>💬 Social {online && <span className="online-badge">● En ligne</span>}</h2>
           <button className="btn-close" onClick={() => setScreen("world")}>✕</button>
         </div>
 
@@ -49,10 +110,10 @@ export function SocialPanel() {
         </div>
 
         <div className="chat-messages">
-          {filtered.length === 0 && (
+          {messages.length === 0 && (
             <p className="chat-empty">Aucun message dans ce canal.</p>
           )}
-          {filtered.map((msg) => (
+          {messages.map((msg) => (
             <div key={msg.id} className="chat-msg">
               <span className="chat-sender">{msg.sender}</span>
               <span className="chat-text">{msg.message}</span>
@@ -65,24 +126,12 @@ export function SocialPanel() {
             className="input-field"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            onKeyDown={(e) => e.key === "Enter" && void sendMessage()}
             placeholder="Écrire un message..."
           />
-          <button className="btn-primary" onClick={sendMessage}>
+          <button className="btn-primary" onClick={() => void sendMessage()}>
             Envoyer
           </button>
-        </div>
-
-        <div className="social-features">
-          <h3 className="section-title">Fonctionnalités Sociales</h3>
-          <div className="feature-grid">
-            <div className="feature-card">👥 Liste d&apos;amis</div>
-            <div className="feature-card">📨 Messages privés</div>
-            <div className="feature-card">🤝 Échanges directs</div>
-            <div className="feature-card">🏆 Classements PvP</div>
-            <div className="feature-card">📢 Annonces de guilde</div>
-            <div className="feature-card">🎉 Événements communautaires</div>
-          </div>
         </div>
       </div>
     </div>

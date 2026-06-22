@@ -14,12 +14,16 @@ import { GuildPanel } from "./ui/panels/GuildPanel";
 import { NpcDialog } from "./ui/components/NpcDialog";
 import { NotificationToast } from "./ui/components/NotificationToast";
 import { SettingsPanel } from "./ui/panels/SettingsPanel";
+import { CharacterSelect } from "./ui/screens/CharacterSelect";
+import { useAutoSave } from "./hooks/useAutoSave";
 
 export function App() {
   const screen = useGameStore((s) => s.screen);
   const player = useGameStore((s) => s.player);
   const gameRef = useRef<Phaser.Game | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useAutoSave();
 
   useEffect(() => {
     if (
@@ -50,6 +54,7 @@ export function App() {
   return (
     <div className="app">
       {screen === "splash" && <SplashScreen />}
+      {screen === "character_select" && <CharacterSelect />}
       {screen === "character_create" && <CharacterCreate />}
       {(screen === "world" || screen === "combat") && player && (
         <>

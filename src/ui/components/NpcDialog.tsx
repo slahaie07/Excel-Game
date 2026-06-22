@@ -1,6 +1,8 @@
 import { useGameStore } from "../../store/gameStore";
-import { NPCS } from "../../data/quests";
+import { NPCS, QUESTS } from "../../data/quests";
 import { ITEMS } from "../../data/items";
+import { acceptQuest } from "../../lib/questEngine";
+import { saveCharacter } from "../../lib/saveManager";
 
 export function NpcDialog() {
   const selectedNpc = useGameStore((s) => s.selectedNpc);
@@ -8,7 +10,6 @@ export function NpcDialog() {
   const setScreen = useGameStore((s) => s.setScreen);
   const addNotification = useGameStore((s) => s.addNotification);
   const addItem = useGameStore((s) => s.addItem);
-  const removeItem = useGameStore((s) => s.removeItem);
   const player = useGameStore((s) => s.player);
 
   if (!selectedNpc || !player) return null;
@@ -21,6 +22,19 @@ export function NpcDialog() {
     setScreen("shop");
   };
 
+  const handleAcceptQuest = (questId: string) => {
+    const quest = QUESTS[questId];
+    if (!quest) return;
+    const updated = acceptQuest(player, questId);
+    if (!updated) {
+      addNotification("Quête déjà terminée ou indisponible.", "warning");
+      return;
+    }
+    useGameStore.setState({ player: updated });
+    saveCharacter(updated);
+    addNotification(`Quête acceptée : ${quest.name}`, "success");
+  };
+
   const handleBuy = (itemId: string) => {
     const item = ITEMS[itemId];
     if (!item) return;
@@ -28,7 +42,6 @@ export function NpcDialog() {
       addNotification("Pas assez de Kamas !", "warning");
       return;
     }
-    removeItem("kamas", 0);
     useGameStore.getState().addKamas(-item.price);
     addItem(itemId, 1);
     addNotification(`${item.name} acheté !`, "success");
@@ -49,6 +62,26 @@ export function NpcDialog() {
         {npc.quests && npc.quests.length > 0 && (
           <div className="npc-actions">
             <p className="npc-text">{npc.dialogues.quest ?? "J'ai une mission pour toi."}</p>
+            {npc.quests.map((questId) => {
+              const quest = QUESTS[questId];
+              if (!quest) return null;
+              const status = player.questProgress[questId]?.status ?? "available";
+              return (
+                <div key={questId} className="npc-quest-offer">
+                  <strong>{quest.name}</strong>
+                  <p className="quest-desc">{quest.description}</p>
+                  {status === "completed" ? (
+                    <span className="quest-done">✅ Terminée</span>
+                  ) : status === "active" ? (
+                    <span className="quest-active-label">En cours...</span>
+                  ) : (
+                    <button className="btn-secondary" onClick={() => handleAcceptQuest(questId)}>
+                      Accepter la quête
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
 
