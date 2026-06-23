@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" fill="none">
+  <rect width="800" height="1000" fill="#0A0A0A"/>
+  <rect x="100" y="200" width="600" height="400" rx="8" stroke="#C9A962" stroke-width="1" opacity="0.2"/>
+  <rect x="130" y="230" width="540" height="30" rx="4" fill="#C9A962" opacity="0.15"/>
+  <rect x="130" y="280" width="200" height="120" rx="4" fill="#161616"/>
+  <rect x="350" y="280" width="320" height="55" rx="4" fill="#161616"/>
+  <rect x="350" y="350" width="320" height="50" rx="4" fill="#161616"/>
+  <text x="400" y="720" text-anchor="middle" font-family="Georgia, serif" font-size="64" fill="url(#gold)">Vertex Tech</text>
+  <text x="400" y="770" text-anchor="middle" font-family="Arial" font-size="18" letter-spacing="5" fill="#8A8A8A">WEB · SAAS</text>
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="400" y2="0">
+      <stop stop-color="#E8D5A3"/><stop offset="1" stop-color="#C9A962"/>
+    </linearGradient>
+  </defs>
+</svg>

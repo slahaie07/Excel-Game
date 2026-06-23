@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" fill="none">
+  <rect width="800" height="1000" fill="#0A0A0A"/>
+  <rect x="250" y="180" width="300" height="520" rx="24" stroke="#C9A962" stroke-width="1" opacity="0.3"/>
+  <rect x="270" y="220" width="260" height="400" rx="4" fill="#161616"/>
+  <circle cx="400" cy="750" r="40" fill="#C9A962" opacity="0.2"/>
+  <text x="400" y="880" text-anchor="middle" font-family="Georgia, serif" font-size="56" fill="url(#gold)">Pulse Fitness</text>
+  <text x="400" y="930" text-anchor="middle" font-family="Arial" font-size="16" letter-spacing="5" fill="#8A8A8A">APP MOBILE</text>
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="400" y2="0">
+      <stop stop-color="#C9A962"/><stop offset="1" stop-color="#E8D5A3"/>
+    </linearGradient>
+  </defs>
+</svg>

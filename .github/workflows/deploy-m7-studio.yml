@@ -1,0 +1,51 @@
+name: Deploy M7 Studio
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "m7-studio/**"
+      - ".github/workflows/deploy-m7-studio.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "m7-studio-pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: m7-studio/package-lock.json
+
+      - name: Install & build
+        working-directory: m7-studio
+        run: |
+          npm ci
+          npm run generate:assets
+          npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: m7-studio/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

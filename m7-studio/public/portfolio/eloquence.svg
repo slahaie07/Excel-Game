@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" fill="none">
+  <rect width="800" height="1000" fill="#0A0A0A"/>
+  <polygon points="400,200 500,400 400,350 300,400" fill="#C9A962" opacity="0.15"/>
+  <circle cx="400" cy="400" r="60" fill="none" stroke="#C9A962" stroke-width="2" opacity="0.4"/>
+  <path d="M200 600 Q400 500 600 600" stroke="#C9A962" stroke-width="1" fill="none" opacity="0.3"/>
+  <path d="M150 700 Q400 600 650 700" stroke="#C9A962" stroke-width="1" fill="none" opacity="0.2"/>
+  <text x="400" y="820" text-anchor="middle" font-family="Georgia, serif" font-size="64" fill="url(#gold)">Éloquence</text>
+  <text x="400" y="870" text-anchor="middle" font-family="Arial" font-size="18" letter-spacing="5" fill="#8A8A8A">MOTION · VIDEO</text>
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="400" y2="0">
+      <stop stop-color="#E8D5A3"/><stop offset="1" stop-color="#C9A962"/>
+    </linearGradient>
+  </defs>
+</svg>

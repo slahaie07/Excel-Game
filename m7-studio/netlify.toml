@@ -1,0 +1,12 @@
+[build]
+  base = "m7-studio/"
+  command = "npm install && npm run generate:assets && npm run build"
+  publish = "m7-studio/dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
